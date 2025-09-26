@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>PC Formatech</title>
+  <meta name="description" content="PC Formatech — Formatação, instalação e manutenção. Solicite via WhatsApp." />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" href="/icons/icon-192.png" sizes="192x192" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <img src="/icons/icon-72.png" alt="Logo" class="logo">
+      <div>
+        <h1>PC Formatech</h1>
+        <p class="tagline">Formatação • Instalação • Limpeza • Upgrades</p>
+      </div>
+    </div>
+    <button id="installBtn" class="btn small hidden">Instalar</button>
+  </header>
+
+  <main class="container">
+    <section id="servicesSection" class="card">
+      <div class="card-header">
+        <h2>Serviços</h2>
+        <button id="addServiceBtn" class="btn small">+ Novo</button>
+      </div>
+      <input id="search" placeholder="Digite para buscar" class="search" />
+      <ul id="servicesList" class="services-list" aria-live="polite"></ul>
+    </section>
+
+    <section class="card">
+      <h2>Contato</h2>
+      <p>Atendimento via WhatsApp. Clique em um serviço para pré-preencher a mensagem.</p>
+      <div class="contact-actions">
+        <button id="whatsappAllBtn" class="btn">Solicitar Atendimento</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal (novo/editar serviço) -->
+  <div id="modal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-content card">
+      <h3 id="modalTitle">Novo Serviço</h3>
+      <label>Nome
+        <input id="svc-name" />
+      </label>
+      <label>Descrição
+        <input id="svc-desc" />
+      </label>
+      <label>Preço (R$)
+        <input id="svc-price" type="number" min="0" step="0.01" />
+      </label>
+      <div class="modal-actions">
+        <button id="saveSvcBtn" class="btn">Salvar</button>
+        <button id="cancelSvcBtn" class="btn outline">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <template id="serviceItemTpl">
+    <li class="service-item">
+      <div class="left">
+        <div class="svc-title"></div>
+        <div class="svc-desc"></div>
+      </div>
+      <div class="right">
+        <div class="svc-price"></div>
+        <div class="svc-actions">
+          <button class="btn tiny whatsapp">Whats</button>
+          <button class="btn tiny edit">Editar</button>
+          <button class="btn tiny danger delete">Apagar</button>
+        </div>
+      </div>
+    </li>
+  </template>
+
+  <script src="/app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(err => console.warn('SW registration failed:', err));
+    }
+  </script>
+</body>
+</html>
