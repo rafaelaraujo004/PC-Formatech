@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PC Formatech - Formatação e Instalação de Programas</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav-bar">
+            <div class="logo">
+                <h1>PC Formatech</h1>
+            </div>
+            <div class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#servicos">Serviços</a></li>
+                <li><a href="#sobre">Sobre</a></li>
+                <li><a href="#contato">Contato</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <h1>Soluções em Formatação e Instalação de Programas</h1>
+                <p>Serviço profissional e confiável para seu computador</p>
+                <a href="#contato" class="cta-button">Solicitar Orçamento</a>
+            </div>
+        </section>
+
+        <section id="servicos" class="services">
+            <h2>Nossos Serviços</h2>
+            <div class="services-grid">
+                <div class="service-card" data-modal="formatacao">
+                    <i class="fas fa-laptop"></i>
+                    <h3>Formatação de Computadores</h3>
+                    <p>Formatação completa com backup de seus arquivos</p>
+                    <button class="service-details-btn">Ver Detalhes</button>
+                    <div class="price-tag">A partir de R$ 80,00</div>
+                </div>
+                <div class="service-card" data-modal="programas">
+                    <i class="fas fa-download"></i>
+                    <h3>Instalação de Programas</h3>
+                    <p>Instalação de programas essenciais e específicos</p>
+                    <button class="service-details-btn">Ver Detalhes</button>
+                    <div class="price-tag">A partir de R$ 50,00</div>
+                </div>
+                <div class="service-card" data-modal="seguranca">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Proteção e Segurança</h3>
+                    <p>Instalação de antivírus e ferramentas de proteção</p>
+                    <button class="service-details-btn">Ver Detalhes</button>
+                    <div class="price-tag">A partir de R$ 60,00</div>
+                </div>
+                <div class="service-card" data-modal="manutencao">
+                    <i class="fas fa-tools"></i>
+                    <h3>Manutenção Preventiva</h3>
+                    <p>Limpeza e otimização do sistema</p>
+                    <button class="service-details-btn">Ver Detalhes</button>
+                    <div class="price-tag">A partir de R$ 70,00</div>
+                </div>
+                <div class="service-card" data-modal="drivers">
+                    <i class="fas fa-microchip"></i>
+                    <h3>Instalação de Drivers</h3>
+                    <p>Atualização e instalação de drivers do sistema</p>
+                    <button class="service-details-btn">Ver Detalhes</button>
+                    <div class="price-tag">A partir de R$ 40,00</div>
+                </div>
+                <div class="service-card" data-modal="backup">
+                    <i class="fas fa-database"></i>
+                    <h3>Backup de Dados</h3>
+                    <p>Backup completo dos seus arquivos importantes</p>
+                    <button class="service-details-btn">Ver Detalhes</button>
+                    <div class="price-tag">A partir de R$ 45,00</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Modals de Serviços -->
+        <div class="modal" id="modal-formatacao">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h3>Formatação de Computadores</h3>
+                <ul class="service-features">
+                    <li><i class="fas fa-check"></i> Backup completo dos seus arquivos</li>
+                    <li><i class="fas fa-check"></i> Formatação com Windows original</li>
+                    <li><i class="fas fa-check"></i> Pacote Office completo</li>
+                    <li><i class="fas fa-check"></i> Navegadores e players de mídia</li>
+                    <li><i class="fas fa-check"></i> Programas essenciais</li>
+                    <li><i class="fas fa-check"></i> Garantia de 30 dias</li>
+                </ul>
+                <div class="price-details">
+                    <p class="price">R$ 80,00</p>
+                    <button class="whatsapp-btn" data-service="Formatação de Computadores">
+                        <i class="fab fa-whatsapp"></i> Solicitar por WhatsApp
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sistema de Agendamento -->
+        <section id="agendamento" class="schedule">
+            <h2>Agende seu Serviço</h2>
+            <div class="schedule-container">
+                <form id="schedule-form" class="schedule-form">
+                    <div class="form-group">
+                        <label for="service-type">Tipo de Serviço:</label>
+                        <select id="service-type" name="service-type" required>
+                            <option value="">Selecione um serviço</option>
+                            <option value="formatacao">Formatação de Computadores</option>
+                            <option value="programas">Instalação de Programas</option>
+                            <option value="seguranca">Proteção e Segurança</option>
+                            <option value="manutencao">Manutenção Preventiva</option>
+                            <option value="drivers">Instalação de Drivers</option>
+                            <option value="backup">Backup de Dados</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="schedule-date">Data Preferencial:</label>
+                        <input type="date" id="schedule-date" name="schedule-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="schedule-time">Horário Preferencial:</label>
+                        <select id="schedule-time" name="schedule-time" required>
+                            <option value="">Selecione um horário</option>
+                            <option value="09:00">09:00</option>
+                            <option value="10:00">10:00</option>
+                            <option value="11:00">11:00</option>
+                            <option value="14:00">14:00</option>
+                            <option value="15:00">15:00</option>
+                            <option value="16:00">16:00</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="computer-type">Tipo de Computador:</label>
+                        <select id="computer-type" name="computer-type" required>
+                            <option value="">Selecione o tipo</option>
+                            <option value="desktop">Desktop</option>
+                            <option value="notebook">Notebook</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="submit-button">Agendar Serviço</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="sobre" class="about">
+            <h2>Sobre Nós</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>Somos especialistas em formatação e instalação de programas, com anos de experiência no mercado.</p>
+                    <p>Nossa missão é oferecer um serviço rápido, seguro e de qualidade para nossos clientes.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="contato" class="contact">
+            <h2>Entre em Contato</h2>
+            <div class="contact-container">
+                <form id="contact-form" class="contact-form">
+                    <div class="form-group">
+                        <label for="name">Nome:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">E-mail:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Telefone:</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Mensagem:</label>
+                        <textarea id="message" name="message" required></textarea>
+                    </div>
+                    <button type="submit" class="submit-button">Enviar Mensagem</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-info">
+                <h3>PC Formatech</h3>
+                <p>Seu computador em boas mãos</p>
+            </div>
+            <div class="footer-contact">
+                <h4>Contato</h4>
+                <p><i class="fas fa-phone"></i> (XX) XXXX-XXXX</p>
+                <p><i class="fas fa-envelope"></i> contato@pcformatech.com</p>
+            </div>
+            <div class="footer-social">
+                <h4>Redes Sociais</h4>
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-whatsapp"></i></a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 PC Formatech. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
