@@ -1,5 +1,29 @@
-// Navegação responsiva
 document.addEventListener('DOMContentLoaded', () => {
+    // Controle do anúncio Alelo
+    const announcement = document.querySelector('.alelo-announcement');
+    if (announcement) {
+        setTimeout(() => {
+            announcement.addEventListener('animationend', (e) => {
+                if (e.animationName === 'slideOut') {
+                    announcement.remove();
+                }
+            });
+        }, 3000);
+    }
+
+// Controle do anúncio Alelo e navegação responsiva
+document.addEventListener('DOMContentLoaded', () => {
+    // Anúncio Alelo
+    const announcement = document.querySelector('.alelo-announcement');
+    
+    // Remover o anúncio após a animação de saída
+    setTimeout(() => {
+        announcement.addEventListener('animationend', (e) => {
+            if (e.animationName === 'slideOut') {
+                announcement.remove();
+            }
+        });
+    }, 3000);
     const menuToggle = document.querySelector('.menu-toggle');
     const navLinks = document.querySelector('.nav-links');
 
