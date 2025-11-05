@@ -1,12 +1,15 @@
 /* Variáveis CSS */
 :root {
-    --primary-color: #2c3e50;
-    --secondary-color: #3498db;
-    --accent-color: #e74c3c;
+    --primary-color: #1a237e;
+    --secondary-color: #304ffe;
+    --accent-color: #2979ff;
     --text-color: #333;
     --light-bg: #f5f6fa;
     --white: #ffffff;
+    --gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     --transition: all 0.3s ease;
+    --border-radius: 8px;
 }
 
 /* Reset e estilos base */

@@ -5,13 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PC Formatech - Formatação e Instalação de Programas</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/features.css">
+    <link rel="stylesheet" href="css/social-scheduling.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css">
+    
+    <!-- Botão Flutuante do WhatsApp -->
+    <style>
+        .float-whatsapp {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #25d366;
+            color: white;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 16px;
+            padding: 12px 20px;
+            box-shadow: 2px 2px 3px #999;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .float-whatsapp:hover {
+            background-color: #128C7E;
+            transform: scale(1.1);
+        }
+        
+        .float-whatsapp i {
+            font-size: 24px;
+            margin-right: 8px;
+        }
+        
+        @media screen and (max-width: 767px) {
+            .float-whatsapp {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+            .float-whatsapp i {
+                font-size: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
     <header class="header">
         <nav class="nav-bar">
             <div class="logo">
                 <h1>PC Formatech</h1>
+                <span class="tagline">Especialistas em Tecnologia</span>
             </div>
             <div class="menu-toggle">
                 <i class="fas fa-bars"></i>
@@ -21,9 +67,21 @@
                 <li><a href="#servicos">Serviços</a></li>
                 <li><a href="#sobre">Sobre</a></li>
                 <li><a href="#contato">Contato</a></li>
+                <li><a href="tel:+5594984305772" class="phone-number"><i class="fas fa-phone"></i> (94) 98430-5772</a></li>
             </ul>
+            <button class="whatsapp-header-btn">
+                <i class="fab fa-whatsapp"></i> Fale Conosco
+            </button>
         </nav>
     </header>
+
+    <!-- Botão Flutuante do WhatsApp -->
+    <a href="https://api.whatsapp.com/send?phone=5594984305772&text=Olá, gostaria de entender melhor como funciona os serviços prestados pela PC formatech" 
+       class="float-whatsapp" 
+       target="_blank">
+        <i class="fab fa-whatsapp"></i>
+        <span>(94) 98430-5772</span>
+    </a>
 
     <main>
         <section id="home" class="hero">
@@ -78,6 +136,165 @@
                     <p>Backup completo dos seus arquivos importantes</p>
                     <button class="service-details-btn">Ver Detalhes</button>
                     <div class="price-tag">A partir de R$ 45,00</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="diferenciais" class="features">
+            <h2>Por que escolher a PC Formatech?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-clock"></i>
+                    <h3>Atendimento Rápido</h3>
+                    <p>Serviço realizado em até 24 horas</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-star"></i>
+                    <h3>Garantia</h3>
+                    <p>30 dias de garantia em todos os serviços</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-certificate"></i>
+                    <h3>Profissionais Certificados</h3>
+                    <p>Equipe especializada e qualificada</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-hand-holding-usd"></i>
+                    <h3>Preço Justo</h3>
+                    <p>Melhor custo-benefício da região</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="depoimentos" class="testimonials">
+            <h2>O que nossos clientes dizem</h2>
+            <div class="testimonials-slider">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <i class="fas fa-quote-left"></i>
+                        <p>"Excelente serviço! Meu computador ficou muito mais rápido após a formatação."</p>
+                        <div class="client-info">
+                            <img src="assets/client1.jpg" alt="Cliente 1">
+                            <div>
+                                <h4>João Silva</h4>
+                                <div class="stars">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Adicionar mais depoimentos aqui -->
+            </div>
+        </section>
+
+        <section id="faq" class="faq">
+            <h2>Perguntas Frequentes</h2>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Quanto tempo leva para formatar meu computador?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>O processo completo geralmente leva entre 2 a 4 horas, dependendo das configurações do seu computador e dos programas necessários.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Vocês fazem backup dos meus arquivos?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Sim! Antes de qualquer formatação, realizamos um backup completo dos seus arquivos importantes.</p>
+                    </div>
+                </div>
+                <!-- Adicionar mais perguntas aqui -->
+            </div>
+        </section>
+
+        <section id="agendamento" class="scheduling">
+            <h2>Agende seu Serviço</h2>
+            <div class="scheduling-container">
+                <div class="scheduling-options">
+                    <div class="quick-booking">
+                        <h3>Agendamento Rápido</h3>
+                        <div class="booking-buttons">
+                            <a href="https://api.whatsapp.com/send?phone=5594984305772&text=Olá, gostaria de entender melhor como funciona os serviços prestados pela PC formatech" class="booking-btn formatacao">
+                                <i class="fas fa-laptop"></i>
+                                <span>Formatação de Computador</span>
+                                <small>A partir de R$ 80,00</small>
+                            </a>
+                            <a href="https://api.whatsapp.com/send?phone=5594984305772&text=Olá, gostaria de entender melhor como funciona os serviços prestados pela PC formatech" class="booking-btn programas">
+                                <i class="fas fa-download"></i>
+                                <span>Instalação de Programas</span>
+                                <small>A partir de R$ 50,00</small>
+                            </a>
+                            <a href="https://api.whatsapp.com/send?phone=5594984305772&text=Olá, gostaria de entender melhor como funciona os serviços prestados pela PC formatech" class="booking-btn manutencao">
+                                <i class="fas fa-tools"></i>
+                                <span>Manutenção Preventiva</span>
+                                <small>A partir de R$ 70,00</small>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="scheduling-info">
+                        <div class="info-card">
+                            <i class="fas fa-clock"></i>
+                            <h4>Horário de Atendimento</h4>
+                            <p>Segunda a Sexta: 8h às 18h</p>
+                            <p>Sábado: 8h às 12h</p>
+                        </div>
+                        <div class="info-card">
+                            <i class="fas fa-map-marked-alt"></i>
+                            <h4>Atendimento em</h4>
+                            <p>Canaã dos Carajás-PA</p>
+                            <small>Atendimento à domicílio disponível</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="social" class="social-proof">
+            <h2>Conecte-se Conosco</h2>
+            <div class="social-container">
+                <div class="social-links">
+                    <a href="https://instagram.com/pcformatech" target="_blank" class="social-link instagram">
+                        <i class="fab fa-instagram"></i>
+                        <span>Siga @pcformatech no Instagram</span>
+                        <small>164 seguindo • 69 seguidores • 24 posts</small>
+                    </a>
+                    <a href="https://api.whatsapp.com/send?phone=5594984305772&text=Olá, gostaria de entender melhor como funciona os serviços prestados pela PC formatech" target="_blank" class="social-link whatsapp">
+                        <i class="fab fa-whatsapp"></i>
+                        <span>Agende pelo WhatsApp</span>
+                        <small>(94) 98430-5772 - Atendimento Rápido</small>
+                    </a>
+                    <div class="location-info">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Canaã dos Carajás-PA</span>
+                        <small>📍 Atendemos em toda a cidade</small>
+                    </div>
+                </div>
+                <div class="social-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-users"></i>
+                        <span class="stat-number">500+</span>
+                        <span class="stat-label">Clientes Atendidos</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-star"></i>
+                        <span class="stat-number">4.9</span>
+                        <span class="stat-label">Avaliação Média</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span class="stat-number">1000+</span>
+                        <span class="stat-label">Serviços Realizados</span>
+                    </div>
                 </div>
             </div>
         </section>
@@ -154,8 +371,22 @@
             <h2>Sobre Nós</h2>
             <div class="about-content">
                 <div class="about-text">
-                    <p>Somos especialistas em formatação e instalação de programas, com anos de experiência no mercado.</p>
+                    <p class="highlight-text">Somos especialistas em formatação e instalação de programas, com anos de experiência no mercado.</p>
                     <p>Nossa missão é oferecer um serviço rápido, seguro e de qualidade para nossos clientes.</p>
+                    <div class="about-features">
+                        <div class="feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Atendimento Personalizado</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-clock"></i>
+                            <span>Serviço Rápido</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Garantia de Serviço</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -166,21 +397,34 @@
                 <form id="contact-form" class="contact-form">
                     <div class="form-group">
                         <label for="name">Nome:</label>
-                        <input type="text" id="name" name="name" required>
+                        <input type="text" id="name" name="name" required placeholder="Seu nome completo">
                     </div>
                     <div class="form-group">
                         <label for="email">E-mail:</label>
-                        <input type="email" id="email" name="email" required>
+                        <input type="email" id="email" name="email" required placeholder="seu@email.com">
                     </div>
                     <div class="form-group">
                         <label for="phone">Telefone:</label>
-                        <input type="tel" id="phone" name="phone" required>
+                        <input type="tel" id="phone" name="phone" required placeholder="(94) 98430-5772">
+                    </div>
+                    <div class="form-group">
+                        <label for="service">Serviço de Interesse:</label>
+                        <select id="service" name="service" required>
+                            <option value="">Selecione um serviço</option>
+                            <option value="formatacao">Formatação</option>
+                            <option value="instalacao">Instalação de Programas</option>
+                            <option value="manutencao">Manutenção</option>
+                            <option value="outros">Outros</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="message">Mensagem:</label>
-                        <textarea id="message" name="message" required></textarea>
+                        <textarea id="message" name="message" required placeholder="Descreva o que você precisa"></textarea>
                     </div>
-                    <button type="submit" class="submit-button">Enviar Mensagem</button>
+                    <button type="submit" class="submit-button">
+                        <i class="fas fa-paper-plane"></i>
+                        Enviar Mensagem
+                    </button>
                 </form>
             </div>
         </section>
@@ -190,22 +434,65 @@
         <div class="footer-content">
             <div class="footer-info">
                 <h3>PC Formatech</h3>
-                <p>Seu computador em boas mãos</p>
+                <p class="slogan">Seu computador em boas mãos</p>
+                <p class="footer-description">Soluções completas em formatação e manutenção de computadores para sua casa ou empresa.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Links Rápidos</h4>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#servicos">Serviços</a></li>
+                    <li><a href="#sobre">Sobre</a></li>
+                    <li><a href="#agendamento">Agendamento</a></li>
+                    <li><a href="#contato">Contato</a></li>
+                </ul>
             </div>
             <div class="footer-contact">
                 <h4>Contato</h4>
-                <p><i class="fas fa-phone"></i> (XX) XXXX-XXXX</p>
-                <p><i class="fas fa-envelope"></i> contato@pcformatech.com</p>
+                    <div class="contact-item">
+                    <i class="fas fa-phone"></i>
+                    <div class="contact-info">
+                        <p>(94) 98430-5772</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <div class="contact-info">
+                        <p>contato@pcformatech.com</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div class="contact-info">
+                        <p>Atendemos em toda a região</p>
+                    </div>
+                </div>
             </div>
             <div class="footer-social">
                 <h4>Redes Sociais</h4>
-                <a href="#"><i class="fab fa-facebook"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-whatsapp"></i></a>
+                <div class="social-links">
+                    <a href="#" class="social-link facebook">
+                        <i class="fab fa-facebook"></i>
+                        <span>Facebook</span>
+                    </a>
+                    <a href="#" class="social-link instagram">
+                        <i class="fab fa-instagram"></i>
+                        <span>Instagram</span>
+                    </a>
+                    <a href="#" class="social-link whatsapp">
+                        <i class="fab fa-whatsapp"></i>
+                        <span>WhatsApp</span>
+                    </a>
+                </div>
             </div>
         </div>
         <div class="footer-bottom">
             <p>&copy; 2025 PC Formatech. Todos os direitos reservados.</p>
+            <div class="payment-methods">
+                <i class="fab fa-cc-visa"></i>
+                <i class="fab fa-cc-mastercard"></i>
+                <i class="fab fa-pix"></i>
+            </div>
         </div>
     </footer>
 
