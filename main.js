@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {}
     // Controle do anúncio Alelo
     const announcement = document.querySelector('.alelo-announcement');
     if (announcement) {
