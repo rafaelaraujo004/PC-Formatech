@@ -194,8 +194,8 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    background: #0971f1;
-    color: white;
+    background: #011227;
+    color: rgb(151, 15, 15);
     padding: 0.8rem 1.5rem;
     border-radius: 8px;
     text-decoration: none;
@@ -204,7 +204,7 @@
 }
 
 .download-btn:hover {
-    background: #0053b3;
+    background: #ffffff;
     transform: translateY(-2px);
 }
 
@@ -358,7 +358,7 @@
 }
 
 .booking-btn:hover small {
-    background: rgba(41, 121, 255, 0.2);
+    background: rgba(141, 11, 124, 0.2);
 }
 
 .social-stats {
@@ -527,7 +527,7 @@
 }
 
 .benefit-card {
-    background: #fff;
+    background: ##091477;
     padding: 0.8rem 1rem;
     border-radius: 8px;
     display: flex;
@@ -558,7 +558,7 @@
 }
 
 .contact-info small {
-    color: #a8b0ff;
+    color: #9495a1;
 }
 
 .social-links {
@@ -577,7 +577,7 @@
     background: var(--white);
     border-radius: 8px;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
 }
 
 .social-link strong {
@@ -589,35 +589,16 @@
     opacity: 0.8;
 }
 
-.social-link:hover {
-    background: var(--white);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
 
 .social-link.instagram i {
-    color: #E4405F;
+    color: #bb0707;
 }
 
 .social-link.whatsapp i {
     color: #25D366;
 }
 
-.footer-bottom {
-    margin-top: 3rem;
-    padding-top: 2rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
 
-.footer-info-bottom {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-}
 
 .payment-methods-icons {
     display: flex;
