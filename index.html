@@ -2,9 +2,10 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes">
     <title>PC Formatech - Formatação e Instalação de Programas</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="mobile-desktop.css">
     <link rel="stylesheet" href="styles2.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
@@ -28,6 +29,8 @@
             align-items: center;
             text-decoration: none;
             transition: all 0.3s ease;
+            min-height: 48px;
+            min-width: 48px;
         }
         
         .float-whatsapp:hover {
@@ -40,15 +43,7 @@
             margin-right: 8px;
         }
         
-        @media screen and (max-width: 767px) {
-            .float-whatsapp {
-                padding: 8px 15px;
-                font-size: 14px;
-            }
-            .float-whatsapp i {
-                font-size: 20px;
-            }
-        }
+        /* Media queries removidas - versão desktop em todos os dispositivos */
     </style>
 </head>
 <body>
@@ -244,29 +239,115 @@
             </div>
         </section>
 
-        <section id="agendamento" class="scheduling">
+        <section id="agende-servico" class="scheduling">
             <h2><i class="fas fa-calendar-check"></i> Agende seu Serviço</h2>
             <div class="scheduling-container">
                 <div class="scheduling-options">
                     <div class="quick-booking">
-                        <h3><i class="fas fa-bolt"></i> Agendamento Rápido</h3>
-                        <div class="booking-buttons">
-                            <a href="https://api.whatsapp.com/send?phone=5594984305772&text=Olá! Gostaria de agendar uma formatação de computador." class="booking-btn formatacao">
-                                <i class="fas fa-laptop"></i>
-                                <span>Formatação de Computador</span>
-                                <small>A partir de <strong>R$ 80,00</strong></small>
-                            </a>
-                            <a href="https://api.whatsapp.com/send?phone=5594984305772&text=Olá! Gostaria de agendar a instalação de programas." class="booking-btn programas">
-                                <i class="fas fa-download"></i>
-                                <span>Instalação de Programas</span>
-                                <small>A partir de <strong>R$ 50,00</strong></small>
-                            </a>
-                            <a href="https://api.whatsapp.com/send?phone=5594984305772&text=Olá! Gostaria de agendar uma manutenção preventiva." class="booking-btn manutencao">
-                                <i class="fas fa-tools"></i>
-                                <span>Manutenção Preventiva</span>
-                                <small>A partir de <strong>R$ 70,00</strong></small>
-                            </a>
-                        </div>
+                        <h3><i class="fas fa-user-clock"></i> Preencha seus Dados</h3>
+                        <form id="scheduling-form" class="schedule-form">
+                            <div class="form-group">
+                                <label for="client-name">
+                                    <i class="fas fa-user"></i> Nome Completo *
+                                </label>
+                                <input type="text" id="client-name" name="name" required placeholder="Digite seu nome completo">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="client-phone">
+                                    <i class="fas fa-phone"></i> Telefone/WhatsApp *
+                                </label>
+                                <input type="tel" id="client-phone" name="phone" required placeholder="(00) 00000-0000">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="service-type">
+                                    <i class="fas fa-laptop"></i> Tipo de Serviço *
+                                </label>
+                                <select id="service-type" name="service" required>
+                                    <option value="">Selecione o serviço</option>
+                                    <option value="Formatação de Computador">Formatação de Computador - R$ 80,00</option>
+                                    <option value="Instalação de Programas">Instalação de Programas - R$ 50,00</option>
+                                    <option value="Proteção e Segurança">Proteção e Segurança - R$ 60,00</option>
+                                    <option value="Manutenção Preventiva">Manutenção Preventiva - R$ 70,00</option>
+                                    <option value="Instalação de Drivers">Instalação de Drivers - R$ 40,00</option>
+                                    <option value="Backup de Dados">Backup de Dados - R$ 45,00</option>
+                                    <option value="Atendimento Remoto">Atendimento Remoto - 20% OFF</option>
+                                </select>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="attendance-type">
+                                        <i class="fas fa-headset"></i> Modo de Atendimento *
+                                    </label>
+                                    <select id="attendance-type" name="attendance" required>
+                                        <option value="">Selecione</option>
+                                        <option value="Presencial">Presencial</option>
+                                        <option value="Remoto (AnyDesk)">Remoto (AnyDesk) - 20% OFF</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="cleaning-type">
+                                        <i class="fas fa-broom"></i> Tipo de Limpeza (Opcional)
+                                    </label>
+                                    <select id="cleaning-type" name="cleaning">
+                                        <option value="Não se aplica">Não se aplica</option>
+                                        <option value="Limpeza Simples">Limpeza Simples</option>
+                                        <option value="Limpeza Completa">Limpeza Completa</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="schedule-date">
+                                        <i class="fas fa-calendar"></i> Data *
+                                    </label>
+                                    <input type="date" id="schedule-date" name="date" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="schedule-time">
+                                        <i class="fas fa-clock"></i> Horário *
+                                    </label>
+                                    <select id="schedule-time" name="time" required>
+                                        <option value="">Selecione</option>
+                                        <option value="08:00">08:00</option>
+                                        <option value="09:00">09:00</option>
+                                        <option value="10:00">10:00</option>
+                                        <option value="11:00">11:00</option>
+                                        <option value="12:00">12:00</option>
+                                        <option value="13:00">13:00</option>
+                                        <option value="14:00">14:00</option>
+                                        <option value="15:00">15:00</option>
+                                        <option value="16:00">16:00</option>
+                                        <option value="17:00">17:00</option>
+                                        <option value="18:00">18:00</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="client-address">
+                                    <i class="fas fa-map-marker-alt"></i> Endereço (Opcional)
+                                </label>
+                                <input type="text" id="client-address" name="address" placeholder="Rua, número, bairro">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="additional-info">
+                                    <i class="fas fa-comment"></i> Observações (Opcional)
+                                </label>
+                                <textarea id="additional-info" name="notes" rows="4" placeholder="Ex: Preciso de atendimento remoto pelo AnyDesk, meu PC está lento..."></textarea>
+                            </div>
+
+                            <button type="submit" class="submit-schedule-btn">
+                                <i class="fab fa-whatsapp"></i>
+                                Agendar via WhatsApp
+                            </button>
+                        </form>
                     </div>
                     <div class="scheduling-info">
                         <div class="info-card">
@@ -280,6 +361,14 @@
                             <h4>Atendimento em</h4>
                             <p><strong>Canaã dos Carajás-PA</strong></p>
                             <small>Atendimento à domicílio disponível</small>
+                        </div>
+                        <div class="info-card">
+                            <i class="fas fa-info-circle"></i>
+                            <h4>Como Funciona</h4>
+                            <p>1. Preencha o formulário</p>
+                            <p>2. Clique em "Agendar via WhatsApp"</p>
+                            <p>3. Confirme no WhatsApp</p>
+                            <small>Resposta em até 1 hora</small>
                         </div>
                     </div>
                 </div>
@@ -493,111 +582,82 @@
             </div>
         </div>
 
-        <!-- Sistema de Agendamento -->
+        <!-- Sistema de Agendamento + Contato lado a lado -->
+        <section class="cta-duo">
+            <div class="cta-columns">
         <section id="agendamento" class="schedule">
-            <h2>Agende seu Serviço</h2>
-            <div class="schedule-container">
-                <form id="schedule-form" class="schedule-form">
-                    <div class="form-group">
-                        <label for="service-type">Tipo de Serviço:</label>
-                        <select id="service-type" name="service-type" required>
-                            <option value="">Selecione um serviço</option>
-                            <option value="formatacao">Formatação de Computadores</option>
-                            <option value="programas">Instalação de Programas</option>
-                            <option value="seguranca">Proteção e Segurança</option>
-                            <option value="manutencao">Manutenção Preventiva</option>
-                            <option value="drivers">Instalação de Drivers</option>
-                            <option value="backup">Backup de Dados</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="schedule-date">Data Preferencial:</label>
-                        <input type="date" id="schedule-date" name="schedule-date" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="schedule-time">Horário Preferencial:</label>
-                        <select id="schedule-time" name="schedule-time" required>
-                            <option value="">Selecione um horário</option>
-                            <option value="09:00">09:00</option>
-                            <option value="10:00">10:00</option>
-                            <option value="11:00">11:00</option>
-                            <option value="14:00">14:00</option>
-                            <option value="15:00">15:00</option>
-                            <option value="16:00">16:00</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="computer-type">Tipo de Computador:</label>
-                        <select id="computer-type" name="computer-type" required>
-                            <option value="">Selecione o tipo</option>
-                            <option value="desktop">Desktop</option>
-                            <option value="notebook">Notebook</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="submit-button">Agendar Serviço</button>
-                </form>
-            </div>
-        </section>
-
+ 
+        <section id="contato" class="contact">
+ 
         <section id="sobre" class="about">
-            <h2>Sobre Nós</h2>
+            <div class="about-header">
+                <h2>Sobre a PC Formatech</h2>
+                <p class="about-subtitle">Sua solução completa em informática</p>
+            </div>
             <div class="about-content">
-                <div class="about-text">
-                    <p class="highlight-text">Somos especialistas em formatação e instalação de programas, com anos de experiência no mercado.</p>
-                    <p>Nossa missão é oferecer um serviço rápido, seguro e de qualidade para nossos clientes.</p>
-                    <div class="about-features">
-                        <div class="feature">
-                            <i class="fas fa-check-circle"></i>
-                            <span>Atendimento Personalizado</span>
+                <div class="about-main">
+                    <div class="about-image">
+                        <div class="about-image-placeholder">
+                            <i class="fas fa-laptop-code"></i>
                         </div>
-                        <div class="feature">
-                            <i class="fas fa-clock"></i>
-                            <span>Serviço Rápido</span>
-                        </div>
-                        <div class="feature">
-                            <i class="fas fa-shield-alt"></i>
-                            <span>Garantia de Serviço</span>
-                        </div>
+                    </div>
+                    <div class="about-text">
+                        <h3>Quem Somos</h3>
+                        <p class="highlight-text">Somos especialistas em formatação e instalação de programas, com anos de experiência no mercado de informática em Canaã dos Carajás - PA.</p>
+                        <p>Nossa missão é oferecer um serviço rápido, seguro e de qualidade para nossos clientes, seja presencialmente ou remotamente via AnyDesk.</p>
+                        <p>Contamos com técnicos qualificados e atualizados nas mais recentes tecnologias, garantindo soluções eficientes para seu computador.</p>
                     </div>
                 </div>
-            </div>
-        </section>
+                
+                <div class="about-features">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h4>Atendimento Personalizado</h4>
+                        <p>Cada cliente é único e merece atenção especial</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h4>Serviço Rápido</h4>
+                        <p>Seu tempo é valioso, trabalhamos com agilidade</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h4>Garantia de Qualidade</h4>
+                        <p>Todos os serviços com garantia e suporte</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <h4>Suporte Contínuo</h4>
+                        <p>Estamos sempre disponíveis para ajudar</p>
+                    </div>
+                </div>
 
-        <section id="contato" class="contact">
-            <h2>Entre em Contato</h2>
-            <div class="contact-container">
-                <form id="contact-form" class="contact-form">
-                    <div class="form-group">
-                        <label for="name">Nome:</label>
-                        <input type="text" id="name" name="name" required placeholder="Seu nome completo">
+                <div class="about-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">500+</div>
+                        <div class="stat-label">Clientes Atendidos</div>
                     </div>
-                    <div class="form-group">
-                        <label for="email">E-mail:</label>
-                        <input type="email" id="email" name="email" required placeholder="seu@email.com">
+                    <div class="stat-item">
+                        <div class="stat-number">5+</div>
+                        <div class="stat-label">Anos de Experiência</div>
                     </div>
-                    <div class="form-group">
-                        <label for="phone">Telefone:</label>
-                        <input type="tel" id="phone" name="phone" required placeholder="(94) 98430-5772">
+                    <div class="stat-item">
+                        <div class="stat-number">98%</div>
+                        <div class="stat-label">Satisfação</div>
                     </div>
-                    <div class="form-group">
-                        <label for="service">Serviço de Interesse:</label>
-                        <select id="service" name="service" required>
-                            <option value="">Selecione um serviço</option>
-                            <option value="formatacao">Formatação</option>
-                            <option value="instalacao">Instalação de Programas</option>
-                            <option value="manutencao">Manutenção</option>
-                            <option value="outros">Outros</option>
-                        </select>
+                    <div class="stat-item">
+                        <div class="stat-number">24h</div>
+                        <div class="stat-label">Tempo de Resposta</div>
                     </div>
-                    <div class="form-group">
-                        <label for="message">Mensagem:</label>
-                        <textarea id="message" name="message" required placeholder="Descreva o que você precisa"></textarea>
-                    </div>
-                    <button type="submit" class="submit-button">
-                        <i class="fas fa-paper-plane"></i>
-                        Enviar Mensagem
-                    </button>
-                </form>
+                </div>
             </div>
         </section>
     </main>
@@ -617,16 +677,15 @@
                         </div>
                         <div class="payment-item">
                             <i class="fas fa-credit-card"></i>
-                            <span>Cartão Crédito</span>
+                            <span>Cartão de Crédito</span>
                         </div>
                         <div class="payment-item">
                             <i class="fas fa-money-bill-wave"></i>
                             <span>Dinheiro</span>
                         </div>
                     </div>
-                    <div class="payment-cards">
-                        <div class="benefit-card">
-                        <div class="benefit-card">
+                </div>
+            </div>
             <div class="footer-links">
                 <h4>Links Rápidos</h4>
                 <ul>
@@ -663,18 +722,27 @@
             <div class="footer-social">
                 <h4><i class="fas fa-share-alt"></i> Redes Sociais</h4>
                 <div class="social-links">
-                    <a href="https://facebook.com/pcformatech" target="_blank" class="social-link facebook">
-                        <i class="fab fa-facebook"></i>
-                        <span>Facebook</span>
-                    </a>
                     <a href="https://instagram.com/pcformatech" target="_blank" class="social-link instagram">
                         <i class="fab fa-instagram"></i>
-                        <span>Instagram</span>
+                        <span>
+                            <strong>Instagram</strong>
+                            <small>@pcformatech</small>
+                        </span>
                     </a>
                     <a href="https://wa.me/5594984305772" target="_blank" class="social-link whatsapp">
                         <i class="fab fa-whatsapp"></i>
-                        <span>WhatsApp</span>
+                        <span>
+                            <strong>WhatsApp</strong>
+                            <small>(94) 98430-5772</small>
+                        </span>
                     </a>
+                </div>
+                <div class="location-info">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>
+                        <strong>Canaã dos Carajás-PA</strong>
+                        <small>📍 Atendimento em toda a cidade</small>
+                    </span>
                 </div>
             </div>
         </div>
@@ -686,6 +754,9 @@
                     <i class="fab fa-cc-mastercard"></i>
                     <i class="fas fa-money-bill-wave"></i>
                     <i class="fab fa-pix"></i>
+                </div>
+            </div>
+        </div>
     </footer>
 
     <script src="js/main.js"></script>

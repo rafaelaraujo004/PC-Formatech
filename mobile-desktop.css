@@ -1,0 +1,652 @@
+/* ==========================================
+   MOBILE COM LAYOUT DESKTOP - VISUAL IDÊNTICO
+   Layout desktop máximo, elementos maiores e mais próximos do desktop
+   ========================================== */
+
+/* Tablets e dispositivos menores (até 768px) */
+@media screen and (max-width: 768px) {
+    /* Header mantém tamanho quase desktop */
+    .header {
+        padding: 0.8rem 0;
+    }
+    
+    .nav-bar {
+        padding: 0 1rem;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+    
+    .logo {
+        gap: 0.8rem;
+    }
+    
+    .logo-img {
+        height: 42px; /* Próximo ao desktop (48px) */
+    }
+    
+    .brand-name {
+        font-size: 1.4rem; /* Próximo ao desktop (1.8rem) */
+    }
+    
+    .tagline {
+        font-size: 0.85rem; /* Próximo ao desktop (1rem) */
+    }
+    
+    /* Menu desktop - tamanho normal */
+    .nav-links {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 0.5rem;
+        width: auto;
+    }
+    
+    .nav-links li a {
+        padding: 0.5rem 0.9rem;
+        font-size: 0.95rem; /* Próximo ao desktop */
+    }
+    
+    .phone-number {
+        font-size: 0.9rem !important;
+        padding: 0.5rem 0.9rem !important;
+    }
+    
+    /* Hero próximo ao desktop */
+    .hero {
+        padding: 100px 1.5rem 3rem;
+        min-height: 80vh;
+    }
+    
+    .hero-content h1 {
+        font-size: 2.3rem; /* Mais próximo do desktop (3rem) */
+        line-height: 1.2;
+    }
+    
+    .hero-content p {
+        font-size: 1.15rem;
+    }
+    
+    /* Seções com padding desktop */
+    .services,
+    .testimonials,
+    .faq,
+    .scheduling,
+    .features {
+        padding: 4rem 1.5rem;
+    }
+    
+    .services h2,
+    .section-title {
+        font-size: 2.2rem !important; /* Próximo ao desktop (2.5rem) */
+    }
+    
+    /* Grid mantém 2 colunas quando possível */
+    .services-grid {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .service-card {
+        padding: 1.8rem 1.2rem;
+    }
+    
+    .service-card i {
+        font-size: 2.7rem; /* Próximo ao desktop (3rem) */
+    }
+    
+    .service-card h3 {
+        font-size: 1.2rem;
+    }
+    
+    .service-card p {
+        font-size: 1rem;
+    }
+    
+    .service-details-btn {
+        padding: 0.7rem 1.3rem;
+        font-size: 1rem;
+    }
+    
+    .price-tag {
+        font-size: 0.88rem;
+        padding: 0.5rem 0.9rem;
+    }
+    
+    /* Modal próximo ao desktop */
+    .modal-content {
+        width: 90%;
+        max-width: 520px;
+        padding: 2rem;
+        margin: 8% auto;
+        max-height: 85vh;
+    }
+    
+    .modal-content h3 {
+        font-size: 1.6rem;
+    }
+    
+    .service-features li {
+        font-size: 1.05rem;
+    }
+    
+    /* Testimonials */
+    .testimonials-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .testimonial-card {
+        padding: 1.5rem;
+    }
+    
+    /* FAQ com 2 colunas quando possível */
+    .faq-grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .faq-item {
+        padding: 1.5rem;
+    }
+    
+    .faq-question h3 {
+        font-size: 1.15rem;
+    }
+    
+    .faq-answer p {
+        font-size: 1rem;
+    }
+    
+    /* Agendamento - layout desktop completo */
+    .scheduling-options {
+        gap: 2rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .quick-booking,
+    .scheduling-info {
+        min-width: 0;
+    }
+    
+    .booking-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .booking-btn {
+        padding: 1rem;
+    }
+    
+    .booking-btn i {
+        font-size: 2rem;
+    }
+    
+    .booking-btn span {
+        font-size: 1.05rem;
+    }
+    
+    .booking-btn small {
+        font-size: 0.9rem;
+    }
+    
+    .info-card {
+        padding: 1.5rem;
+    }
+    
+    .info-card h4 {
+        font-size: 1.15rem;
+    }
+    
+    .info-card p {
+        font-size: 1rem;
+    }
+    
+    /* Features com 2 colunas */
+    .features-grid {
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 2rem;
+    }
+    
+    .feature-card {
+        padding: 2.2rem;
+    }
+    
+    .feature-card i {
+        font-size: 3.2rem;
+    }
+    
+    .feature-card h3 {
+        font-size: 1.4rem;
+    }
+    
+    .feature-card p {
+        font-size: 1.05rem;
+    }
+    
+    /* Footer */
+    footer {
+        padding: 2.5rem 1.5rem;
+    }
+    
+    .footer-content {
+        gap: 2rem;
+        font-size: 1rem;
+    }
+    
+    /* WhatsApp button desktop size */
+    .float-whatsapp {
+        padding: 12px 20px;
+        font-size: 16px;
+        bottom: 20px;
+        right: 20px;
+    }
+    
+    .float-whatsapp i {
+        font-size: 24px;
+        margin-right: 8px;
+    }
+    
+    .float-whatsapp span {
+        font-size: 16px;
+    }
+}
+
+/* Smartphones (até 480px) - ainda mantém visual desktop */
+@media screen and (max-width: 480px) {
+    .header {
+        padding: 0.7rem 0;
+    }
+    
+    .nav-bar {
+        padding: 0 0.8rem;
+    }
+    
+    .logo-img {
+        height: 38px;
+    }
+    
+    .brand-name {
+        font-size: 1.2rem;
+    }
+    
+    .tagline {
+        font-size: 0.75rem;
+    }
+    
+    .nav-links {
+        gap: 0.4rem;
+    }
+    
+    .nav-links li a {
+        padding: 0.45rem 0.7rem;
+        font-size: 0.88rem;
+    }
+    
+    .phone-number {
+        font-size: 0.85rem !important;
+        padding: 0.45rem 0.7rem !important;
+    }
+    
+    .hero {
+        padding: 90px 1rem 2.5rem;
+    }
+    
+    .hero-content h1 {
+        font-size: 2rem;
+    }
+    
+    .hero-content p {
+        font-size: 1.05rem;
+    }
+    
+    .services,
+    .testimonials,
+    .faq,
+    .scheduling,
+    .features {
+        padding: 3.5rem 1rem;
+    }
+    
+    .services h2,
+    .section-title {
+        font-size: 1.9rem !important;
+    }
+    
+    .services-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.2rem;
+    }
+    
+    .service-card {
+        padding: 1.5rem 1rem;
+    }
+    
+    .service-card i {
+        font-size: 2.4rem;
+    }
+    
+    .service-card h3 {
+        font-size: 1.1rem;
+    }
+    
+    .service-card p {
+        font-size: 0.95rem;
+    }
+    
+    .service-details-btn {
+        font-size: 0.95rem;
+        padding: 0.65rem 1.2rem;
+    }
+    
+    /* Agendamento - tenta manter 2 colunas */
+    .scheduling-options {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .booking-btn {
+        padding: 0.9rem;
+    }
+    
+    .booking-btn i {
+        font-size: 1.8rem;
+    }
+    
+    .booking-btn span {
+        font-size: 0.98rem;
+    }
+    
+    .booking-btn small {
+        font-size: 0.85rem;
+    }
+    
+    /* Features mantém visual desktop */
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .feature-card {
+        padding: 2rem;
+    }
+    
+    .feature-card i {
+        font-size: 3rem;
+    }
+    
+    /* WhatsApp mantém tamanho bom */
+    .float-whatsapp {
+        padding: 11px 18px;
+        font-size: 15px;
+        bottom: 18px;
+        right: 18px;
+    }
+    
+    .float-whatsapp i {
+        font-size: 22px;
+        margin-right: 7px;
+    }
+    
+    .float-whatsapp span {
+        font-size: 14px;
+    }
+}
+
+/* Dispositivos muito pequenos (até 360px) - ainda próximo ao desktop */
+@media screen and (max-width: 360px) {
+    .logo-img {
+        height: 35px;
+    }
+    
+    .brand-name {
+        font-size: 1.1rem;
+    }
+    
+    .tagline {
+        font-size: 0.7rem;
+    }
+    
+    .nav-links li a {
+        font-size: 0.82rem;
+        padding: 0.4rem 0.6rem;
+    }
+    
+    .hero-content h1 {
+        font-size: 1.8rem;
+    }
+    
+    .services h2 {
+        font-size: 1.7rem !important;
+    }
+    
+    .service-card h3 {
+        font-size: 1.05rem;
+    }
+    
+    .service-card p {
+        font-size: 0.9rem;
+    }
+}
+
+/* Landscape mode - mantém proporções desktop */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+    .hero {
+        min-height: 100vh;
+        padding: 80px 1.5rem 2rem;
+    }
+    
+    .header {
+        padding: 0.5rem 0;
+    }
+    
+    .logo-img {
+        height: 35px;
+    }
+    
+    .nav-links li a {
+        padding: 0.4rem 0.7rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Otimizações para touch devices */
+@media (hover: none) and (pointer: coarse) {
+    /* Feedback tátil suave */
+    a:active, button:active {
+        opacity: 0.85;
+        transform: scale(0.98);
+        transition: all 0.1s ease;
+    }
+    
+    .service-card:active {
+        transform: translateY(-5px);
+    }
+    
+    .booking-btn:active {
+        transform: scale(0.98);
+    }
+}
+
+
+/* Smartphones menores (até 480px) */
+@media screen and (max-width: 480px) {
+    .header {
+        padding: 0.4rem 0;
+    }
+    
+    .nav-bar {
+        padding: 0 0.3rem;
+    }
+    
+    .logo-img {
+        height: 32px;
+    }
+    
+    .brand-name {
+        font-size: 0.95rem;
+    }
+    
+    .tagline {
+        font-size: 0.6rem;
+    }
+    
+    .nav-links {
+        gap: 0.2rem;
+    }
+    
+    .nav-links li a {
+        padding: 0.35rem 0.5rem;
+        font-size: 0.8rem;
+    }
+    
+    .phone-number {
+        font-size: 0.75rem !important;
+        padding: 0.35rem 0.5rem !important;
+    }
+    
+    .hero {
+        padding: 85px 0.8rem 2rem;
+    }
+    
+    .hero-content h1 {
+        font-size: 1.5rem;
+    }
+    
+    .hero-content p {
+        font-size: 0.95rem;
+    }
+    
+    .services h2,
+    .section-title {
+        font-size: 1.6rem !important;
+    }
+    
+    .services-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .service-card {
+        padding: 1rem 0.8rem;
+    }
+    
+    .service-card i {
+        font-size: 1.9rem;
+    }
+    
+    .service-card h3 {
+        font-size: 0.98rem;
+    }
+    
+    .service-card p {
+        font-size: 0.85rem;
+    }
+    
+    .service-details-btn {
+        font-size: 0.9rem;
+        padding: 0.5rem 0.9rem;
+    }
+    
+    .booking-btn {
+        padding: 0.8rem;
+    }
+    
+    .booking-btn i {
+        font-size: 1.6rem;
+    }
+    
+    .booking-btn span {
+        font-size: 0.9rem;
+    }
+    
+    .booking-btn small {
+        font-size: 0.8rem;
+    }
+    
+    /* WhatsApp mais compacto */
+    .float-whatsapp {
+        padding: 9px 13px;
+        font-size: 13px;
+        bottom: 12px;
+        right: 12px;
+    }
+    
+    .float-whatsapp i {
+        font-size: 19px;
+        margin-right: 6px;
+    }
+    
+    .float-whatsapp span {
+        font-size: 12px;
+    }
+}
+
+/* Dispositivos muito pequenos (até 360px) */
+@media screen and (max-width: 360px) {
+    .brand-name {
+        font-size: 0.85rem;
+    }
+    
+    .tagline {
+        font-size: 0.55rem;
+    }
+    
+    .nav-links li a {
+        font-size: 0.75rem;
+        padding: 0.3rem 0.4rem;
+    }
+    
+    .hero-content h1 {
+        font-size: 1.3rem;
+    }
+    
+    .services h2 {
+        font-size: 1.4rem !important;
+    }
+    
+    .service-card h3 {
+        font-size: 0.9rem;
+    }
+    
+    .service-card p {
+        font-size: 0.8rem;
+    }
+}
+
+/* Landscape mode - ajustes específicos */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+    .hero {
+        min-height: 100vh;
+        padding: 70px 15px 20px;
+    }
+    
+    .header {
+        padding: 0.3rem 0;
+    }
+    
+    .logo-img {
+        height: 30px;
+    }
+    
+    .nav-links li a {
+        padding: 0.3rem 0.5rem;
+        font-size: 0.8rem;
+    }
+}
+
+/* Otimizações para touch devices - mantém interatividade */
+@media (hover: none) and (pointer: coarse) {
+    /* Feedback tátil */
+    a:active, button:active {
+        opacity: 0.85;
+        transform: scale(0.98);
+    }
+    
+    .service-card:active {
+        transform: translateY(-3px);
+    }
+    
+    .booking-btn:active {
+        transform: scale(0.98);
+    }
+}
