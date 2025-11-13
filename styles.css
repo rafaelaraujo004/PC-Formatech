@@ -145,9 +145,10 @@ table {
 
 /* Better text wrapping */
 h1, h2, h3, h4, h5, h6, p {
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    hyphens: auto;
+    /* Evita palavras/frases quebradas com hífen automático */
+    word-wrap: normal;
+    overflow-wrap: normal;
+    hyphens: none;
 }
 
 /* FORÇA VISUALIZAÇÃO DESKTOP EM MOBILE - SEM NECESSIDADE DE ZOOM */
@@ -465,6 +466,7 @@ textarea {
     border-radius: 5px;
     cursor: pointer;
     margin-top: 1rem;
+    margin-bottom: 0.5rem;
     transition: var(--transition);
     /* Better touch targets */
     min-height: 48px;
@@ -479,13 +481,20 @@ textarea {
 .price-tag {
     background-color: var(--accent-color);
     color: var(--white);
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
+    padding: 0.4rem 0.8rem;
+    border-radius: 15px;
     position: absolute;
     top: 1rem;
     right: 1rem;
     font-weight: bold;
-    font-size: clamp(0.75rem, 2vw, 0.9rem);
+    font-size: clamp(0.7rem, 2vw, 0.85rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+    line-height: 1.2;
+    text-align: center;
+    min-width: 80px;
 }
 
 /* Modal de Serviços */
