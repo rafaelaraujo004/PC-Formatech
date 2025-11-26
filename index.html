@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>PC Formatech - Formatação e Instalação de Programas</title>
     
     <!-- Google Fonts - Inter -->
@@ -17,39 +17,240 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css">
     
-    <!-- Botão Flutuante do WhatsApp -->
+    <!-- Widget do WhatsApp -->
     <style>
-        .float-whatsapp {
+        /* Botão flutuante principal */
+        .whatsapp-widget {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background-color: #03725f;
-            color: rgb(255, 255, 255);
-            border-radius: 50px;
-            text-align: center;
-            font-size: 16px;
-            padding: 12px 20px;
-            box-shadow: 2px 2px 3px #999;
-            z-index: 100;
+            z-index: 1000;
+        }
+        
+        .whatsapp-toggle {
+            width: 60px;
+            height: 60px;
+            background: #40998F;
+            border-radius: 50%;
             display: flex;
             align-items: center;
-            text-decoration: none;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             transition: all 0.3s ease;
-            min-height: 48px;
-            min-width: 48px;
+            border: none;
         }
         
-        .float-whatsapp:hover {
-            background-color: #128C7E;
+        .whatsapp-toggle:hover {
             transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
         }
         
-        .float-whatsapp i {
-            font-size: 24px;
-            margin-right: 8px;
+        .whatsapp-toggle i {
+            font-size: 32px;
+            color: white;
         }
         
-        /* Media queries removidas - versão desktop em todos os dispositivos */
+        /* Card do chat */
+        .whatsapp-chat {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 340px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+        
+        .whatsapp-chat.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        /* Cabeçalho do chat */
+        .whatsapp-header {
+            background: #075e54;
+            color: white;
+            padding: 16px;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .whatsapp-header-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .whatsapp-avatar {
+            width: 45px;
+            height: 45px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .whatsapp-avatar i {
+            font-size: 26px;
+            color: #40998F;
+        }
+        
+        .whatsapp-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .whatsapp-subtitle {
+            font-size: 12px;
+            opacity: 0.9;
+            margin: 0;
+        }
+        
+        .whatsapp-close {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 20px;
+            padding: 4px;
+            line-height: 1;
+        }
+        
+        /* Corpo do chat */
+        .whatsapp-body {
+            padding: 20px;
+            background: #e5ddd5;
+            min-height: 150px;
+        }
+        
+        .whatsapp-message {
+            background: white;
+            padding: 12px 14px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            position: relative;
+            max-width: 85%;
+        }
+        
+        .whatsapp-message::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 12px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 8px 10px 0;
+            border-color: transparent white transparent transparent;
+        }
+        
+        .message-sender {
+            font-size: 13px;
+            color: #075e54;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .message-text {
+            font-size: 14px;
+            color: #303030;
+            line-height: 1.5;
+            margin: 0;
+        }
+        
+        /* Rodapé do chat */
+        .whatsapp-footer {
+            padding: 16px;
+            background: white;
+            border-radius: 0 0 12px 12px;
+        }
+        
+        .whatsapp-button {
+            width: 100%;
+            background: #40998F;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .whatsapp-button:hover {
+            background: #2D7A7A;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .whatsapp-button i {
+            font-size: 18px;
+        }
+        
+        .wati-badge {
+            text-align: center;
+            margin-top: 8px;
+            font-size: 11px;
+            color: #999;
+        }
+        
+        .wati-badge a {
+            color: #ffb800;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 480px) {
+            .whatsapp-chat {
+                width: calc(100vw - 40px);
+                right: 20px;
+            }
+            
+            .whatsapp-title {
+                font-size: 14px;
+            }
+            
+            .whatsapp-subtitle {
+                font-size: 11px;
+            }
+            
+            .whatsapp-avatar {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .whatsapp-avatar i {
+                font-size: 22px;
+            }
+            
+            .message-sender {
+                font-size: 12px;
+            }
+            
+            .message-text {
+                font-size: 13px;
+            }
+            
+            .whatsapp-button {
+                font-size: 14px;
+                padding: 10px 16px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -70,25 +271,111 @@
                 <li><a href="#home">Home</a></li>
                 <li><a href="#servicos">Serviços</a></li>
                 <li><a href="#sobre">Sobre</a></li>
-                <li><a href="#contato">Contato</a></li>
-                <li><a href="tel:+5594984305772" class="phone-number"><i class="fas fa-phone"></i> (94) 98430-5772</a></li>
             </ul>
         </nav>
     </header>
 
-    <!-- Botão Flutuante do WhatsApp -->
-    <a href="https://api.whatsapp.com/send?phone=5594984305772&text=Olá, gostaria de entender melhor como funcionam os serviços prestados pela PC Formatech" 
-       class="float-whatsapp" 
-       target="_blank">
-        <i class="fab fa-whatsapp"></i>
-        <span>Fale Conosco</span>
-    </a>
+    <!-- Widget do WhatsApp -->
+    <div class="whatsapp-widget">
+        <div class="whatsapp-chat" id="whatsappChat">
+            <div class="whatsapp-header">
+                <div class="whatsapp-header-content">
+                    <div class="whatsapp-avatar">
+                        <i class="fab fa-whatsapp"></i>
+                    </div>
+                    <div>
+                        <h3 class="whatsapp-title">Atendimento PC Formatech</h3>
+                        <p class="whatsapp-subtitle">Online</p>
+                    </div>
+                </div>
+                <button class="whatsapp-close" onclick="toggleWhatsApp()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="whatsapp-body">
+                <div class="whatsapp-message">
+                    <div class="message-sender">Atendimento PC Formatech</div>
+                    <p class="message-text">Olá,<br>Precisa de Ajuda?</p>
+                </div>
+            </div>
+            <div class="whatsapp-footer">
+                <a href="https://api.whatsapp.com/send?phone=5594984305772&text=Olá, preciso de ajuda!" 
+                   class="whatsapp-button" 
+                   target="_blank">
+                    <i class="fab fa-whatsapp"></i>
+                    Fale Conosco
+                </a>
+                <div class="wati-badge">
+                    ⚡ by <a href="https://wati.io" target="_blank">wati.io</a>
+                </div>
+            </div>
+        </div>
+        <button class="whatsapp-toggle" onclick="toggleWhatsApp()">
+            <i class="fab fa-whatsapp"></i>
+        </button>
+    </div>
+
+    <script>
+        function toggleWhatsApp() {
+            const chat = document.getElementById('whatsappChat');
+            chat.classList.toggle('active');
+        }
+        
+        // Fechar ao clicar fora
+        document.addEventListener('click', function(event) {
+            const widget = document.querySelector('.whatsapp-widget');
+            const chat = document.getElementById('whatsappChat');
+            if (!widget.contains(event.target) && chat.classList.contains('active')) {
+                chat.classList.remove('active');
+            }
+        });
+    </script>
 
     <main>
         <section id="home" class="hero">
+            <div class="hero-slider">
+                <div class="hero-slide active">
+                    <img src="https://images.unsplash.com/photo-1587202372634-32705e3bf49c?auto=format&fit=crop&q=90&w=2400" alt="Laptop em Manutenção">
+                </div>
+                <div class="hero-slide">
+                    <img src="https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&q=90&w=2400" alt="Workspace com Laptop">
+                </div>
+                <div class="hero-slide">
+                    <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=90&w=2400" alt="Programação e Desenvolvimento">
+                </div>
+                <div class="hero-slide">
+                    <img src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&q=90&w=2400" alt="Computador Profissional">
+                </div>
+                <div class="hero-slide">
+                    <img src="https://images.unsplash.com/photo-1551033406-611cf9a28f67?auto=format&fit=crop&q=90&w=2400" alt="Laptop em Ambiente Profissional">
+                </div>
+            </div>
+            <div class="hero-overlay"></div>
             <div class="hero-content">
                 <h1>Soluções Profissionais em Formatação e Instalação de Software</h1>
                 <p>Serviço profissional e confiável para seu computador</p>
+            </div>
+            <div class="hero-indicators">
+                <span class="indicator active" data-slide="0"></span>
+                <span class="indicator" data-slide="1"></span>
+                <span class="indicator" data-slide="2"></span>
+                <span class="indicator" data-slide="3"></span>
+                <span class="indicator" data-slide="4"></span>
+                <span class="indicator" data-slide="5"></span>
+                <span class="indicator" data-slide="6"></span>
+                <span class="indicator" data-slide="7"></span>
+                <span class="indicator" data-slide="8"></span>
+                <span class="indicator" data-slide="9"></span>
+                <span class="indicator" data-slide="10"></span>
+                <span class="indicator" data-slide="11"></span>
+                <span class="indicator" data-slide="12"></span>
+                <span class="indicator" data-slide="13"></span>
+                <span class="indicator" data-slide="14"></span>
+                <span class="indicator" data-slide="15"></span>
+                <span class="indicator" data-slide="16"></span>
+                <span class="indicator" data-slide="17"></span>
+                <span class="indicator" data-slide="18"></span>
+                <span class="indicator" data-slide="19"></span>
             </div>
         </section>
 
@@ -159,7 +446,7 @@
                             <i class="fas fa-quote-left"></i>
                             <p>"Excelente serviço! Meu computador ficou muito mais rápido após a formatação."</p>
                             <div class="client-info">
-                                <div class="client-avatar">JS</div>
+                                <img src="https://i.pravatar.cc/150?img=12" alt="João Silva" class="client-avatar">
                                 <div class="client-details">
                                     <h4>João Silva</h4>
                                     <div class="stars">
@@ -171,6 +458,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="testimonial-time">15 de outubro de 2025 às 14:32</div>
                         </div>
                     </div>
                     <div class="testimonial-card">
@@ -178,7 +466,7 @@
                             <i class="fas fa-quote-left"></i>
                             <p>"Profissionais muito atenciosos. Resolveram meu problema rapidamente."</p>
                             <div class="client-info">
-                                <div class="client-avatar">MR</div>
+                                <img src="https://i.pravatar.cc/150?img=47" alt="Maria Rosa" class="client-avatar">
                                 <div class="client-details">
                                     <h4>Maria Rosa</h4>
                                     <div class="stars">
@@ -190,6 +478,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="testimonial-time">8 de novembro de 2025 às 18:45</div>
                         </div>
                     </div>
                     <div class="testimonial-card">
@@ -197,7 +486,7 @@
                             <i class="fas fa-quote-left"></i>
                             <p>"Ótimo atendimento e preço justo. Recomendo muito!"</p>
                             <div class="client-info">
-                                <div class="client-avatar">PL</div>
+                                <img src="https://i.pravatar.cc/150?img=33" alt="Pedro Lima" class="client-avatar">
                                 <div class="client-details">
                                     <h4>Pedro Lima</h4>
                                     <div class="stars">
@@ -209,6 +498,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="testimonial-time">23 de outubro de 2025 às 10:15</div>
                         </div>
                     </div>
                 </div>
@@ -408,14 +698,19 @@
                         <span class="stat-label">Clientes Atendidos</span>
                     </div>
                     <div class="stat-item">
-                        <i class="fas fa-star"></i>
-                        <span class="stat-number">4.9</span>
-                        <span class="stat-label">Avaliação Média</span>
+                        <i class="fas fa-calendar-check"></i>
+                        <span class="stat-number">5+</span>
+                        <span class="stat-label">Anos de Experiência</span>
                     </div>
                     <div class="stat-item">
-                        <i class="fas fa-check-circle"></i>
-                        <span class="stat-number">1000+</span>
-                        <span class="stat-label">Serviços Realizados</span>
+                        <i class="fas fa-smile"></i>
+                        <span class="stat-number">98%</span>
+                        <span class="stat-label">Satisfação</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-clock"></i>
+                        <span class="stat-number">24h</span>
+                        <span class="stat-label">Tempo de Resposta</span>
                     </div>
                 </div>
             </div>

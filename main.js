@@ -1,4 +1,64 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Carrossel Hero
+    const slides = document.querySelectorAll('.hero-slide');
+    const indicators = document.querySelectorAll('.indicator');
+    let currentSlide = 0;
+    let slideInterval;
+
+    function showSlide(index) {
+        // Remove active de todos
+        slides.forEach(slide => slide.classList.remove('active'));
+        indicators.forEach(indicator => indicator.classList.remove('active'));
+        
+        // Adiciona active ao slide atual
+        slides[index].classList.add('active');
+        indicators[index].classList.add('active');
+    }
+
+    function nextSlide() {
+        currentSlide = (currentSlide + 1) % slides.length;
+        showSlide(currentSlide);
+    }
+
+    function startSlideshow() {
+        slideInterval = setInterval(nextSlide, 10000); // 10 segundos
+    }
+
+    function resetSlideshow() {
+        clearInterval(slideInterval);
+        startSlideshow();
+    }
+
+    // Clique nos indicadores
+    indicators.forEach((indicator, index) => {
+        indicator.addEventListener('click', () => {
+            currentSlide = index;
+            showSlide(currentSlide);
+            resetSlideshow();
+        });
+    });
+
+    // Iniciar slideshow
+    startSlideshow();
+
+    // Ocultar header ao rolar para baixo
+    let lastScrollTop = 0;
+    const header = document.querySelector('.header');
+    
+    window.addEventListener('scroll', () => {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        if (scrollTop > lastScrollTop && scrollTop > 100) {
+            // Rolando para baixo
+            header.classList.add('hidden');
+        } else {
+            // Rolando para cima
+            header.classList.remove('hidden');
+        }
+        
+        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+    });
+
     // Controle do anúncio Alelo
     const announcement = document.querySelector('.alelo-announcement');
     if (announcement) {
