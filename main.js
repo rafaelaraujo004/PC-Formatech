@@ -148,9 +148,127 @@ document.addEventListener('DOMContentLoaded', () => {
     if (schedulingForm) {
         // Definir data mínima como hoje
         const dateInput = document.getElementById('schedule-date');
+        const timeSelect = document.getElementById('schedule-time');
+        const attendanceTypeSelect = document.getElementById('attendance-type');
+        const cleaningTypeSelect = document.getElementById('cleaning-type');
+        const totalValueDisplay = document.getElementById('total-value');
+        const serviceCheckboxes = document.querySelectorAll('input[name="service[]"]');
+        
+        // Função para calcular o valor total
+        function calculateTotal() {
+            let total = 0;
+            let servicesTotal = 0; // Total apenas dos serviços (sem limpeza)
+            
+            // Somar valores dos serviços selecionados
+            serviceCheckboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    const price = parseFloat(checkbox.getAttribute('data-price'));
+                    servicesTotal += price;
+                    total += price;
+                }
+            });
+            
+            // Adicionar valor da limpeza se selecionada (SEM desconto)
+            let cleaningPrice = 0;
+            if (cleaningTypeSelect) {
+                const selectedCleaningOption = cleaningTypeSelect.options[cleaningTypeSelect.selectedIndex];
+                cleaningPrice = parseFloat(selectedCleaningOption.getAttribute('data-price')) || 0;
+                total += cleaningPrice;
+            }
+            
+            // Aplicar desconto de 20% APENAS nos serviços (excluindo limpeza)
+            const isRemote = attendanceTypeSelect && attendanceTypeSelect.value === 'Remoto (AnyDesk)';
+            let discount = 0;
+            
+            if (isRemote && servicesTotal > 0) {
+                discount = servicesTotal * 0.20; // Desconto apenas sobre serviços
+                total = total - discount; // Subtrai desconto do total (que inclui limpeza sem desconto)
+            }
+            
+            // Atualizar display
+            if (totalValueDisplay) {
+                totalValueDisplay.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+                
+                // Adicionar badge de desconto se aplicável
+                if (isRemote && discount > 0) {
+                    const existingBadge = totalValueDisplay.parentElement.querySelector('.discount-badge');
+                    if (existingBadge) existingBadge.remove();
+                    
+                    const badge = document.createElement('span');
+                    badge.className = 'discount-badge';
+                    badge.textContent = `-20% (R$ ${discount.toFixed(2).replace('.', ',')})`;
+                    totalValueDisplay.parentElement.appendChild(badge);
+                } else {
+                    const existingBadge = totalValueDisplay.parentElement.querySelector('.discount-badge');
+                    if (existingBadge) existingBadge.remove();
+                }
+            }
+            
+            return total;
+        }
+        
+        // Adicionar listeners aos checkboxes
+        serviceCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', calculateTotal);
+        });
+        
+        // Adicionar listener ao tipo de atendimento
+        if (attendanceTypeSelect) {
+            attendanceTypeSelect.addEventListener('change', calculateTotal);
+        }
+        
+        // Adicionar listener ao tipo de limpeza
+        if (cleaningTypeSelect) {
+            cleaningTypeSelect.addEventListener('change', calculateTotal);
+        }
+        
         if (dateInput) {
             const today = new Date().toISOString().split('T')[0];
             dateInput.min = today;
+            
+            // Atualizar horários disponíveis quando a data mudar
+            dateInput.addEventListener('change', function() {
+                updateAvailableHours(this.value, timeSelect);
+            });
+        }
+        
+        // Função para atualizar horários disponíveis baseado no dia da semana
+        function updateAvailableHours(selectedDate, timeSelect) {
+            if (!selectedDate || !timeSelect) return;
+            
+            const date = new Date(selectedDate + 'T00:00:00');
+            const dayOfWeek = date.getDay(); // 0 = Domingo, 6 = Sábado
+            
+            // Limpar opções atuais
+            timeSelect.innerHTML = '<option value="">Selecione um horário</option>';
+            
+            // Domingo - não funcionamos
+            if (dayOfWeek === 0) {
+                const option = document.createElement('option');
+                option.value = '';
+                option.textContent = 'Não funcionamos aos domingos';
+                option.disabled = true;
+                timeSelect.appendChild(option);
+                timeSelect.disabled = true;
+                return;
+            }
+            
+            timeSelect.disabled = false;
+            
+            // Horários padrão: Segunda a Sexta (8h às 18h)
+            const weekdayHours = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
+            
+            // Horários sábado: 8h às 12h
+            const saturdayHours = ['08:00', '09:00', '10:00', '11:00', '12:00'];
+            
+            const availableHours = dayOfWeek === 6 ? saturdayHours : weekdayHours;
+            
+            availableHours.forEach(hour => {
+                const option = document.createElement('option');
+                option.value = hour;
+                option.textContent = hour;
+                timeSelect.appendChild(option);
+            });
         }
 
         // Máscara para telefone
@@ -177,20 +295,29 @@ document.addEventListener('DOMContentLoaded', () => {
         // Coletar dados do formulário
         const name = document.getElementById('client-name').value;
         const phone = document.getElementById('client-phone').value;
-        const service = document.getElementById('service-type').value;
+        
+        // Coletar múltiplos serviços selecionados
+        const serviceCheckboxes = document.querySelectorAll('input[name="service[]"]:checked');
+        const services = Array.from(serviceCheckboxes).map(cb => cb.value);
+        const servicesWithPrice = Array.from(serviceCheckboxes).map(cb => {
+            const price = parseFloat(cb.getAttribute('data-price'));
+            return { name: cb.value, price: price };
+        });
+        
+        const attendanceType = document.getElementById('attendance-type').value;
         const date = document.getElementById('schedule-date').value;
         const time = document.getElementById('schedule-time').value;
         const address = document.getElementById('client-address').value;
         const notes = document.getElementById('additional-info').value;
         
         // Validação
-        if (!name || !phone || !service || !date || !time) {
-            alert('Por favor, preencha todos os campos obrigatórios (*)');
+        if (!name || !phone || services.length === 0 || !date || !time || !attendanceType) {
+            alert('Por favor, preencha todos os campos obrigatórios (*) e selecione pelo menos um serviço.');
             return;
         }
         
         // Validar data (não pode ser no passado)
-        const selectedDate = new Date(date);
+        const selectedDate = new Date(date + 'T00:00:00');
         const todayDate = new Date();
         todayDate.setHours(0, 0, 0, 0);
         
@@ -199,14 +326,75 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         
+        // Validar se não é domingo
+        if (selectedDate.getDay() === 0) {
+            alert('Não funcionamos aos domingos. Por favor, selecione outro dia.');
+            return;
+        }
+        
+        // Validar horário para sábado
+        if (selectedDate.getDay() === 6) {
+            const hour = parseInt(time.split(':')[0]);
+            if (hour > 12) {
+                alert('Aos sábados funcionamos apenas das 8h às 12h. Por favor, selecione outro horário.');
+                return;
+            }
+        }
+        
         // Formatar data para português
         const dateFormatted = new Date(date + 'T00:00:00').toLocaleDateString('pt-BR');
+        
+        // Calcular valor total
+        let totalValue = 0;
+        servicesWithPrice.forEach(service => {
+            totalValue += service.price;
+        });
+        
+        // Adicionar valor da limpeza
+        const cleaningType = document.getElementById('cleaning-type');
+        const selectedCleaningOption = cleaningType.options[cleaningType.selectedIndex];
+        const cleaningPrice = parseFloat(selectedCleaningOption.getAttribute('data-price')) || 0;
+        const cleaningName = cleaningType.value;
+        
+        if (cleaningPrice > 0) {
+            totalValue += cleaningPrice;
+        }
+        
+        const isRemote = attendanceType === 'Remoto (AnyDesk)';
+        let discount = 0;
+        let finalValue = totalValue;
+        
+        if (isRemote) {
+            discount = totalValue * 0.20;
+            finalValue = totalValue - discount;
+        }
         
         // Montar mensagem para WhatsApp
         let message = `🗓️ *NOVO AGENDAMENTO*\n\n`;
         message += `👤 *Nome:* ${name}\n`;
         message += `📱 *Telefone:* ${phone}\n`;
-        message += `💻 *Serviço:* ${service}\n`;
+        message += `💻 *Serviços Solicitados:*\n`;
+        
+        // Adicionar cada serviço em uma linha com preço
+        servicesWithPrice.forEach((service, index) => {
+            message += `   ${index + 1}. ${service.name} - R$ ${service.price.toFixed(2).replace('.', ',')}\n`;
+        });
+        
+        // Adicionar limpeza se selecionada
+        if (cleaningPrice > 0) {
+            message += `   ${servicesWithPrice.length + 1}. ${cleaningName} - R$ ${cleaningPrice.toFixed(2).replace('.', ',')}\n`;
+        }
+        
+        message += `\n💰 *Subtotal:* R$ ${totalValue.toFixed(2).replace('.', ',')}\n`;
+        
+        if (isRemote && discount > 0) {
+            message += `🎉 *Desconto (20% Remoto):* -R$ ${discount.toFixed(2).replace('.', ',')}\n`;
+            message += `💵 *VALOR TOTAL:* R$ ${finalValue.toFixed(2).replace('.', ',')}*\n\n`;
+        } else {
+            message += `💵 *VALOR TOTAL:* R$ ${finalValue.toFixed(2).replace('.', ',')}*\n\n`;
+        }
+        
+        message += `🔧 *Tipo de Atendimento:* ${attendanceType}\n`;
         message += `📅 *Data:* ${dateFormatted}\n`;
         message += `🕐 *Horário:* ${time}\n`;
         
@@ -318,4 +506,180 @@ document.addEventListener('DOMContentLoaded', () => {
         element.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out';
         observer.observe(element);
     });
+
+    // Sistema de seleção de serviços
+    const serviceCheckboxes = document.querySelectorAll('.service-checkbox');
+    const servicesSummary = document.getElementById('servicesSummary');
+    const summaryCount = document.querySelector('.summary-count');
+    const summaryTotal = document.querySelector('.summary-total');
+    let selectedServices = [];
+
+    // Garantir que a barra comece oculta
+    if (servicesSummary) {
+        servicesSummary.classList.remove('active');
+    }
+
+    // Prevenir que o clique no botão "Ver Detalhes" selecione o checkbox
+    document.querySelectorAll('.service-details-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const modal = btn.closest('.service-card').getAttribute('data-modal');
+            openServiceModal(modal);
+        });
+    });
+
+    function updateServicesSummary() {
+        selectedServices = Array.from(serviceCheckboxes)
+            .filter(checkbox => checkbox.checked)
+            .map(checkbox => ({
+                name: checkbox.getAttribute('data-service'),
+                price: parseFloat(checkbox.getAttribute('data-price'))
+            }));
+
+        // Contar apenas serviços com preço (excluir remoto que tem preço 0)
+        const servicesWithPrice = selectedServices.filter(s => s.price > 0);
+        const count = servicesWithPrice.length;
+        let total = selectedServices.reduce((sum, service) => sum + service.price, 0);
+        
+        // Verificar se o atendimento remoto está selecionado
+        const remoteSelected = Array.from(serviceCheckboxes).some(
+            checkbox => checkbox.checked && checkbox.getAttribute('data-service') === 'remoto'
+        );
+        
+        // Aplicar desconto de 20% se atendimento remoto estiver selecionado
+        let discount = 0;
+        if (remoteSelected && total > 0) {
+            discount = total * 0.20;
+            total = total - discount;
+        }
+
+        // Atualizar contador sempre
+        summaryCount.textContent = `${count} serviço${count !== 1 ? 's' : ''} selecionado${count !== 1 ? 's' : ''}`;
+        
+        // Mostrar/ocultar botão X
+        const clearBtn = document.querySelector('.clear-selection-btn');
+        if (clearBtn) {
+            if (count > 0) {
+                clearBtn.style.display = 'flex';
+            } else {
+                clearBtn.style.display = 'none';
+            }
+        }
+
+        if (count > 0) {
+            if (remoteSelected && discount > 0) {
+                summaryTotal.innerHTML = `Total: <span style="text-decoration: line-through; opacity: 0.7; font-size: 0.9em;">R$ ${(total + discount).toFixed(2).replace('.', ',')}</span> <span style="color: #ff8c00; font-weight: 700;">R$ ${total.toFixed(2).replace('.', ',')}</span> <span style="background: linear-gradient(135deg, #ff8c00, #ff6b00); color: white; padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.75em; margin-left: 0.3rem;">-20%</span>`;
+            } else {
+                summaryTotal.textContent = `Total: R$ ${total.toFixed(2).replace('.', ',')}`;
+            }
+            
+            servicesSummary.classList.add('active');
+        } else {
+            servicesSummary.classList.remove('active');
+        }
+    }
+
+    serviceCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateServicesSummary);
+    });
+
+    // Função para solicitar orçamento
+    window.requestQuote = function() {
+        if (selectedServices.length === 0) {
+            alert('Por favor, selecione pelo menos um serviço.');
+            return;
+        }
+
+        const serviceMap = {
+            'formatacao': 'Formatação de Computadores - R$ 80,00',
+            'programas': 'Instalação de Programas - R$ 50,00',
+            'seguranca': 'Proteção e Segurança - R$ 60,00',
+            'manutencao': 'Manutenção Preventiva - R$ 70,00',
+            'drivers': 'Instalação de Drivers - R$ 40,00',
+            'backup': 'Backup de Dados - R$ 45,00',
+            'remoto': 'Atendimento Remoto (20% OFF)'
+        };
+        
+        // Verificar se atendimento remoto está selecionado
+        const remoteSelected = selectedServices.some(s => s.name === 'remoto');
+        
+        let message = `🗓️ *SOLICITAÇÃO DE ORÇAMENTO*\n\n`;
+        message += `💻 *Serviços Solicitados:*\n`;
+        
+        selectedServices.forEach((s, index) => {
+            message += `   ${index + 1}. ${serviceMap[s.name] || s.name}\n`;
+        });
+        
+        const subtotal = selectedServices.reduce((sum, service) => sum + service.price, 0);
+        
+        if (remoteSelected && subtotal > 0) {
+            const discount = subtotal * 0.20;
+            const total = subtotal - discount;
+            message += `\n💰 *Subtotal:* R$ ${subtotal.toFixed(2).replace('.', ',')}\n`;
+            message += `🎉 *Desconto (20% Remoto):* -R$ ${discount.toFixed(2).replace('.', ',')}\n`;
+            message += `💵 *VALOR TOTAL:* R$ ${total.toFixed(2).replace('.', ',')}*\n\n`;
+        } else {
+            message += `\n💵 *VALOR TOTAL:* R$ ${subtotal.toFixed(2).replace('.', ',')}*\n\n`;
+        }
+        
+        message += `Poderia me passar mais informações?`;
+        
+        const whatsappNumber = '5594984305772';
+        const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+        
+        window.open(whatsappUrl, '_blank');
+    };
+    
+    // Função para limpar todas as seleções de serviços
+    window.clearAllServices = function() {
+        serviceCheckboxes.forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        updateServicesSummary();
+    };
+
+    // Função para abrir modal de serviço
+    function openServiceModal(modalId) {
+        const modal = document.querySelector(`[data-modal-id="${modalId}"]`);
+        if (modal) {
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    // Atualizar datas dos depoimentos dinamicamente
+    function updateTestimonialDates() {
+        const testimonialTimes = document.querySelectorAll('.testimonial-time[data-days-ago]');
+        const months = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 
+                       'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+        
+        testimonialTimes.forEach(timeElement => {
+            const daysAgo = parseInt(timeElement.getAttribute('data-days-ago'));
+            const time = timeElement.getAttribute('data-time');
+            
+            const date = new Date();
+            date.setDate(date.getDate() - daysAgo);
+            
+            const day = date.getDate();
+            const month = months[date.getMonth()];
+            const year = date.getFullYear();
+            
+            timeElement.textContent = `${day} de ${month} de ${year} às ${time}`;
+        });
+    }
+    
+    // Executar ao carregar a página
+    updateTestimonialDates();
+    
+    // Atualizar diariamente à meia-noite
+    const now = new Date();
+    const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+    const timeUntilMidnight = tomorrow - now;
+    
+    setTimeout(() => {
+        updateTestimonialDates();
+        // Depois da primeira atualização à meia-noite, atualizar a cada 24 horas
+        setInterval(updateTestimonialDates, 24 * 60 * 60 * 1000);
+    }, timeUntilMidnight);
 });
