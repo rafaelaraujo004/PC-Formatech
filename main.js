@@ -44,20 +44,91 @@ document.addEventListener('DOMContentLoaded', () => {
     // Ocultar header ao rolar para baixo
     let lastScrollTop = 0;
     const header = document.querySelector('.header');
+    const scrollToTopBtn = document.getElementById('scrollToTop');
     
     window.addEventListener('scroll', () => {
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         
-        if (scrollTop > lastScrollTop && scrollTop > 100) {
-            // Rolando para baixo
-            header.classList.add('hidden');
-        } else {
-            // Rolando para cima
-            header.classList.remove('hidden');
-        }
+            if (scrollTop > lastScrollTop && scrollTop > 100) {
+                // Rolando para baixo
+                header.classList.add('hidden');
+            } else {
+                // Rolando para cima
+                header.classList.remove('hidden');
+            }
         
-        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-    });
+            // Mostrar/ocultar botão de voltar ao topo
+            if (scrollTop > 300) {
+                scrollToTopBtn.classList.add('show');
+            } else {
+                scrollToTopBtn.classList.remove('show');
+            }
+        
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        });
+
+    // Sincronizar valores dos serviços do admin com o formulário de agendamento
+    function syncServicePricesWithAdmin() {
+        const adminData = localStorage.getItem('pcformatech_services');
+        if (!adminData) return;
+        const services = JSON.parse(adminData);
+        // Mapeamento entre value do formulário e chave do admin
+        const serviceMap = {
+            'Formatação de Computador': 'formatacao',
+            'Instalação de Programas': 'programas',
+            'Proteção e Segurança': 'seguranca',
+            'Manutenção Preventiva': 'manutencao',
+            'Instalação de Drivers': 'drivers',
+            'Backup de Dados': 'backup'
+        };
+        document.querySelectorAll('input[name="service[]"]').forEach(checkbox => {
+            const formValue = checkbox.value;
+            const adminKey = serviceMap[formValue];
+            if (adminKey && services[adminKey] && typeof services[adminKey].price === 'number') {
+                checkbox.setAttribute('data-price', services[adminKey].price);
+                // Atualiza o texto do label, se necessário
+                const span = checkbox.parentElement.querySelector('span');
+                if (span) {
+                    span.textContent = `${formValue} - R$ ${services[adminKey].price.toFixed(2).replace('.', ',')}`;
+                }
+            }
+        });
+
+        // Sincronizar valores dos cards de serviço na área 'Nossos Serviços'
+        const cardMap = {
+            'formatacao': 'Formatação de Computadores',
+            'programas': 'Instalação de Programas',
+            'seguranca': 'Proteção e Segurança',
+            'manutencao': 'Manutenção Preventiva',
+            'drivers': 'Instalação de Drivers',
+            'backup': 'Backup de Dados'
+        };
+        Object.keys(cardMap).forEach(adminKey => {
+            const card = document.querySelector(`.service-card[data-modal="${adminKey}"]`);
+            if (card && services[adminKey] && typeof services[adminKey].price === 'number') {
+                // Atualiza o valor no price-tag
+                const priceTag = card.querySelector('.price-tag span:last-child');
+                if (priceTag) {
+                    priceTag.textContent = `R$ ${services[adminKey].price.toFixed(2).replace('.', ',')}`;
+                }
+                // Atualiza o texto do botão, se desejar
+                // Atualiza outros locais do card se necessário
+            }
+        });
+    }
+
+    // Sincronizar valores dos serviços do admin com o formulário de agendamento
+    syncServicePricesWithAdmin();
+
+    // Funcionalidade do botão voltar ao topo
+    if (scrollToTopBtn) {
+        scrollToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    }
 
     // Controle do anúncio Alelo
     const announcement = document.querySelector('.alelo-announcement');
@@ -105,6 +176,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (modal) {
                     modal.style.display = 'block';
                     document.body.style.overflow = 'hidden';
+                    // Esconder widget do WhatsApp
+                    const whatsappWidget = document.querySelector('.whatsapp-widget');
+                    if (whatsappWidget) {
+                        whatsappWidget.style.display = 'none';
+                    }
                 }
             });
         }
@@ -119,6 +195,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (modal) {
                 modal.style.display = 'none';
                 document.body.style.overflow = '';
+                // Mostrar widget do WhatsApp novamente
+                const whatsappWidget = document.querySelector('.whatsapp-widget');
+                if (whatsappWidget) {
+                    whatsappWidget.style.display = 'block';
+                }
             }
         });
     });
@@ -128,6 +209,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target.classList.contains('modal')) {
             e.target.style.display = 'none';
             document.body.style.overflow = '';
+            // Mostrar widget do WhatsApp novamente
+            const whatsappWidget = document.querySelector('.whatsapp-widget');
+            if (whatsappWidget) {
+                whatsappWidget.style.display = 'block';
+            }
         }
     });
 
@@ -514,6 +600,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const summaryTotal = document.querySelector('.summary-total');
     let selectedServices = [];
 
+    // Carregar dados do admin (se existirem)
+    function loadAdminData() {
+        const saved = localStorage.getItem('pcformatech_services');
+        if (saved) {
+            return JSON.parse(saved);
+        }
+        return null;
+    }
+
     // Garantir que a barra comece oculta
     if (servicesSummary) {
         servicesSummary.classList.remove('active');
@@ -530,12 +625,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function updateServicesSummary() {
+        const adminData = loadAdminData();
+        
         selectedServices = Array.from(serviceCheckboxes)
             .filter(checkbox => checkbox.checked)
-            .map(checkbox => ({
-                name: checkbox.getAttribute('data-service'),
-                price: parseFloat(checkbox.getAttribute('data-price'))
-            }));
+            .map(checkbox => {
+                const serviceName = checkbox.getAttribute('data-service');
+                let price = parseFloat(checkbox.getAttribute('data-price'));
+                
+                // Usar preço do admin se disponível
+                if (adminData && adminData[serviceName]) {
+                    price = adminData[serviceName].price;
+                }
+                
+                return {
+                    name: serviceName,
+                    price: price
+                };
+            });
 
         // Contar apenas serviços com preço (excluir remoto que tem preço 0)
         const servicesWithPrice = selectedServices.filter(s => s.price > 0);
@@ -547,15 +654,23 @@ document.addEventListener('DOMContentLoaded', () => {
             checkbox => checkbox.checked && checkbox.getAttribute('data-service') === 'remoto'
         );
         
-        // Aplicar desconto de 20% se atendimento remoto estiver selecionado
+        // Aplicar desconto (usar valor do admin se disponível)
         let discount = 0;
+        let discountPercent = 20;
+        if (adminData && adminData.remoto && adminData.remoto.discount) {
+            discountPercent = adminData.remoto.discount;
+        }
+        const originalTotal = total;
         if (remoteSelected && total > 0) {
-            discount = total * 0.20;
+            discount = total * (discountPercent / 100);
             total = total - discount;
         }
 
         // Atualizar contador sempre
         summaryCount.textContent = `${count} serviço${count !== 1 ? 's' : ''} selecionado${count !== 1 ? 's' : ''}`;
+        
+        // Elemento de desconto
+        const summaryDiscount = document.querySelector('.summary-discount');
         
         // Mostrar/ocultar botão X
         const clearBtn = document.querySelector('.clear-selection-btn');
@@ -569,14 +684,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (count > 0) {
             if (remoteSelected && discount > 0) {
-                summaryTotal.innerHTML = `Total: <span style="text-decoration: line-through; opacity: 0.7; font-size: 0.9em;">R$ ${(total + discount).toFixed(2).replace('.', ',')}</span> <span style="color: #ff8c00; font-weight: 700;">R$ ${total.toFixed(2).replace('.', ',')}</span> <span style="background: linear-gradient(135deg, #ff8c00, #ff6b00); color: white; padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.75em; margin-left: 0.3rem;">-20%</span>`;
+                // Mostrar desconto
+                if (summaryDiscount) {
+                    summaryDiscount.style.display = 'inline-flex';
+                    summaryDiscount.innerHTML = `<i class="fas fa-tag" style="margin-right: 0.3rem;"></i>Atendimento Remoto: <strong style="color: #ffeb3b; margin-left: 0.3rem;">-${discountPercent}% OFF</strong>`;
+                }
+                // Mostrar preço original riscado e novo preço
+                summaryTotal.innerHTML = `<span style="text-decoration: line-through; opacity: 0.7; font-size: 0.9em; margin-right: 0.5rem;">R$ ${originalTotal.toFixed(2).replace('.', ',')}</span><strong style="color: #90E0D8; font-size: 1.3em;">R$ ${total.toFixed(2).replace('.', ',')}</strong>`;
             } else {
-                summaryTotal.textContent = `Total: R$ ${total.toFixed(2).replace('.', ',')}`;
+                // Ocultar desconto
+                if (summaryDiscount) {
+                    summaryDiscount.style.display = 'none';
+                }
+                summaryTotal.innerHTML = `Total: <strong style="color: #90E0D8;">R$ ${total.toFixed(2).replace('.', ',')}</strong>`;
             }
             
             servicesSummary.classList.add('active');
+            // Esconder widget do WhatsApp quando a barra aparecer
+            const whatsappWidget = document.querySelector('.whatsapp-widget');
+            if (whatsappWidget) {
+                whatsappWidget.style.display = 'none';
+            }
+            // Esconder botão de voltar ao topo
+            const scrollToTopBtn = document.getElementById('scrollToTop');
+            if (scrollToTopBtn) {
+                scrollToTopBtn.style.display = 'none';
+            }
         } else {
+            if (summaryDiscount) {
+                summaryDiscount.style.display = 'none';
+            }
             servicesSummary.classList.remove('active');
+            // Mostrar widget do WhatsApp quando a barra desaparecer
+            const whatsappWidget = document.querySelector('.whatsapp-widget');
+            if (whatsappWidget) {
+                whatsappWidget.style.display = 'block';
+            }
+            // Mostrar botão de voltar ao topo novamente
+            const scrollToTopBtn = document.getElementById('scrollToTop');
+            if (scrollToTopBtn) {
+                scrollToTopBtn.style.display = 'flex';
+            }
         }
     }
 
@@ -682,4 +830,68 @@ document.addEventListener('DOMContentLoaded', () => {
         // Depois da primeira atualização à meia-noite, atualizar a cada 24 horas
         setInterval(updateTestimonialDates, 24 * 60 * 60 * 1000);
     }, timeUntilMidnight);
+
+// Galeria de Estatísticas
+    const statSlides = document.querySelectorAll('.stat-slide');
+    const statIndicators = document.querySelectorAll('.stat-indicator');
+    const statPrev = document.querySelector('.stats-prev');
+    const statNext = document.querySelector('.stats-next');
+    let currentStat = 0;
+    let statInterval;
+
+    function showStat(index) {
+        statSlides.forEach((slide, i) => {
+            slide.classList.remove('active', 'prev');
+            if (i === index) {
+                slide.classList.add('active');
+            } else if (i < index) {
+                slide.classList.add('prev');
+            }
+        });
+
+        statIndicators.forEach((indicator, i) => {
+            indicator.classList.toggle('active', i === index);
+        });
+    }
+
+    function nextStat() {
+        currentStat = (currentStat + 1) % statSlides.length;
+        showStat(currentStat);
+    }
+
+    function prevStat() {
+        currentStat = (currentStat - 1 + statSlides.length) % statSlides.length;
+        showStat(currentStat);
+    }
+
+    function startStatSlideshow() {
+        statInterval = setInterval(nextStat, 3000);
+    }
+
+    function resetStatSlideshow() {
+        clearInterval(statInterval);
+        startStatSlideshow();
+    }
+
+    if (statNext && statPrev) {
+        statNext.addEventListener('click', () => {
+            nextStat();
+            resetStatSlideshow();
+        });
+
+        statPrev.addEventListener('click', () => {
+            prevStat();
+            resetStatSlideshow();
+        });
+
+        statIndicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => {
+                currentStat = index;
+                showStat(currentStat);
+                resetStatSlideshow();
+            });
+        });
+
+        startStatSlideshow();
+    }
 });

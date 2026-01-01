@@ -1460,7 +1460,7 @@
 
 .about-features {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
     margin-bottom: 1.5rem;
 }
@@ -1514,7 +1514,7 @@
 
 .about-stats {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 1.2rem;
     background: var(--white);
     padding: 1.5rem 1.2rem;
@@ -1525,11 +1525,10 @@
 .about-stats .stat-item {
     text-align: center;
     padding: 0.6rem;
-    border-right: 2px solid rgba(0,0,0,0.06);
 }
 
-.about-stats .stat-item:last-child {
-    border-right: none;
+.about-stats .stat-item:nth-child(odd) {
+    border-right: 2px solid rgba(0,0,0,0.06);
 }
 
 .about-stats .stat-number {
@@ -1587,20 +1586,23 @@
     }
     
     .about-features {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
     }
     
     .about-stats {
-        grid-template-columns: 1fr;
-        padding: 2rem 1.5rem;
+        grid-template-columns: repeat(2, 1fr);
+        padding: 1.5rem 1rem;
+        gap: 1rem;
     }
     
     .stat-item {
         border-right: none;
         border-bottom: 1px solid rgba(0,0,0,0.08);
-        padding: 1.5rem 1rem;
+        padding: 1.2rem 0.5rem;
     }
     
+    .stat-item:nth-child(2),
     .stat-item:last-child {
         border-bottom: none;
     }

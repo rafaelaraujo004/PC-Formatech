@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - PC Formatech</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0B3D3D 0%, #1A5C5C 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .login-container h1 {
+            text-align: center;
+            color: #0B3D3D;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #0B3D3D;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #40998F 0%, #2D7A7A 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(64, 153, 143, 0.4);
+        }
+
+        .admin-panel {
+            display: none;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .admin-header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .admin-header h1 {
+            color: #0B3D3D;
+        }
+
+        .btn-logout {
+            padding: 10px 20px;
+            background: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .service-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .service-card h3 {
+            color: #0B3D3D;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #40998F;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #0B3D3D;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .input-group input,
+        .input-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .input-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .btn-save {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #40998F 0%, #2D7A7A 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(64, 153, 143, 0.4);
+        }
+
+        .success-message {
+            background: #4CAF50;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            text-align: center;
+        }
+
+        .discount-section {
+            background: #f0f7ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .discount-section h4 {
+            color: #0B3D3D;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Tela de Login -->
+    <div class="login-container" id="loginContainer">
+        <h1><i class="fas fa-lock"></i> Acesso Administrativo</h1>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="password">Senha de Acesso:</label>
+                <input type="password" id="password" placeholder="Digite a senha" required>
+            </div>
+            <button type="submit" class="btn-login">Entrar</button>
+        </form>
+    </div>
+
+    <!-- Painel Admin -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-header">
+            <h1><i class="fas fa-tools"></i> Painel Administrativo</h1>
+            <button class="btn-logout" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Sair
+            </button>
+        </div>
+
+        <div class="success-message" id="successMessage">
+            <i class="fas fa-check-circle"></i> Alterações salvas com sucesso!
+        </div>
+
+        <div class="services-grid" id="servicesGrid"></div>
+    </div>
+
+    <script>
+        // Senha de acesso (você pode alterar aqui)
+        const ADMIN_PASSWORD = 'pcformatech2026';
+
+        // Dados padrão dos serviços
+        const defaultServices = {
+            formatacao: {
+                name: 'Formatação de Computadores',
+                price: 80,
+                description: 'Formatação completa com instalação do Windows',
+                features: ['Windows 10 ou 11', 'Drivers atualizados', 'Programas básicos']
+            },
+            programas: {
+                name: 'Instalação de Programas',
+                price: 50,
+                description: 'Instalação de programas essenciais',
+                features: ['Office', 'Antivírus', 'Navegadores']
+            },
+            seguranca: {
+                name: 'Proteção e Segurança',
+                price: 60,
+                description: 'Antivírus e proteção completa',
+                features: ['Antivírus premium', 'Firewall', 'Anti-malware']
+            },
+            manutencao: {
+                name: 'Manutenção Preventiva',
+                price: 70,
+                description: 'Limpeza e otimização do sistema',
+                features: ['Limpeza de disco', 'Otimização', 'Desfragmentação']
+            },
+            drivers: {
+                name: 'Instalação de Drivers',
+                price: 40,
+                description: 'Drivers para todos os componentes',
+                features: ['Placa de vídeo', 'Som', 'Rede']
+            },
+            backup: {
+                name: 'Backup de Dados',
+                price: 45,
+                description: 'Backup seguro dos seus arquivos',
+                features: ['Documentos', 'Fotos', 'Vídeos']
+            },
+            remoto: {
+                name: 'Atendimento Remoto',
+                price: 0,
+                discount: 20,
+                description: 'Desconto de 20% no atendimento remoto',
+                features: ['Via AnyDesk', 'Sem sair de casa', '20% OFF']
+            }
+        };
+
+        // Login
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const password = document.getElementById('password').value;
+            
+            if (password === ADMIN_PASSWORD) {
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                loadServices();
+            } else {
+                alert('Senha incorreta!');
+            }
+        });
+
+        // Logout
+        function logout() {
+            document.getElementById('adminPanel').style.display = 'none';
+            document.getElementById('loginContainer').style.display = 'block';
+            document.getElementById('password').value = '';
+        }
+
+        // Carregar serviços
+        function loadServices() {
+            const saved = localStorage.getItem('pcformatech_services');
+            const services = saved ? JSON.parse(saved) : defaultServices;
+            
+            const grid = document.getElementById('servicesGrid');
+            grid.innerHTML = '';
+
+            Object.keys(services).forEach(key => {
+                const service = services[key];
+                const card = document.createElement('div');
+                card.className = 'service-card';
+                card.innerHTML = `
+                    <h3>${service.name}</h3>
+                    <div class="input-group">
+                        <label>Nome do Serviço:</label>
+                        <input type="text" id="${key}_name" value="${service.name}">
+                    </div>
+                    <div class="input-group">
+                        <label>Preço (R$):</label>
+                        <input type="number" id="${key}_price" value="${service.price}" step="0.01">
+                    </div>
+                    <div class="input-group">
+                        <label>Descrição:</label>
+                        <textarea id="${key}_description">${service.description}</textarea>
+                    </div>
+                    ${service.discount ? `
+                    <div class="discount-section">
+                        <h4>Desconto Especial</h4>
+                        <div class="input-group">
+                            <label>Desconto (%):</label>
+                            <input type="number" id="${key}_discount" value="${service.discount}" min="0" max="100">
+                        </div>
+                    </div>
+                    ` : ''}
+                    <button class="btn-save" onclick="saveService('${key}')">
+                        <i class="fas fa-save"></i> Salvar Alterações
+                    </button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Salvar serviço individual
+        function saveService(key) {
+            const saved = localStorage.getItem('pcformatech_services');
+            const services = saved ? JSON.parse(saved) : defaultServices;
+            
+            services[key].name = document.getElementById(`${key}_name`).value;
+            services[key].price = parseFloat(document.getElementById(`${key}_price`).value);
+            services[key].description = document.getElementById(`${key}_description`).value;
+            
+            if (services[key].discount !== undefined) {
+                services[key].discount = parseFloat(document.getElementById(`${key}_discount`).value);
+            }
+
+            localStorage.setItem('pcformatech_services', JSON.stringify(services));
+            
+            showSuccess();
+        }
+
+        // Mostrar mensagem de sucesso
+        function showSuccess() {
+            const msg = document.getElementById('successMessage');
+            msg.style.display = 'block';
+            setTimeout(() => {
+                msg.style.display = 'none';
+            }, 3000);
+        }
+
+        // Exportar dados para o site principal
+        function getServiceData() {
+            const saved = localStorage.getItem('pcformatech_services');
+            return saved ? JSON.parse(saved) : defaultServices;
+        }
+    </script>
+</body>
+</html>

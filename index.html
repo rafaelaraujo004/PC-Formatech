@@ -5,6 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>PC Formatech - Formatação e Instalação de Programas</title>
     
+    <!-- Meta Tags para SEO -->
+    <meta name="description" content="PC Formatech - Serviços profissionais de formatação, manutenção e instalação de programas. Atendimento presencial e remoto com qualidade garantida.">
+    <meta name="keywords" content="formatação de pc, instalação de programas, manutenção de computador, suporte técnico, backup de dados">
+    <meta name="author" content="PC Formatech">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://seusite.com/">
+    <meta property="og:title" content="PC Formatech - Formatação e Instalação de Programas">
+    <meta property="og:description" content="Serviços profissionais de formatação, manutenção e instalação de programas. Atendimento presencial e remoto com qualidade garantida. Aceitamos Alelo!">
+    <meta property="og:image" content="https://seusite.com/preview-image.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="pt_BR">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://seusite.com/">
+    <meta name="twitter:title" content="PC Formatech - Formatação e Instalação de Programas">
+    <meta name="twitter:description" content="Serviços profissionais de formatação, manutenção e instalação de programas. Atendimento presencial e remoto com qualidade garantida.">
+    <meta name="twitter:image" content="https://seusite.com/preview-image.jpg">
+    
+    <!-- WhatsApp -->
+    <meta property="og:site_name" content="PC Formatech">
+    <meta property="og:image:alt" content="PC Formatech - Serviços de Informática">
+    
+    <!-- Tema do navegador -->
+    <meta name="theme-color" content="#2D7A7A">
+    <meta name="msapplication-navbutton-color" content="#2D7A7A">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#2D7A7A">
+    
     <!-- Google Fonts - Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -258,44 +289,24 @@
     <header class="header">
         <nav class="nav-bar">
             <div class="logo">
-                <svg class="logo-img gear-icon" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <filter id="neon-glow">
-                            <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
-                            <feMerge>
-                                <feMergeNode in="coloredBlur"/>
-                                <feMergeNode in="coloredBlur"/>
-                                <feMergeNode in="SourceGraphic"/>
-                            </feMerge>
-                        </filter>
-                    </defs>
-                    
-                    <!-- Monitor Frame -->
-                    <rect x="35" y="35" width="186" height="140" rx="12" ry="12" 
-                          fill="none" stroke="#0080C0" stroke-width="6" filter="url(#neon-glow)"/>
-                    
-                    <!-- Monitor Stand -->
-                    <path d="M 128 175 L 128 195 M 100 195 L 156 195 M 110 195 L 110 205 M 146 195 L 146 205 M 100 205 L 156 205" 
-                          stroke="#0080C0" stroke-width="6" fill="none" stroke-linecap="round" filter="url(#neon-glow)"/>
-                    
-                    <!-- Gear -->
-                    <g transform="translate(128, 105)">
-                        <!-- Gear teeth -->
-                        <path d="M 0,-35 L 8,-30 L 8,-22 L 0,-27 M 8,-22 L 22,-8 L 27,0 L 22,0 M 27,0 L 30,8 L 22,8 L 27,0 M 22,8 L 8,22 L 0,27 L 0,22 M 0,27 L -8,30 L -8,22 L 0,27 M -8,22 L -22,8 L -27,0 L -22,0 M -27,0 L -30,-8 L -22,-8 L -27,0 M -22,-8 L -8,-22 L 0,-27 L 0,-22" 
-                              fill="#0080C0" stroke="#0080C0" stroke-width="3" filter="url(#neon-glow)"/>
-                        
-                        <!-- Gear outer circle -->
-                        <circle cx="0" cy="0" r="20" fill="none" stroke="#0080C0" stroke-width="4" filter="url(#neon-glow)"/>
-                        
-                        <!-- Gear inner circle -->
-                        <circle cx="0" cy="0" r="8" fill="none" stroke="#0080C0" stroke-width="3" filter="url(#neon-glow)"/>
-                        
-                        <!-- Gear center -->
-                        <circle cx="0" cy="0" r="4" fill="#0080C0" filter="url(#neon-glow)"/>
-                    </g>
-                </svg>
+                <a href="admin.html" title="Painel Administrativo">
+                    <svg class="logo-img gear-icon" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Monitor/Screen -->
+                        <rect x="8" y="10" width="34" height="24" rx="2" fill="#0080C0" stroke="#00b3ff" stroke-width="1.5"/>
+                        <rect x="11" y="13" width="28" height="18" rx="1" fill="#1a1a2e"/>
+                        <!-- Screen detail lines -->
+                        <line x1="15" y1="17" x2="35" y2="17" stroke="#0080C0" stroke-width="1.5" opacity="0.6"/>
+                        <line x1="15" y1="21" x2="30" y2="21" stroke="#0080C0" stroke-width="1.5" opacity="0.6"/>
+                        <line x1="15" y1="25" x2="33" y2="25" stroke="#0080C0" stroke-width="1.5" opacity="0.6"/>
+                        <!-- Stand -->
+                        <rect x="22" y="34" width="6" height="4" fill="#0080C0"/>
+                        <rect x="18" y="38" width="14" height="2" rx="1" fill="#0080C0"/>
+                        <!-- Power indicator -->
+                        <circle cx="25" cy="32" r="1.5" fill="#00ff00"/>
+                    </svg>
+                </a>
                 <div class="brand-text">
-                    <span class="brand-name">PC FORMATECH</span>
+                    <span class="brand-name">PCFORMATECH</span>
                     <span class="tagline">ESPECIALISTAS EM TECNOLOGIA</span>
                 </div>
             </div>
@@ -514,6 +525,14 @@
                     <div class="service-badge">20% OFF</div>
                     <div class="price-tag"><span>Consulte</span><span>valores</span></div>
                 </label>
+                <a href="https://forms.gle/1HYrJfRUaFZzHBCG7" target="_blank" class="service-card service-card-link">
+                    <div class="service-icon-wrapper">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <h3>Formulário de Avaliação</h3>
+                    <p>Como gostaria que prosseguíssemos com o serviço?</p>
+                    <button type="button" class="service-details-btn">Ver Detalhes</button>
+                </a>
             </div>
             
             <!-- Barra flutuante de resumo de seleção -->
@@ -781,32 +800,15 @@
                         <span><strong>Agende pelo WhatsApp</strong></span>
                         <small>(94) 98430-5772 • Atendimento Rápido</small>
                     </a>
+                    <a href="https://forms.gle/1HYrJfRUaFZzHBCG7" target="_blank" class="social-link forms">
+                        <i class="fas fa-clipboard-list"></i>
+                        <span><strong>Formulário de Avaliação</strong></span>
+                        <small>Como gostaria que prosseguíssemos com o serviço?</small>
+                    </a>
                     <div class="location-info">
                         <i class="fas fa-map-marker-alt"></i>
                         <span><strong>Canaã dos Carajás, PA</strong></span>
                         <small>📍 Atendemos em toda a cidade</small>
-                    </div>
-                </div>
-                <div class="social-stats">
-                    <div class="stat-item">
-                        <i class="fas fa-users"></i>
-                        <span class="stat-number">500+</span>
-                        <span class="stat-label">Clientes Atendidos</span>
-                    </div>
-                    <div class="stat-item">
-                        <i class="fas fa-calendar-check"></i>
-                        <span class="stat-number">5+</span>
-                        <span class="stat-label">Anos de Experiência</span>
-                    </div>
-                    <div class="stat-item">
-                        <i class="fas fa-smile"></i>
-                        <span class="stat-number">98%</span>
-                        <span class="stat-label">Satisfação</span>
-                    </div>
-                    <div class="stat-item">
-                        <i class="fas fa-clock"></i>
-                        <span class="stat-number">24h</span>
-                        <span class="stat-label">Tempo de Resposta</span>
                     </div>
                 </div>
             </div>
@@ -981,9 +983,6 @@
         <!-- Sistema de Agendamento + Contato lado a lado -->
         <section class="cta-duo">
             <div class="cta-columns">
-        <section id="agendamento" class="schedule">
-
-        <section id="contato" class="contact">
  
         <section id="sobre" class="about">
             <div class="about-header">
@@ -1008,21 +1007,21 @@
                 <div class="about-features">
                     <div class="feature-card">
                         <div class="feature-icon">
-                            <i class="fas fa-users"></i>
+                            <i class="fas fa-user-check"></i>
                         </div>
                         <h4>Atendimento Personalizado</h4>
                         <p>Cada cliente é único e merece atenção especial</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-icon">
-                            <i class="fas fa-clock"></i>
+                            <i class="fas fa-bolt"></i>
                         </div>
                         <h4>Serviço Rápido</h4>
                         <p>Seu tempo é valioso, trabalhamos com agilidade</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-icon">
-                            <i class="fas fa-shield-alt"></i>
+                            <i class="fas fa-award"></i>
                         </div>
                         <h4>Garantia de Qualidade</h4>
                         <p>Todos os serviços com garantia e suporte</p>
@@ -1081,14 +1080,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="footer-links">
-                <h4>Links Rápidos</h4>
-                <ul>
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#servicos">Serviços</a></li>
-                    <li><a href="#sobre">Sobre</a></li>
-                </ul>
             </div>
             <div class="footer-contact">
                 <h4><i class="fas fa-headset"></i> Contato</h4>
@@ -1150,8 +1141,16 @@
                     <i class="fab fa-pix"></i>
                 </div>
             </div>
+            <a href="admin.html" style="opacity: 0.2; font-size: 12px; color: #666; text-decoration: none; display: inline-block; margin-top: 10px;" title="Painel Administrativo">
+                <i class="fas fa-key"></i>
+            </a>
         </div>
     </footer>
+
+    <!-- Botão Voltar ao Topo -->
+    <button id="scrollToTop" class="scroll-to-top" aria-label="Voltar ao topo">
+        <i class="fas fa-arrow-up"></i>
+    </button>
 
     <script src="main.js"></script>
 </body>
