@@ -168,6 +168,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const detailsBtn = card.querySelector('.service-details-btn');
         const modalId = card.getAttribute('data-modal');
         
+        // Verificar se é o card de link do formulário (não tem modal)
+        if (detailsBtn && !modalId && card.classList.contains('service-card-link')) {
+            // Este é o card do formulário - deixar o link funcionar normalmente
+            return;
+        }
+        
         if (detailsBtn && modalId) {
             detailsBtn.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -616,6 +622,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Prevenir que o clique no botão "Ver Detalhes" selecione o checkbox
     document.querySelectorAll('.service-details-btn').forEach(btn => {
+        // Verificar se é o botão do formulário (dentro de um link)
+        const parentLink = btn.closest('a.service-card-link');
+        if (parentLink) {
+            // Este é o botão do formulário - não interceptar o clique
+            return;
+        }
+        
         btn.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
