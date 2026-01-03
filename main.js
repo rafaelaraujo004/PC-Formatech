@@ -462,10 +462,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         // Montar mensagem para WhatsApp
-        let message = `🗓️ *NOVO AGENDAMENTO*\n\n`;
-        message += `👤 *Nome:* ${name}\n`;
-        message += `📱 *Telefone:* ${phone}\n`;
-        message += `💻 *Serviços Solicitados:*\n`;
+        let message = String.fromCodePoint(0x1F4CB) + ` *NOVO AGENDAMENTO*\n\n`;
+        message += String.fromCodePoint(0x1F464) + ` *Nome:* ${name}\n`;
+        message += String.fromCodePoint(0x1F4F1) + ` *Telefone:* ${phone}\n`;
+        message += String.fromCodePoint(0x1F4BB) + ` *Serviços Solicitados:*\n`;
         
         // Adicionar cada serviço em uma linha com preço
         servicesWithPrice.forEach((service, index) => {
@@ -477,25 +477,25 @@ document.addEventListener('DOMContentLoaded', () => {
             message += `   ${servicesWithPrice.length + 1}. ${cleaningName} - R$ ${cleaningPrice.toFixed(2).replace('.', ',')}\n`;
         }
         
-        message += `\n💰 *Subtotal:* R$ ${totalValue.toFixed(2).replace('.', ',')}\n`;
+        message += `\n` + String.fromCodePoint(0x1F4B0) + ` *Subtotal:* R$ ${totalValue.toFixed(2).replace('.', ',')}\n`;
         
         if (isRemote && discount > 0) {
-            message += `🎉 *Desconto (20% Remoto):* -R$ ${discount.toFixed(2).replace('.', ',')}\n`;
-            message += `💵 *VALOR TOTAL:* R$ ${finalValue.toFixed(2).replace('.', ',')}*\n\n`;
+            message += String.fromCodePoint(0x1F389) + ` *Desconto (20% Remoto):* -R$ ${discount.toFixed(2).replace('.', ',')}\n`;
+            message += String.fromCodePoint(0x1F4B5) + ` *VALOR TOTAL:* R$ ${finalValue.toFixed(2).replace('.', ',')}*\n\n`;
         } else {
-            message += `💵 *VALOR TOTAL:* R$ ${finalValue.toFixed(2).replace('.', ',')}*\n\n`;
+            message += String.fromCodePoint(0x1F4B5) + ` *VALOR TOTAL:* R$ ${finalValue.toFixed(2).replace('.', ',')}*\n\n`;
         }
         
-        message += `🔧 *Tipo de Atendimento:* ${attendanceType}\n`;
-        message += `📅 *Data:* ${dateFormatted}\n`;
-        message += `🕐 *Horário:* ${time}\n`;
+        message += String.fromCodePoint(0x1F527) + ` *Tipo de Atendimento:* ${attendanceType}\n`;
+        message += String.fromCodePoint(0x1F4C5) + ` *Data:* ${dateFormatted}\n`;
+        message += String.fromCodePoint(0x1F550) + ` *Horário:* ${time}\n`;
         
         if (address) {
-            message += `📍 *Endereço:* ${address}\n`;
+            message += String.fromCodePoint(0x1F4CD) + ` *Endereço:* ${address}\n`;
         }
         
         if (notes) {
-            message += `\n📝 *Observações:*\n${notes}`;
+            message += `\n` + String.fromCodePoint(0x1F4DD) + ` *Observações:*\n${notes}`;
         }
         
         // Número do WhatsApp (com código do país)
@@ -752,6 +752,16 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        const emojiMap = {
+            'formatacao': '💻',
+            'programas': '📥',
+            'seguranca': '🛡️',
+            'manutencao': '🔧',
+            'drivers': '💿',
+            'backup': '💾',
+            'remoto': '🌐'
+        };
+        
         const serviceMap = {
             'formatacao': 'Formatação de Computadores - R$ 80,00',
             'programas': 'Instalação de Programas - R$ 50,00',
@@ -765,11 +775,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // Verificar se atendimento remoto está selecionado
         const remoteSelected = selectedServices.some(s => s.name === 'remoto');
         
-        let message = `🗓️ *SOLICITAÇÃO DE ORÇAMENTO*\n\n`;
-        message += `💻 *Serviços Solicitados:*\n`;
+        let message = '📋 *SOLICITAÇÃO DE ORÇAMENTO*\n\n';
+        message += '💼 *Serviços Solicitados:*\n';
         
         selectedServices.forEach((s, index) => {
-            message += `   ${index + 1}. ${serviceMap[s.name] || s.name}\n`;
+            const emoji = emojiMap[s.name] || '•';
+            const serviceName = serviceMap[s.name] || s.name;
+            message += `   ${index + 1}. ${emoji} ${serviceName}\n`;
         });
         
         const subtotal = selectedServices.reduce((sum, service) => sum + service.price, 0);

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Rápido - Novos Recursos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0B3D3D 0%, #1A5C5C 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #0B3D3D;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .check-item {
+            padding: 20px;
+            margin: 15px 0;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #40998F;
+        }
+
+        .check-item h3 {
+            color: #0B3D3D;
+            margin-bottom: 10px;
+        }
+
+        .check-item p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #40998F 0%, #2D7A7A 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            margin: 10px 0;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(64, 153, 143, 0.4);
+        }
+
+        .success {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            color: #0c5460;
+        }
+
+        .steps {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+
+        .steps ol {
+            padding-left: 20px;
+        }
+
+        .steps li {
+            margin: 10px 0;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-check-circle"></i> Verificação de Recursos</h1>
+
+        <div class="alert alert-info">
+            <strong><i class="fas fa-info-circle"></i> Como verificar se tudo está funcionando:</strong><br>
+            Siga os passos abaixo para testar os novos recursos.
+        </div>
+
+        <div class="steps">
+            <h3>📋 Passos para Testar:</h3>
+            <ol>
+                <li>Clique no botão "Abrir Admin" abaixo</li>
+                <li>Digite a senha: <strong>pcformatech2026</strong></li>
+                <li>Verifique se apareceram 6 abas no topo:
+                    <ul>
+                        <li>Dashboard</li>
+                        <li>Clientes</li>
+                        <li>Serviços</li>
+                        <li><strong>Orçamentos/Laudos</strong> ← NOVO</li>
+                        <li><strong>Produtos</strong> ← NOVO</li>
+                        <li>Preços</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <div class="check-item success">
+            <h3><i class="fas fa-box"></i> Aba Produtos</h3>
+            <p><strong>O que você deve ver:</strong></p>
+            <p>✓ Formulário para cadastrar produtos<br>
+               ✓ Campos: Nome, Preço, Estoque, Categoria, Descrição<br>
+               ✓ Botão "Cadastrar Produto"<br>
+               ✓ Tabela vazia (ou com produtos se já cadastrou)</p>
+        </div>
+
+        <div class="check-item success">
+            <h3><i class="fas fa-file-invoice"></i> Aba Orçamentos/Laudos</h3>
+            <p><strong>O que você deve ver:</strong></p>
+            <p>✓ Botão "Novo Orçamento/Laudo"<br>
+               ✓ Barra de busca<br>
+               ✓ Tabela com colunas: Nº Laudo, Cliente, Data, Total, Tipo, Ações<br>
+               ✓ Tabela vazia (ou com orçamentos se já criou)</p>
+        </div>
+
+        <a href="admin.html" class="btn">
+            <i class="fas fa-sign-in-alt"></i> Abrir Admin e Testar
+        </a>
+
+        <div class="alert alert-info" style="margin-top: 30px;">
+            <strong><i class="fas fa-question-circle"></i> Se as abas não aparecerem:</strong><br><br>
+            
+            <strong>1. Limpe o cache do navegador:</strong><br>
+            • Pressione <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Delete</kbd><br>
+            • Selecione "Cache" ou "Arquivos em cache"<br>
+            • Clique em "Limpar dados"<br>
+            • Recarregue a página com <kbd>Ctrl</kbd> + <kbd>F5</kbd><br><br>
+            
+            <strong>2. Abra em modo anônimo:</strong><br>
+            • Pressione <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>N</kbd> (Chrome)<br>
+            • Ou <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd> (Firefox)<br>
+            • Abra o arquivo admin.html novamente<br><br>
+            
+            <strong>3. Verifique o Console:</strong><br>
+            • Pressione <kbd>F12</kbd> para abrir as ferramentas de desenvolvimento<br>
+            • Vá na aba "Console"<br>
+            • Veja se há algum erro em vermelho<br>
+            • Se houver, copie e me informe
+        </div>
+
+        <div style="margin-top: 40px; padding: 20px; background: #f8f9fa; border-radius: 8px;">
+            <h3 style="margin-bottom: 15px;">🔍 Teste Rápido dos Recursos:</h3>
+            
+            <h4 style="margin-top: 15px; color: #0B3D3D;">Teste 1: Cadastrar um Produto</h4>
+            <p>1. Vá na aba "Produtos"<br>
+               2. Preencha: Nome = "Teste SSD", Preço = 100<br>
+               3. Clique em "Cadastrar Produto"<br>
+               4. Deve aparecer na tabela abaixo</p>
+
+            <h4 style="margin-top: 15px; color: #0B3D3D;">Teste 2: Criar um Orçamento</h4>
+            <p>1. Vá na aba "Orçamentos/Laudos"<br>
+               2. Clique em "Novo Orçamento/Laudo"<br>
+               3. Selecione um cliente (cadastre um antes se necessário)<br>
+               4. Clique em "Adicionar Serviço" e selecione um<br>
+               5. Clique em "Salvar Orçamento/Laudo"<br>
+               6. Deve aparecer na tabela</p>
+
+            <h4 style="margin-top: 15px; color: #0B3D3D;">Teste 3: Gerar PDF</h4>
+            <p>1. Na tabela de orçamentos, clique no botão "PDF"<br>
+               2. Um arquivo PDF deve ser baixado automaticamente<br>
+               3. Abra e verifique se está formatado corretamente</p>
+        </div>
+
+        <a href="guia-orcamentos.html" class="btn" style="background: #6c757d;">
+            <i class="fas fa-book"></i> Ver Guia Completo de Uso
+        </a>
+
+        <div style="text-align: center; margin-top: 30px; color: #666;">
+            <p><strong>PC Formatech</strong> - Sistema v2.1</p>
+            <p style="margin-top: 5px;"><small>Se precisar de ajuda, me informe o que está acontecendo!</small></p>
+        </div>
+    </div>
+
+    <script>
+        // Verificar se o arquivo admin.html existe
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('Página de teste carregada!');
+            console.log('Clique em "Abrir Admin e Testar" para verificar os recursos');
+        });
+    </script>
+</body>
+</html>

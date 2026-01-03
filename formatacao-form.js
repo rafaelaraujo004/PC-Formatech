@@ -2,10 +2,17 @@
 // FORMULÁRIO DE FORMATAÇÃO DE COMPUTADOR
 // ==========================================
 
+console.log('Script formatacao-form.js carregado!');
+
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM carregado!');
+    
     const formatacaoForm = document.getElementById('formatacao-form');
+    console.log('Formulário encontrado:', formatacaoForm);
     
     if (formatacaoForm) {
+        console.log('Iniciando configuração do formulário...');
+        
         // Controles de visibilidade condicionais
         
         // Mostrar campo "Outro problema" quando checkbox marcado
@@ -85,10 +92,14 @@ document.addEventListener('DOMContentLoaded', () => {
         formatacaoForm.addEventListener('submit', (e) => {
             e.preventDefault();
             
+            console.log('Formulário submetido!');
+            
             // Coletar dados básicos
-            const nome = document.getElementById('cliente-nome').value;
-            const telefone = document.getElementById('cliente-telefone').value;
-            const cidade = document.getElementById('cliente-cidade').value;
+            const nome = document.getElementById('cliente-nome')?.value || '';
+            const telefone = document.getElementById('cliente-telefone')?.value || '';
+            const cidade = document.getElementById('cliente-cidade')?.value || '';
+            
+            console.log('Dados:', {nome, telefone, cidade});
             
             // Validar campos obrigatórios básicos
             if (!nome || !telefone || !cidade) {
@@ -97,15 +108,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             // Coletar informações do computador
-            const tipoComputador = document.getElementById('tipo-computador').value;
-            const pcLiga = document.getElementById('pc-liga').value;
-            const sistemaAtual = document.getElementById('sistema-atual').value;
+            const tipoComputador = document.getElementById('tipo-computador')?.value || '';
+            const pcLiga = document.getElementById('pc-liga')?.value || '';
+            const sistemaAtual = document.getElementById('sistema-atual')?.value || '';
             
             // Coletar problemas
             const problemasCheckboxes = document.querySelectorAll('input[name="problema[]"]:checked');
             const problemas = Array.from(problemasCheckboxes).map(cb => cb.value);
-            const problemaOutro = document.getElementById('problema-outro-texto').value;
-            const tempoProblema = document.getElementById('tempo-problema').value;
+            const problemaOutro = document.getElementById('problema-outro-texto')?.value || '';
+            const tempoProblema = document.getElementById('tempo-problema')?.value || '';
             
             // Validar pelo menos um problema selecionado
             if (problemas.length === 0) {
@@ -114,14 +125,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             // Backup
-            const temArquivos = document.querySelector('input[name="tem-arquivos"]:checked')?.value;
+            const temArquivos = document.querySelector('input[name="tem-arquivos"]:checked')?.value || 'Não';
             let tiposArquivo = [];
             let localBackupValue = '';
             
             if (temArquivos === 'Sim') {
                 const tiposCheckboxes = document.querySelectorAll('input[name="tipo-arquivo[]"]:checked');
                 tiposArquivo = Array.from(tiposCheckboxes).map(cb => cb.value);
-                localBackupValue = document.getElementById('local-backup').value;
+                localBackupValue = document.getElementById('local-backup')?.value || '';
                 
                 if (!localBackupValue) {
                     alert('Por favor, selecione onde deseja salvar o backup');
@@ -132,101 +143,94 @@ document.addEventListener('DOMContentLoaded', () => {
             // Programas
             const programasCheckboxes = document.querySelectorAll('input[name="programa[]"]:checked');
             const programas = Array.from(programasCheckboxes).map(cb => cb.value);
-            const programasOutros = document.getElementById('programas-outros-texto').value;
+            const programasOutros = document.getElementById('programas-outros-texto')?.value || '';
             
             // Senhas e expectativas
-            const possuiSenhas = document.getElementById('possui-senhas').value;
+            const possuiSenhas = document.getElementById('possui-senhas')?.value || '';
             const expectativasCheckboxes = document.querySelectorAll('input[name="expectativa[]"]:checked');
             const expectativas = Array.from(expectativasCheckboxes).map(cb => cb.value);
-            const autorizaAvaliacao = document.querySelector('input[name="autoriza-avaliacao"]:checked')?.value;
+            const autorizaAvaliacao = document.querySelector('input[name="autoriza-avaliacao"]:checked')?.value || '';
             
             // Autorização final
-            const autorizacaoFinal = document.getElementById('autorizacao-final').checked;
+            const autorizacaoFinal = document.getElementById('autorizacao-final')?.checked || false;
             
             if (!autorizacaoFinal) {
                 alert('Você precisa marcar a autorização final para prosseguir');
                 return;
             }
             
+            console.log('Todos os dados coletados com sucesso!');
+            
             // Montar mensagem para WhatsApp
-            let message = `🖥️ *FORMULÁRIO DE FORMATAÇÃO*\n\n`;
+            let message = `🖥️ *SOLICITAÇÃO DE FORMATAÇÃO - PC FORMATECH*\n`;
+            message += `═══════════════════════════════\n\n`;
             
-            message += `━━━━━━━━━━━━━━━━━━━━\n`;
-            message += `👤 *1. DADOS DO CLIENTE*\n`;
-            message += `━━━━━━━━━━━━━━━━━━━━\n`;
-            message += `• Nome: ${nome}\n`;
-            message += `• Telefone: ${telefone}\n`;
-            message += `• Cidade: ${cidade}\n\n`;
+            message += `👤 *DADOS DO CLIENTE*\n`;
+            message += `┌─────────────────────────\n`;
+            message += `│ Nome: *${nome}*\n`;
+            message += `│ Telefone: ${telefone}\n`;
+            message += `│ Cidade: ${cidade}\n`;
+            message += `└─────────────────────────\n\n`;
             
-            message += `━━━━━━━━━━━━━━━━━━━━\n`;
-            message += `💻 *2. INFORMAÇÕES DO COMPUTADOR*\n`;
-            message += `━━━━━━━━━━━━━━━━━━━━\n`;
-            message += `• Tipo: ${tipoComputador}\n`;
-            message += `• Liga normalmente: ${pcLiga}\n`;
-            message += `• Sistema atual: ${sistemaAtual}\n\n`;
+            message += `💻 *INFORMAÇÕES DO EQUIPAMENTO*\n`;
+            message += `┌─────────────────────────\n`;
+            message += `│ Tipo: ${tipoComputador}\n`;
+            message += `│ Liga: ${pcLiga}\n`;
+            message += `│ Sistema Atual: ${sistemaAtual}\n`;
+            message += `└─────────────────────────\n\n`;
             
-            message += `━━━━━━━━━━━━━━━━━━━━\n`;
-            message += `⚠️ *3. MOTIVO DA FORMATAÇÃO*\n`;
-            message += `━━━━━━━━━━━━━━━━━━━━\n`;
-            message += `• Problemas:\n`;
-            problemas.forEach(p => {
-                message += `  - ${p}\n`;
+            message += `⚠️ *PROBLEMAS IDENTIFICADOS*\n`;
+            message += `┌─────────────────────────\n`;
+            problemas.forEach((p, index) => {
+                message += `│ ${index + 1}. ${p}\n`;
             });
             if (problemaOutro) {
-                message += `  Detalhes: ${problemaOutro}\n`;
+                message += `│ 💬 Obs: ${problemaOutro}\n`;
             }
-            message += `• Tempo do problema: ${tempoProblema}\n\n`;
+            message += `│ ⏱️ Tempo: ${tempoProblema}\n`;
+            message += `└─────────────────────────\n\n`;
             
-            message += `━━━━━━━━━━━━━━━━━━━━\n`;
-            message += `💾 *4. BACKUP DE ARQUIVOS*\n`;
-            message += `━━━━━━━━━━━━━━━━━━━━\n`;
-            message += `• Tem arquivos importantes: ${temArquivos}\n`;
+            message += `💾 *BACKUP DE DADOS*\n`;
+            message += `┌─────────────────────────\n`;
+            message += `│ Arquivos Importantes: ${temArquivos}\n`;
             if (temArquivos === 'Sim') {
-                message += `• Tipos de arquivos:\n`;
+                message += `│ 📁 Tipos:\n`;
                 tiposArquivo.forEach(t => {
-                    message += `  - ${t}\n`;
+                    message += `│   • ${t}\n`;
                 });
-                message += `• Local do backup: ${localBackupValue}\n`;
+                message += `│ 📍 Local: ${localBackupValue}\n`;
             }
-            message += `\n`;
+            message += `└─────────────────────────\n\n`;
             
             if (programas.length > 0) {
-                message += `━━━━━━━━━━━━━━━━━━━━\n`;
-                message += `📥 *5. PROGRAMAS DESEJADOS*\n`;
-                message += `━━━━━━━━━━━━━━━━━━━━\n`;
-                programas.forEach(p => {
-                    message += `• ${p}\n`;
+                message += `📥 *PROGRAMAS SOLICITADOS*\n`;
+                message += `┌─────────────────────────\n`;
+                programas.forEach((p, index) => {
+                    message += `│ ${index + 1}. ${p}\n`;
                 });
                 if (programasOutros) {
-                    message += `• Outros: ${programasOutros}\n`;
+                    message += `│ ➕ Outros: ${programasOutros}\n`;
                 }
-                message += `\n`;
+                message += `└─────────────────────────\n\n`;
             }
             
-            message += `━━━━━━━━━━━━━━━━━━━━\n`;
-            message += `🔐 *6. SENHAS E ACESSOS*\n`;
-            message += `━━━━━━━━━━━━━━━━━━━━\n`;
-            message += `• Possui senhas: ${possuiSenhas}\n\n`;
+            message += `🔐 *INFORMAÇÕES ADICIONAIS*\n`;
+            message += `┌─────────────────────────\n`;
+            message += `│ Possui Senhas: ${possuiSenhas}\n`;
             
             if (expectativas.length > 0) {
-                message += `━━━━━━━━━━━━━━━━━━━━\n`;
-                message += `🎯 *7. EXPECTATIVAS*\n`;
-                message += `━━━━━━━━━━━━━━━━━━━━\n`;
+                message += `│ 🎯 Expectativas:\n`;
                 expectativas.forEach(e => {
-                    message += `• ${e}\n`;
+                    message += `│   • ${e}\n`;
                 });
-                message += `\n`;
             }
+            message += `│ 🔧 Avaliação Técnica: ${autorizaAvaliacao}\n`;
+            message += `└─────────────────────────\n\n`;
             
-            message += `━━━━━━━━━━━━━━━━━━━━\n`;
-            message += `🔧 *8. AVALIAÇÃO TÉCNICA*\n`;
-            message += `━━━━━━━━━━━━━━━━━━━━\n`;
-            message += `• Autoriza avaliação: ${autorizaAvaliacao}\n\n`;
-            
-            message += `━━━━━━━━━━━━━━━━━━━━\n`;
-            message += `✅ *9. AUTORIZAÇÃO*\n`;
-            message += `━━━━━━━━━━━━━━━━━━━━\n`;
-            message += `Cliente AUTORIZOU a formatação conforme informações fornecidas.\n`;
+            message += `✅ *AUTORIZAÇÃO CONFIRMADA*\n`;
+            message += `Cliente autorizou a formatação do equipamento conforme especificações acima.\n\n`;
+            message += `═══════════════════════════════\n`;
+            message += `🚀 *Aguardando atendimento!*`;
             
             // Número do WhatsApp
             const whatsappNumber = '5594984305772';
@@ -237,11 +241,123 @@ document.addEventListener('DOMContentLoaded', () => {
             // Montar URL do WhatsApp
             const whatsappURL = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodedMessage}`;
             
-            // Abrir WhatsApp em nova aba
-            window.open(whatsappURL, '_blank');
+            console.log('Abrindo WhatsApp:', whatsappURL.substring(0, 100) + '...');
             
-            // Mostrar mensagem de sucesso
-            alert('✅ Formulário preenchido com sucesso!\n\nVocê será redirecionado para o WhatsApp para enviar as informações.');
+            // Abrir WhatsApp IMEDIATAMENTE
+            const whatsappWindow = window.open(whatsappURL, '_blank');
+            
+            if (!whatsappWindow) {
+                // Se o popup foi bloqueado, tentar redirecionamento direto
+                console.warn('Popup bloqueado, tentando redirecionamento...');
+                window.location.href = whatsappURL;
+            }
+            
+            // ====== CADASTRO AUTOMÁTICO NO SISTEMA (APÓS ABRIR WHATSAPP) ======
+            
+            try {
+                // 1. Cadastrar cliente automaticamente
+                const clientes = JSON.parse(localStorage.getItem('pcformatech_clients') || '[]');
+                
+                // Verificar se cliente já existe (por telefone)
+                const clienteExistente = clientes.find(c => c.phone === telefone);
+                
+                let clienteId;
+            
+                if (!clienteExistente) {
+                    // Criar novo cliente
+                    const novoCliente = {
+                        id: Date.now(),
+                        name: nome,
+                        phone: telefone,
+                        email: '',
+                        address: cidade,
+                        createdAt: new Date().toISOString()
+                    };
+                    
+                    clientes.push(novoCliente);
+                    localStorage.setItem('pcformatech_clients', JSON.stringify(clientes));
+                    clienteId = novoCliente.id;
+                } else {
+                    clienteId = clienteExistente.id;
+                }
+            
+            // 2. Criar orçamento/serviço automaticamente
+            const budgets = JSON.parse(localStorage.getItem('pcformatech_budgets') || '[]');
+            
+            // Função para gerar número sequencial do orçamento
+            function getNextBudgetNumber() {
+                if (budgets.length === 0) {
+                    const now = new Date();
+                    const year = now.getFullYear().toString().slice(-2);
+                    return `0001-${year}`;
+                }
+                
+                const lastBudget = budgets[budgets.length - 1];
+                const lastNumber = parseInt(lastBudget.budgetNumber.split('-')[0]);
+                const nextNumber = (lastNumber + 1).toString().padStart(4, '0');
+                const now = new Date();
+                const year = now.getFullYear().toString().slice(-2);
+                
+                return `${nextNumber}-${year}`;
+            }
+            
+            // Preparar serviços para o orçamento
+            const servicosParaOrcamento = [];
+            
+            // Adicionar formatação como serviço principal
+            servicosParaOrcamento.push({
+                description: 'Formatação de Computador',
+                quantity: 1,
+                unitPrice: 0, // Preço será definido no admin
+                total: 0
+            });
+            
+            // Adicionar outros problemas como serviços
+            if (problemas.length > 0) {
+                problemas.forEach(prob => {
+                    servicosParaOrcamento.push({
+                        description: `Reparo: ${prob}`,
+                        quantity: 1,
+                        unitPrice: 0,
+                        total: 0
+                    });
+                });
+            }
+            
+            // Criar orçamento
+            const novoOrcamento = {
+                id: Date.now(),
+                budgetNumber: getNextBudgetNumber(),
+                clientId: clienteId,
+                clientName: nome,
+                date: new Date().toISOString().split('T')[0],
+                services: servicosParaOrcamento,
+                products: [],
+                defect: problemas.join(', ') + (problemaOutro ? ` - ${problemaOutro}` : ''),
+                diagnosis: 'Aguardando avaliação técnica',
+                solution: programas.length > 0 ? `Instalação: ${programas.join(', ')}` : '',
+                warranty: '90 dias para formatação',
+                observations: `Backup: ${temArquivos}${temArquivos === 'Sim' ? ` (${tiposArquivo.join(', ')})` : ''}\nExpectativas: ${expectativas.join(', ')}\nPossui senhas: ${possuiSenhas}`,
+                total: 0,
+                status: 'Pendente',
+                createdAt: new Date().toISOString()
+            };
+            
+            budgets.push(novoOrcamento);
+            localStorage.setItem('pcformatech_budgets', JSON.stringify(budgets));
+            
+                // Mostrar mensagem de sucesso
+                alert(String.fromCodePoint(0x2705) + ' Formulário preenchido com sucesso!\n\n' + 
+                      String.fromCodePoint(0x1F4DD) + ' Cliente cadastrado no sistema!\n' +
+                      String.fromCodePoint(0x1F4CB) + ' Orçamento Nº ' + novoOrcamento.budgetNumber + ' criado!');
+                      
+                console.log('Cliente e orçamento salvos com sucesso!');
+            } catch (cadastroError) {
+                console.error('Erro ao cadastrar no sistema:', cadastroError);
+                // Não interrompe o fluxo - WhatsApp já foi aberto
+            }
+            
+            // ====== FIM DO CADASTRO AUTOMÁTICO ======
             
             // Limpar formulário após pequeno delay
             setTimeout(() => {
