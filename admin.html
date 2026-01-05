@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Painel Administrativo - PC Formatech</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -12,6 +12,17 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-text-size-adjust: 100%;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* Prevenir zoom em inputs no mobile */
+        input, select, textarea, button {
+            font-size: 16px !important;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            font-size: 16px !important;
         }
 
         body {
@@ -516,6 +527,93 @@
                 padding: 10px 8px;
             }
         }
+
+        /* Estilos para Gestão de Slider */
+        .slides-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .slide-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .slide-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+        }
+
+        .slide-preview {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: #f0f0f0;
+        }
+
+        .slide-info {
+            padding: 15px;
+        }
+
+        .slide-info input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .slide-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .slide-actions button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-update {
+            background: #40998F;
+            color: white;
+        }
+
+        .btn-update:hover {
+            background: #2D7A7A;
+        }
+
+        .btn-remove {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-remove:hover {
+            background: #c82333;
+        }
+
+        .slide-order {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .slide-order span {
+            font-weight: 600;
+            color: #40998F;
+        }
     </style>
 </head>
 <body>
@@ -568,6 +666,9 @@
             </button>
             <button class="tab-button" onclick="switchTab('prices')">
                 <i class="fas fa-dollar-sign"></i> Preços
+            </button>
+            <button class="tab-button" onclick="switchTab('slider')">
+                <i class="fas fa-images"></i> Imagens da Tela Inicial
             </button>
         </div>
 
@@ -916,6 +1017,24 @@
         </div>
     </div>
 
+    <!-- Gestão de Imagens da Tela Inicial -->
+    <div id="tab-slider" class="tab-content">
+        <div class="clients-container">
+            <h2><i class="fas fa-images"></i> Gerenciar Imagens do Carrossel da Tela Inicial</h2>
+            <p style="color: #666; margin-bottom: 20px;">
+                Gerencie as imagens que aparecem no carrossel da tela inicial do site. Você pode adicionar, editar ou remover imagens.
+            </p>
+
+            <button class="btn-save" onclick="addNewSlide()" style="margin-bottom: 20px;">
+                <i class="fas fa-plus"></i> Adicionar Nova Imagem
+            </button>
+
+            <div id="slidesContainer" class="slides-grid">
+                <!-- Slides serão inseridos aqui -->
+            </div>
+        </div>
+    </div>
+
     <script>
         // Senha de acesso (você pode alterar aqui)
         const ADMIN_PASSWORD = 'pcformatech2026';
@@ -971,10 +1090,14 @@
         let clients = [];
         let editingClientId = null;
 
+        // Slides da tela inicial
+        let heroSlides = [];
+
         // Inicialização
         document.addEventListener('DOMContentLoaded', () => {
             loadClientsFromStorage();
             populateServiceTypes();
+            loadHeroSlides();
         });
 
         // ===== SISTEMA DE TABS =====
@@ -1000,6 +1123,8 @@
                 loadBudgetsTable();
             } else if (tabName === 'prices') {
                 loadServices();
+            } else if (tabName === 'slider') {
+                renderSlides();
             }
         }
 
@@ -1621,6 +1746,16 @@
         }
 
         function openNewBudgetModal() {
+            // Calcular data de vencimento da garantia (90 dias = 3 meses)
+            const dataAtual = new Date();
+            const dataGarantia = new Date(dataAtual);
+            dataGarantia.setDate(dataGarantia.getDate() + 90);
+            
+            const diaGarantia = String(dataGarantia.getDate()).padStart(2, '0');
+            const mesGarantia = String(dataGarantia.getMonth() + 1).padStart(2, '0');
+            const anoGarantia = dataGarantia.getFullYear();
+            const dataGarantiaFormatada = `${diaGarantia}/${mesGarantia}/${anoGarantia}`;
+            
             currentBudget = {
                 id: null,
                 number: getNextBudgetNumber(),
@@ -1633,7 +1768,7 @@
                 report: '',
                 solution: '',
                 observations: '',
-                warranty: '3 Meses'
+                warranty: `3 Meses (válido até ${dataGarantiaFormatada})`
             };
 
             populateClientSelect();
@@ -1863,6 +1998,21 @@
                 }
             });
 
+            // Calcular data de vencimento da garantia se for um valor padrão
+            let warrantyValue = document.getElementById('budgetWarranty').value;
+            if (warrantyValue === '3 Meses' || warrantyValue.startsWith('3 Meses (válido até')) {
+                const dataAtual = new Date();
+                const dataGarantia = new Date(dataAtual);
+                dataGarantia.setDate(dataGarantia.getDate() + 90);
+                
+                const diaGarantia = String(dataGarantia.getDate()).padStart(2, '0');
+                const mesGarantia = String(dataGarantia.getMonth() + 1).padStart(2, '0');
+                const anoGarantia = dataGarantia.getFullYear();
+                const dataGarantiaFormatada = `${diaGarantia}/${mesGarantia}/${anoGarantia}`;
+                
+                warrantyValue = `3 Meses (válido até ${dataGarantiaFormatada})`;
+            }
+            
             const budget = {
                 id: currentBudget.id || Date.now(),
                 number: currentBudget.number,
@@ -1875,7 +2025,7 @@
                 report: document.getElementById('budgetReport').value,
                 solution: document.getElementById('budgetSolution').value,
                 observations: document.getElementById('budgetObservations').value,
-                warranty: document.getElementById('budgetWarranty').value,
+                warranty: warrantyValue,
                 createdAt: currentBudget.createdAt || new Date().toISOString()
             };
 
@@ -2196,6 +2346,129 @@
             loadProductsFromStorage();
             loadBudgetsFromStorage();
         });
+
+        // ===== GESTÃO DE IMAGENS DO SLIDER =====
+        
+        // Slides padrão
+        const defaultSlides = [
+            { url: 'https://images.unsplash.com/photo-1587202372634-32705e3bf49c?auto=format&fit=crop&q=90&w=2400', alt: 'Laptop em Manutenção' },
+            { url: 'https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&q=90&w=2400', alt: 'Workspace com Laptop' },
+            { url: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=90&w=2400', alt: 'Programação e Desenvolvimento' },
+            { url: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&q=90&w=2400', alt: 'Computador Profissional' },
+            { url: 'https://images.unsplash.com/photo-1551033406-611cf9a28f67?auto=format&fit=crop&q=90&w=2400', alt: 'Laptop em Ambiente Profissional' },
+            { url: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=90&w=2400', alt: 'Setup Moderno de Programação' },
+            { url: 'https://images.unsplash.com/photo-1547658719-da2b51169166?auto=format&fit=crop&q=90&w=2400', alt: 'Hardware e Componentes' },
+            { url: 'https://images.unsplash.com/photo-1484788984921-03950022c9ef?auto=format&fit=crop&q=90&w=2400', alt: 'MacBook Pro Workspace' },
+            { url: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=90&w=2400', alt: 'Tech Workspace Minimalista' },
+            { url: 'https://images.unsplash.com/photo-1537498425277-c283d32ef9db?auto=format&fit=crop&q=90&w=2400', alt: 'Gaming PC Setup' }
+        ];
+
+        function loadHeroSlides() {
+            const saved = localStorage.getItem('pcformatech_hero_slides');
+            heroSlides = saved ? JSON.parse(saved) : defaultSlides;
+        }
+
+        function saveHeroSlides() {
+            localStorage.setItem('pcformatech_hero_slides', JSON.stringify(heroSlides));
+        }
+
+        function renderSlides() {
+            const container = document.getElementById('slidesContainer');
+            container.innerHTML = '';
+
+            heroSlides.forEach((slide, index) => {
+                const card = document.createElement('div');
+                card.className = 'slide-card';
+                card.innerHTML = `
+                    <img src="${slide.url}" alt="${slide.alt}" class="slide-preview" onerror="this.src='https://via.placeholder.com/800x400?text=Imagem+Indispon%C3%ADvel'">
+                    <div class="slide-info">
+                        <div class="slide-order">
+                            <span>Imagem ${index + 1}</span>
+                        </div>
+                        <input type="text" id="slide-url-${index}" value="${slide.url}" placeholder="URL da imagem">
+                        <input type="text" id="slide-alt-${index}" value="${slide.alt}" placeholder="Texto alternativo">
+                        <div class="slide-actions">
+                            <button class="btn-update" onclick="updateSlide(${index})">
+                                <i class="fas fa-save"></i> Salvar
+                            </button>
+                            <button class="btn-remove" onclick="removeSlide(${index})">
+                                <i class="fas fa-trash"></i> Remover
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function addNewSlide() {
+            const url = prompt('Cole a URL da nova imagem:');
+            if (!url) return;
+
+            const alt = prompt('Digite o texto alternativo (descrição) da imagem:');
+            if (!alt) return;
+
+            heroSlides.push({ url, alt });
+            saveHeroSlides();
+            renderSlides();
+            updateIndexHtml();
+            showSuccess();
+        }
+
+        function updateSlide(index) {
+            const url = document.getElementById(`slide-url-${index}`).value;
+            const alt = document.getElementById(`slide-alt-${index}`).value;
+
+            if (!url || !alt) {
+                alert('Por favor, preencha a URL e o texto alternativo!');
+                return;
+            }
+
+            heroSlides[index] = { url, alt };
+            saveHeroSlides();
+            renderSlides();
+            updateIndexHtml();
+            showSuccess();
+        }
+
+        function removeSlide(index) {
+            if (heroSlides.length <= 1) {
+                alert('Você precisa ter pelo menos 1 imagem no carrossel!');
+                return;
+            }
+
+            if (confirm('Tem certeza que deseja remover esta imagem?')) {
+                heroSlides.splice(index, 1);
+                saveHeroSlides();
+                renderSlides();
+                updateIndexHtml();
+                showSuccess();
+            }
+        }
+
+        function updateIndexHtml() {
+            alert('⚠️ ATENÇÃO!\n\nAs alterações foram salvas no painel.\n\nPara aplicar as mudanças no site, você precisa atualizar o arquivo index.html.\n\nVocê pode:\n1. Copiar o código HTML gerado abaixo\n2. Ou usar a funcão "Exportar HTML" que será criada\n\nDeseja ver o código HTML agora?');
+            
+            // Gerar HTML dos slides
+            let html = '';
+            heroSlides.forEach((slide, index) => {
+                const activeClass = index === 0 ? ' active' : '';
+                html += `                <div class="hero-slide${activeClass}">\n`;
+                html += `                    <img src="${slide.url}" alt="${slide.alt}">\n`;
+                html += `                </div>\n`;
+            });
+            
+            console.log('HTML dos slides:\n', html);
+            console.log('\nIndicadores:\n');
+            
+            let indicators = '';
+            heroSlides.forEach((slide, index) => {
+                const activeClass = index === 0 ? ' active' : '';
+                indicators += `                <span class="indicator${activeClass}" data-slide="${index}"></span>\n`;
+            });
+            
+            console.log(indicators);
+        }
     </script>
 </body>
 </html>

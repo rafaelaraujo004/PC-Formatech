@@ -39,6 +39,20 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
+        /* Prevenir zoom em inputs no mobile */
+        * {
+            -webkit-text-size-adjust: 100%;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        input, select, textarea, button {
+            font-size: 16px !important;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            font-size: 16px !important;
+        }
+        
         body {
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
@@ -366,19 +380,16 @@
                             </label>
                             <label class="checkbox-label">
                                 <input type="checkbox" name="programa[]" value="Navegadores">
-                                <span><i class="fas fa-globe"></i> Navegadores (Chrome, Firefox, etc.)</span>
+                                <span><i class="fas fa-globe"></i> Progrmas Essenciais (Navegadores, Antivírus, etc.)</span>
                             </label>
                             <label class="checkbox-label">
                                 <input type="checkbox" name="programa[]" value="WhatsApp">
                                 <span><i class="fab fa-whatsapp"></i> WhatsApp</span>
                             </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox" name="programa[]" value="Programas de trabalho">
-                                <span><i class="fas fa-briefcase"></i> Programas de trabalho</span>
                             </label>
                             <label class="checkbox-label">
                                 <input type="checkbox" name="programa[]" value="Outros" id="programas-outros-check">
-                                <span><i class="fas fa-plus"></i> Outros</span>
+                                <span><i class="fas fa-plus"></i> Programas de trabalho (Específicos)</span>
                             </label>
                         </div>
                     </div>

@@ -324,6 +324,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
             
+            // Calcular data de vencimento da garantia (90 dias)
+            const dataAtual = new Date();
+            const dataGarantia = new Date(dataAtual);
+            dataGarantia.setDate(dataGarantia.getDate() + 90);
+            
+            const diaGarantia = String(dataGarantia.getDate()).padStart(2, '0');
+            const mesGarantia = String(dataGarantia.getMonth() + 1).padStart(2, '0');
+            const anoGarantia = dataGarantia.getFullYear();
+            const dataGarantiaFormatada = `${diaGarantia}/${mesGarantia}/${anoGarantia}`;
+            
             // Criar orçamento
             const novoOrcamento = {
                 id: Date.now(),
@@ -336,7 +346,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 defect: problemas.join(', ') + (problemaOutro ? ` - ${problemaOutro}` : ''),
                 diagnosis: 'Aguardando avaliação técnica',
                 solution: programas.length > 0 ? `Instalação: ${programas.join(', ')}` : '',
-                warranty: '90 dias para formatação',
+                warranty: `90 dias para formatação (válido até ${dataGarantiaFormatada})`,
                 observations: `Backup: ${temArquivos}${temArquivos === 'Sim' ? ` (${tiposArquivo.join(', ')})` : ''}\nExpectativas: ${expectativas.join(', ')}\nPossui senhas: ${possuiSenhas}`,
                 total: 0,
                 status: 'Pendente',

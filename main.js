@@ -38,6 +38,22 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Função para mudar slide (usada pelos botões de navegação)
+    window.changeSlide = function(direction) {
+        currentSlide = (currentSlide + direction + slides.length) % slides.length;
+        showSlide(currentSlide);
+        resetSlideshow();
+    };
+
+    // Navegação por teclado (setas)
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') {
+            changeSlide(-1);
+        } else if (e.key === 'ArrowRight') {
+            changeSlide(1);
+        }
+    });
+
     // Iniciar slideshow
     startSlideshow();
 

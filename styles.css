@@ -1,3 +1,17 @@
+/* Reset e Prevenir Zoom Mobile */
+* {
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+}
+
+input, select, textarea, button {
+    font-size: 16px !important;
+}
+
+input:focus, select:focus, textarea:focus {
+    font-size: 16px !important;
+}
+
 /* Estilos do Anúncio Alelo */
 @keyframes slideIn {
     0% {
@@ -526,6 +540,86 @@ textarea {
     }
     100% {
         width: 100%;
+    }
+}
+
+/* Botões de navegação do carrossel */
+.hero-nav-btn {
+    position: absolute;
+    bottom: -1.25px;
+    background: transparent;
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+    transition: opacity 0.3s ease;
+    opacity: 0.5;
+}
+
+.hero-nav-btn:hover {
+    opacity: 1;
+}
+
+.hero-nav-btn:active {
+    opacity: 0.8;
+}
+
+.hero-nav-btn i {
+    font-size: 24px;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.hero-prev {
+    left: 50%;
+    transform: translateX(calc(-50% - 216px));
+}
+
+.hero-next {
+    right: 50%;
+    transform: translateX(calc(50% + 560px));
+}
+
+/* Responsivo para botões de navegação */
+@media (max-width: 768px) {
+    .hero-nav-btn {
+        width: 36px;
+        height: 36px;
+        bottom: -1.875px;
+        opacity: 0.6;
+    }
+    
+    .hero-nav-btn:hover {
+        opacity: 1;
+    }
+    
+    .hero-nav-btn i {
+        font-size: 20px;
+    }
+    
+    .hero-prev {
+        left: 50%;
+        transform: translateX(calc(-50% - 216px));
+    }
+    
+    .hero-next {
+        right: 50%;
+        transform: translateX(calc(50% + 140px));
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-prev {
+        transform: translateX(calc(-50% - 70px));
+    }
+    
+    .hero-next {
+        transform: translateX(calc(50% + 70px));
     }
 }
 
@@ -1678,9 +1772,9 @@ textarea {
     position: fixed;
     bottom: 90px;
     right: 20px;
-    width: 50px;
-    height: 50px;
-    background: linear-gradient(135deg, #0080C0, #096c60);
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 128, 192, 0.3);
     color: white;
     border: none;
     border-radius: 50%;
@@ -1688,8 +1782,8 @@ textarea {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 20px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    font-size: 16px;
+    box-shadow: none;
     z-index: 999;
     opacity: 0;
     visibility: hidden;
@@ -1697,17 +1791,17 @@ textarea {
 }
 
 .scroll-to-top.show {
-    opacity: 1;
+    opacity: 0.4;
     visibility: visible;
 }
 
 .scroll-to-top:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    opacity: 0.8;
+    background: rgba(0, 128, 192, 0.5);
 }
 
 .scroll-to-top:active {
-    transform: translateY(-2px);
+    opacity: 0.6;
 }
 
 /* ==========================================

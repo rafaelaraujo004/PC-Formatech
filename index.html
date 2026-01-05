@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>PC Formatech - Formatação e Instalação de Programas</title>
     
     <!-- Meta Tags para SEO -->
@@ -59,8 +59,8 @@
         }
         
         .whatsapp-toggle {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             background: #096c60;
             border-radius: 50%;
             display: flex;
@@ -78,7 +78,7 @@
         }
         
         .whatsapp-toggle i {
-            font-size: 32px;
+            font-size: 26px;
             color: white;
         }
         
@@ -415,6 +415,15 @@
                 <h1>Soluções Profissionais em Formatação e Instalação de Software</h1>
                 <p>Serviço profissional e confiável para seu computador</p>
             </div>
+            
+            <!-- Botões de Navegação do Carrossel -->
+            <button class="hero-nav-btn hero-prev" onclick="changeSlide(-1)" aria-label="Imagem anterior">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="hero-nav-btn hero-next" onclick="changeSlide(1)" aria-label="Próxima imagem">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            
             <div class="hero-indicators">
                 <span class="indicator active" data-slide="0"></span>
                 <span class="indicator" data-slide="1"></span>
@@ -637,14 +646,14 @@
                                 <label for="client-name">
                                     <i class="fas fa-user"></i> Nome Completo *
                                 </label>
-                                <input type="text" id="client-name" name="name" required placeholder="Digite seu nome completo">
+                                <input type="text" id="client-name" name="name" required placeholder="Digite seu nome completo" style="font-size: 16px;">
                             </div>
 
                             <div class="form-group">
                                 <label for="client-phone">
                                     <i class="fas fa-phone"></i> Telefone/WhatsApp *
                                 </label>
-                                <input type="tel" id="client-phone" name="phone" required placeholder="(00) 00000-0000">
+                                <input type="tel" id="client-phone" name="phone" required placeholder="(00) 00000-0000" style="font-size: 16px;">
                             </div>
 
                             <div class="form-group">
@@ -744,14 +753,14 @@
                                 <label for="client-address">
                                     <i class="fas fa-map-marker-alt"></i> Endereço (Opcional)
                                 </label>
-                                <input type="text" id="client-address" name="address" placeholder="Rua, número, bairro">
+                                <input type="text" id="client-address" name="address" placeholder="Rua, número, bairro" style="font-size: 16px;">
                             </div>
 
                             <div class="form-group">
                                 <label for="additional-info">
                                     <i class="fas fa-comment"></i> Observações (Opcional)
                                 </label>
-                                <textarea id="additional-info" name="notes" rows="4" placeholder="Ex: Preciso de atendimento remoto pelo AnyDesk, meu PC está lento..."></textarea>
+                                <textarea id="additional-info" name="notes" rows="4" placeholder="Ex: Preciso de atendimento remoto pelo AnyDesk, meu PC está lento..." style="font-size: 16px;"></textarea>
                             </div>
 
                             <button type="submit" class="submit-schedule-btn">
@@ -793,7 +802,7 @@
                     <a href="https://instagram.com/pcformatech" target="_blank" class="social-link instagram">
                         <i class="fab fa-instagram"></i>
                         <span><strong>@pcformatech</strong> no Instagram</span>
-                        <small>164 seguindo • 69 seguidores • 24 posts</small>
+                        <small>181 seguindo • 94 seguidores • 34 posts</small>
                     </a>
                     <a href="https://api.whatsapp.com/send?phone=5594984305772&text=Olá! Gostaria de atendimento rápido pelo WhatsApp." target="_blank" class="social-link whatsapp">
                         <i class="fab fa-whatsapp"></i>
@@ -803,7 +812,7 @@
                     <div class="location-info">
                         <i class="fas fa-map-marker-alt"></i>
                         <span><strong>Canaã dos Carajás, PA</strong></span>
-                        <small>📍 Atendemos em toda a cidade</small>
+                        <small>📍 Atendemos em toda a Região</small>
                     </div>
                 </div>
             </div>
@@ -1121,7 +1130,7 @@
                     <i class="fas fa-map-marker-alt"></i>
                     <span>
                         <strong>Canaã dos Carajás, PA</strong>
-                        <small>📍 Atendimento em toda a cidade</small>
+                        <small>📍 Atendimento em toda a região</small>
                     </span>
                 </div>
             </div>
@@ -1149,5 +1158,42 @@
 
     <script src="main.js"></script>
     <script src="formatacao-form.js"></script>
+    
+    <!-- Script para carregar slides personalizados do admin -->
+    <script>
+        // Carregar slides do localStorage se existirem
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedSlides = localStorage.getItem('pcformatech_hero_slides');
+            
+            if (savedSlides) {
+                const slides = JSON.parse(savedSlides);
+                const heroSlider = document.querySelector('.hero-slider');
+                const heroIndicators = document.querySelector('.hero-indicators');
+                
+                if (heroSlider && slides.length > 0) {
+                    // Limpar slides existentes
+                    heroSlider.innerHTML = '';
+                    heroIndicators.innerHTML = '';
+                    
+                    // Adicionar novos slides
+                    slides.forEach((slide, index) => {
+                        // Criar slide
+                        const slideDiv = document.createElement('div');
+                        slideDiv.className = 'hero-slide' + (index === 0 ? ' active' : '');
+                        slideDiv.innerHTML = `<img src="${slide.url}" alt="${slide.alt}">`;
+                        heroSlider.appendChild(slideDiv);
+                        
+                        // Criar indicador
+                        const indicator = document.createElement('span');
+                        indicator.className = 'indicator' + (index === 0 ? ' active' : '');
+                        indicator.setAttribute('data-slide', index);
+                        heroIndicators.appendChild(indicator);
+                    });
+                    
+                    console.log('✅ Slides personalizados carregados do painel admin!');
+                }
+            }
+        });
+    </script>
 </body>
 </html>
