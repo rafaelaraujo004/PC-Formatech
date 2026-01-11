@@ -51,16 +51,20 @@ class AuthSystem {
             throw new Error('Muitas tentativas. Tente novamente em 15 minutos.');
         }
 
-        // Hash simples (SUBSTITUIR por Firebase em produção)
-        const validCredentials = {
-            username: 'admin',
-            // Senha: "pcformatech2026" (use hash SHA-256 em produção)
-            passwordHash: '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92'
-        };
+        // Credenciais aceitas (admin local)
+        const validUsers = [
+            { username: 'admin', password: 'pcformatech2026' },
+            { username: 'ADM PC FORMATECH', password: 'pcformatech2026' },
+            { username: 'contatopcformatech@gmail.com', password: 'pcformatech2026' }
+        ];
 
-        const passwordHash = await this.hashPassword(password);
-        
-        if (username === validCredentials.username && passwordHash === validCredentials.passwordHash) {
+        // Verificar credenciais
+        const validUser = validUsers.find(u => 
+            (u.username.toLowerCase() === username.toLowerCase() || u.username === username) && 
+            u.password === password
+        );
+
+        if (validUser) {
             this.currentUser = { uid: 'local-admin', email: username };
             this.resetLoginAttempts();
             this.startSession();
@@ -70,7 +74,7 @@ class AuthSystem {
             if (this.loginAttempts >= this.maxLoginAttempts) {
                 this.setLockout();
             }
-            throw new Error('Credenciais inválidas');
+            throw new Error('Credenciais inválidas. Verifique usuário e senha.');
         }
     }
 
