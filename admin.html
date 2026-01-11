@@ -4,7 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Painel Administrativo - PC Formatech</title>
+    
+    <!-- Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net;
+        style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com;
+        img-src 'self' data: https:;
+        font-src 'self' https://cdnjs.cloudflare.com;
+        connect-src 'self' https://*.firebaseio.com https://*.googleapis.com https://firestore.googleapis.com;
+    ">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Sistemas de Segurança e Database -->
+    <script src="firebase-config.js"></script>
+    <script src="auth-system.js"></script>
+    <script src="database-system.js"></script>
+    
+    <!-- Outras bibliotecas -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -621,13 +644,23 @@
     <!-- Tela de Login -->
     <div class="login-container" id="loginContainer">
         <h1><i class="fas fa-lock"></i> Acesso Administrativo</h1>
-        <form id="loginForm">
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label for="username">Email/Usuário:</label>
+                <input type="text" id="username" placeholder="Digite seu email ou usuário" required autocomplete="username">
+            </div>
             <div class="form-group">
                 <label for="password">Senha de Acesso:</label>
-                <input type="password" id="password" placeholder="Digite a senha" required>
+                <input type="password" id="password" placeholder="Digite a senha" required autocomplete="current-password">
             </div>
-            <button type="submit" class="btn-login">Entrar</button>
+            <div id="loginError" style="color: #ff4444; margin-bottom: 15px; display: none; text-align: center; font-size: 14px;"></div>
+            <button type="submit" class="btn-login" id="btnLogin">
+                <i class="fas fa-sign-in-alt"></i> Entrar
+            </button>
         </form>
+        <div style="text-align: center; margin-top: 20px; font-size: 12px; color: #666;">
+            <i class="fas fa-info-circle"></i> Sistema protegido com autenticação segura
+        </div>
     </div>
 
     <!-- Painel Admin -->
@@ -1142,35 +1175,163 @@
             }
         }
 
-        // ===== LOGIN/LOGOUT =====
-        document.getElementById('loginForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const password = document.getElementById('password').value;
+        // ===== LOGIN/LOGOUT COM SISTEMA DE SEGURANÇA =====
+        
+        async function handleLogin(event) {
+            event.preventDefault();
             
-            if (password === ADMIN_PASSWORD) {
-                document.getElementById('loginContainer').style.display = 'none';
-                document.getElementById('adminPanel').style.display = 'block';
-                updateDashboard();
-                loadClientsTable();
-            } else {
-                alert('Senha incorreta!');
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const btnLogin = document.getElementById('btnLogin');
+            const errorDiv = document.getElementById('loginError');
+            
+            // Desabilitar botão durante login
+            btnLogin.disabled = true;
+            btnLogin.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entrando...';
+            errorDiv.style.display = 'none';
+            
+            try {
+                let result;
+                
+                // Tentar login com Firebase se configurado
+                if (isFirebaseConfigured()) {
+                    result = await authSystem.loginWithFirebase(username, password);
+                } else {
+                    // Fallback para autenticação local
+                    result = await authSystem.loginLocal(username, password);
+                }
+                
+                if (result.success) {
+                    // Login bem-sucedido
+                    document.getElementById('loginContainer').style.display = 'none';
+                    document.getElementById('adminPanel').style.display = 'block';
+                    
+                    // Carregar dados
+                    await loadAllData();
+                    updateDashboard();
+                    loadClientsTable();
+                    
+                    console.log('✅ Login realizado com sucesso!');
+                } else {
+                    throw new Error(result.error || 'Falha na autenticação');
+                }
+            } catch (error) {
+                errorDiv.textContent = error.message;
+                errorDiv.style.display = 'block';
+                console.error('Erro no login:', error);
+            } finally {
+                btnLogin.disabled = false;
+                btnLogin.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar';
             }
-        });
-
-        function logout() {
-            document.getElementById('adminPanel').style.display = 'none';
-            document.getElementById('loginContainer').style.display = 'block';
-            document.getElementById('password').value = '';
         }
 
+        function logout() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                authSystem.logout();
+                document.getElementById('adminPanel').style.display = 'none';
+                document.getElementById('loginContainer').style.display = 'block';
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+            }
+        }
+
+        // ===== INICIALIZAÇÃO E VERIFICAÇÃO DE AUTENTICAÇÃO =====
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Inicializar Firebase e Database System
+                initFirebase();
+                await dbSystem.initialize();
+                
+                // Verificar se está autenticado
+                if (authSystem.isAuthenticated()) {
+                    document.getElementById('loginContainer').style.display = 'none';
+                    document.getElementById('adminPanel').style.display = 'block';
+                    
+                    // Carregar dados
+                    await loadAllData();
+                    updateDashboard();
+                    loadClientsTable();
+                } else {
+                    document.getElementById('loginContainer').style.display = 'block';
+                    document.getElementById('adminPanel').style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Erro na inicialização:', error);
+            }
+        });
+        
+        // Carregar todos os dados do banco
+        async function loadAllData() {
+            try {
+                // Carregar clientes
+                const clientsData = await dbSystem.getClients();
+                if (clientsData && clientsData.length > 0) {
+                    clients = clientsData;
+                } else {
+                    loadClientsFromStorage();
+                }
+                
+                // Carregar orçamentos
+                const budgetsData = await dbSystem.getBudgets();
+                if (budgetsData && budgetsData.length > 0) {
+                    budgets = budgetsData;
+                } else {
+                    loadBudgetsFromStorage();
+                }
+                
+                // Carregar produtos
+                const productsData = await dbSystem.getProducts();
+                if (productsData && productsData.length > 0) {
+                    products = productsData;
+                } else {
+                    loadProductsFromStorage();
+                }
+                
+                // Carregar slides
+                const slidesData = await dbSystem.getSlides();
+                if (slidesData && slidesData.length > 0) {
+                    heroSlides = slidesData;
+                } else {
+                    loadHeroSlides();
+                }
+                
+                console.log('✅ Dados carregados do banco');
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+                // Fallback para localStorage
+                loadClientsFromStorage();
+                loadBudgetsFromStorage();
+                loadProductsFromStorage();
+                loadHeroSlides();
+            }
+        }
+        
         // ===== GESTÃO DE CLIENTES =====
         function loadClientsFromStorage() {
             const saved = localStorage.getItem('pcformatech_clients');
             clients = saved ? JSON.parse(saved) : [];
         }
 
-        function saveClientsToStorage() {
+        async function saveClientsToStorage() {
+            // Salvar no localStorage (fallback)
             localStorage.setItem('pcformatech_clients', JSON.stringify(clients));
+            
+            // Tentar salvar no Firebase se configurado
+            if (dbSystem.useFirebase) {
+                try {
+                    // Sincronizar cada cliente
+                    for (const client of clients) {
+                        if (!client.syncedToFirebase) {
+                            await dbSystem.saveClient(client);
+                            client.syncedToFirebase = true;
+                        }
+                    }
+                    console.log('✅ Clientes sincronizados com Firebase');
+                } catch (error) {
+                    console.error('Erro ao sincronizar clientes:', error);
+                }
+            }
         }
 
         function saveClient() {
@@ -2489,8 +2650,19 @@
             heroSlides = saved ? JSON.parse(saved) : defaultSlides;
         }
 
-        function saveHeroSlides() {
+        async function saveHeroSlides() {
+            // Salvar no localStorage (fallback)
             localStorage.setItem('pcformatech_hero_slides', JSON.stringify(heroSlides));
+            
+            // Salvar no Firebase se configurado
+            if (dbSystem.useFirebase) {
+                try {
+                    await dbSystem.saveSlides(heroSlides);
+                    console.log('✅ Slides sincronizados com Firebase');
+                } catch (error) {
+                    console.error('Erro ao sincronizar slides:', error);
+                }
+            }
         }
 
         function renderSlides() {
