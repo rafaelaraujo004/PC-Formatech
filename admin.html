@@ -1199,12 +1199,16 @@
             try {
                 let result;
                 
-                // Tentar login com Firebase se configurado
-                if (isFirebaseConfigured()) {
-                    result = await authSystem.loginWithFirebase(username, password);
-                } else {
-                    // Fallback para autenticação local
+                // PRIMEIRO tentar login local (admin)
+                try {
                     result = await authSystem.loginLocal(username, password);
+                } catch (localError) {
+                    // Se login local falhar e Firebase estiver configurado, tentar Firebase
+                    if (isFirebaseConfigured()) {
+                        result = await authSystem.loginWithFirebase(username, password);
+                    } else {
+                        throw localError;
+                    }
                 }
                 
                 if (result.success) {
