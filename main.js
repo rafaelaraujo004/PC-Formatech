@@ -1,61 +1,85 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Carrossel Hero
-    const slides = document.querySelectorAll('.hero-slide');
-    const indicators = document.querySelectorAll('.indicator');
-    let currentSlide = 0;
-    let slideInterval;
+    // Função para inicializar o carrossel
+    window.initializeHeroCarousel = function() {
+        // Carrossel Hero
+        const slides = document.querySelectorAll('.hero-slide');
+        const indicators = document.querySelectorAll('.indicator');
+        let currentSlide = 0;
+        let slideInterval;
 
-    function showSlide(index) {
-        // Remove active de todos
-        slides.forEach(slide => slide.classList.remove('active'));
-        indicators.forEach(indicator => indicator.classList.remove('active'));
-        
-        // Adiciona active ao slide atual
-        slides[index].classList.add('active');
-        indicators[index].classList.add('active');
-    }
+        // Limpar intervalos anteriores se existirem
+        if (window.heroSlideInterval) {
+            clearInterval(window.heroSlideInterval);
+        }
 
-    function nextSlide() {
-        currentSlide = (currentSlide + 1) % slides.length;
-        showSlide(currentSlide);
-    }
+        function showSlide(index) {
+            // Remove active de todos
+            slides.forEach(slide => slide.classList.remove('active'));
+            indicators.forEach(indicator => indicator.classList.remove('active'));
+            
+            // Adiciona active ao slide atual
+            if (slides[index]) {
+                slides[index].classList.add('active');
+            }
+            if (indicators[index]) {
+                indicators[index].classList.add('active');
+            }
+        }
 
-    function startSlideshow() {
-        slideInterval = setInterval(nextSlide, 10000); // 10 segundos
-    }
+        function nextSlide() {
+            if (slides.length > 0) {
+                currentSlide = (currentSlide + 1) % slides.length;
+                showSlide(currentSlide);
+            }
+        }
 
-    function resetSlideshow() {
-        clearInterval(slideInterval);
-        startSlideshow();
-    }
+        function startSlideshow() {
+            if (slides.length > 1) {
+                slideInterval = setInterval(nextSlide, 10000); // 10 segundos
+                window.heroSlideInterval = slideInterval;
+            }
+        }
 
-    // Clique nos indicadores
-    indicators.forEach((indicator, index) => {
-        indicator.addEventListener('click', () => {
-            currentSlide = index;
-            showSlide(currentSlide);
-            resetSlideshow();
+        function resetSlideshow() {
+            clearInterval(slideInterval);
+            startSlideshow();
+        }
+
+        // Clique nos indicadores
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => {
+                currentSlide = index;
+                showSlide(currentSlide);
+                resetSlideshow();
+            });
         });
-    });
 
-    // Função para mudar slide (usada pelos botões de navegação)
-    window.changeSlide = function(direction) {
-        currentSlide = (currentSlide + direction + slides.length) % slides.length;
-        showSlide(currentSlide);
-        resetSlideshow();
+        // Função para mudar slide (usada pelos botões de navegação)
+        window.changeSlide = function(direction) {
+            if (slides.length > 0) {
+                currentSlide = (currentSlide + direction + slides.length) % slides.length;
+                showSlide(currentSlide);
+                resetSlideshow();
+            }
+        };
+
+        // Navegação por teclado (setas)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                changeSlide(-1);
+            } else if (e.key === 'ArrowRight') {
+                changeSlide(1);
+            }
+        });
+
+        // Iniciar slideshow
+        if (slides.length > 0) {
+            startSlideshow();
+        }
     };
 
-    // Navegação por teclado (setas)
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowLeft') {
-            changeSlide(-1);
-        } else if (e.key === 'ArrowRight') {
-            changeSlide(1);
-        }
-    });
-
-    // Iniciar slideshow
-    startSlideshow();
+    // Inicializar carrossel pela primeira vez
+    initializeHeroCarousel();
 
     // Ocultar header ao rolar para baixo
     let lastScrollTop = 0;

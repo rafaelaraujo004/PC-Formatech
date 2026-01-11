@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -691,6 +692,15 @@
                     <h3 id="totalRevenue">R$ 0,00</h3>
                     <p><i class="fas fa-money-bill-wave"></i> Receita Total</p>
                 </div>
+                <div class="stat-card" style="grid-column: 1 / -1; background: linear-gradient(135deg, #28a745 0%, #218838 100%);">
+                    <h3 id="clientsServed" style="color: white;">0</h3>
+                    <p style="color: white;"><i class="fas fa-user-check"></i> Clientes Atendidos (com serviços concluídos)</p>
+                </div>
+            </div>
+            
+            <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-top: 30px;">
+                <h2 style="color: #0B3D3D; margin-bottom: 20px;"><i class="fas fa-chart-bar"></i> Relatório Mensal</h2>
+                <canvas id="monthlyChart" style="max-height: 400px;"></canvas>
             </div>
         </div>
 
@@ -757,6 +767,10 @@
         <div id="tab-services" class="tab-content">
             <div class="clients-container">
                 <h2><i class="fas fa-briefcase"></i> Gestão de Serviços por Cliente</h2>
+                
+                <button class="btn-save" onclick="openAddServiceDirectModal()" style="margin-bottom: 20px;">
+                    <i class="fas fa-plus-circle"></i> Adicionar Novo Serviço
+                </button>
                 
                 <div class="search-box">
                     <input type="text" id="searchServiceClient" placeholder="🔍 Buscar cliente..." onkeyup="searchServiceClients()">
@@ -1468,11 +1482,14 @@
         }
 
         // ===== DASHBOARD =====
+        let monthlyChart = null;
+        
         function updateDashboard() {
             const totalClients = clients.length;
             let totalServices = 0;
             let pendingServices = 0;
             let totalRevenue = 0;
+            let clientsServedSet = new Set();
 
             clients.forEach(client => {
                 if (client.services) {
@@ -1483,6 +1500,7 @@
                         }
                         if (service.status === 'concluido') {
                             totalRevenue += service.price;
+                            clientsServedSet.add(client.id);
                         }
                     });
                 }
@@ -1492,6 +1510,106 @@
             document.getElementById('totalServices').textContent = totalServices;
             document.getElementById('pendingServices').textContent = pendingServices;
             document.getElementById('totalRevenue').textContent = `R$ ${totalRevenue.toFixed(2).replace('.', ',')}`;
+            document.getElementById('clientsServed').textContent = clientsServedSet.size;
+            
+            updateMonthlyChart();
+        }
+        
+        function updateMonthlyChart() {
+            // Preparar dados mensais
+            const monthlyData = {};
+            const now = new Date();
+            
+            // Inicializar últimos 6 meses
+            for (let i = 5; i >= 0; i--) {
+                const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+                monthlyData[key] = { clients: new Set(), services: 0 };
+            }
+            
+            // Contabilizar serviços concluídos por mês
+            clients.forEach(client => {
+                if (client.services) {
+                    client.services.forEach(service => {
+                        if (service.status === 'concluido' && service.date) {
+                            const serviceDate = new Date(service.date);
+                            const key = `${serviceDate.getFullYear()}-${String(serviceDate.getMonth() + 1).padStart(2, '0')}`;
+                            
+                            if (monthlyData[key]) {
+                                monthlyData[key].clients.add(client.id);
+                                monthlyData[key].services++;
+                            }
+                        }
+                    });
+                }
+            });
+            
+            // Preparar dados para o gráfico
+            const labels = [];
+            const clientsData = [];
+            const servicesData = [];
+            
+            Object.keys(monthlyData).sort().forEach(key => {
+                const [year, month] = key.split('-');
+                const monthNames = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+                labels.push(`${monthNames[parseInt(month) - 1]}/${year}`);
+                clientsData.push(monthlyData[key].clients.size);
+                servicesData.push(monthlyData[key].services);
+            });
+            
+            // Destruir gráfico anterior se existir
+            if (monthlyChart) {
+                monthlyChart.destroy();
+            }
+            
+            // Criar novo gráfico
+            const ctx = document.getElementById('monthlyChart');
+            if (ctx) {
+                monthlyChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Clientes Atendidos',
+                                data: clientsData,
+                                backgroundColor: 'rgba(40, 167, 69, 0.7)',
+                                borderColor: 'rgba(40, 167, 69, 1)',
+                                borderWidth: 2
+                            },
+                            {
+                                label: 'Serviços Realizados',
+                                data: servicesData,
+                                backgroundColor: 'rgba(64, 153, 143, 0.7)',
+                                borderColor: 'rgba(64, 153, 143, 1)',
+                                borderWidth: 2
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top'
+                            },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false
+                            }
+                        }
+                    }
+                });
+            }
         }
 
         // ===== GESTÃO DE PREÇOS (código original) =====
@@ -2069,6 +2187,9 @@
                         <button class="btn-action btn-view" onclick="viewBudget(${budget.id})">
                             <i class="fas fa-eye"></i> Ver
                         </button>
+                        <button class="btn-action" style="background: #28a745; color: white;" onclick="convertBudgetToService(${budget.id})" title="Converter para serviço">
+                            <i class="fas fa-exchange-alt"></i> Converter
+                        </button>
                         <button class="btn-action btn-whatsapp" onclick="generatePDFForBudget(${budget.id})">
                             <i class="fas fa-file-pdf"></i> PDF
                         </button>
@@ -2385,7 +2506,11 @@
                         <div class="slide-order">
                             <span>Imagem ${index + 1}</span>
                         </div>
-                        <input type="text" id="slide-url-${index}" value="${slide.url}" placeholder="URL da imagem">
+                        <div style="margin-bottom: 10px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #0B3D3D;">Substituir Imagem:</label>
+                            <input type="file" id="slide-file-${index}" accept="image/*" style="width: 100%; padding: 8px; border: 2px solid #40998F; border-radius: 6px; cursor: pointer; margin-bottom: 8px;" onchange="handleImageUpload(${index}, this)">
+                            <small style="color: #666; display: block;">Tamanho máximo: 5MB</small>
+                        </div>
                         <input type="text" id="slide-alt-${index}" value="${slide.alt}" placeholder="Texto alternativo">
                         <div class="slide-actions">
                             <button class="btn-update" onclick="updateSlide(${index})">
@@ -2401,26 +2526,190 @@
             });
         }
 
+        function handleImageUpload(index, input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            // Verificar se é uma imagem
+            if (!file.type.startsWith('image/')) {
+                alert('Por favor, selecione apenas arquivos de imagem!');
+                input.value = '';
+                return;
+            }
+
+            // Verificar tamanho (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                alert('A imagem é muito grande! Por favor, use uma imagem menor que 5MB.');
+                input.value = '';
+                return;
+            }
+
+            // Ler e converter para base64
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    // Redimensionar se necessário
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    let width = img.width;
+                    let height = img.height;
+                    const maxWidth = 2400;
+                    const maxHeight = 1600;
+                    
+                    if (width > maxWidth || height > maxHeight) {
+                        const ratio = Math.min(maxWidth / width, maxHeight / height);
+                        width = width * ratio;
+                        height = height * ratio;
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    // Converter para base64
+                    const base64 = canvas.toDataURL('image/jpeg', 0.85);
+                    
+                    // Atualizar preview
+                    const preview = input.closest('.slide-card').querySelector('.slide-preview');
+                    preview.src = base64;
+                    
+                    // Limpar URL input
+                    document.getElementById(`slide-url-${index}`).value = '';
+                    
+                    // Salvar temporariamente
+                    window.tempUploadedImage = base64;
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
         function addNewSlide() {
-            const url = prompt('Cole a URL da nova imagem:');
-            if (!url) return;
-
-            const alt = prompt('Digite o texto alternativo (descrição) da imagem:');
-            if (!alt) return;
-
-            heroSlides.push({ url, alt });
-            saveHeroSlides();
-            renderSlides();
-            updateIndexHtml();
-            showSuccess();
+            // Criar um modal temporário para adicionar nova imagem
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: white; padding: 30px; border-radius: 12px; max-width: 500px; width: 90%;">
+                    <h3 style="margin-bottom: 20px; color: #0B3D3D;">Adicionar Nova Imagem</h3>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #0B3D3D;">Selecione a Imagem:</label>
+                        <input type="file" id="newSlideFile" accept="image/*" style="width: 100%; padding: 10px; border: 2px solid #40998F; border-radius: 8px; font-size: 16px; cursor: pointer;">
+                        <small style="display: block; margin-top: 5px; color: #666;">Tamanho máximo: 5MB | Formatos: JPG, PNG, GIF</small>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #0B3D3D;">Texto Alternativo:</label>
+                        <input type="text" id="newSlideAlt" placeholder="Descrição da imagem" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 6px; font-size: 16px;">
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button id="btnConfirmAdd" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #40998F 0%, #2D7A7A 100%); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Adicionar</button>
+                        <button id="btnCancelAdd" style="flex: 1; padding: 12px; background: #ff4444; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Cancelar</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            let uploadedImage = null;
+            
+            // Handle file upload
+            document.getElementById('newSlideFile').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                if (!file.type.startsWith('image/')) {
+                    alert('Por favor, selecione apenas arquivos de imagem!');
+                    e.target.value = '';
+                    return;
+                }
+                
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('A imagem é muito grande! Por favor, use uma imagem menor que 5MB.');
+                    e.target.value = '';
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        
+                        let width = img.width;
+                        let height = img.height;
+                        const maxWidth = 2400;
+                        const maxHeight = 1600;
+                        
+                        if (width > maxWidth || height > maxHeight) {
+                            const ratio = Math.min(maxWidth / width, maxHeight / height);
+                            width = width * ratio;
+                            height = height * ratio;
+                        }
+                        
+                        canvas.width = width;
+                        canvas.height = height;
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        uploadedImage = canvas.toDataURL('image/jpeg', 0.85);
+                    };
+                    img.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+            
+            document.getElementById('btnConfirmAdd').onclick = function() {
+                const alt = document.getElementById('newSlideAlt').value;
+                
+                if (!uploadedImage) {
+                    alert('Por favor, selecione uma imagem!');
+                    return;
+                }
+                
+                if (!alt) {
+                    alert('Por favor, digite o texto alternativo!');
+                    return;
+                }
+                
+                heroSlides.push({ url: uploadedImage, alt });
+                saveHeroSlides();
+                renderSlides();
+                updateIndexHtml();
+                showSuccess();
+                document.body.removeChild(modal);
+            };
+            
+            document.getElementById('btnCancelAdd').onclick = function() {
+                document.body.removeChild(modal);
+            };
+            
+            // Fechar ao clicar fora
+            modal.onclick = function(e) {
+                if (e.target === modal) {
+                    document.body.removeChild(modal);
+                }
+            };
         }
 
         function updateSlide(index) {
-            const url = document.getElementById(`slide-url-${index}`).value;
+            const url = window.tempUploadedImage || heroSlides[index].url;
             const alt = document.getElementById(`slide-alt-${index}`).value;
 
-            if (!url || !alt) {
-                alert('Por favor, preencha a URL e o texto alternativo!');
+            if (!alt) {
+                alert('Por favor, preencha o texto alternativo!');
                 return;
             }
 
@@ -2429,6 +2718,9 @@
             renderSlides();
             updateIndexHtml();
             showSuccess();
+            
+            // Limpar upload temporário
+            window.tempUploadedImage = null;
         }
 
         function removeSlide(index) {
@@ -2447,28 +2739,301 @@
         }
 
         function updateIndexHtml() {
-            alert('⚠️ ATENÇÃO!\n\nAs alterações foram salvas no painel.\n\nPara aplicar as mudanças no site, você precisa atualizar o arquivo index.html.\n\nVocê pode:\n1. Copiar o código HTML gerado abaixo\n2. Ou usar a funcão "Exportar HTML" que será criada\n\nDeseja ver o código HTML agora?');
-            
             // Gerar HTML dos slides
-            let html = '';
+            let slidesHtml = '';
             heroSlides.forEach((slide, index) => {
                 const activeClass = index === 0 ? ' active' : '';
-                html += `                <div class="hero-slide${activeClass}">\n`;
-                html += `                    <img src="${slide.url}" alt="${slide.alt}">\n`;
-                html += `                </div>\n`;
+                slidesHtml += `                <div class="hero-slide${activeClass}">\n`;
+                slidesHtml += `                    <img src="${slide.url}" alt="${slide.alt}">\n`;
+                slidesHtml += `                </div>\n`;
             });
             
-            console.log('HTML dos slides:\n', html);
-            console.log('\nIndicadores:\n');
-            
-            let indicators = '';
+            let indicatorsHtml = '';
             heroSlides.forEach((slide, index) => {
                 const activeClass = index === 0 ? ' active' : '';
-                indicators += `                <span class="indicator${activeClass}" data-slide="${index}"></span>\n`;
+                indicatorsHtml += `                <span class="indicator${activeClass}" data-slide="${index}"></span>\n`;
             });
             
-            console.log(indicators);
+            // Criar modal com código HTML para copiar
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.9);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+                overflow-y: auto;
+                padding: 20px;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: white; padding: 30px; border-radius: 12px; max-width: 800px; width: 90%; max-height: 90vh; overflow-y: auto;">
+                    <h3 style="margin-bottom: 15px; color: #0B3D3D;">📋 Código HTML Atualizado</h3>
+                    <p style="margin-bottom: 15px; color: #666; line-height: 1.6;">
+                        Para aplicar as imagens no site publicado, siga os passos:
+                    </p>
+                    <ol style="margin-bottom: 20px; color: #666; line-height: 1.8; padding-left: 20px;">
+                        <li>Clique em "Copiar Slides" e "Copiar Indicadores"</li>
+                        <li>Abra o arquivo <strong>index.html</strong></li>
+                        <li>Substitua as seções correspondentes</li>
+                        <li>Salve e faça commit/push para o Vercel</li>
+                    </ol>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <label style="font-weight: 600; color: #0B3D3D;">HTML dos Slides:</label>
+                            <button onclick="copyToClipboard('slidesCode', 'btnCopySlides')" id="btnCopySlides" style="padding: 8px 16px; background: #40998F; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                                <i class="fas fa-copy"></i> Copiar Slides
+                            </button>
+                        </div>
+                        <textarea id="slidesCode" readonly style="width: 100%; height: 200px; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 12px; resize: vertical;">${slidesHtml}</textarea>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <label style="font-weight: 600; color: #0B3D3D;">HTML dos Indicadores:</label>
+                            <button onclick="copyToClipboard('indicatorsCode', 'btnCopyIndicators')" id="btnCopyIndicators" style="padding: 8px 16px; background: #40998F; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                                <i class="fas fa-copy"></i> Copiar Indicadores
+                            </button>
+                        </div>
+                        <textarea id="indicatorsCode" readonly style="width: 100%; height: 120px; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 12px; resize: vertical;">${indicatorsHtml}</textarea>
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="downloadIndexHtml()" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #40998F 0%, #2D7A7A 100%); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                            <i class="fas fa-download"></i> Baixar index.html Completo
+                        </button>
+                        <button onclick="this.closest('[style*=fixed]').remove()" style="padding: 12px 24px; background: #ff4444; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                            Fechar
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Fechar ao clicar fora
+            modal.onclick = function(e) {
+                if (e.target === modal) {
+                    document.body.removeChild(modal);
+                }
+            };
         }
+        
+        function copyToClipboard(textareaId, buttonId) {
+            const textarea = document.getElementById(textareaId);
+            textarea.select();
+            document.execCommand('copy');
+            
+            const button = document.getElementById(buttonId);
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-check"></i> Copiado!';
+            button.style.background = '#28a745';
+            
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.style.background = '#40998F';
+            }, 2000);
+        }
+        
+        async function downloadIndexHtml() {
+            try {
+                // Buscar o index.html atual
+                const response = await fetch('index.html');
+                let indexContent = await response.text();
+                
+                // Gerar novo HTML dos slides
+                let newSlidesHtml = '';
+                heroSlides.forEach((slide, index) => {
+                    const activeClass = index === 0 ? ' active' : '';
+                    newSlidesHtml += `                <div class="hero-slide${activeClass}">\n`;
+                    newSlidesHtml += `                    <img src="${slide.url}" alt="${slide.alt}">\n`;
+                    newSlidesHtml += `                </div>\n`;
+                });
+                
+                let newIndicatorsHtml = '';
+                heroSlides.forEach((slide, index) => {
+                    const activeClass = index === 0 ? ' active' : '';
+                    newIndicatorsHtml += `                <span class="indicator${activeClass}" data-slide="${index}"></span>\n`;
+                });
+                
+                // Substituir slides no HTML
+                const slidesRegex = /<div class="hero-slide[^"]*">[^]*?<\/div>\s*(?=<div class="hero-slide|<\/div>\s*<div class="hero-controls)/g;
+                indexContent = indexContent.replace(/<div class="hero-slider">[\s\S]*?(?=<div class="hero-controls">)/m, 
+                    `<div class="hero-slider">\n${newSlidesHtml}            `);
+                
+                // Substituir indicadores
+                indexContent = indexContent.replace(/<div class="hero-indicators">[\s\S]*?<\/div>/m,
+                    `<div class="hero-indicators">\n${newIndicatorsHtml}            </div>`);
+                
+                // Criar blob e download
+                const blob = new Blob([indexContent], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'index.html';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                alert('✅ Arquivo index.html baixado!\n\nAgora:\n1. Substitua o index.html antigo por este\n2. Faça commit e push para o GitHub\n3. O Vercel atualizará automaticamente');
+            } catch (error) {
+                alert('❌ Erro ao gerar arquivo.\n\nUse a opção de copiar manualmente o código.');
+                console.error(error);
+            }
+        }
+        
+        // ===== CONVERSÃO DE ORÇAMENTO PARA SERVIÇO =====
+        function convertBudgetToService(budgetId) {
+            const budget = budgets.find(b => b.id === budgetId);
+            if (!budget) {
+                alert('Orçamento não encontrado!');
+                return;
+            }
+            
+            const client = clients.find(c => c.id === budget.clientId);
+            if (!client) {
+                alert('Cliente não encontrado!');
+                return;
+            }
+            
+            if (!confirm(`Deseja converter o orçamento ${budget.number} para serviços do cliente ${client.name}?`)) {
+                return;
+            }
+            
+            // Inicializar array de serviços se não existir
+            if (!client.services) {
+                client.services = [];
+            }
+            
+            // Adicionar cada serviço do orçamento
+            if (budget.services && budget.services.length > 0) {
+                budget.services.forEach(budgetService => {
+                    const newService = {
+                        id: Date.now() + Math.random(),
+                        type: budgetService.name,
+                        description: `Convertido do orçamento ${budget.number}`,
+                        price: budgetService.price * budgetService.quantity,
+                        status: 'pendente',
+                        date: new Date().toISOString().split('T')[0],
+                        fromBudget: budget.number
+                    };
+                    client.services.push(newService);
+                });
+            }
+            
+            // Adicionar produtos como serviços se houver
+            if (budget.products && budget.products.length > 0) {
+                budget.products.forEach(budgetProduct => {
+                    const newService = {
+                        id: Date.now() + Math.random(),
+                        type: `Produto: ${budgetProduct.name}`,
+                        description: `Produto do orçamento ${budget.number}`,
+                        price: budgetProduct.price * budgetProduct.quantity,
+                        status: 'pendente',
+                        date: new Date().toISOString().split('T')[0],
+                        fromBudget: budget.number
+                    };
+                    client.services.push(newService);
+                });
+            }
+            
+            saveClientsToStorage();
+            updateDashboard();
+            alert(`Orçamento convertido com sucesso!\n${budget.services.length} serviço(s) e ${budget.products.length} produto(s) adicionados ao cliente ${client.name}.`);
+        }
+        
+        // ===== ADICIONAR SERVIÇO DIRETAMENTE =====
+        function openAddServiceDirectModal() {
+            // Abrir modal de adicionar serviço sem cliente pré-selecionado
+            // Primeiro, popular o select com todos os clientes
+            const modal = document.getElementById('serviceModal');
+            const clientSelect = document.createElement('select');
+            clientSelect.id = 'directServiceClientId';
+            clientSelect.innerHTML = '<option value="">Selecione um cliente...</option>';
+            
+            clients.forEach(client => {
+                const option = document.createElement('option');
+                option.value = client.id;
+                option.textContent = `${client.name} - ${client.phone}`;
+                clientSelect.appendChild(option);
+            });
+            
+            // Verificar se já existe o campo de seleção de cliente
+            const existingSelect = document.getElementById('directServiceClientId');
+            if (existingSelect) {
+                existingSelect.remove();
+            }
+            
+            // Adicionar campo de seleção de cliente ao formulário
+            const form = document.getElementById('addServiceForm');
+            const clientGroup = document.createElement('div');
+            clientGroup.className = 'input-group';
+            clientGroup.innerHTML = '<label>Cliente: *</label>';
+            clientGroup.appendChild(clientSelect);
+            form.insertBefore(clientGroup, form.firstChild);
+            
+            // Limpar o campo hidden de ID do cliente
+            document.getElementById('serviceClientId').value = '';
+            
+            modal.style.display = 'block';
+        }
+        
+        // Modificar a função de adicionar serviço para usar o cliente selecionado
+        document.getElementById('addServiceForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Verificar se é adição direta (com seleção de cliente)
+            const directClientSelect = document.getElementById('directServiceClientId');
+            let clientId = parseInt(document.getElementById('serviceClientId').value);
+            
+            if (directClientSelect && directClientSelect.value) {
+                clientId = parseInt(directClientSelect.value);
+            }
+            
+            if (!clientId) {
+                alert('Por favor, selecione um cliente!');
+                return;
+            }
+            
+            const client = clients.find(c => c.id === clientId);
+            if (!client) {
+                alert('Cliente não encontrado!');
+                return;
+            }
+            
+            const service = {
+                id: Date.now(),
+                type: document.getElementById('serviceType').value,
+                description: document.getElementById('serviceDescription').value,
+                price: parseFloat(document.getElementById('servicePrice').value),
+                status: document.getElementById('serviceStatus').value,
+                date: new Date().toISOString().split('T')[0]
+            };
+            
+            if (!client.services) {
+                client.services = [];
+            }
+            
+            client.services.push(service);
+            saveClientsToStorage();
+            
+            closeModal('serviceModal');
+            loadServiceClients();
+            updateDashboard();
+            showSuccess();
+            
+            // Remover o campo de seleção de cliente se existir
+            if (directClientSelect) {
+                directClientSelect.parentElement.remove();
+            }
+        });
     </script>
 </body>
 </html>

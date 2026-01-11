@@ -1162,7 +1162,7 @@
     <!-- Script para carregar slides personalizados do admin -->
     <script>
         // Carregar slides do localStorage se existirem
-        document.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', () => {
             const savedSlides = localStorage.getItem('pcformatech_hero_slides');
             
             if (savedSlides) {
@@ -1189,6 +1189,13 @@
                         indicator.setAttribute('data-slide', index);
                         heroIndicators.appendChild(indicator);
                     });
+                    
+                    // Reinicializar o carrossel após carregar slides personalizados
+                    setTimeout(() => {
+                        if (window.initializeHeroCarousel) {
+                            window.initializeHeroCarousel();
+                        }
+                    }, 100);
                     
                     console.log('✅ Slides personalizados carregados do painel admin!');
                 }
