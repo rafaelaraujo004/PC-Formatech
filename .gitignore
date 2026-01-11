@@ -6,8 +6,9 @@
 .env.development
 .env.*.local
 
-# NOTA: firebase-config.js PODE ser commitado (credenciais são públicas por design)
-# A segurança vem das regras do Firestore e autenticação
+# Configuração do Firebase (contém API Keys)
+firebase-config.js
+firebaseConfig.js
 
 # ===== NODE MODULES =====
 node_modules/
