@@ -21,9 +21,27 @@ class AuthSystem {
             this.startSession();
             return { success: true, user: this.currentUser };
         } catch (error) {
-            this.handleLoginError(error);
-            return { success: false, error: error.message };
+            this.loginAttempts++;
+            if (this.loginAttempts >= this.maxLoginAttempts) {
+                this.setLockout();
+            }
+            const errorMessage = this.getFirebaseErrorMessage(error.code);
+            return { success: false, error: errorMessage };
         }
+    }
+
+    // Traduzir erros do Firebase para mensagens amigáveis
+    getFirebaseErrorMessage(errorCode) {
+        const errorMessages = {
+            'auth/invalid-email': 'E-mail inválido',
+            'auth/user-disabled': 'Usuário desabilitado',
+            'auth/user-not-found': 'Usuário não encontrado',
+            'auth/wrong-password': 'Senha incorreta',
+            'auth/invalid-credential': 'Credenciais inválidas',
+            'auth/too-many-requests': 'Muitas tentativas. Tente novamente mais tarde',
+            'auth/network-request-failed': 'Erro de conexão. Verifique sua internet'
+        };
+        return errorMessages[errorCode] || 'Erro ao fazer login. Tente novamente.';
     }
 
     // Autenticação local (fallback) - TEMPORÁRIO até configurar Firebase
