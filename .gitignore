@@ -6,9 +6,9 @@
 .env.development
 .env.*.local
 
-# Configuração do Firebase (contém API Keys)
-firebase-config.js
-firebaseConfig.js
+# Configuração do Firebase - NOTA: firebase-config.js PODE ser commitado
+# As API Keys do Firebase são públicas e seguras quando protegidas por regras do Firestore
+# firebase-config.example.js (este pode ficar ignorado)
 
 # ===== NODE MODULES =====
 node_modules/
