@@ -1,10 +1,20 @@
 // Configuração do Firebase - PC Formatech
-// NOTA: Estas credenciais são PÚBLICAS e seguras de expor
-// A segurança é garantida pelas regras do Firestore e autenticação
-// Veja: https://firebase.google.com/docs/projects/api-keys
+// 
+// ⚠️ ATENÇÃO GITHUB SCANNER: Estas credenciais são INTENCIONALMENTE públicas
+// Firebase API Keys são SEGURAS de expor publicamente por design do Google
+// 
+// Segurança implementada através de:
+// 1. Regras do Firestore (bloqueiam acesso não autorizado)
+// 2. Firebase Authentication (apenas usuários autenticados)
+// 3. Restrições de domínio no Firebase Console
+// 
+// Documentação oficial: https://firebase.google.com/docs/projects/api-keys
+// "Unlike how API keys are typically used, API keys for Firebase services are 
+//  not used to control access to backend resources; that can only be done with 
+//  Firebase Security Rules"
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAIKqmS_Mj4fOP9j8SSugosV5Hahm48J5M",
+    apiKey: "AIzaSyAIKqmS_Mj4fOP9j8SSugosV5Hahm48J5M", // gitleaks:allow
     authDomain: "pc-formatech.firebaseapp.com",
     projectId: "pc-formatech",
     storageBucket: "pc-formatech.firebasestorage.app",
