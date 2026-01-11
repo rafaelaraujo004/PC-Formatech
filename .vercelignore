@@ -1,0 +1,16 @@
+# Arquivos que não precisam ir para o Vercel
+.git
+.github
+node_modules
+.env.local
+.env.example
+*.md
+DEPLOY-INSTRUCOES.md
+GUIA-SEGURANCA.md
+GESTOR-SERVICOS.md
+README-GESTOR.md
+ORCAMENTOS-LAUDOS.md
+MOBILE-OPTIMIZATION.md
+VERIFICACAO.md
+GUIA-SLIDER.md
+firestore-rules.txt
