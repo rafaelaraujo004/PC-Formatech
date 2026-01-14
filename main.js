@@ -430,9 +430,16 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Coletar múltiplos serviços selecionados
         const serviceCheckboxes = document.querySelectorAll('input[name="service[]"]:checked');
+        
+        // Validar se encontrou os checkboxes
+        if (!serviceCheckboxes || serviceCheckboxes.length === 0) {
+            alert('Por favor, selecione pelo menos um serviço.');
+            return;
+        }
+        
         const services = Array.from(serviceCheckboxes).map(cb => cb.value);
         const servicesWithPrice = Array.from(serviceCheckboxes).map(cb => {
-            const price = parseFloat(cb.getAttribute('data-price'));
+            const price = parseFloat(cb.getAttribute('data-price')) || 0;
             return { name: cb.value, price: price };
         });
         

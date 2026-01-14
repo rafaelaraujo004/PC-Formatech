@@ -1274,12 +1274,22 @@
         // Carregar todos os dados do banco
         async function loadAllData() {
             try {
-                // Carregar clientes
-                const clientsData = await dbSystem.getClients();
-                if (clientsData && clientsData.length > 0) {
-                    clients = clientsData;
-                } else {
-                    loadClientsFromStorage();
+                console.log('🔄 Carregando todos os dados...');
+                
+                // Carregar clientes do localStorage primeiro (garantia)
+                loadClientsFromStorage();
+                console.log('Clientes do localStorage:', clients.length);
+                
+                // Tentar carregar do Firebase (se configurado)
+                if (dbSystem.useFirebase) {
+                    const clientsData = await dbSystem.getClients();
+                    if (clientsData && clientsData.length > 0) {
+                        // Sincronizar: usar dados do Firebase apenas se forem mais recentes
+                        console.log('Clientes do Firebase:', clientsData.length);
+                        clients = clientsData;
+                        // Atualizar localStorage com dados do Firebase
+                        localStorage.setItem('pcformatech_clients', JSON.stringify(clients));
+                    }
                 }
                 
                 // Carregar orçamentos
@@ -1324,12 +1334,12 @@
         }
 
         async function saveClientsToStorage() {
-            // Salvar no localStorage (fallback)
-            localStorage.setItem('pcformatech_clients', JSON.stringify(clients));
-            
-            // Tentar salvar no Firebase se configurado
-            if (dbSystem.useFirebase) {
-                try {
+            try {
+                // Salvar no localStorage (fallback)
+                localStorage.setItem('pcformatech_clients', JSON.stringify(clients));
+                
+                // Tentar salvar no Firebase se configurado
+                if (dbSystem.useFirebase) {
                     // Sincronizar cada cliente
                     for (const client of clients) {
                         if (!client.syncedToFirebase) {
@@ -1338,9 +1348,9 @@
                         }
                     }
                     console.log('✅ Clientes sincronizados com Firebase');
-                } catch (error) {
-                    console.error('Erro ao sincronizar clientes:', error);
                 }
+            } catch (error) {
+                console.error('Erro ao salvar clientes:', error);
             }
         }
 
@@ -1412,16 +1422,16 @@
                     <td>${client.email || '-'}</td>
                     <td><span class="service-status status-${serviceCount > 0 ? 'concluido' : 'pendente'}">${serviceCount} serviço(s)</span></td>
                     <td>
-                        <button class="btn-action btn-view" onclick="viewClient(${client.id})">
+                        <button class="btn-action btn-view" onclick="viewClient('${client.id}')">
                             <i class="fas fa-eye"></i> Ver
                         </button>
-                        <button class="btn-action btn-edit" onclick="editClient(${client.id})">
+                        <button class="btn-action btn-edit" onclick="editClient('${client.id}')">
                             <i class="fas fa-edit"></i> Editar
                         </button>
                         <button class="btn-action btn-whatsapp" onclick="openWhatsApp('${client.phone}', '${client.name}')">
                             <i class="fab fa-whatsapp"></i> WhatsApp
                         </button>
-                        <button class="btn-action btn-delete" onclick="deleteClient(${client.id})">
+                        <button class="btn-action btn-delete" onclick="deleteClient('${client.id}')">
                             <i class="fas fa-trash"></i> Excluir
                         </button>
                     </td>
@@ -1471,10 +1481,10 @@
                                     <p><strong>Descrição:</strong> ${service.description || '-'}</p>
                                     <p><strong>Valor:</strong> R$ ${service.price.toFixed(2).replace('.', ',')}</p>
                                     <p><strong>Data:</strong> ${new Date(service.date).toLocaleDateString('pt-BR')}</p>
-                                    <button class="btn-action btn-edit" onclick="editService(${client.id}, ${index})">
+                                    <button class="btn-action btn-edit" onclick="editService('${client.id}', ${index})">
                                         <i class="fas fa-edit"></i> Editar Status
                                     </button>
-                                    <button class="btn-action btn-delete" onclick="deleteService(${client.id}, ${index})">
+                                    <button class="btn-action btn-delete" onclick="deleteService('${client.id}', ${index})">
                                         <i class="fas fa-trash"></i> Remover
                                     </button>
                                 </div>
@@ -1504,11 +1514,43 @@
         }
 
         function deleteClient(clientId) {
-            if (confirm('Tem certeza que deseja excluir este cliente e todo seu histórico?')) {
-                clients = clients.filter(c => c.id !== clientId);
-                saveClientsToStorage();
+            if (!confirm('Tem certeza que deseja excluir este cliente e todo seu histórico?')) {
+                return;
+            }
+            
+            try {
+                const id = String(clientId); // Manter como string para compatibilidade Firebase
+                console.log('Deletando cliente ID:', id);
+                console.log('IDs dos clientes:', clients.map(c => `${c.id} (${typeof c.id})`));
+                
+                // Filtrar removendo o cliente - comparar como string
+                const antes = clients.length;
+                clients = clients.filter(c => String(c.id) !== id);
+                const depois = clients.length;
+                
+                console.log(`Clientes: ${antes} → ${depois}`);
+                
+                if (depois === antes) {
+                    console.error('❌ NENHUM cliente foi removido! Verificar IDs.');
+                    alert('Erro: Cliente não encontrado!');
+                    return;
+                }
+                
+                // Salvar no localStorage
+                localStorage.setItem('pcformatech_clients', JSON.stringify(clients));
+                
+                // Deletar do Firebase se configurado
+                if (dbSystem && dbSystem.useFirebase) {
+                    dbSystem.deleteClient(id).catch(err => console.error('Erro Firebase:', err));
+                }
+                
+                // Atualizar interface
                 loadClientsTable();
+                updateDashboard();
                 showSuccess();
+            } catch (error) {
+                console.error('Erro ao deletar:', error);
+                alert('Erro ao deletar cliente');
             }
         }
 
@@ -1604,12 +1646,40 @@
         }
 
         function deleteService(clientId, serviceIndex) {
-            if (confirm('Tem certeza que deseja remover este serviço?')) {
-                const client = clients.find(c => c.id === clientId);
-                client.services.splice(serviceIndex, 1);
-                saveClientsToStorage();
-                viewClient(clientId);
+            if (!confirm('Tem certeza que deseja remover este serviço?')) {
+                return;
+            }
+            
+            try {
+                const id = String(clientId); // Manter como string
+                const index = Number(serviceIndex);
+                
+                console.log('Deletando serviço:', { clientId: id, serviceIndex: index });
+                
+                const client = clients.find(c => String(c.id) === id);
+                
+                if (!client) {
+                    alert('Cliente não encontrado!');
+                    return;
+                }
+                
+                if (!client.services || !client.services[index]) {
+                    alert('Serviço não encontrado!');
+                    return;
+                }
+                
+                client.services.splice(index, 1);
+                
+                // Salvar
+                localStorage.setItem('pcformatech_clients', JSON.stringify(clients));
+                
+                // Atualizar
+                viewClient(id);
+                updateDashboard();
                 showSuccess();
+            } catch (error) {
+                console.error('Erro ao deletar serviço:', error);
+                alert('Erro ao deletar serviço');
             }
         }
 
@@ -1657,19 +1727,19 @@
         
         function updateDashboard() {
             const totalClients = clients.length;
-            let totalServices = 0;
+            let completedServices = 0; // Apenas serviços concluídos
             let pendingServices = 0;
             let totalRevenue = 0;
             let clientsServedSet = new Set();
 
             clients.forEach(client => {
                 if (client.services) {
-                    totalServices += client.services.length;
                     client.services.forEach(service => {
                         if (service.status === 'pendente' || service.status === 'andamento') {
                             pendingServices++;
                         }
                         if (service.status === 'concluido') {
+                            completedServices++; // Contar apenas concluídos
                             totalRevenue += service.price;
                             clientsServedSet.add(client.id);
                         }
@@ -1678,7 +1748,7 @@
             });
 
             document.getElementById('totalClients').textContent = totalClients;
-            document.getElementById('totalServices').textContent = totalServices;
+            document.getElementById('totalServices').textContent = completedServices; // Mostrar apenas concluídos
             document.getElementById('pendingServices').textContent = pendingServices;
             document.getElementById('totalRevenue').textContent = `R$ ${totalRevenue.toFixed(2).replace('.', ',')}`;
             document.getElementById('clientsServed').textContent = clientsServedSet.size;
@@ -2030,7 +2100,10 @@
         }
 
         function getNextBudgetNumber() {
-            const lastNumber = budgets.length > 0 ? Math.max(...budgets.map(b => b.number || 0)) : 0;
+            if (!budgets || budgets.length === 0) {
+                return '0001-25';
+            }
+            const lastNumber = Math.max(...budgets.map(b => b.number || 0));
             return (lastNumber + 1).toString().padStart(4, '0') + '-25';
         }
 
