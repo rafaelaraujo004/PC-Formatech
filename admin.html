@@ -807,8 +807,8 @@
             <div class="clients-container">
                 <h2><i class="fas fa-briefcase"></i> Gestão de Serviços por Cliente</h2>
                 
-                <button class="btn-save" onclick="openAddServiceDirectModal()" style="margin-bottom: 20px;">
-                    <i class="fas fa-plus-circle"></i> Adicionar Novo Serviço
+                <button class="btn-save" onclick="openAddServiceDirectModal()" style="margin: 15px 0;">
+                    <i class="fas fa-plus"></i> Adicionar Novo Serviço
                 </button>
                 
                 <div class="search-box">
@@ -1089,6 +1089,7 @@
     </div>
 
     <script>
+        // v2.0 - IDs corrigidos para evitar ReferenceError
         // Senha de acesso (você pode alterar aqui)
         const ADMIN_PASSWORD = 'pcformatech2026';
 
@@ -1445,8 +1446,22 @@
         }
 
         function viewClient(clientId) {
-            const client = clients.find(c => c.id === clientId);
-            if (!client) return;
+            console.log('🔍 viewClient chamado com ID:', clientId, 'Tipo:', typeof clientId);
+            console.log('📋 Clientes disponíveis:', clients.map(c => ({ id: c.id, nome: c.name, tipo: typeof c.id })));
+            
+            // Comparar como string para garantir compatibilidade
+            const client = clients.find(c => String(c.id) === String(clientId));
+            if (!client) {
+                console.error('❌ Cliente não encontrado:', { 
+                    clientIdBuscado: clientId, 
+                    tipoBuscado: typeof clientId,
+                    clientsIds: clients ? clients.map(c => ({ id: c.id, tipo: typeof c.id })) : [] 
+                });
+                alert(`Cliente não encontrado! ID buscado: ${clientId}`);
+                return;
+            }
+            
+            console.log('✅ Cliente encontrado:', client.name);
 
             const details = document.getElementById('clientDetails');
             const totalValue = client.services ? client.services.reduce((sum, s) => sum + s.price, 0) : 0;
@@ -1466,7 +1481,7 @@
                     <h3><i class="fas fa-briefcase"></i> Histórico de Serviços (${client.services ? client.services.length : 0})</h3>
                     <p><strong>Valor Total:</strong> R$ ${totalValue.toFixed(2).replace('.', ',')}</p>
                     
-                    <button class="btn-save" onclick="openAddServiceModal(${client.id})" style="margin: 15px 0;">
+                    <button class="btn-save" onclick="openAddServiceModal('${client.id}')" style="margin: 15px 0;">
                         <i class="fas fa-plus"></i> Adicionar Novo Serviço
                     </button>
                     
@@ -1498,7 +1513,7 @@
         }
 
         function editClient(clientId) {
-            const client = clients.find(c => c.id === clientId);
+            const client = clients.find(c => String(c.id) === String(clientId));
             if (!client) return;
 
             editingClientId = clientId;
@@ -1519,7 +1534,7 @@
             }
             
             try {
-                const id = String(clientId); // Manter como string para compatibilidade Firebase
+                const id = String(clientId); // Manter como string para compatibilidade
                 console.log('Deletando cliente ID:', id);
                 console.log('IDs dos clientes:', clients.map(c => `${c.id} (${typeof c.id})`));
                 
@@ -1578,15 +1593,48 @@
         }
 
         function openAddServiceModal(clientId) {
+            console.log('🔵 openAddServiceModal chamado com:', { clientId, tipo: typeof clientId });
+            
+            // Resetar apenas os campos visíveis (não o hidden)
+            document.getElementById('serviceType').value = '';
+            document.getElementById('serviceDescription').value = '';
+            document.getElementById('servicePrice').value = '';
+            document.getElementById('serviceStatus').value = 'pendente';
+            
+            // Setar o ID do cliente
             document.getElementById('serviceClientId').value = clientId;
-            document.getElementById('addServiceForm').reset();
+            
+            console.log('🔵 ID setado no input:', document.getElementById('serviceClientId').value);
+            
             document.getElementById('serviceModal').style.display = 'block';
         }
 
         document.getElementById('addServiceForm').addEventListener('submit', (e) => {
             e.preventDefault();
             
-            const clientId = parseInt(document.getElementById('serviceClientId').value);
+            // Verificar se é adição direta (com seleção de cliente) ou do modal do cliente
+            const directClientSelect = document.getElementById('directServiceClientId');
+            let clientId = null;
+            
+            if (directClientSelect && directClientSelect.value) {
+                // Adição direta - pegar do select
+                clientId = directClientSelect.value;
+                console.log('🔴 Usando directClientSelect:', clientId);
+            } else {
+                // Adição do modal do cliente - pegar do hidden
+                const clientIdValue = document.getElementById('serviceClientId').value;
+                clientId = clientIdValue;
+                console.log('🔴 Usando serviceClientId:', clientId);
+            }
+            
+            console.log('🔴 Submit do formulário:', { clientId, tipo: typeof clientId });
+            console.log('🔴 Clientes disponíveis:', clients ? clients.map(c => ({ id: c.id, tipo: typeof c.id, nome: c.name })) : 'CLIENTS UNDEFINED');
+            
+            if (!clientId) {
+                alert('Erro: ID do cliente não encontrado!');
+                return;
+            }
+            
             const serviceKey = document.getElementById('serviceType').value;
             const description = document.getElementById('serviceDescription').value;
             const price = parseFloat(document.getElementById('servicePrice').value);
@@ -1603,13 +1651,33 @@
                 date: new Date().toISOString()
             };
             
-            const client = clients.find(c => c.id === clientId);
+            // Comparar como string para garantir compatibilidade
+            const client = clients.find(c => String(c.id) === String(clientId));
+            if (!client) {
+                console.error('Cliente não encontrado ao adicionar serviço:', { clientId, clientsIds: clients ? clients.map(c => c.id) : [] });
+                alert('Cliente não encontrado!');
+                return;
+            }
             if (!client.services) client.services = [];
             client.services.push(service);
             
             saveClientsToStorage();
             closeModal('serviceModal');
-            viewClient(clientId);
+            
+            // Remover o select de cliente direto se existir
+            if (directClientSelect) {
+                directClientSelect.parentElement.remove();
+            }
+            
+            // Se veio do modal do cliente, atualizar a visualização
+            if (!directClientSelect) {
+                viewClient(clientId);
+            } else {
+                // Se veio da adição direta, atualizar a lista
+                loadClientsTable();
+                updateDashboard();
+            }
+            
             showSuccess();
         });
 
@@ -1625,7 +1693,13 @@
         });
 
         function editService(clientId, serviceIndex) {
-            const client = clients.find(c => c.id === clientId);
+            // Comparar como string para garantir compatibilidade
+            const client = clients.find(c => String(c.id) === String(clientId));
+            if (!client || !client.services) {
+                console.error('Cliente/serviço não encontrado:', { clientId, serviceIndex, clientsIds: clients ? clients.map(c => c.id) : [] });
+                alert('Cliente ou serviço não encontrado!');
+                return;
+            }
             const service = client.services[serviceIndex];
             
             const newStatus = prompt('Novo status do serviço:\n1 - Pendente\n2 - Em Andamento\n3 - Concluído\n4 - Cancelado', '1');
@@ -1700,6 +1774,8 @@
             }
 
             filteredClients.forEach(client => {
+                console.log('🎯 Renderizando card para cliente:', { id: client.id, tipo: typeof client.id, nome: client.name });
+                
                 const totalValue = client.services.reduce((sum, s) => sum + s.price, 0);
                 const pendingServices = client.services.filter(s => s.status === 'pendente' || s.status === 'andamento').length;
                 
@@ -1710,10 +1786,12 @@
                     <p><strong>Total de Serviços:</strong> ${client.services.length}</p>
                     <p><strong>Serviços Pendentes:</strong> ${pendingServices}</p>
                     <p><strong>Valor Total:</strong> R$ ${totalValue.toFixed(2).replace('.', ',')}</p>
-                    <button class="btn-save" onclick="viewClient(${client.id})">
+                    <button class="btn-save" onclick="viewClient('${client.id}')">
                         <i class="fas fa-eye"></i> Ver Detalhes Completos
                     </button>
                 `;
+                
+                console.log('📝 HTML gerado para botão:', clientCard.querySelector('button').getAttribute('onclick'));
                 container.appendChild(clientCard);
             });
         }
@@ -1852,7 +1930,7 @@
                 });
             }
         }
-
+        
         // ===== GESTÃO DE PREÇOS (código original) =====
         // ===== GESTÃO DE PREÇOS (código original) =====
         function loadServices() {
@@ -2036,10 +2114,10 @@
                     <td><span class="service-status ${product.stock > 0 ? 'status-concluido' : 'status-cancelado'}">${product.stock} un</span></td>
                     <td>${getCategoryName(product.category)}</td>
                     <td>
-                        <button class="btn-action btn-edit" onclick="editProduct(${product.id})">
+                        <button class="btn-action btn-edit" onclick="editProduct('${product.id}')">
                             <i class="fas fa-edit"></i> Editar
                         </button>
-                        <button class="btn-action btn-delete" onclick="deleteProduct(${product.id})">
+                        <button class="btn-action btn-delete" onclick="deleteProduct('${product.id}')">
                             <i class="fas fa-trash"></i> Excluir
                         </button>
                     </td>
@@ -2428,16 +2506,16 @@
                     <td><strong>R$ ${total.toFixed(2).replace('.', ',')}</strong></td>
                     <td><span class="service-status ${budget.type === 'laudo' ? 'status-concluido' : 'status-andamento'}">${budget.type === 'laudo' ? 'Laudo' : 'Orçamento'}</span></td>
                     <td>
-                        <button class="btn-action btn-view" onclick="viewBudget(${budget.id})">
+                        <button class="btn-action btn-view" onclick="viewBudget('${budget.id}')">
                             <i class="fas fa-eye"></i> Ver
                         </button>
-                        <button class="btn-action" style="background: #28a745; color: white;" onclick="convertBudgetToService(${budget.id})" title="Converter para serviço">
+                        <button class="btn-action" style="background: #28a745; color: white;" onclick="convertBudgetToService('${budget.id}')" title="Converter para serviço">
                             <i class="fas fa-exchange-alt"></i> Converter
                         </button>
-                        <button class="btn-action btn-whatsapp" onclick="generatePDFForBudget(${budget.id})">
+                        <button class="btn-action btn-whatsapp" onclick="generatePDFForBudget('${budget.id}')">
                             <i class="fas fa-file-pdf"></i> PDF
                         </button>
-                        <button class="btn-action btn-delete" onclick="deleteBudget(${budget.id})">
+                        <button class="btn-action btn-delete" onclick="deleteBudget('${budget.id}')">
                             <i class="fas fa-trash"></i> Excluir
                         </button>
                     </td>
@@ -3240,7 +3318,8 @@
             modal.style.display = 'block';
         }
         
-        // Modificar a função de adicionar serviço para usar o cliente selecionado
+        // Modificar a função de adicionar serviço para usar o cliente selecionado (REMOVIDO - usando o listener principal)
+        /*
         document.getElementById('addServiceForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -3289,6 +3368,7 @@
                 directClientSelect.parentElement.remove();
             }
         });
+        */
     </script>
 </body>
 </html>
