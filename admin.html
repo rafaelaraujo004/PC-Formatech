@@ -3,40 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="description" content="Painel administrativo para gestão de orçamentos e serviços da PC Formatech">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    <title>Painel Administrativo - PC Formatech 2026</title>
-    <!-- Sistema atualizado com Firebase Authentication -->
-    
-    <!-- Content Security Policy -->
-    <meta http-equiv="Content-Security-Policy" content="
-        default-src 'self';
-        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://*.firebaseio.com;
-        style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com;
-        img-src 'self' data: https: blob:;
-        font-src 'self' https://cdnjs.cloudflare.com data:;
-        connect-src 'self' https://*.firebaseio.com https://*.googleapis.com https://firestore.googleapis.com wss://*.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com;
-        frame-src 'self' https://*.firebaseapp.com;
-    ">
-    
+    <title>Painel Administrativo - PC Formatech</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
-    
-    <!-- Sistemas de Segurança e Database -->
-    <script src="firebase-config.js"></script>
-    <script src="auth-system.js"></script>
-    <script src="database-system.js"></script>
-    
-    <!-- Outras bibliotecas -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -390,6 +361,11 @@
             background: #25D366;
             color: white;
         }
+        
+        .btn-convert {
+            background: #9C27B0;
+            color: white;
+        }
 
         .btn-action:hover {
             transform: translateY(-2px);
@@ -511,6 +487,27 @@
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             text-align: center;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-top: 30px;
+        }
+
+        .chart-container h2 {
+            color: #0B3D3D;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 400px;
         }
 
         .stat-card h3 {
@@ -650,23 +647,13 @@
     <!-- Tela de Login -->
     <div class="login-container" id="loginContainer">
         <h1><i class="fas fa-lock"></i> Acesso Administrativo</h1>
-        <form id="loginForm" onsubmit="handleLogin(event)">
-            <div class="form-group">
-                <label for="username">Email/Usuário:</label>
-                <input type="text" id="username" placeholder="Digite seu email ou usuário" required autocomplete="username">
-            </div>
+        <form id="loginForm">
             <div class="form-group">
                 <label for="password">Senha de Acesso:</label>
-                <input type="password" id="password" placeholder="Digite a senha" required autocomplete="current-password">
+                <input type="password" id="password" placeholder="Digite a senha" required>
             </div>
-            <div id="loginError" style="color: #ff4444; margin-bottom: 15px; display: none; text-align: center; font-size: 14px;"></div>
-            <button type="submit" class="btn-login" id="btnLogin">
-                <i class="fas fa-sign-in-alt"></i> Entrar
-            </button>
+            <button type="submit" class="btn-login">Entrar</button>
         </form>
-        <div style="text-align: center; margin-top: 20px; font-size: 12px; color: #666;">
-            <i class="fas fa-info-circle"></i> Sistema protegido com autenticação segura
-        </div>
     </div>
 
     <!-- Painel Admin -->
@@ -731,15 +718,13 @@
                     <h3 id="totalRevenue">R$ 0,00</h3>
                     <p><i class="fas fa-money-bill-wave"></i> Receita Total</p>
                 </div>
-                <div class="stat-card" style="grid-column: 1 / -1; background: linear-gradient(135deg, #28a745 0%, #218838 100%);">
-                    <h3 id="clientsServed" style="color: white;">0</h3>
-                    <p style="color: white;"><i class="fas fa-user-check"></i> Clientes Atendidos (com serviços concluídos)</p>
-                </div>
             </div>
             
-            <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-top: 30px;">
-                <h2 style="color: #0B3D3D; margin-bottom: 20px;"><i class="fas fa-chart-bar"></i> Relatório Mensal</h2>
-                <canvas id="monthlyChart" style="max-height: 400px;"></canvas>
+            <div class="chart-container">
+                <h2><i class="fas fa-chart-area"></i> Estatísticas Mensais (6 Meses)</h2>
+                <div class="chart-wrapper">
+                    <canvas id="statsChart"></canvas>
+                </div>
             </div>
         </div>
 
@@ -807,8 +792,8 @@
             <div class="clients-container">
                 <h2><i class="fas fa-briefcase"></i> Gestão de Serviços por Cliente</h2>
                 
-                <button class="btn-save" onclick="openAddServiceDirectModal()" style="margin: 15px 0;">
-                    <i class="fas fa-plus"></i> Adicionar Novo Serviço
+                <button class="btn-save" onclick="openAddServiceDirectModal()" style="margin-bottom: 20px;">
+                    <i class="fas fa-plus-circle"></i> Adicionar Novo Serviço
                 </button>
                 
                 <div class="search-box">
@@ -941,6 +926,13 @@
             </div>
             <form id="addServiceForm">
                 <input type="hidden" id="serviceClientId">
+                
+                <div class="input-group" id="serviceClientSelectGroup" style="display: none;">
+                    <label>Cliente: *</label>
+                    <select id="serviceClientSelect">
+                        <option value="">Selecione um cliente...</option>
+                    </select>
+                </div>
                 
                 <div class="input-group">
                     <label>Tipo de Serviço: *</label>
@@ -1089,7 +1081,6 @@
     </div>
 
     <script>
-        // v2.0 - IDs corrigidos para evitar ReferenceError
         // Senha de acesso (você pode alterar aqui)
         const ADMIN_PASSWORD = 'pcformatech2026';
 
@@ -1182,177 +1173,35 @@
             }
         }
 
-        // ===== LOGIN/LOGOUT COM SISTEMA DE SEGURANÇA =====
-        
-        async function handleLogin(event) {
-            event.preventDefault();
-            
-            const username = document.getElementById('username').value.trim();
+        // ===== LOGIN/LOGOUT =====
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
             const password = document.getElementById('password').value;
-            const btnLogin = document.getElementById('btnLogin');
-            const errorDiv = document.getElementById('loginError');
             
-            // Desabilitar botão durante login
-            btnLogin.disabled = true;
-            btnLogin.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entrando...';
-            errorDiv.style.display = 'none';
-            
-            try {
-                let result;
-                
-                // PRIMEIRO tentar login local (admin)
-                try {
-                    result = await authSystem.loginLocal(username, password);
-                } catch (localError) {
-                    // Se login local falhar e Firebase estiver configurado, tentar Firebase
-                    if (isFirebaseConfigured()) {
-                        result = await authSystem.loginWithFirebase(username, password);
-                    } else {
-                        throw localError;
-                    }
-                }
-                
-                if (result.success) {
-                    // Login bem-sucedido
-                    document.getElementById('loginContainer').style.display = 'none';
-                    document.getElementById('adminPanel').style.display = 'block';
-                    
-                    // Carregar dados
-                    await loadAllData();
-                    updateDashboard();
-                    loadClientsTable();
-                    
-                    console.log('✅ Login realizado com sucesso!');
-                } else {
-                    throw new Error(result.error || 'Falha na autenticação');
-                }
-            } catch (error) {
-                errorDiv.textContent = error.message;
-                errorDiv.style.display = 'block';
-                console.error('Erro no login:', error);
-            } finally {
-                btnLogin.disabled = false;
-                btnLogin.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar';
-            }
-        }
-
-        function logout() {
-            if (confirm('Tem certeza que deseja sair?')) {
-                authSystem.logout();
-                document.getElementById('adminPanel').style.display = 'none';
-                document.getElementById('loginContainer').style.display = 'block';
-                document.getElementById('username').value = '';
-                document.getElementById('password').value = '';
-            }
-        }
-
-        // ===== INICIALIZAÇÃO E VERIFICAÇÃO DE AUTENTICAÇÃO =====
-        
-        document.addEventListener('DOMContentLoaded', async () => {
-            try {
-                // Inicializar Firebase e Database System
-                initFirebase();
-                await dbSystem.initialize();
-                
-                // Verificar se está autenticado
-                if (authSystem.isAuthenticated()) {
-                    document.getElementById('loginContainer').style.display = 'none';
-                    document.getElementById('adminPanel').style.display = 'block';
-                    
-                    // Carregar dados
-                    await loadAllData();
-                    updateDashboard();
-                    loadClientsTable();
-                } else {
-                    document.getElementById('loginContainer').style.display = 'block';
-                    document.getElementById('adminPanel').style.display = 'none';
-                }
-            } catch (error) {
-                console.error('Erro na inicialização:', error);
+            if (password === ADMIN_PASSWORD) {
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                updateDashboard();
+                loadClientsTable();
+            } else {
+                alert('Senha incorreta!');
             }
         });
-        
-        // Carregar todos os dados do banco
-        async function loadAllData() {
-            try {
-                console.log('🔄 Carregando todos os dados...');
-                
-                // Carregar clientes do localStorage primeiro (garantia)
-                loadClientsFromStorage();
-                console.log('Clientes do localStorage:', clients.length);
-                
-                // Tentar carregar do Firebase (se configurado)
-                if (dbSystem.useFirebase) {
-                    const clientsData = await dbSystem.getClients();
-                    if (clientsData && clientsData.length > 0) {
-                        // Sincronizar: usar dados do Firebase apenas se forem mais recentes
-                        console.log('Clientes do Firebase:', clientsData.length);
-                        clients = clientsData;
-                        // Atualizar localStorage com dados do Firebase
-                        localStorage.setItem('pcformatech_clients', JSON.stringify(clients));
-                    }
-                }
-                
-                // Carregar orçamentos
-                const budgetsData = await dbSystem.getBudgets();
-                if (budgetsData && budgetsData.length > 0) {
-                    budgets = budgetsData;
-                } else {
-                    loadBudgetsFromStorage();
-                }
-                
-                // Carregar produtos
-                const productsData = await dbSystem.getProducts();
-                if (productsData && productsData.length > 0) {
-                    products = productsData;
-                } else {
-                    loadProductsFromStorage();
-                }
-                
-                // Carregar slides
-                const slidesData = await dbSystem.getSlides();
-                if (slidesData && slidesData.length > 0) {
-                    heroSlides = slidesData;
-                } else {
-                    loadHeroSlides();
-                }
-                
-                console.log('✅ Dados carregados do banco');
-            } catch (error) {
-                console.error('Erro ao carregar dados:', error);
-                // Fallback para localStorage
-                loadClientsFromStorage();
-                loadBudgetsFromStorage();
-                loadProductsFromStorage();
-                loadHeroSlides();
-            }
+
+        function logout() {
+            document.getElementById('adminPanel').style.display = 'none';
+            document.getElementById('loginContainer').style.display = 'block';
+            document.getElementById('password').value = '';
         }
-        
+
         // ===== GESTÃO DE CLIENTES =====
         function loadClientsFromStorage() {
             const saved = localStorage.getItem('pcformatech_clients');
             clients = saved ? JSON.parse(saved) : [];
         }
 
-        async function saveClientsToStorage() {
-            try {
-                // Salvar no localStorage (fallback)
-                localStorage.setItem('pcformatech_clients', JSON.stringify(clients));
-                
-                // Tentar salvar no Firebase se configurado
-                if (dbSystem.useFirebase) {
-                    // Sincronizar cada cliente
-                    for (const client of clients) {
-                        if (!client.syncedToFirebase) {
-                            await dbSystem.saveClient(client);
-                            client.syncedToFirebase = true;
-                        }
-                    }
-                    console.log('✅ Clientes sincronizados com Firebase');
-                }
-            } catch (error) {
-                console.error('Erro ao salvar clientes:', error);
-            }
+        function saveClientsToStorage() {
+            localStorage.setItem('pcformatech_clients', JSON.stringify(clients));
         }
 
         function saveClient() {
@@ -1423,16 +1272,16 @@
                     <td>${client.email || '-'}</td>
                     <td><span class="service-status status-${serviceCount > 0 ? 'concluido' : 'pendente'}">${serviceCount} serviço(s)</span></td>
                     <td>
-                        <button class="btn-action btn-view" onclick="viewClient('${client.id}')">
+                        <button class="btn-action btn-view" onclick="viewClient(${client.id})">
                             <i class="fas fa-eye"></i> Ver
                         </button>
-                        <button class="btn-action btn-edit" onclick="editClient('${client.id}')">
+                        <button class="btn-action btn-edit" onclick="editClient(${client.id})">
                             <i class="fas fa-edit"></i> Editar
                         </button>
                         <button class="btn-action btn-whatsapp" onclick="openWhatsApp('${client.phone}', '${client.name}')">
                             <i class="fab fa-whatsapp"></i> WhatsApp
                         </button>
-                        <button class="btn-action btn-delete" onclick="deleteClient('${client.id}')">
+                        <button class="btn-action btn-delete" onclick="deleteClient(${client.id})">
                             <i class="fas fa-trash"></i> Excluir
                         </button>
                     </td>
@@ -1446,22 +1295,8 @@
         }
 
         function viewClient(clientId) {
-            console.log('🔍 viewClient chamado com ID:', clientId, 'Tipo:', typeof clientId);
-            console.log('📋 Clientes disponíveis:', clients.map(c => ({ id: c.id, nome: c.name, tipo: typeof c.id })));
-            
-            // Comparar como string para garantir compatibilidade
-            const client = clients.find(c => String(c.id) === String(clientId));
-            if (!client) {
-                console.error('❌ Cliente não encontrado:', { 
-                    clientIdBuscado: clientId, 
-                    tipoBuscado: typeof clientId,
-                    clientsIds: clients ? clients.map(c => ({ id: c.id, tipo: typeof c.id })) : [] 
-                });
-                alert(`Cliente não encontrado! ID buscado: ${clientId}`);
-                return;
-            }
-            
-            console.log('✅ Cliente encontrado:', client.name);
+            const client = clients.find(c => c.id === clientId);
+            if (!client) return;
 
             const details = document.getElementById('clientDetails');
             const totalValue = client.services ? client.services.reduce((sum, s) => sum + s.price, 0) : 0;
@@ -1481,7 +1316,7 @@
                     <h3><i class="fas fa-briefcase"></i> Histórico de Serviços (${client.services ? client.services.length : 0})</h3>
                     <p><strong>Valor Total:</strong> R$ ${totalValue.toFixed(2).replace('.', ',')}</p>
                     
-                    <button class="btn-save" onclick="openAddServiceModal('${client.id}')" style="margin: 15px 0;">
+                    <button class="btn-save" onclick="openAddServiceModal(${client.id})" style="margin: 15px 0;">
                         <i class="fas fa-plus"></i> Adicionar Novo Serviço
                     </button>
                     
@@ -1496,10 +1331,10 @@
                                     <p><strong>Descrição:</strong> ${service.description || '-'}</p>
                                     <p><strong>Valor:</strong> R$ ${service.price.toFixed(2).replace('.', ',')}</p>
                                     <p><strong>Data:</strong> ${new Date(service.date).toLocaleDateString('pt-BR')}</p>
-                                    <button class="btn-action btn-edit" onclick="editService('${client.id}', ${index})">
+                                    <button class="btn-action btn-edit" onclick="editService(${client.id}, ${index})">
                                         <i class="fas fa-edit"></i> Editar Status
                                     </button>
-                                    <button class="btn-action btn-delete" onclick="deleteService('${client.id}', ${index})">
+                                    <button class="btn-action btn-delete" onclick="deleteService(${client.id}, ${index})">
                                         <i class="fas fa-trash"></i> Remover
                                     </button>
                                 </div>
@@ -1513,7 +1348,7 @@
         }
 
         function editClient(clientId) {
-            const client = clients.find(c => String(c.id) === String(clientId));
+            const client = clients.find(c => c.id === clientId);
             if (!client) return;
 
             editingClientId = clientId;
@@ -1529,43 +1364,11 @@
         }
 
         function deleteClient(clientId) {
-            if (!confirm('Tem certeza que deseja excluir este cliente e todo seu histórico?')) {
-                return;
-            }
-            
-            try {
-                const id = String(clientId); // Manter como string para compatibilidade
-                console.log('Deletando cliente ID:', id);
-                console.log('IDs dos clientes:', clients.map(c => `${c.id} (${typeof c.id})`));
-                
-                // Filtrar removendo o cliente - comparar como string
-                const antes = clients.length;
-                clients = clients.filter(c => String(c.id) !== id);
-                const depois = clients.length;
-                
-                console.log(`Clientes: ${antes} → ${depois}`);
-                
-                if (depois === antes) {
-                    console.error('❌ NENHUM cliente foi removido! Verificar IDs.');
-                    alert('Erro: Cliente não encontrado!');
-                    return;
-                }
-                
-                // Salvar no localStorage
-                localStorage.setItem('pcformatech_clients', JSON.stringify(clients));
-                
-                // Deletar do Firebase se configurado
-                if (dbSystem && dbSystem.useFirebase) {
-                    dbSystem.deleteClient(id).catch(err => console.error('Erro Firebase:', err));
-                }
-                
-                // Atualizar interface
+            if (confirm('Tem certeza que deseja excluir este cliente e todo seu histórico?')) {
+                clients = clients.filter(c => c.id !== clientId);
+                saveClientsToStorage();
                 loadClientsTable();
-                updateDashboard();
                 showSuccess();
-            } catch (error) {
-                console.error('Erro ao deletar:', error);
-                alert('Erro ao deletar cliente');
             }
         }
 
@@ -1593,46 +1396,45 @@
         }
 
         function openAddServiceModal(clientId) {
-            console.log('🔵 openAddServiceModal chamado com:', { clientId, tipo: typeof clientId });
-            
-            // Resetar apenas os campos visíveis (não o hidden)
-            document.getElementById('serviceType').value = '';
-            document.getElementById('serviceDescription').value = '';
-            document.getElementById('servicePrice').value = '';
-            document.getElementById('serviceStatus').value = 'pendente';
-            
-            // Setar o ID do cliente
             document.getElementById('serviceClientId').value = clientId;
+            document.getElementById('serviceClientSelectGroup').style.display = 'none';
+            document.getElementById('addServiceForm').reset();
+            document.getElementById('serviceModal').style.display = 'block';
+        }
+        
+        function openAddServiceDirectModal() {
+            // Mostrar seleção de cliente
+            document.getElementById('serviceClientSelectGroup').style.display = 'block';
+            document.getElementById('serviceClientId').value = '';
             
-            console.log('🔵 ID setado no input:', document.getElementById('serviceClientId').value);
+            // Popular lista de clientes
+            const select = document.getElementById('serviceClientSelect');
+            select.innerHTML = '<option value="">Selecione um cliente...</option>';
+            clients.forEach(client => {
+                const option = document.createElement('option');
+                option.value = client.id;
+                option.textContent = `${client.name} - ${client.phone}`;
+                select.appendChild(option);
+            });
             
+            document.getElementById('addServiceForm').reset();
             document.getElementById('serviceModal').style.display = 'block';
         }
 
         document.getElementById('addServiceForm').addEventListener('submit', (e) => {
             e.preventDefault();
             
-            // Verificar se é adição direta (com seleção de cliente) ou do modal do cliente
-            const directClientSelect = document.getElementById('directServiceClientId');
-            let clientId = null;
+            // Pegar clientId do campo hidden ou do select
+            let clientId = parseInt(document.getElementById('serviceClientId').value);
             
-            if (directClientSelect && directClientSelect.value) {
-                // Adição direta - pegar do select
-                clientId = directClientSelect.value;
-                console.log('🔴 Usando directClientSelect:', clientId);
-            } else {
-                // Adição do modal do cliente - pegar do hidden
-                const clientIdValue = document.getElementById('serviceClientId').value;
-                clientId = clientIdValue;
-                console.log('🔴 Usando serviceClientId:', clientId);
-            }
-            
-            console.log('🔴 Submit do formulário:', { clientId, tipo: typeof clientId });
-            console.log('🔴 Clientes disponíveis:', clients ? clients.map(c => ({ id: c.id, tipo: typeof c.id, nome: c.name })) : 'CLIENTS UNDEFINED');
-            
+            // Se não tiver clientId no hidden, pegar do select
             if (!clientId) {
-                alert('Erro: ID do cliente não encontrado!');
-                return;
+                const selectValue = document.getElementById('serviceClientSelect').value;
+                if (!selectValue) {
+                    alert('Por favor, selecione um cliente!');
+                    return;
+                }
+                clientId = parseInt(selectValue);
             }
             
             const serviceKey = document.getElementById('serviceType').value;
@@ -1651,10 +1453,8 @@
                 date: new Date().toISOString()
             };
             
-            // Comparar como string para garantir compatibilidade
-            const client = clients.find(c => String(c.id) === String(clientId));
+            const client = clients.find(c => c.id === clientId);
             if (!client) {
-                console.error('Cliente não encontrado ao adicionar serviço:', { clientId, clientsIds: clients ? clients.map(c => c.id) : [] });
                 alert('Cliente não encontrado!');
                 return;
             }
@@ -1664,18 +1464,13 @@
             saveClientsToStorage();
             closeModal('serviceModal');
             
-            // Remover o select de cliente direto se existir
-            if (directClientSelect) {
-                directClientSelect.parentElement.remove();
-            }
-            
-            // Se veio do modal do cliente, atualizar a visualização
-            if (!directClientSelect) {
+            // Se foi aberto da visualização do cliente, atualizar
+            const clientModal = document.getElementById('clientModal');
+            if (clientModal.style.display === 'block') {
                 viewClient(clientId);
             } else {
-                // Se veio da adição direta, atualizar a lista
-                loadClientsTable();
-                updateDashboard();
+                // Se foi aberto da aba de serviços, recarregar a lista
+                loadServiceClients();
             }
             
             showSuccess();
@@ -1693,13 +1488,7 @@
         });
 
         function editService(clientId, serviceIndex) {
-            // Comparar como string para garantir compatibilidade
-            const client = clients.find(c => String(c.id) === String(clientId));
-            if (!client || !client.services) {
-                console.error('Cliente/serviço não encontrado:', { clientId, serviceIndex, clientsIds: clients ? clients.map(c => c.id) : [] });
-                alert('Cliente ou serviço não encontrado!');
-                return;
-            }
+            const client = clients.find(c => c.id === clientId);
             const service = client.services[serviceIndex];
             
             const newStatus = prompt('Novo status do serviço:\n1 - Pendente\n2 - Em Andamento\n3 - Concluído\n4 - Cancelado', '1');
@@ -1720,40 +1509,12 @@
         }
 
         function deleteService(clientId, serviceIndex) {
-            if (!confirm('Tem certeza que deseja remover este serviço?')) {
-                return;
-            }
-            
-            try {
-                const id = String(clientId); // Manter como string
-                const index = Number(serviceIndex);
-                
-                console.log('Deletando serviço:', { clientId: id, serviceIndex: index });
-                
-                const client = clients.find(c => String(c.id) === id);
-                
-                if (!client) {
-                    alert('Cliente não encontrado!');
-                    return;
-                }
-                
-                if (!client.services || !client.services[index]) {
-                    alert('Serviço não encontrado!');
-                    return;
-                }
-                
-                client.services.splice(index, 1);
-                
-                // Salvar
-                localStorage.setItem('pcformatech_clients', JSON.stringify(clients));
-                
-                // Atualizar
-                viewClient(id);
-                updateDashboard();
+            if (confirm('Tem certeza que deseja remover este serviço?')) {
+                const client = clients.find(c => c.id === clientId);
+                client.services.splice(serviceIndex, 1);
+                saveClientsToStorage();
+                viewClient(clientId);
                 showSuccess();
-            } catch (error) {
-                console.error('Erro ao deletar serviço:', error);
-                alert('Erro ao deletar serviço');
             }
         }
 
@@ -1774,8 +1535,6 @@
             }
 
             filteredClients.forEach(client => {
-                console.log('🎯 Renderizando card para cliente:', { id: client.id, tipo: typeof client.id, nome: client.name });
-                
                 const totalValue = client.services.reduce((sum, s) => sum + s.price, 0);
                 const pendingServices = client.services.filter(s => s.status === 'pendente' || s.status === 'andamento').length;
                 
@@ -1786,12 +1545,10 @@
                     <p><strong>Total de Serviços:</strong> ${client.services.length}</p>
                     <p><strong>Serviços Pendentes:</strong> ${pendingServices}</p>
                     <p><strong>Valor Total:</strong> R$ ${totalValue.toFixed(2).replace('.', ',')}</p>
-                    <button class="btn-save" onclick="viewClient('${client.id}')">
+                    <button class="btn-save" onclick="viewClient(${client.id})">
                         <i class="fas fa-eye"></i> Ver Detalhes Completos
                     </button>
                 `;
-                
-                console.log('📝 HTML gerado para botão:', clientCard.querySelector('button').getAttribute('onclick'));
                 container.appendChild(clientCard);
             });
         }
@@ -1801,136 +1558,208 @@
         }
 
         // ===== DASHBOARD =====
-        let monthlyChart = null;
-        
         function updateDashboard() {
             const totalClients = clients.length;
-            let completedServices = 0; // Apenas serviços concluídos
+            let totalServices = 0;
             let pendingServices = 0;
             let totalRevenue = 0;
-            let clientsServedSet = new Set();
 
             clients.forEach(client => {
                 if (client.services) {
+                    totalServices += client.services.length;
                     client.services.forEach(service => {
                         if (service.status === 'pendente' || service.status === 'andamento') {
                             pendingServices++;
                         }
                         if (service.status === 'concluido') {
-                            completedServices++; // Contar apenas concluídos
                             totalRevenue += service.price;
-                            clientsServedSet.add(client.id);
                         }
                     });
                 }
             });
 
             document.getElementById('totalClients').textContent = totalClients;
-            document.getElementById('totalServices').textContent = completedServices; // Mostrar apenas concluídos
+            document.getElementById('totalServices').textContent = totalServices;
             document.getElementById('pendingServices').textContent = pendingServices;
             document.getElementById('totalRevenue').textContent = `R$ ${totalRevenue.toFixed(2).replace('.', ',')}`;
-            document.getElementById('clientsServed').textContent = clientsServedSet.size;
             
-            updateMonthlyChart();
+            // Atualizar gráfico
+            updateStatsChart();
         }
-        
-        function updateMonthlyChart() {
-            // Preparar dados mensais
-            const monthlyData = {};
+
+        // ===== GRÁFICO DE ESTATÍSTICAS =====
+        let statsChart = null;
+
+        function getMonthlyData() {
+            const months = [];
             const now = new Date();
             
-            // Inicializar últimos 6 meses
-            for (let i = 5; i >= 0; i--) {
-                const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
-                const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-                monthlyData[key] = { clients: new Set(), services: 0 };
+            // Gerar labels dos últimos 3 meses e próximos 3 meses
+            for (let i = -3; i <= 3; i++) {
+                const date = new Date(now.getFullYear(), now.getMonth() + i, 1);
+                const monthName = date.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' });
+                months.push(monthName);
             }
             
-            // Contabilizar serviços concluídos por mês
+            // Preparar dados
+            const clientsData = new Array(7).fill(0);
+            const servicesCompletedData = new Array(7).fill(0);
+            const servicesPendingData = new Array(7).fill(0);
+            
+            // Calcular dados reais dos últimos 3 meses
             clients.forEach(client => {
+                const clientDate = new Date(client.createdAt);
+                const monthDiff = (now.getFullYear() - clientDate.getFullYear()) * 12 + now.getMonth() - clientDate.getMonth();
+                
+                if (monthDiff >= 0 && monthDiff <= 3) {
+                    const index = 3 - monthDiff;
+                    clientsData[index]++;
+                }
+                
                 if (client.services) {
                     client.services.forEach(service => {
-                        if (service.status === 'concluido' && service.date) {
-                            const serviceDate = new Date(service.date);
-                            const key = `${serviceDate.getFullYear()}-${String(serviceDate.getMonth() + 1).padStart(2, '0')}`;
-                            
-                            if (monthlyData[key]) {
-                                monthlyData[key].clients.add(client.id);
-                                monthlyData[key].services++;
+                        const serviceDate = new Date(service.date);
+                        const serviceDiff = (now.getFullYear() - serviceDate.getFullYear()) * 12 + now.getMonth() - serviceDate.getMonth();
+                        
+                        if (serviceDiff >= 0 && serviceDiff <= 3) {
+                            const index = 3 - serviceDiff;
+                            if (service.status === 'concluido') {
+                                servicesCompletedData[index]++;
+                            } else if (service.status === 'pendente' || service.status === 'andamento') {
+                                servicesPendingData[index]++;
                             }
                         }
                     });
                 }
             });
             
-            // Preparar dados para o gráfico
-            const labels = [];
-            const clientsData = [];
-            const servicesData = [];
+            // Projeção simples para os próximos 3 meses (média dos últimos 3)
+            const avgClients = clientsData.slice(0, 4).reduce((a, b) => a + b, 0) / 4;
+            const avgCompleted = servicesCompletedData.slice(0, 4).reduce((a, b) => a + b, 0) / 4;
+            const avgPending = servicesPendingData.slice(0, 4).reduce((a, b) => a + b, 0) / 4;
             
-            Object.keys(monthlyData).sort().forEach(key => {
-                const [year, month] = key.split('-');
-                const monthNames = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
-                labels.push(`${monthNames[parseInt(month) - 1]}/${year}`);
-                clientsData.push(monthlyData[key].clients.size);
-                servicesData.push(monthlyData[key].services);
-            });
+            for (let i = 4; i < 7; i++) {
+                clientsData[i] = Math.round(avgClients * (1 + Math.random() * 0.2 - 0.1));
+                servicesCompletedData[i] = Math.round(avgCompleted * (1 + Math.random() * 0.2 - 0.1));
+                servicesPendingData[i] = Math.round(avgPending * (1 + Math.random() * 0.2 - 0.1));
+            }
+            
+            return {
+                labels: months,
+                clientsData,
+                servicesCompletedData,
+                servicesPendingData
+            };
+        }
+
+        function updateStatsChart() {
+            const data = getMonthlyData();
+            const ctx = document.getElementById('statsChart');
+            
+            if (!ctx) return;
             
             // Destruir gráfico anterior se existir
-            if (monthlyChart) {
-                monthlyChart.destroy();
+            if (statsChart) {
+                statsChart.destroy();
             }
             
-            // Criar novo gráfico
-            const ctx = document.getElementById('monthlyChart');
-            if (ctx) {
-                monthlyChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [
-                            {
-                                label: 'Clientes Atendidos',
-                                data: clientsData,
-                                backgroundColor: 'rgba(40, 167, 69, 0.7)',
-                                borderColor: 'rgba(40, 167, 69, 1)',
-                                borderWidth: 2
-                            },
-                            {
-                                label: 'Serviços Realizados',
-                                data: servicesData,
-                                backgroundColor: 'rgba(64, 153, 143, 0.7)',
-                                borderColor: 'rgba(64, 153, 143, 1)',
-                                borderWidth: 2
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: true,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: {
-                                    stepSize: 1
-                                }
+            statsChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [
+                        {
+                            label: 'Clientes Cadastrados',
+                            data: data.clientsData,
+                            borderColor: '#40998F',
+                            backgroundColor: 'rgba(64, 153, 143, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Serviços Realizados',
+                            data: data.servicesCompletedData,
+                            borderColor: '#4CAF50',
+                            backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Serviços Pendentes',
+                            data: data.servicesPendingData,
+                            borderColor: '#FF9800',
+                            backgroundColor: 'rgba(255, 152, 0, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                },
+                                padding: 20,
+                                usePointStyle: true
                             }
                         },
-                        plugins: {
-                            legend: {
-                                display: true,
-                                position: 'top'
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            titleFont: {
+                                size: 14,
+                                weight: 'bold'
                             },
-                            tooltip: {
-                                mode: 'index',
-                                intersect: false
+                            bodyFont: {
+                                size: 13
                             }
                         }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1,
+                                font: {
+                                    size: 12
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: {
+                                    size: 12
+                                }
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    interaction: {
+                        mode: 'nearest',
+                        axis: 'x',
+                        intersect: false
                     }
-                });
-            }
+                }
+            });
         }
-        
+
         // ===== GESTÃO DE PREÇOS (código original) =====
         // ===== GESTÃO DE PREÇOS (código original) =====
         function loadServices() {
@@ -2114,10 +1943,10 @@
                     <td><span class="service-status ${product.stock > 0 ? 'status-concluido' : 'status-cancelado'}">${product.stock} un</span></td>
                     <td>${getCategoryName(product.category)}</td>
                     <td>
-                        <button class="btn-action btn-edit" onclick="editProduct('${product.id}')">
+                        <button class="btn-action btn-edit" onclick="editProduct(${product.id})">
                             <i class="fas fa-edit"></i> Editar
                         </button>
-                        <button class="btn-action btn-delete" onclick="deleteProduct('${product.id}')">
+                        <button class="btn-action btn-delete" onclick="deleteProduct(${product.id})">
                             <i class="fas fa-trash"></i> Excluir
                         </button>
                     </td>
@@ -2178,10 +2007,7 @@
         }
 
         function getNextBudgetNumber() {
-            if (!budgets || budgets.length === 0) {
-                return '0001-25';
-            }
-            const lastNumber = Math.max(...budgets.map(b => b.number || 0));
+            const lastNumber = budgets.length > 0 ? Math.max(...budgets.map(b => b.number || 0)) : 0;
             return (lastNumber + 1).toString().padStart(4, '0') + '-25';
         }
 
@@ -2506,16 +2332,16 @@
                     <td><strong>R$ ${total.toFixed(2).replace('.', ',')}</strong></td>
                     <td><span class="service-status ${budget.type === 'laudo' ? 'status-concluido' : 'status-andamento'}">${budget.type === 'laudo' ? 'Laudo' : 'Orçamento'}</span></td>
                     <td>
-                        <button class="btn-action btn-view" onclick="viewBudget('${budget.id}')">
+                        <button class="btn-action btn-view" onclick="viewBudget(${budget.id})">
                             <i class="fas fa-eye"></i> Ver
                         </button>
-                        <button class="btn-action" style="background: #28a745; color: white;" onclick="convertBudgetToService('${budget.id}')" title="Converter para serviço">
+                        <button class="btn-action btn-convert" onclick="convertBudgetToService(${budget.id})" title="Converter em Serviço">
                             <i class="fas fa-exchange-alt"></i> Converter
                         </button>
-                        <button class="btn-action btn-whatsapp" onclick="generatePDFForBudget('${budget.id}')">
+                        <button class="btn-action btn-whatsapp" onclick="generatePDFForBudget(${budget.id})">
                             <i class="fas fa-file-pdf"></i> PDF
                         </button>
-                        <button class="btn-action btn-delete" onclick="deleteBudget('${budget.id}')">
+                        <button class="btn-action btn-delete" onclick="deleteBudget(${budget.id})">
                             <i class="fas fa-trash"></i> Excluir
                         </button>
                     </td>
@@ -2607,6 +2433,63 @@
             generatePDFDocument(budget, client);
         }
 
+        function convertBudgetToService(budgetId) {
+            const budget = budgets.find(b => b.id === budgetId);
+            if (!budget) {
+                alert('Orçamento/Laudo não encontrado!');
+                return;
+            }
+            
+            const client = clients.find(c => c.id === budget.clientId);
+            if (!client) {
+                alert('Cliente não encontrado!');
+                return;
+            }
+            
+            const confirmMsg = `Deseja converter este ${budget.type === 'laudo' ? 'Laudo' : 'Orçamento'} em serviços para o cliente ${client.name}?\n\nSerão adicionados ${budget.services.length} serviço(s) ao histórico do cliente.`;
+            
+            if (!confirm(confirmMsg)) {
+                return;
+            }
+            
+            // Inicializar array de serviços se não existir
+            if (!client.services) client.services = [];
+            
+            // Adicionar cada serviço do orçamento ao cliente
+            budget.services.forEach(budgetService => {
+                const service = {
+                    type: budgetService.name,
+                    description: `Convertido do ${budget.type} Nº ${budget.number}${budget.defect ? ' - ' + budget.defect : ''}`,
+                    price: budgetService.quantity * budgetService.price,
+                    status: 'concluido', // Assumindo que está concluído
+                    date: budget.date
+                };
+                client.services.push(service);
+            });
+            
+            // Adicionar produtos como serviços também, se houver
+            if (budget.products && budget.products.length > 0) {
+                budget.products.forEach(budgetProduct => {
+                    const service = {
+                        type: `Produto: ${budgetProduct.name}`,
+                        description: `Produto fornecido - Convertido do ${budget.type} Nº ${budget.number}`,
+                        price: budgetProduct.quantity * budgetProduct.price,
+                        status: 'concluido',
+                        date: budget.date
+                    };
+                    client.services.push(service);
+                });
+            }
+            
+            saveClientsToStorage();
+            updateDashboard();
+            
+            alert(`✅ Sucesso!\n\n${budget.services.length + (budget.products ? budget.products.length : 0)} item(ns) convertido(s) em serviço(s) para o cliente ${client.name}.`);
+            
+            // Atualizar a visualização se estiver na aba de orçamentos
+            loadBudgetsTable();
+        }
+        
         function generatePDFDocument(budget, client) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
@@ -2811,19 +2694,8 @@
             heroSlides = saved ? JSON.parse(saved) : defaultSlides;
         }
 
-        async function saveHeroSlides() {
-            // Salvar no localStorage (fallback)
+        function saveHeroSlides() {
             localStorage.setItem('pcformatech_hero_slides', JSON.stringify(heroSlides));
-            
-            // Salvar no Firebase se configurado
-            if (dbSystem.useFirebase) {
-                try {
-                    await dbSystem.saveSlides(heroSlides);
-                    console.log('✅ Slides sincronizados com Firebase');
-                } catch (error) {
-                    console.error('Erro ao sincronizar slides:', error);
-                }
-            }
         }
 
         function renderSlides() {
@@ -2839,11 +2711,7 @@
                         <div class="slide-order">
                             <span>Imagem ${index + 1}</span>
                         </div>
-                        <div style="margin-bottom: 10px;">
-                            <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #0B3D3D;">Substituir Imagem:</label>
-                            <input type="file" id="slide-file-${index}" accept="image/*" style="width: 100%; padding: 8px; border: 2px solid #40998F; border-radius: 6px; cursor: pointer; margin-bottom: 8px;" onchange="handleImageUpload(${index}, this)">
-                            <small style="color: #666; display: block;">Tamanho máximo: 5MB</small>
-                        </div>
+                        <input type="text" id="slide-url-${index}" value="${slide.url}" placeholder="URL da imagem">
                         <input type="text" id="slide-alt-${index}" value="${slide.alt}" placeholder="Texto alternativo">
                         <div class="slide-actions">
                             <button class="btn-update" onclick="updateSlide(${index})">
@@ -2859,190 +2727,26 @@
             });
         }
 
-        function handleImageUpload(index, input) {
-            const file = input.files[0];
-            if (!file) return;
-
-            // Verificar se é uma imagem
-            if (!file.type.startsWith('image/')) {
-                alert('Por favor, selecione apenas arquivos de imagem!');
-                input.value = '';
-                return;
-            }
-
-            // Verificar tamanho (max 5MB)
-            if (file.size > 5 * 1024 * 1024) {
-                alert('A imagem é muito grande! Por favor, use uma imagem menor que 5MB.');
-                input.value = '';
-                return;
-            }
-
-            // Ler e converter para base64
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = new Image();
-                img.onload = function() {
-                    // Redimensionar se necessário
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    
-                    let width = img.width;
-                    let height = img.height;
-                    const maxWidth = 2400;
-                    const maxHeight = 1600;
-                    
-                    if (width > maxWidth || height > maxHeight) {
-                        const ratio = Math.min(maxWidth / width, maxHeight / height);
-                        width = width * ratio;
-                        height = height * ratio;
-                    }
-                    
-                    canvas.width = width;
-                    canvas.height = height;
-                    ctx.drawImage(img, 0, 0, width, height);
-                    
-                    // Converter para base64
-                    const base64 = canvas.toDataURL('image/jpeg', 0.85);
-                    
-                    // Atualizar preview
-                    const preview = input.closest('.slide-card').querySelector('.slide-preview');
-                    preview.src = base64;
-                    
-                    // Limpar URL input
-                    document.getElementById(`slide-url-${index}`).value = '';
-                    
-                    // Salvar temporariamente
-                    window.tempUploadedImage = base64;
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-
         function addNewSlide() {
-            // Criar um modal temporário para adicionar nova imagem
-            const modal = document.createElement('div');
-            modal.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0,0,0,0.8);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                z-index: 10000;
-            `;
-            
-            modal.innerHTML = `
-                <div style="background: white; padding: 30px; border-radius: 12px; max-width: 500px; width: 90%;">
-                    <h3 style="margin-bottom: 20px; color: #0B3D3D;">Adicionar Nova Imagem</h3>
-                    <div style="margin-bottom: 15px;">
-                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #0B3D3D;">Selecione a Imagem:</label>
-                        <input type="file" id="newSlideFile" accept="image/*" style="width: 100%; padding: 10px; border: 2px solid #40998F; border-radius: 8px; font-size: 16px; cursor: pointer;">
-                        <small style="display: block; margin-top: 5px; color: #666;">Tamanho máximo: 5MB | Formatos: JPG, PNG, GIF</small>
-                    </div>
-                    <div style="margin-bottom: 20px;">
-                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #0B3D3D;">Texto Alternativo:</label>
-                        <input type="text" id="newSlideAlt" placeholder="Descrição da imagem" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 6px; font-size: 16px;">
-                    </div>
-                    <div style="display: flex; gap: 10px;">
-                        <button id="btnConfirmAdd" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #40998F 0%, #2D7A7A 100%); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Adicionar</button>
-                        <button id="btnCancelAdd" style="flex: 1; padding: 12px; background: #ff4444; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Cancelar</button>
-                    </div>
-                </div>
-            `;
-            
-            document.body.appendChild(modal);
-            
-            let uploadedImage = null;
-            
-            // Handle file upload
-            document.getElementById('newSlideFile').addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (!file) return;
-                
-                if (!file.type.startsWith('image/')) {
-                    alert('Por favor, selecione apenas arquivos de imagem!');
-                    e.target.value = '';
-                    return;
-                }
-                
-                if (file.size > 5 * 1024 * 1024) {
-                    alert('A imagem é muito grande! Por favor, use uma imagem menor que 5MB.');
-                    e.target.value = '';
-                    return;
-                }
-                
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const img = new Image();
-                    img.onload = function() {
-                        const canvas = document.createElement('canvas');
-                        const ctx = canvas.getContext('2d');
-                        
-                        let width = img.width;
-                        let height = img.height;
-                        const maxWidth = 2400;
-                        const maxHeight = 1600;
-                        
-                        if (width > maxWidth || height > maxHeight) {
-                            const ratio = Math.min(maxWidth / width, maxHeight / height);
-                            width = width * ratio;
-                            height = height * ratio;
-                        }
-                        
-                        canvas.width = width;
-                        canvas.height = height;
-                        ctx.drawImage(img, 0, 0, width, height);
-                        
-                        uploadedImage = canvas.toDataURL('image/jpeg', 0.85);
-                    };
-                    img.src = event.target.result;
-                };
-                reader.readAsDataURL(file);
-            });
-            
-            document.getElementById('btnConfirmAdd').onclick = function() {
-                const alt = document.getElementById('newSlideAlt').value;
-                
-                if (!uploadedImage) {
-                    alert('Por favor, selecione uma imagem!');
-                    return;
-                }
-                
-                if (!alt) {
-                    alert('Por favor, digite o texto alternativo!');
-                    return;
-                }
-                
-                heroSlides.push({ url: uploadedImage, alt });
-                saveHeroSlides();
-                renderSlides();
-                updateIndexHtml();
-                showSuccess();
-                document.body.removeChild(modal);
-            };
-            
-            document.getElementById('btnCancelAdd').onclick = function() {
-                document.body.removeChild(modal);
-            };
-            
-            // Fechar ao clicar fora
-            modal.onclick = function(e) {
-                if (e.target === modal) {
-                    document.body.removeChild(modal);
-                }
-            };
+            const url = prompt('Cole a URL da nova imagem:');
+            if (!url) return;
+
+            const alt = prompt('Digite o texto alternativo (descrição) da imagem:');
+            if (!alt) return;
+
+            heroSlides.push({ url, alt });
+            saveHeroSlides();
+            renderSlides();
+            updateIndexHtml();
+            showSuccess();
         }
 
         function updateSlide(index) {
-            const url = window.tempUploadedImage || heroSlides[index].url;
+            const url = document.getElementById(`slide-url-${index}`).value;
             const alt = document.getElementById(`slide-alt-${index}`).value;
 
-            if (!alt) {
-                alert('Por favor, preencha o texto alternativo!');
+            if (!url || !alt) {
+                alert('Por favor, preencha a URL e o texto alternativo!');
                 return;
             }
 
@@ -3051,9 +2755,6 @@
             renderSlides();
             updateIndexHtml();
             showSuccess();
-            
-            // Limpar upload temporário
-            window.tempUploadedImage = null;
         }
 
         function removeSlide(index) {
@@ -3072,303 +2773,28 @@
         }
 
         function updateIndexHtml() {
+            alert('⚠️ ATENÇÃO!\n\nAs alterações foram salvas no painel.\n\nPara aplicar as mudanças no site, você precisa atualizar o arquivo index.html.\n\nVocê pode:\n1. Copiar o código HTML gerado abaixo\n2. Ou usar a funcão "Exportar HTML" que será criada\n\nDeseja ver o código HTML agora?');
+            
             // Gerar HTML dos slides
-            let slidesHtml = '';
+            let html = '';
             heroSlides.forEach((slide, index) => {
                 const activeClass = index === 0 ? ' active' : '';
-                slidesHtml += `                <div class="hero-slide${activeClass}">\n`;
-                slidesHtml += `                    <img src="${slide.url}" alt="${slide.alt}">\n`;
-                slidesHtml += `                </div>\n`;
+                html += `                <div class="hero-slide${activeClass}">\n`;
+                html += `                    <img src="${slide.url}" alt="${slide.alt}">\n`;
+                html += `                </div>\n`;
             });
             
-            let indicatorsHtml = '';
+            console.log('HTML dos slides:\n', html);
+            console.log('\nIndicadores:\n');
+            
+            let indicators = '';
             heroSlides.forEach((slide, index) => {
                 const activeClass = index === 0 ? ' active' : '';
-                indicatorsHtml += `                <span class="indicator${activeClass}" data-slide="${index}"></span>\n`;
+                indicators += `                <span class="indicator${activeClass}" data-slide="${index}"></span>\n`;
             });
             
-            // Criar modal com código HTML para copiar
-            const modal = document.createElement('div');
-            modal.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0,0,0,0.9);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                z-index: 10000;
-                overflow-y: auto;
-                padding: 20px;
-            `;
-            
-            modal.innerHTML = `
-                <div style="background: white; padding: 30px; border-radius: 12px; max-width: 800px; width: 90%; max-height: 90vh; overflow-y: auto;">
-                    <h3 style="margin-bottom: 15px; color: #0B3D3D;">📋 Código HTML Atualizado</h3>
-                    <p style="margin-bottom: 15px; color: #666; line-height: 1.6;">
-                        Para aplicar as imagens no site publicado, siga os passos:
-                    </p>
-                    <ol style="margin-bottom: 20px; color: #666; line-height: 1.8; padding-left: 20px;">
-                        <li>Clique em "Copiar Slides" e "Copiar Indicadores"</li>
-                        <li>Abra o arquivo <strong>index.html</strong></li>
-                        <li>Substitua as seções correspondentes</li>
-                        <li>Salve e faça commit/push para o Vercel</li>
-                    </ol>
-                    
-                    <div style="margin-bottom: 20px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                            <label style="font-weight: 600; color: #0B3D3D;">HTML dos Slides:</label>
-                            <button onclick="copyToClipboard('slidesCode', 'btnCopySlides')" id="btnCopySlides" style="padding: 8px 16px; background: #40998F; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
-                                <i class="fas fa-copy"></i> Copiar Slides
-                            </button>
-                        </div>
-                        <textarea id="slidesCode" readonly style="width: 100%; height: 200px; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 12px; resize: vertical;">${slidesHtml}</textarea>
-                    </div>
-                    
-                    <div style="margin-bottom: 20px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                            <label style="font-weight: 600; color: #0B3D3D;">HTML dos Indicadores:</label>
-                            <button onclick="copyToClipboard('indicatorsCode', 'btnCopyIndicators')" id="btnCopyIndicators" style="padding: 8px 16px; background: #40998F; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
-                                <i class="fas fa-copy"></i> Copiar Indicadores
-                            </button>
-                        </div>
-                        <textarea id="indicatorsCode" readonly style="width: 100%; height: 120px; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 12px; resize: vertical;">${indicatorsHtml}</textarea>
-                    </div>
-                    
-                    <div style="display: flex; gap: 10px;">
-                        <button onclick="downloadIndexHtml()" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #40998F 0%, #2D7A7A 100%); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
-                            <i class="fas fa-download"></i> Baixar index.html Completo
-                        </button>
-                        <button onclick="this.closest('[style*=fixed]').remove()" style="padding: 12px 24px; background: #ff4444; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
-                            Fechar
-                        </button>
-                    </div>
-                </div>
-            `;
-            
-            document.body.appendChild(modal);
-            
-            // Fechar ao clicar fora
-            modal.onclick = function(e) {
-                if (e.target === modal) {
-                    document.body.removeChild(modal);
-                }
-            };
+            console.log(indicators);
         }
-        
-        function copyToClipboard(textareaId, buttonId) {
-            const textarea = document.getElementById(textareaId);
-            textarea.select();
-            document.execCommand('copy');
-            
-            const button = document.getElementById(buttonId);
-            const originalText = button.innerHTML;
-            button.innerHTML = '<i class="fas fa-check"></i> Copiado!';
-            button.style.background = '#28a745';
-            
-            setTimeout(() => {
-                button.innerHTML = originalText;
-                button.style.background = '#40998F';
-            }, 2000);
-        }
-        
-        async function downloadIndexHtml() {
-            try {
-                // Buscar o index.html atual
-                const response = await fetch('index.html');
-                let indexContent = await response.text();
-                
-                // Gerar novo HTML dos slides
-                let newSlidesHtml = '';
-                heroSlides.forEach((slide, index) => {
-                    const activeClass = index === 0 ? ' active' : '';
-                    newSlidesHtml += `                <div class="hero-slide${activeClass}">\n`;
-                    newSlidesHtml += `                    <img src="${slide.url}" alt="${slide.alt}">\n`;
-                    newSlidesHtml += `                </div>\n`;
-                });
-                
-                let newIndicatorsHtml = '';
-                heroSlides.forEach((slide, index) => {
-                    const activeClass = index === 0 ? ' active' : '';
-                    newIndicatorsHtml += `                <span class="indicator${activeClass}" data-slide="${index}"></span>\n`;
-                });
-                
-                // Substituir slides no HTML
-                const slidesRegex = /<div class="hero-slide[^"]*">[^]*?<\/div>\s*(?=<div class="hero-slide|<\/div>\s*<div class="hero-controls)/g;
-                indexContent = indexContent.replace(/<div class="hero-slider">[\s\S]*?(?=<div class="hero-controls">)/m, 
-                    `<div class="hero-slider">\n${newSlidesHtml}            `);
-                
-                // Substituir indicadores
-                indexContent = indexContent.replace(/<div class="hero-indicators">[\s\S]*?<\/div>/m,
-                    `<div class="hero-indicators">\n${newIndicatorsHtml}            </div>`);
-                
-                // Criar blob e download
-                const blob = new Blob([indexContent], { type: 'text/html' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'index.html';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                
-                alert('✅ Arquivo index.html baixado!\n\nAgora:\n1. Substitua o index.html antigo por este\n2. Faça commit e push para o GitHub\n3. O Vercel atualizará automaticamente');
-            } catch (error) {
-                alert('❌ Erro ao gerar arquivo.\n\nUse a opção de copiar manualmente o código.');
-                console.error(error);
-            }
-        }
-        
-        // ===== CONVERSÃO DE ORÇAMENTO PARA SERVIÇO =====
-        function convertBudgetToService(budgetId) {
-            const budget = budgets.find(b => b.id === budgetId);
-            if (!budget) {
-                alert('Orçamento não encontrado!');
-                return;
-            }
-            
-            const client = clients.find(c => c.id === budget.clientId);
-            if (!client) {
-                alert('Cliente não encontrado!');
-                return;
-            }
-            
-            if (!confirm(`Deseja converter o orçamento ${budget.number} para serviços do cliente ${client.name}?`)) {
-                return;
-            }
-            
-            // Inicializar array de serviços se não existir
-            if (!client.services) {
-                client.services = [];
-            }
-            
-            // Adicionar cada serviço do orçamento
-            if (budget.services && budget.services.length > 0) {
-                budget.services.forEach(budgetService => {
-                    const newService = {
-                        id: Date.now() + Math.random(),
-                        type: budgetService.name,
-                        description: `Convertido do orçamento ${budget.number}`,
-                        price: budgetService.price * budgetService.quantity,
-                        status: 'pendente',
-                        date: new Date().toISOString().split('T')[0],
-                        fromBudget: budget.number
-                    };
-                    client.services.push(newService);
-                });
-            }
-            
-            // Adicionar produtos como serviços se houver
-            if (budget.products && budget.products.length > 0) {
-                budget.products.forEach(budgetProduct => {
-                    const newService = {
-                        id: Date.now() + Math.random(),
-                        type: `Produto: ${budgetProduct.name}`,
-                        description: `Produto do orçamento ${budget.number}`,
-                        price: budgetProduct.price * budgetProduct.quantity,
-                        status: 'pendente',
-                        date: new Date().toISOString().split('T')[0],
-                        fromBudget: budget.number
-                    };
-                    client.services.push(newService);
-                });
-            }
-            
-            saveClientsToStorage();
-            updateDashboard();
-            alert(`Orçamento convertido com sucesso!\n${budget.services.length} serviço(s) e ${budget.products.length} produto(s) adicionados ao cliente ${client.name}.`);
-        }
-        
-        // ===== ADICIONAR SERVIÇO DIRETAMENTE =====
-        function openAddServiceDirectModal() {
-            // Abrir modal de adicionar serviço sem cliente pré-selecionado
-            // Primeiro, popular o select com todos os clientes
-            const modal = document.getElementById('serviceModal');
-            const clientSelect = document.createElement('select');
-            clientSelect.id = 'directServiceClientId';
-            clientSelect.innerHTML = '<option value="">Selecione um cliente...</option>';
-            
-            clients.forEach(client => {
-                const option = document.createElement('option');
-                option.value = client.id;
-                option.textContent = `${client.name} - ${client.phone}`;
-                clientSelect.appendChild(option);
-            });
-            
-            // Verificar se já existe o campo de seleção de cliente
-            const existingSelect = document.getElementById('directServiceClientId');
-            if (existingSelect) {
-                existingSelect.remove();
-            }
-            
-            // Adicionar campo de seleção de cliente ao formulário
-            const form = document.getElementById('addServiceForm');
-            const clientGroup = document.createElement('div');
-            clientGroup.className = 'input-group';
-            clientGroup.innerHTML = '<label>Cliente: *</label>';
-            clientGroup.appendChild(clientSelect);
-            form.insertBefore(clientGroup, form.firstChild);
-            
-            // Limpar o campo hidden de ID do cliente
-            document.getElementById('serviceClientId').value = '';
-            
-            modal.style.display = 'block';
-        }
-        
-        // Modificar a função de adicionar serviço para usar o cliente selecionado (REMOVIDO - usando o listener principal)
-        /*
-        document.getElementById('addServiceForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Verificar se é adição direta (com seleção de cliente)
-            const directClientSelect = document.getElementById('directServiceClientId');
-            let clientId = parseInt(document.getElementById('serviceClientId').value);
-            
-            if (directClientSelect && directClientSelect.value) {
-                clientId = parseInt(directClientSelect.value);
-            }
-            
-            if (!clientId) {
-                alert('Por favor, selecione um cliente!');
-                return;
-            }
-            
-            const client = clients.find(c => c.id === clientId);
-            if (!client) {
-                alert('Cliente não encontrado!');
-                return;
-            }
-            
-            const service = {
-                id: Date.now(),
-                type: document.getElementById('serviceType').value,
-                description: document.getElementById('serviceDescription').value,
-                price: parseFloat(document.getElementById('servicePrice').value),
-                status: document.getElementById('serviceStatus').value,
-                date: new Date().toISOString().split('T')[0]
-            };
-            
-            if (!client.services) {
-                client.services = [];
-            }
-            
-            client.services.push(service);
-            saveClientsToStorage();
-            
-            closeModal('serviceModal');
-            loadServiceClients();
-            updateDashboard();
-            showSuccess();
-            
-            // Remover o campo de seleção de cliente se existir
-            if (directClientSelect) {
-                directClientSelect.parentElement.remove();
-            }
-        });
-        */
     </script>
 </body>
 </html>

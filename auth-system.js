@@ -21,27 +21,9 @@ class AuthSystem {
             this.startSession();
             return { success: true, user: this.currentUser };
         } catch (error) {
-            this.loginAttempts++;
-            if (this.loginAttempts >= this.maxLoginAttempts) {
-                this.setLockout();
-            }
-            const errorMessage = this.getFirebaseErrorMessage(error.code);
-            return { success: false, error: errorMessage };
+            this.handleLoginError(error);
+            return { success: false, error: error.message };
         }
-    }
-
-    // Traduzir erros do Firebase para mensagens amigáveis
-    getFirebaseErrorMessage(errorCode) {
-        const errorMessages = {
-            'auth/invalid-email': 'E-mail inválido',
-            'auth/user-disabled': 'Usuário desabilitado',
-            'auth/user-not-found': 'Usuário não encontrado',
-            'auth/wrong-password': 'Senha incorreta',
-            'auth/invalid-credential': 'Credenciais inválidas',
-            'auth/too-many-requests': 'Muitas tentativas. Tente novamente mais tarde',
-            'auth/network-request-failed': 'Erro de conexão. Verifique sua internet'
-        };
-        return errorMessages[errorCode] || 'Erro ao fazer login. Tente novamente.';
     }
 
     // Autenticação local (fallback) - TEMPORÁRIO até configurar Firebase
@@ -51,20 +33,16 @@ class AuthSystem {
             throw new Error('Muitas tentativas. Tente novamente em 15 minutos.');
         }
 
-        // Credenciais aceitas (admin local)
-        const validUsers = [
-            { username: 'admin', password: 'pcformatech2026' },
-            { username: 'ADM PC FORMATECH', password: 'pcformatech2026' },
-            { username: 'contatopcformatech@gmail.com', password: 'pcformatech2026' }
-        ];
+        // Hash simples (SUBSTITUIR por Firebase em produção)
+        const validCredentials = {
+            username: 'admin',
+            // Senha: "pcformatech2026" (use hash SHA-256 em produção)
+            passwordHash: '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92'
+        };
 
-        // Verificar credenciais
-        const validUser = validUsers.find(u => 
-            (u.username.toLowerCase() === username.toLowerCase() || u.username === username) && 
-            u.password === password
-        );
-
-        if (validUser) {
+        const passwordHash = await this.hashPassword(password);
+        
+        if (username === validCredentials.username && passwordHash === validCredentials.passwordHash) {
             this.currentUser = { uid: 'local-admin', email: username };
             this.resetLoginAttempts();
             this.startSession();
@@ -74,7 +52,7 @@ class AuthSystem {
             if (this.loginAttempts >= this.maxLoginAttempts) {
                 this.setLockout();
             }
-            throw new Error('Credenciais inválidas. Verifique usuário e senha.');
+            throw new Error('Credenciais inválidas');
         }
     }
 

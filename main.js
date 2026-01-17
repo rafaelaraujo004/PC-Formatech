@@ -1,85 +1,61 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Função para inicializar o carrossel
-    window.initializeHeroCarousel = function() {
-        // Carrossel Hero
-        const slides = document.querySelectorAll('.hero-slide');
-        const indicators = document.querySelectorAll('.indicator');
-        let currentSlide = 0;
-        let slideInterval;
+    // Carrossel Hero
+    const slides = document.querySelectorAll('.hero-slide');
+    const indicators = document.querySelectorAll('.indicator');
+    let currentSlide = 0;
+    let slideInterval;
 
-        // Limpar intervalos anteriores se existirem
-        if (window.heroSlideInterval) {
-            clearInterval(window.heroSlideInterval);
-        }
+    function showSlide(index) {
+        // Remove active de todos
+        slides.forEach(slide => slide.classList.remove('active'));
+        indicators.forEach(indicator => indicator.classList.remove('active'));
+        
+        // Adiciona active ao slide atual
+        slides[index].classList.add('active');
+        indicators[index].classList.add('active');
+    }
 
-        function showSlide(index) {
-            // Remove active de todos
-            slides.forEach(slide => slide.classList.remove('active'));
-            indicators.forEach(indicator => indicator.classList.remove('active'));
-            
-            // Adiciona active ao slide atual
-            if (slides[index]) {
-                slides[index].classList.add('active');
-            }
-            if (indicators[index]) {
-                indicators[index].classList.add('active');
-            }
-        }
+    function nextSlide() {
+        currentSlide = (currentSlide + 1) % slides.length;
+        showSlide(currentSlide);
+    }
 
-        function nextSlide() {
-            if (slides.length > 0) {
-                currentSlide = (currentSlide + 1) % slides.length;
-                showSlide(currentSlide);
-            }
-        }
+    function startSlideshow() {
+        slideInterval = setInterval(nextSlide, 10000); // 10 segundos
+    }
 
-        function startSlideshow() {
-            if (slides.length > 1) {
-                slideInterval = setInterval(nextSlide, 10000); // 10 segundos
-                window.heroSlideInterval = slideInterval;
-            }
-        }
+    function resetSlideshow() {
+        clearInterval(slideInterval);
+        startSlideshow();
+    }
 
-        function resetSlideshow() {
-            clearInterval(slideInterval);
-            startSlideshow();
-        }
-
-        // Clique nos indicadores
-        indicators.forEach((indicator, index) => {
-            indicator.addEventListener('click', () => {
-                currentSlide = index;
-                showSlide(currentSlide);
-                resetSlideshow();
-            });
+    // Clique nos indicadores
+    indicators.forEach((indicator, index) => {
+        indicator.addEventListener('click', () => {
+            currentSlide = index;
+            showSlide(currentSlide);
+            resetSlideshow();
         });
+    });
 
-        // Função para mudar slide (usada pelos botões de navegação)
-        window.changeSlide = function(direction) {
-            if (slides.length > 0) {
-                currentSlide = (currentSlide + direction + slides.length) % slides.length;
-                showSlide(currentSlide);
-                resetSlideshow();
-            }
-        };
-
-        // Navegação por teclado (setas)
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft') {
-                changeSlide(-1);
-            } else if (e.key === 'ArrowRight') {
-                changeSlide(1);
-            }
-        });
-
-        // Iniciar slideshow
-        if (slides.length > 0) {
-            startSlideshow();
-        }
+    // Função para mudar slide (usada pelos botões de navegação)
+    window.changeSlide = function(direction) {
+        currentSlide = (currentSlide + direction + slides.length) % slides.length;
+        showSlide(currentSlide);
+        resetSlideshow();
     };
 
-    // Inicializar carrossel pela primeira vez
-    initializeHeroCarousel();
+    // Navegação por teclado (setas)
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') {
+            changeSlide(-1);
+        } else if (e.key === 'ArrowRight') {
+            changeSlide(1);
+        }
+    });
+
+    // Iniciar slideshow
+    startSlideshow();
 
     // Ocultar header ao rolar para baixo
     let lastScrollTop = 0;
@@ -430,16 +406,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Coletar múltiplos serviços selecionados
         const serviceCheckboxes = document.querySelectorAll('input[name="service[]"]:checked');
-        
-        // Validar se encontrou os checkboxes
-        if (!serviceCheckboxes || serviceCheckboxes.length === 0) {
-            alert('Por favor, selecione pelo menos um serviço.');
-            return;
-        }
-        
         const services = Array.from(serviceCheckboxes).map(cb => cb.value);
         const servicesWithPrice = Array.from(serviceCheckboxes).map(cb => {
-            const price = parseFloat(cb.getAttribute('data-price')) || 0;
+            const price = parseFloat(cb.getAttribute('data-price'));
             return { name: cb.value, price: price };
         });
         

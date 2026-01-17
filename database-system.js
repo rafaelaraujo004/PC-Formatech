@@ -137,13 +137,7 @@ class DatabaseSystem {
             const snapshot = await db.collection(collection).orderBy('createdAt', 'desc').get();
             const data = [];
             snapshot.forEach(doc => {
-                const docData = doc.data();
-                // Remover 'id' dos dados para evitar sobrescrever o doc.id
-                delete docData.id;
-                data.push({ 
-                    id: doc.id, // ID do documento Firebase (string única)
-                    ...docData 
-                });
+                data.push({ id: doc.id, ...doc.data() });
             });
             return data;
         } catch (error) {
@@ -167,8 +161,7 @@ class DatabaseSystem {
 
     async deleteFromFirebase(collection, docId) {
         try {
-            const id = String(docId); // Converter para string
-            await db.collection(collection).doc(id).delete();
+            await db.collection(collection).doc(docId).delete();
             return { success: true };
         } catch (error) {
             console.error('Erro ao deletar do Firebase:', error);
