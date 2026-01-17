@@ -1,0 +1,48 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Função para verificar se o usuário está autenticado
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Função para verificar se é admin
+    function isAdmin() {
+      return isAuthenticated() && 
+             request.auth.token.email == 'admin@pcformatech.com';
+    }
+    
+    // Clientes - Apenas admin autenticado
+    match /clients/{clientId} {
+      allow read, write: if isAdmin();
+    }
+    
+    // Orçamentos - Apenas admin autenticado
+    match /budgets/{budgetId} {
+      allow read, write: if isAdmin();
+    }
+    
+    // Produtos - Apenas admin autenticado
+    match /products/{productId} {
+      allow read, write: if isAdmin();
+    }
+    
+    // Serviços - Apenas admin autenticado
+    match /services/{serviceId} {
+      allow read, write: if isAdmin();
+    }
+    
+    // Slides da tela inicial - Admin para escrita, todos para leitura
+    match /hero_slides/{slideId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // Bloquear tudo que não foi especificado
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

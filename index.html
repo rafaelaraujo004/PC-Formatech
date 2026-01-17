@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>PC Formatech - Formatação e Instalação de Programas</title>
+    
+    <!-- Meta Tags para SEO -->
+    <meta name="description" content="PC Formatech - Serviços profissionais de formatação, manutenção e instalação de programas. Atendimento presencial e remoto com qualidade garantida.">
+    <meta name="keywords" content="formatação de pc, instalação de programas, manutenção de computador, suporte técnico, backup de dados">
+    <meta name="author" content="PC Formatech">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://seusite.com/">
+    <meta property="og:title" content="PC Formatech - Formatação e Instalação de Programas">
+    <meta property="og:description" content="Serviços profissionais de formatação, manutenção e instalação de programas. Atendimento presencial e remoto com qualidade garantida. Aceitamos Alelo!">
+    <meta property="og:image" content="https://seusite.com/preview-image.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="pt_BR">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://seusite.com/">
+    <meta name="twitter:title" content="PC Formatech - Formatação e Instalação de Programas">
+    <meta name="twitter:description" content="Serviços profissionais de formatação, manutenção e instalação de programas. Atendimento presencial e remoto com qualidade garantida.">
+    <meta name="twitter:image" content="https://seusite.com/preview-image.jpg">
+    
+    <!-- WhatsApp -->
+    <meta property="og:site_name" content="PC Formatech">
+    <meta property="og:image:alt" content="PC Formatech - Serviços de Informática">
+    
+    <!-- Tema do navegador -->
+    <meta name="theme-color" content="#2D7A7A">
+    <meta name="msapplication-navbutton-color" content="#2D7A7A">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#2D7A7A">
+    
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="mobile-desktop.css">
+    <link rel="stylesheet" href="styles2.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css">
+    
+    <!-- Widget do WhatsApp -->
+    <style>
+        /* Botão flutuante principal */
+        .whatsapp-widget {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .whatsapp-toggle {
+            width: 50px;
+            height: 50px;
+            background: #096c60;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .whatsapp-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+        
+        .whatsapp-toggle i {
+            font-size: 26px;
+            color: white;
+        }
+        
+        /* Card do chat */
+        .whatsapp-chat {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 340px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+        
+        .whatsapp-chat.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        /* Cabeçalho do chat */
+        .whatsapp-header {
+            background: #086042;
+            color: white;
+            padding: 16px;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .whatsapp-header-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .whatsapp-avatar {
+            width: 45px;
+            height: 45px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .whatsapp-avatar i {
+            font-size: 26px;
+            color: #40998F;
+        }
+        
+        .whatsapp-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .whatsapp-subtitle {
+            font-size: 12px;
+            opacity: 0.9;
+            margin: 0;
+        }
+        
+        .whatsapp-close {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 20px;
+            padding: 4px;
+            line-height: 1;
+        }
+        
+        /* Corpo do chat */
+        .whatsapp-body {
+            padding: 20px;
+            background: #e5ddd5;
+            min-height: 150px;
+        }
+        
+        .whatsapp-message {
+            background: white;
+            padding: 12px 14px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            position: relative;
+            max-width: 85%;
+        }
+        
+        .whatsapp-message::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 12px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 8px 10px 0;
+            border-color: transparent white transparent transparent;
+        }
+        
+        .message-sender {
+            font-size: 13px;
+            color: #075e54;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .message-text {
+            font-size: 14px;
+            color: #303030;
+            line-height: 1.5;
+            margin: 0;
+        }
+        
+        /* Rodapé do chat */
+        .whatsapp-footer {
+            padding: 16px;
+            background: white;
+            border-radius: 0 0 12px 12px;
+        }
+        
+        .whatsapp-button {
+            width: 100%;
+            background: #40998F;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .whatsapp-button:hover {
+            background: #2D7A7A;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .whatsapp-button i {
+            font-size: 18px;
+        }
+        
+        .wati-badge {
+            text-align: center;
+            margin-top: 8px;
+            font-size: 11px;
+            color: #999;
+        }
+        
+        .wati-badge a {
+            color: #ffb800;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 480px) {
+            .whatsapp-chat {
+                width: calc(100vw - 40px);
+                right: 20px;
+            }
+            
+            .whatsapp-title {
+                font-size: 14px;
+            }
+            
+            .whatsapp-subtitle {
+                font-size: 11px;
+            }
+            
+            .whatsapp-avatar {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .whatsapp-avatar i {
+                font-size: 22px;
+            }
+            
+            .message-sender {
+                font-size: 12px;
+            }
+            
+            .message-text {
+                font-size: 13px;
+            }
+            
+            .whatsapp-button {
+                font-size: 14px;
+                padding: 10px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <nav class="nav-bar">
+            <div class="logo">
+                <a href="admin.html" title="Painel Administrativo">
+                    <svg class="logo-img gear-icon" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Monitor/Screen -->
+                        <rect x="8" y="10" width="34" height="24" rx="2" fill="#0080C0" stroke="#00b3ff" stroke-width="1.5"/>
+                        <rect x="11" y="13" width="28" height="18" rx="1" fill="#1a1a2e"/>
+                        <!-- Screen detail lines -->
+                        <line x1="15" y1="17" x2="35" y2="17" stroke="#0080C0" stroke-width="1.5" opacity="0.6"/>
+                        <line x1="15" y1="21" x2="30" y2="21" stroke="#0080C0" stroke-width="1.5" opacity="0.6"/>
+                        <line x1="15" y1="25" x2="33" y2="25" stroke="#0080C0" stroke-width="1.5" opacity="0.6"/>
+                        <!-- Stand -->
+                        <rect x="22" y="34" width="6" height="4" fill="#0080C0"/>
+                        <rect x="18" y="38" width="14" height="2" rx="1" fill="#0080C0"/>
+                        <!-- Power indicator -->
+                        <circle cx="25" cy="32" r="1.5" fill="#00ff00"/>
+                    </svg>
+                </a>
+                <div class="brand-text">
+                    <span class="brand-name">PCFORMATECH</span>
+                    <span class="tagline">ESPECIALISTAS EM TECNOLOGIA</span>
+                </div>
+            </div>
+            <div class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#servicos">Serviços</a></li>
+                <li><a href="#sobre">Sobre</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Widget do WhatsApp -->
+    <div class="whatsapp-widget">
+        <div class="whatsapp-chat" id="whatsappChat">
+            <div class="whatsapp-header">
+                <div class="whatsapp-header-content">
+                    <div class="whatsapp-avatar">
+                        <i class="fab fa-whatsapp"></i>
+                    </div>
+                    <div>
+                        <h3 class="whatsapp-title">Atendimento PC Formatech</h3>
+                        <p class="whatsapp-subtitle">Online</p>
+                    </div>
+                </div>
+                <button class="whatsapp-close" onclick="toggleWhatsApp()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="whatsapp-body">
+                <div class="whatsapp-message">
+                    <div class="message-sender">Atendimento PC Formatech</div>
+                    <p class="message-text">Olá,<br>Precisa de Ajuda?</p>
+                </div>
+            </div>
+            <div class="whatsapp-footer">
+                <a href="https://api.whatsapp.com/send?phone=5594984305772&text=Olá, preciso de ajuda!" 
+                   class="whatsapp-button" 
+                   target="_blank">
+                    <i class="fab fa-whatsapp"></i>
+                    Fale Conosco
+                </a>
+                <div class="wati-badge">
+                </div>
+            </div>
+        </div>
+        <button class="whatsapp-toggle" onclick="toggleWhatsApp()">
+            <i class="fab fa-whatsapp"></i>
+        </button>
+    </div>
+
+    <script>
+        function toggleWhatsApp() {
+            const chat = document.getElementById('whatsappChat');
+            chat.classList.toggle('active');
+        }
+        
+        // Fechar ao clicar fora
+        document.addEventListener('click', function(event) {
+            const widget = document.querySelector('.whatsapp-widget');
+            const chat = document.getElementById('whatsappChat');
+            if (!widget.contains(event.target) && chat.classList.contains('active')) {
+                chat.classList.remove('active');
+            }
+        });
+    </script>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="hero-slider">
+                <div class="hero-slide active">
+                    <img src="https://images.unsplash.com/photo-1587202372634-32705e3bf49c?auto=format&fit=crop&q=90&w=2400" alt="Laptop em Manutenção">
+                </div>
+                <div class="hero-slide">
+                    <img src="https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&q=90&w=2400" alt="Workspace com Laptop">
+                </div>
+                <div class="hero-slide">
+                    <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=90&w=2400" alt="Programação e Desenvolvimento">
+                </div>
+                <div class="hero-slide">
+                    <img src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&q=90&w=2400" alt="Computador Profissional">
+                </div>
+                <div class="hero-slide">
+                    <img src="https://images.unsplash.com/photo-1551033406-611cf9a28f67?auto=format&fit=crop&q=90&w=2400" alt="Laptop em Ambiente Profissional">
+                </div>
+                <div class="hero-slide">
+                    <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=90&w=2400" alt="Setup Moderno de Programação">
+                </div>
+                <div class="hero-slide">
+                    <img src="https://images.unsplash.com/photo-1547658719-da2b51169166?auto=format&fit=crop&q=90&w=2400" alt="Hardware e Componentes">
+                </div>
+                <div class="hero-slide">
+                    <img src="https://images.unsplash.com/photo-1484788984921-03950022c9ef?auto=format&fit=crop&q=90&w=2400" alt="MacBook Pro Workspace">
+                </div>
+                <div class="hero-slide">
+                    <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=90&w=2400" alt="Tech Workspace Minimalista">
+                </div>
+                <div class="hero-slide">
+                    <img src="https://images.unsplash.com/photo-1537498425277-c283d32ef9db?auto=format&fit=crop&q=90&w=2400" alt="Gaming PC Setup">
+                </div>
+            </div>
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <h1>Soluções Profissionais em Formatação e Instalação de Software</h1>
+                <p>Serviço profissional e confiável para seu computador</p>
+            </div>
+            
+            <!-- Botões de Navegação do Carrossel -->
+            <button class="hero-nav-btn hero-prev" onclick="changeSlide(-1)" aria-label="Imagem anterior">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="hero-nav-btn hero-next" onclick="changeSlide(1)" aria-label="Próxima imagem">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            
+            <div class="hero-indicators">
+                <span class="indicator active" data-slide="0"></span>
+                <span class="indicator" data-slide="1"></span>
+                <span class="indicator" data-slide="2"></span>
+                <span class="indicator" data-slide="3"></span>
+                <span class="indicator" data-slide="4"></span>
+                <span class="indicator" data-slide="5"></span>
+                <span class="indicator" data-slide="6"></span>
+                <span class="indicator" data-slide="7"></span>
+                <span class="indicator" data-slide="8"></span>
+                <span class="indicator" data-slide="9"></span>
+            </div>
+        </section>
+
+        <section id="servicos" class="services">
+            <h2>Nossos Serviços</h2>
+            <p class="services-subtitle">Selecione os serviços desejados e solicite um orçamento</p>
+            <div class="services-grid">
+                <label class="service-card" data-modal="formatacao">
+                    <input type="checkbox" class="service-checkbox" data-service="formatacao" data-price="80">
+                    <div class="service-check-mark">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="service-icon-wrapper">
+                        <i class="fas fa-laptop"></i>
+                    </div>
+                    <h3>Formatação de Computadores</h3>
+                    <p>Formatação completa com backup de seus arquivos</p>
+                    <button type="button" class="service-details-btn">Ver Detalhes</button>
+                    <div class="price-tag"><span>A partir de</span><span>R$ 80,00</span></div>
+                </label>
+                <label class="service-card" data-modal="programas">
+                    <input type="checkbox" class="service-checkbox" data-service="programas" data-price="50">
+                    <div class="service-check-mark">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="service-icon-wrapper">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <h3>Instalação de Programas</h3>
+                    <p>Instalação de programas essenciais e específicos</p>
+                    <button type="button" class="service-details-btn">Ver Detalhes</button>
+                    <div class="price-tag"><span>A partir de</span><span>R$ 50,00</span></div>
+                </label>
+                <label class="service-card" data-modal="seguranca">
+                    <input type="checkbox" class="service-checkbox" data-service="seguranca" data-price="60">
+                    <div class="service-check-mark">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="service-icon-wrapper">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Proteção e Segurança</h3>
+                    <p>Instalação de antivírus e ferramentas de proteção</p>
+                    <button type="button" class="service-details-btn">Ver Detalhes</button>
+                    <div class="price-tag"><span>A partir de</span><span>R$ 60,00</span></div>
+                </label>
+                <label class="service-card" data-modal="manutencao">
+                    <input type="checkbox" class="service-checkbox" data-service="manutencao" data-price="70">
+                    <div class="service-check-mark">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="service-icon-wrapper">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h3>Manutenção Preventiva</h3>
+                    <p>Limpeza e otimização do sistema</p>
+                    <button type="button" class="service-details-btn">Ver Detalhes</button>
+                    <div class="price-tag"><span>A partir de</span><span>R$ 70,00</span></div>
+                </label>
+                <label class="service-card" data-modal="drivers">
+                    <input type="checkbox" class="service-checkbox" data-service="drivers" data-price="40">
+                    <div class="service-check-mark">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="service-icon-wrapper">
+                        <i class="fas fa-microchip"></i>
+                    </div>
+                    <h3>Instalação de Drivers</h3>
+                    <p>Atualização e instalação de drivers do sistema</p>
+                    <button type="button" class="service-details-btn">Ver Detalhes</button>
+                    <div class="price-tag"><span>A partir de</span><span>R$ 40,00</span></div>
+                </label>
+                <label class="service-card" data-modal="backup">
+                    <input type="checkbox" class="service-checkbox" data-service="backup" data-price="45">
+                    <div class="service-check-mark">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="service-icon-wrapper">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h3>Backup de Dados</h3>
+                    <p>Backup completo dos seus arquivos importantes</p>
+                    <button type="button" class="service-details-btn">Ver Detalhes</button>
+                    <div class="price-tag"><span>A partir de</span><span>R$ 45,00</span></div>
+                </label>
+                <label class="service-card" data-modal="remoto">
+                    <input type="checkbox" class="service-checkbox" data-service="remoto" data-price="0">
+                    <div class="service-check-mark">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="service-icon-wrapper">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3>Atendimento Remoto</h3>
+                    <p>Suporte técnico via AnyDesk com 20% de desconto</p>
+                    <button type="button" class="service-details-btn">Ver Detalhes</button>
+                    <div class="service-badge">20% OFF</div>
+                    <div class="price-tag"><span>Consulte</span><span>valores</span></div>
+                </label>
+                <a href="formulario-formatacao.html" class="service-card service-card-link">
+                    <div class="service-icon-wrapper">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <h3>Formulário de Formatação</h3>
+                    <p>Preencha o formulário completo para seu atendimento</p>
+                    <button type="button" class="service-details-btn">Preencher Formulário</button>
+                </a>
+            </div>
+            
+            <!-- Barra flutuante de resumo de seleção -->
+            <div class="services-summary" id="servicesSummary">
+                <div class="summary-content">
+                    <button class="clear-selection-btn" onclick="clearAllServices()" title="Limpar seleção">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div class="summary-info">
+                        <span class="summary-count">0 serviços selecionados</span>
+                        <span class="summary-total">Total: R$ 0,00</span>
+                    </div>
+                    <button class="summary-btn" onclick="requestQuote()">Solicitar Orçamento</button>
+                </div>
+            </div>
+        </section>
+
+
+    
+        <section id="depoimentos" class="testimonials">
+            <h2 class="section-title">Feedback dos Clientes <i class="fas fa-comments"></i></h2>
+            <div class="testimonials-container">
+                <div class="testimonials-grid">
+                    <div class="testimonial-card whatsapp-style">
+                        <div class="testimonial-bubble">
+                            <p>"Excelente serviço! Meu computador ficou muito mais rápido após a formatação."</p>
+                        </div>
+                        <div class="client-info">
+                            <div class="client-avatar-initial">JS</div>
+                            <div class="client-details">
+                                <h4>João Silva</h4>
+                                <div class="testimonial-time" data-days-ago="3" data-time="19:15"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card whatsapp-style">
+                        <div class="testimonial-bubble">
+                            <p>"Profissionais muito atenciosos. Resolveram meu problema rapidamente."</p>
+                        </div>
+                        <div class="client-info">
+                            <div class="client-avatar-initial">MR</div>
+                            <div class="client-details">
+                                <h4>Maria Rosa</h4>
+                                <div class="testimonial-time" data-days-ago="7" data-time="18:35"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card whatsapp-style">
+                        <div class="testimonial-bubble">
+                            <p>"Ótimo atendimento e preço justo. Recomendo muito!"</p>
+                        </div>
+                        <div class="client-info">
+                            <div class="client-avatar-initial">PL</div>
+                            <div class="client-details">
+                                <h4>Pedro Lima</h4>
+                                <div class="testimonial-time" data-days-ago="30" data-time="18:45"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="faq" class="faq">
+            <h2 class="section-title"><i class="fas fa-question-circle"></i> Perguntas Frequentes</h2>
+            <div class="faq-container">
+                <div class="faq-grid">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <div class="question-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <h3>Quanto tempo leva para formatar meu computador?</h3>
+                        </div>
+                        <div class="faq-answer">
+                            <p>O serviço geralmente leva entre <strong>2 a 4 horas</strong>, dependendo das configurações e dos programas necessários.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <div class="question-icon">
+                                <i class="fas fa-database"></i>
+                            </div>
+                            <h3>Vocês fazem backup dos meus arquivos?</h3>
+                        </div>
+                        <div class="faq-answer">
+                            <p><strong>Sim!</strong> O backup dos arquivos é opcional. Caso deseje preservar seus dados antes da formatação, o cliente deve informar a necessidade do backup no momento do atendimento.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="agende-servico" class="scheduling">
+            <h2><i class="fas fa-calendar-check"></i> Agende seu Serviço</h2>
+            <div class="scheduling-container">
+                <div class="scheduling-options">
+                    <div class="quick-booking">
+                        <h3><i class="fas fa-user-clock"></i> Preencha seus Dados</h3>
+                        <form id="scheduling-form" class="schedule-form">
+                            <div class="form-group">
+                                <label for="client-name">
+                                    <i class="fas fa-user"></i> Nome Completo *
+                                </label>
+                                <input type="text" id="client-name" name="name" required placeholder="Digite seu nome completo" style="font-size: 16px;">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="client-phone">
+                                    <i class="fas fa-phone"></i> Telefone/WhatsApp *
+                                </label>
+                                <input type="tel" id="client-phone" name="phone" required placeholder="(00) 00000-0000" style="font-size: 16px;">
+                            </div>
+
+                            <div class="form-group">
+                                <label>
+                                    <i class="fas fa-laptop"></i> Tipo de Serviço * (Selecione um ou mais)
+                                </label>
+                                <div class="services-checkbox-group">
+                                    <label class="service-checkbox">
+                                        <input type="checkbox" name="service[]" value="Formatação de Computador" data-price="80">
+                                        <span>Formatação de Computador - R$ 80,00</span>
+                                    </label>
+                                    <label class="service-checkbox">
+                                        <input type="checkbox" name="service[]" value="Instalação de Programas" data-price="50">
+                                        <span>Instalação de Programas - R$ 50,00</span>
+                                    </label>
+                                    <label class="service-checkbox">
+                                        <input type="checkbox" name="service[]" value="Proteção e Segurança" data-price="60">
+                                        <span>Proteção e Segurança - R$ 60,00</span>
+                                    </label>
+                                    <label class="service-checkbox">
+                                        <input type="checkbox" name="service[]" value="Manutenção Preventiva" data-price="70">
+                                        <span>Manutenção Preventiva - R$ 70,00</span>
+                                    </label>
+                                    <label class="service-checkbox">
+                                        <input type="checkbox" name="service[]" value="Instalação de Drivers" data-price="40">
+                                        <span>Instalação de Drivers - R$ 40,00</span>
+                                    </label>
+                                    <label class="service-checkbox">
+                                        <input type="checkbox" name="service[]" value="Backup de Dados" data-price="45">
+                                        <span>Backup de Dados - R$ 45,00</span>
+                                    </label>
+                                </div>
+                                <div class="total-price-display">
+                                    <span class="total-label">Valor Total:</span>
+                                    <span class="total-value" id="total-value">R$ 0,00</span>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="attendance-type">
+                                        <i class="fas fa-headset"></i> Modo de Atendimento *
+                                    </label>
+                                    <select id="attendance-type" name="attendance" required>
+                                        <option value="">Selecione</option>
+                                        <option value="Presencial">Presencial</option>
+                                        <option value="Remoto (AnyDesk)">Remoto (AnyDesk) - 20% OFF</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="cleaning-type">
+                                        <i class="fas fa-broom"></i> Tipo de Limpeza (Opcional)
+                                    </label>
+                                    <select id="cleaning-type" name="cleaning">
+                                        <option value="Não se aplica" data-price="0">Não se aplica</option>
+                                        <option value="Limpeza Simples" data-price="25">Limpeza Simples - R$ 25,00</option>
+                                        <option value="Limpeza Completa" data-price="45">Limpeza Completa - R$ 45,00</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="schedule-date">
+                                        <i class="fas fa-calendar"></i> Data *
+                                    </label>
+                                    <input type="date" id="schedule-date" name="date" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="schedule-time">
+                                        <i class="fas fa-clock"></i> Horário *
+                                    </label>
+                                    <select id="schedule-time" name="time" required>
+                                        <option value="">Selecione o horário</option>
+                                        <option value="08:00">08:00</option>
+                                        <option value="09:00">09:00</option>
+                                        <option value="10:00">10:00</option>
+                                        <option value="11:00">11:00</option>
+                                        <option value="12:00">12:00</option>
+                                        <option value="13:00">13:00</option>
+                                        <option value="14:00">14:00</option>
+                                        <option value="15:00">15:00</option>
+                                        <option value="16:00">16:00</option>
+                                        <option value="17:00">17:00</option>
+                                        <option value="18:00">18:00</option>
+                                    </select>
+                                    <small class="schedule-info">
+                                        <i class="fas fa-info-circle"></i> 
+                                        Segunda a Sexta: 8h às 18h | Sábado: 8h às 12h
+                                    </small>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="client-address">
+                                    <i class="fas fa-map-marker-alt"></i> Endereço (Opcional)
+                                </label>
+                                <input type="text" id="client-address" name="address" placeholder="Rua, número, bairro" style="font-size: 16px;">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="additional-info">
+                                    <i class="fas fa-comment"></i> Observações (Opcional)
+                                </label>
+                                <textarea id="additional-info" name="notes" rows="4" placeholder="Ex: Preciso de atendimento remoto pelo AnyDesk, meu PC está lento..." style="font-size: 16px;"></textarea>
+                            </div>
+
+                            <button type="submit" class="submit-schedule-btn">
+                                <i class="fab fa-whatsapp"></i>
+                                Agendar via WhatsApp
+                            </button>
+                        </form>
+                    </div>
+                    <div class="scheduling-info">
+                        <div class="info-card">
+                            <i class="fas fa-clock"></i>
+                            <h4>Horário de Atendimento</h4>
+                            <p><strong>Segunda a Sexta:</strong> 8h às 18h</p>
+                            <p><strong>Sábado:</strong> 8h às 12h</p>
+                        </div>
+                        <div class="info-card">
+                            <i class="fas fa-map-marked-alt"></i>
+                            <h4>Atendimento em</h4>
+                            <p><strong>Canaã dos Carajás, PA</strong></p>
+                            <small>Atendimento a domicílio disponível</small>
+                        </div>
+                        <div class="info-card">
+                            <i class="fas fa-info-circle"></i>
+                            <h4>Como Funciona</h4>
+                            <p>1. Preencha o formulário</p>
+                            <p>2. Clique em "Agendar via WhatsApp"</p>
+                            <p>3. Confirme no WhatsApp</p>
+                            <small>Resposta em até 1 hora</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="social" class="social-proof">
+            <h2><i class="fas fa-share-alt"></i> Conecte-se Conosco</h2>
+            <div class="social-container">
+                <div class="social-links">
+                    <a href="https://instagram.com/pcformatech" target="_blank" class="social-link instagram">
+                        <i class="fab fa-instagram"></i>
+                        <span><strong>@pcformatech</strong> no Instagram</span>
+                        <small>181 seguindo • 94 seguidores • 34 posts</small>
+                    </a>
+                    <a href="https://api.whatsapp.com/send?phone=5594984305772&text=Olá! Gostaria de atendimento rápido pelo WhatsApp." target="_blank" class="social-link whatsapp">
+                        <i class="fab fa-whatsapp"></i>
+                        <span><strong>Agende pelo WhatsApp</strong></span>
+                        <small>(94) 98430-5772 • Atendimento Rápido</small>
+                    </a>
+                    <div class="location-info">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span><strong>Canaã dos Carajás, PA</strong></span>
+                        <small>📍 Atendemos em toda a Região</small>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Modals de Serviços -->
+        <div class="modal" id="modal-formatacao">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h3>Formatação de Computadores</h3>
+                <ul class="service-features">
+                    <li><i class="fas fa-check"></i> Formatação com Windows original</li>
+                    <li><i class="fas fa-check"></i> Navegadores e players de mídia</li>
+                    <li><i class="fas fa-check"></i> Programas essenciais</li>
+                    <li><i class="fas fa-check"></i> Garantia de 30 dias</li>
+                    <li><i class="fas fa-check"></i> Suporte pós-formatação (30 dias)</li>
+                    <li><i class="fas fa-info-circle"></i> Backup opcional (sob consulta)</li>
+                </ul>
+                <div class="price-details">
+                    <p class="price">A partir de R$ 80,00</p>
+                    <button class="whatsapp-btn" data-service="Formatação de Computadores">
+                        <i class="fab fa-whatsapp"></i> Solicitar por WhatsApp
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="modal-programas">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h3>Instalação de Programas</h3>
+                <ul class="service-features">
+                    <li><i class="fas fa-check"></i> Instalação de softwares específicos</li>
+                    <li><i class="fas fa-check"></i> Pacote Office atualizado</li>
+                    <li><i class="fas fa-check"></i> Programas de produtividade</li>
+                    <li><i class="fas fa-check"></i> Softwares de edição</li>
+                    <li><i class="fas fa-check"></i> Antivírus e segurança</li>
+                    <li><i class="fas fa-check"></i> Configuração personalizada</li>
+                </ul>
+                <div class="price-details">
+                    <p class="price">A partir de R$ 50,00</p>
+                    <button class="whatsapp-btn" data-service="Instalação de Programas">
+                        <i class="fab fa-whatsapp"></i> Solicitar por WhatsApp
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="modal-seguranca">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h3>Proteção e Segurança</h3>
+                <ul class="service-features">
+                    <li><i class="fas fa-check"></i> Instalação de antivírus premium</li>
+                    <li><i class="fas fa-check"></i> Configuração de firewall</li>
+                    <li><i class="fas fa-check"></i> Remoção de malware</li>
+                    <li><i class="fas fa-check"></i> Proteção contra ransomware</li>
+                    <li><i class="fas fa-check"></i> Backup em nuvem</li>
+                    <li><i class="fas fa-check"></i> Monitoramento de segurança</li>
+                </ul>
+                <div class="price-details">
+                    <p class="price">A partir de R$ 60,00</p>
+                    <button class="whatsapp-btn" data-service="Proteção e Segurança">
+                        <i class="fab fa-whatsapp"></i> Solicitar por WhatsApp
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="modal-manutencao">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h3>Manutenção Preventiva</h3>
+                <ul class="service-features">
+                    <li><i class="fas fa-check"></i> Limpeza do sistema</li>
+                    <li><i class="fas fa-check"></i> Otimização do Windows</li>
+                    <li><i class="fas fa-check"></i> Atualização de drivers</li>
+                    <li><i class="fas fa-check"></i> Verificação de hardware</li>
+                    <li><i class="fas fa-check"></i> Remoção de arquivos temporários</li>
+                    <li><i class="fas fa-check"></i> Relatório de desempenho</li>
+                </ul>
+                <div class="price-details">
+                    <p class="price">A partir de R$ 70,00</p>
+                    <button class="whatsapp-btn" data-service="Manutenção Preventiva">
+                        <i class="fab fa-whatsapp"></i> Solicitar por WhatsApp
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="modal-drivers">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h3>Instalação de Drivers</h3>
+                <ul class="service-features">
+                    <li><i class="fas fa-check"></i> Identificação de hardware</li>
+                    <li><i class="fas fa-check"></i> Drivers oficiais e atualizados</li>
+                    <li><i class="fas fa-check"></i> Otimização de desempenho</li>
+                    <li><i class="fas fa-check"></i> Correção de problemas</li>
+                    <li><i class="fas fa-check"></i> Backup dos drivers atuais</li>
+                    <li><i class="fas fa-check"></i> Teste de funcionamento</li>
+                </ul>
+                <div class="price-details">
+                    <p class="price">A partir de R$ 40,00</p>
+                    <button class="whatsapp-btn" data-service="Instalação de Drivers">
+                        <i class="fab fa-whatsapp"></i> Solicitar por WhatsApp
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="modal-backup">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h3>Backup de Dados</h3>
+                <ul class="service-features">
+                    <li><i class="fas fa-check"></i> Backup completo dos arquivos</li>
+                    <li><i class="fas fa-check"></i> Verificação de integridade</li>
+                    <li><i class="fas fa-check"></i> Organização dos dados</li>
+                    <li><i class="fas fa-check"></i> Armazenamento seguro</li>
+                    <li><i class="fas fa-check"></i> Backup em múltiplos dispositivos</li>
+                    <li><i class="fas fa-check"></i> Relatório detalhado</li>
+                </ul>
+                <div class="price-details">
+                    <p class="price">A partir de R$ 45,00</p>
+                    <button class="whatsapp-btn" data-service="Backup de Dados">
+                        <i class="fab fa-whatsapp"></i> Solicitar por WhatsApp
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="modal-remoto">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h3>Atendimento Remoto via AnyDesk</h3>
+                <div class="remote-service-highlight">
+                    <div class="discount-badge">
+                        <i class="fas fa-percentage"></i>
+                        <span>20% de desconto em todos os serviços</span>
+                    </div>
+                </div>
+                <ul class="service-features">
+                    <li><i class="fas fa-check"></i> Atendimento sem sair de casa</li>
+                    <li><i class="fas fa-check"></i> Suporte técnico em tempo real</li>
+                    <li><i class="fas fa-check"></i> Resolução rápida de problemas</li>
+                    <li><i class="fas fa-check"></i> Instalação de programas remotamente</li>
+                    <li><i class="fas fa-check"></i> Diagnóstico e otimização do sistema</li>
+                    <li><i class="fas fa-check"></i> Conexão segura e criptografada</li>
+                </ul>
+                <div class="anydesk-download">
+                    <h4>Como funciona:</h4>
+                    <ol>
+                        <li>1. Baixe o AnyDesk clicando no botão abaixo</li>
+                        <li>2. Instale o programa (não precisa reiniciar)</li>
+                        <li>3. Entre em contato conosco pelo WhatsApp</li>
+                        <li>4. Receba atendimento com 20% de desconto!</li>
+                    </ol>
+                    <a href="https://anydesk.com/pt/downloads" target="_blank" class="download-btn">
+                        <i class="fas fa-download"></i> Baixar AnyDesk
+                    </a>
+                </div>
+                <div class="price-details">
+                    <p class="remote-discount">Todos os serviços com 20% de desconto no atendimento remoto!</p>
+                    <button class="whatsapp-btn" data-service="Atendimento Remoto">
+                        <i class="fab fa-whatsapp"></i> Solicitar Atendimento Remoto
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sistema de Agendamento + Contato lado a lado -->
+        <section class="cta-duo">
+            <div class="cta-columns">
+ 
+        <section id="sobre" class="about">
+            <div class="about-header">
+                <h2>Sobre a PC Formatech</h2>
+                <p class="about-subtitle">Sua solução completa em informática</p>
+            </div>
+            <div class="about-content">
+                <div class="about-main">
+                    <div class="about-image">
+                        <div class="about-image-placeholder">
+                            <i class="fas fa-laptop-code"></i>
+                        </div>
+                    </div>
+                    <div class="about-text">
+                        <h3>Quem Somos</h3>
+                        <p class="highlight-text">Somos especialistas em formatação e instalação de programas, com anos de experiência no mercado de informática em Canaã dos Carajás, PA.</p>
+                        <p>Nossa missão é oferecer um serviço rápido, seguro e de qualidade para nossos clientes, seja presencialmente ou remotamente via AnyDesk.</p>
+                        <p>Contamos com técnicos qualificados e atualizados nas mais recentes tecnologias, garantindo soluções eficientes para seu computador.</p>
+                    </div>
+                </div>
+                
+                <div class="about-features">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-user-check"></i>
+                        </div>
+                        <h4>Atendimento Personalizado</h4>
+                        <p>Cada cliente é único e merece atenção especial</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h4>Serviço Rápido</h4>
+                        <p>Seu tempo é valioso, trabalhamos com agilidade</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-award"></i>
+                        </div>
+                        <h4>Garantia de Qualidade</h4>
+                        <p>Todos os serviços com garantia e suporte</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <h4>Suporte Contínuo</h4>
+                        <p>Estamos sempre disponíveis para ajudar</p>
+                    </div>
+                </div>
+
+                <div class="about-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">500+</div>
+                        <div class="stat-label">Clientes Atendidos</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">5+</div>
+                        <div class="stat-label">Anos de Experiência</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">98%</div>
+                        <div class="stat-label">Satisfação</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">24h</div>
+                        <div class="stat-label">Tempo de Resposta</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-info">
+                <h3>PC Formatech</h3>
+                <p class="slogan">Seu computador em boas mãos</p>
+                <p class="footer-description">Soluções completas em formatação e manutenção de computadores para sua casa ou empresa.</p>
+                <div class="payment-highlight">
+                    <h4><i class="fas fa-credit-card"></i> Formas de Pagamento</h4>
+                    <div class="payment-methods">
+                        <div class="payment-item">
+                            <i class="fab fa-pix"></i>
+                            <span>PIX</span>
+                        </div>
+                        <div class="payment-item">
+                            <i class="fas fa-credit-card"></i>
+                            <span>Cartão de Crédito</span>
+                        </div>
+                        <div class="payment-item">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <span>Dinheiro</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-contact">
+                <h4><i class="fas fa-headset"></i> Contato</h4>
+                <div class="contact-item">
+                    <i class="fas fa-phone"></i>
+                    <div class="contact-info">
+                        <p><strong>(94) 98430-5772</strong></p>
+                        <small>Atendimento rápido via WhatsApp</small>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <div class="contact-info">
+                        <p>contato@pcformatech.com</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div class="contact-info">
+                        <p><strong>Canaã dos Carajás, PA</strong></p>
+                        <small>Atendimento em toda a região</small>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-social">
+                <h4><i class="fas fa-share-alt"></i> Redes Sociais</h4>
+                <div class="social-links">
+                    <a href="https://instagram.com/pcformatech" target="_blank" class="social-link instagram">
+                        <i class="fab fa-instagram"></i>
+                        <span>
+                            <strong>Instagram</strong>
+                            <small>@pcformatech</small>
+                        </span>
+                    </a>
+                    <a href="https://wa.me/5594984305772" target="_blank" class="social-link whatsapp">
+                        <i class="fab fa-whatsapp"></i>
+                        <span>
+                            <strong>WhatsApp</strong>
+                            <small>(94) 98430-5772</small>
+                        </span>
+                    </a>
+                </div>
+                <div class="location-info">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>
+                        <strong>Canaã dos Carajás, PA</strong>
+                        <small>📍 Atendimento em toda a região</small>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-info-bottom">
+                <p>&copy; 2025 PC Formatech. Todos os direitos reservados.</p>
+                <div class="payment-methods-icons">
+                    <i class="fab fa-cc-visa"></i>
+                    <i class="fab fa-cc-mastercard"></i>
+                    <i class="fas fa-money-bill-wave"></i>
+                    <i class="fab fa-pix"></i>
+                </div>
+            </div>
+            <a href="admin.html" style="opacity: 0.2; font-size: 12px; color: #666; text-decoration: none; display: inline-block; margin-top: 10px;" title="Painel Administrativo">
+                <i class="fas fa-key"></i>
+            </a>
+        </div>
+    </footer>
+
+    <!-- Botão Voltar ao Topo -->
+    <button id="scrollToTop" class="scroll-to-top" aria-label="Voltar ao topo">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script src="main.js"></script>
+    <script src="formatacao-form.js"></script>
+    
+    <!-- Script para carregar slides personalizados do admin -->
+    <script>
+        // Carregar slides do localStorage se existirem
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedSlides = localStorage.getItem('pcformatech_hero_slides');
+            
+            if (savedSlides) {
+                const slides = JSON.parse(savedSlides);
+                const heroSlider = document.querySelector('.hero-slider');
+                const heroIndicators = document.querySelector('.hero-indicators');
+                
+                if (heroSlider && slides.length > 0) {
+                    // Limpar slides existentes
+                    heroSlider.innerHTML = '';
+                    heroIndicators.innerHTML = '';
+                    
+                    // Adicionar novos slides
+                    slides.forEach((slide, index) => {
+                        // Criar slide
+                        const slideDiv = document.createElement('div');
+                        slideDiv.className = 'hero-slide' + (index === 0 ? ' active' : '');
+                        slideDiv.innerHTML = `<img src="${slide.url}" alt="${slide.alt}">`;
+                        heroSlider.appendChild(slideDiv);
+                        
+                        // Criar indicador
+                        const indicator = document.createElement('span');
+                        indicator.className = 'indicator' + (index === 0 ? ' active' : '');
+                        indicator.setAttribute('data-slide', index);
+                        heroIndicators.appendChild(indicator);
+                    });
+                    
+                    console.log('✅ Slides personalizados carregados do painel admin!');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

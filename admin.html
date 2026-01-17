@@ -1,0 +1,2800 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Painel Administrativo - PC Formatech</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-text-size-adjust: 100%;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* Prevenir zoom em inputs no mobile */
+        input, select, textarea, button {
+            font-size: 16px !important;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            font-size: 16px !important;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0B3D3D 0%, #1A5C5C 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .login-container h1 {
+            text-align: center;
+            color: #0B3D3D;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #0B3D3D;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #40998F 0%, #2D7A7A 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(64, 153, 143, 0.4);
+        }
+
+        .admin-panel {
+            display: none;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .admin-header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .admin-header h1 {
+            color: #0B3D3D;
+        }
+
+        .header-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .btn-back-to-site {
+            padding: 8px 10px;
+            background: linear-gradient(135deg, #40998F 0%, #2D7A7A 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            width: 36px;
+            height: 36px;
+        }
+
+        .btn-back-to-site:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(64, 153, 143, 0.4);
+        }
+
+        .btn-logout {
+            padding: 6px 12px;
+            background: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .btn-logout:hover {
+            background: #cc0000;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 68, 68, 0.4);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .service-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .service-card h3 {
+            color: #0B3D3D;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #40998F;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #0B3D3D;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .input-group input,
+        .input-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .input-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .btn-save {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #40998F 0%, #2D7A7A 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(64, 153, 143, 0.4);
+        }
+
+        .success-message {
+            background: #4CAF50;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            text-align: center;
+        }
+
+        .discount-section {
+            background: #f0f7ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .discount-section h4 {
+            color: #0B3D3D;
+            margin-bottom: 10px;
+        }
+
+        /* Tabs de Navegação */
+        .admin-tabs {
+            background: white;
+            padding: 0;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            flex: 1 1 auto;
+            min-width: 150px;
+            padding: 18px 15px;
+            background: white;
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .tab-button:hover {
+            background: #f8f9fa;
+        }
+
+        .tab-button.active {
+            color: #40998F;
+            border-bottom-color: #40998F;
+            background: #f0f7ff;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Gestão de Clientes */
+        .clients-container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .client-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin-top: 20px;
+        }
+
+        .clients-table {
+            width: 100%;
+            min-width: 600px;
+            border-collapse: collapse;
+        }
+
+        .clients-table th,
+        .clients-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .clients-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #0B3D3D;
+        }
+
+        .clients-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .btn-action {
+            padding: 6px 12px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-view {
+            background: #2196F3;
+            color: white;
+        }
+
+        .btn-edit {
+            background: #FF9800;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+        }
+        
+        .btn-convert {
+            background: #9C27B0;
+            color: white;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #40998F;
+        }
+
+        .modal-header h2 {
+            color: #0B3D3D;
+        }
+
+        .close {
+            font-size: 28px;
+            font-weight: bold;
+            color: #999;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        /* Serviços do Cliente */
+        .service-item {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #40998F;
+        }
+
+        .service-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .service-status {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-pendente {
+            background: #FFF3CD;
+            color: #856404;
+        }
+
+        .status-andamento {
+            background: #D1ECF1;
+            color: #0C5460;
+        }
+
+        .status-concluido {
+            background: #D4EDDA;
+            color: #155724;
+        }
+
+        .status-cancelado {
+            background: #F8D7DA;
+            color: #721C24;
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-top: 30px;
+        }
+
+        .chart-container h2 {
+            color: #0B3D3D;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 400px;
+        }
+
+        .stat-card h3 {
+            font-size: 32px;
+            color: #40998F;
+            margin-bottom: 10px;
+        }
+
+        .stat-card p {
+            color: #666;
+            font-weight: 600;
+        }
+
+        /* Responsividade Mobile */
+        @media (max-width: 768px) {
+            .admin-header h1 {
+                font-size: 18px;
+            }
+
+            .admin-tabs {
+                border-radius: 8px;
+            }
+
+            .tab-button {
+                flex: 1 1 calc(50% - 4px);
+                min-width: calc(50% - 4px);
+                padding: 14px 10px;
+                font-size: 13px;
+                margin: 2px;
+            }
+
+            .tab-button i {
+                display: block;
+                margin-bottom: 4px;
+                font-size: 18px;
+            }
+
+            .clients-table {
+                font-size: 13px;
+            }
+
+            .clients-table th,
+            .clients-table td {
+                padding: 10px 8px;
+            }
+        }
+
+        /* Estilos para Gestão de Slider */
+        .slides-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .slide-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .slide-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+        }
+
+        .slide-preview {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: #f0f0f0;
+        }
+
+        .slide-info {
+            padding: 15px;
+        }
+
+        .slide-info input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .slide-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .slide-actions button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-update {
+            background: #40998F;
+            color: white;
+        }
+
+        .btn-update:hover {
+            background: #2D7A7A;
+        }
+
+        .btn-remove {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-remove:hover {
+            background: #c82333;
+        }
+
+        .slide-order {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .slide-order span {
+            font-weight: 600;
+            color: #40998F;
+        }
+    </style>
+</head>
+<body>
+    <!-- Tela de Login -->
+    <div class="login-container" id="loginContainer">
+        <h1><i class="fas fa-lock"></i> Acesso Administrativo</h1>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="password">Senha de Acesso:</label>
+                <input type="password" id="password" placeholder="Digite a senha" required>
+            </div>
+            <button type="submit" class="btn-login">Entrar</button>
+        </form>
+    </div>
+
+    <!-- Painel Admin -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-header">
+            <h1><i class="fas fa-tools"></i> Painel Administrativo</h1>
+            <div class="header-buttons">
+                <a href="index.html" class="btn-back-to-site" title="Voltar ao Site">
+                    <i class="fas fa-home"></i>
+                </a>
+                <button class="btn-logout" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </button>
+            </div>
+        </div>
+
+        <div class="success-message" id="successMessage">
+            <i class="fas fa-check-circle"></i> Alterações salvas com sucesso!
+        </div>
+
+        <!-- Tabs de Navegação -->
+        <div class="admin-tabs">
+            <button class="tab-button active" onclick="switchTab('dashboard')">
+                <i class="fas fa-chart-line"></i> Dashboard
+            </button>
+            <button class="tab-button" onclick="switchTab('clients')">
+                <i class="fas fa-users"></i> Clientes
+            </button>
+            <button class="tab-button" onclick="switchTab('services')">
+                <i class="fas fa-cog"></i> Serviços
+            </button>
+            <button class="tab-button" onclick="switchTab('budgets')">
+                <i class="fas fa-file-invoice"></i> Orçamentos/Laudos
+            </button>
+            <button class="tab-button" onclick="switchTab('products')">
+                <i class="fas fa-box"></i> Produtos
+            </button>
+            <button class="tab-button" onclick="switchTab('prices')">
+                <i class="fas fa-dollar-sign"></i> Preços
+            </button>
+            <button class="tab-button" onclick="switchTab('slider')">
+                <i class="fas fa-images"></i> Imagens da Tela Inicial
+            </button>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="tab-dashboard" class="tab-content active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3 id="totalClients">0</h3>
+                    <p><i class="fas fa-users"></i> Total de Clientes</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="totalServices">0</h3>
+                    <p><i class="fas fa-briefcase"></i> Serviços Realizados</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="pendingServices">0</h3>
+                    <p><i class="fas fa-clock"></i> Serviços Pendentes</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="totalRevenue">R$ 0,00</h3>
+                    <p><i class="fas fa-money-bill-wave"></i> Receita Total</p>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <h2><i class="fas fa-chart-area"></i> Estatísticas Mensais (6 Meses)</h2>
+                <div class="chart-wrapper">
+                    <canvas id="statsChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gestão de Clientes -->
+        <div id="tab-clients" class="tab-content">
+            <div class="clients-container">
+                <h2><i class="fas fa-user-plus"></i> Cadastro de Cliente</h2>
+                
+                <form id="clientForm" class="client-form">
+                    <div class="input-group">
+                        <label>Nome Completo: *</label>
+                        <input type="text" id="clientName" required>
+                    </div>
+                    <div class="input-group">
+                        <label>WhatsApp: *</label>
+                        <input type="tel" id="clientPhone" placeholder="(00) 00000-0000" required>
+                    </div>
+                    <div class="input-group">
+                        <label>E-mail:</label>
+                        <input type="email" id="clientEmail">
+                    </div>
+                    <div class="input-group">
+                        <label>CPF:</label>
+                        <input type="text" id="clientCPF" placeholder="000.000.000-00">
+                    </div>
+                    <div class="input-group">
+                        <label>Endereço:</label>
+                        <input type="text" id="clientAddress">
+                    </div>
+                    <div class="input-group">
+                        <label>Cidade:</label>
+                        <input type="text" id="clientCity">
+                    </div>
+                </form>
+                
+                <button class="btn-save" onclick="saveClient()">
+                    <i class="fas fa-save"></i> Cadastrar Cliente
+                </button>
+
+                <div class="search-box">
+                    <input type="text" id="searchClient" placeholder="🔍 Buscar cliente por nome, telefone ou CPF..." onkeyup="searchClients()">
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="clients-table" id="clientsTable">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>WhatsApp</th>
+                                <th>E-mail</th>
+                                <th>Serviços</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clientsTableBody">
+                            <!-- Clientes serão inseridos aqui -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gestão de Serviços -->
+        <div id="tab-services" class="tab-content">
+            <div class="clients-container">
+                <h2><i class="fas fa-briefcase"></i> Gestão de Serviços por Cliente</h2>
+                
+                <button class="btn-save" onclick="openAddServiceDirectModal()" style="margin-bottom: 20px;">
+                    <i class="fas fa-plus-circle"></i> Adicionar Novo Serviço
+                </button>
+                
+                <div class="search-box">
+                    <input type="text" id="searchServiceClient" placeholder="🔍 Buscar cliente..." onkeyup="searchServiceClients()">
+                </div>
+
+                <div id="serviceClientsContainer">
+                    <!-- Lista de clientes com serviços -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Configuração de Preços -->
+        <div id="tab-prices" class="tab-content">
+            <div class="services-grid" id="servicesGrid"></div>
+        </div>
+
+        <!-- Gestão de Produtos -->
+        <div id="tab-products" class="tab-content">
+            <div class="clients-container">
+                <h2><i class="fas fa-box-open"></i> Cadastro de Produtos</h2>
+                
+                <form id="productForm" class="client-form">
+                    <div class="input-group">
+                        <label>Nome do Produto: *</label>
+                        <input type="text" id="productName" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Preço (R$): *</label>
+                        <input type="number" id="productPrice" step="0.01" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Quantidade em Estoque:</label>
+                        <input type="number" id="productStock" min="0" value="0">
+                    </div>
+                    <div class="input-group">
+                        <label>Categoria:</label>
+                        <select id="productCategory">
+                            <option value="hardware">Hardware</option>
+                            <option value="software">Software</option>
+                            <option value="perifericos">Periféricos</option>
+                            <option value="acessorios">Acessórios</option>
+                            <option value="outros">Outros</option>
+                        </select>
+                    </div>
+                    <div class="input-group" style="grid-column: 1 / -1;">
+                        <label>Descrição:</label>
+                        <textarea id="productDescription" rows="3"></textarea>
+                    </div>
+                </form>
+                
+                <button class="btn-save" onclick="saveProduct()">
+                    <i class="fas fa-save"></i> Cadastrar Produto
+                </button>
+
+                <div class="search-box">
+                    <input type="text" id="searchProduct" placeholder="🔍 Buscar produto..." onkeyup="searchProducts()">
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="clients-table" id="productsTable">
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Preço</th>
+                                <th>Estoque</th>
+                                <th>Categoria</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody">
+                            <!-- Produtos serão inseridos aqui -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orçamentos e Laudos -->
+        <div id="tab-budgets" class="tab-content">
+            <div class="clients-container">
+                <h2><i class="fas fa-file-invoice-dollar"></i> Orçamentos e Laudos Técnicos</h2>
+                
+                <button class="btn-save" onclick="openNewBudgetModal()" style="margin-bottom: 20px;">
+                    <i class="fas fa-plus-circle"></i> Novo Orçamento/Laudo
+                </button>
+
+                <div class="search-box">
+                    <input type="text" id="searchBudget" placeholder="🔍 Buscar orçamento por cliente ou número..." onkeyup="searchBudgets()">
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="clients-table" id="budgetsTable">
+                        <thead>
+                            <tr>
+                                <th>Nº Laudo</th>
+                                <th>Cliente</th>
+                                <th>Data</th>
+                                <th>Total</th>
+                                <th>Tipo</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="budgetsTableBody">
+                            <!-- Orçamentos serão inseridos aqui -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Detalhes do Cliente -->
+    <div id="clientModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-user"></i> Detalhes do Cliente</h2>
+                <span class="close" onclick="closeModal('clientModal')">&times;</span>
+            </div>
+            <div id="clientDetails"></div>
+        </div>
+    </div>
+
+    <!-- Modal de Adicionar Serviço -->
+    <div id="serviceModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-plus-circle"></i> Adicionar Serviço</h2>
+                <span class="close" onclick="closeModal('serviceModal')">&times;</span>
+            </div>
+            <form id="addServiceForm">
+                <input type="hidden" id="serviceClientId">
+                
+                <div class="input-group" id="serviceClientSelectGroup" style="display: none;">
+                    <label>Cliente: *</label>
+                    <select id="serviceClientSelect">
+                        <option value="">Selecione um cliente...</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label>Tipo de Serviço: *</label>
+                    <select id="serviceType" required>
+                        <option value="">Selecione...</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label>Descrição/Observações:</label>
+                    <textarea id="serviceDescription" rows="4"></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label>Valor (R$): *</label>
+                    <input type="number" id="servicePrice" step="0.01" required>
+                </div>
+                
+                <div class="input-group">
+                    <label>Status: *</label>
+                    <select id="serviceStatus" required>
+                        <option value="pendente">Pendente</option>
+                        <option value="andamento">Em Andamento</option>
+                        <option value="concluido">Concluído</option>
+                        <option value="cancelado">Cancelado</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn-save">
+                    <i class="fas fa-check"></i> Adicionar Serviço
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Novo Orçamento/Laudo -->
+    <div id="budgetModal" class="modal">
+        <div class="modal-content" style="max-width: 1000px;">
+            <div class="modal-header">
+                <h2><i class="fas fa-file-invoice"></i> Novo Orçamento / Laudo Técnico</h2>
+                <span class="close" onclick="closeModal('budgetModal')">&times;</span>
+            </div>
+            <form id="budgetForm">
+                <input type="hidden" id="budgetId">
+                
+                <div class="client-form">
+                    <div class="input-group">
+                        <label>Cliente: *</label>
+                        <select id="budgetClientId" required onchange="loadClientData()">
+                            <option value="">Selecione um cliente...</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Data: *</label>
+                        <input type="date" id="budgetDate" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Tipo: *</label>
+                        <select id="budgetType" required>
+                            <option value="orcamento">Orçamento</option>
+                            <option value="laudo">Laudo Técnico</option>
+                        </select>
+                    </div>
+                </div>
+
+                <hr style="margin: 20px 0;">
+
+                <h3><i class="fas fa-tools"></i> Serviços</h3>
+                <div id="budgetServices">
+                    <!-- Serviços serão adicionados aqui -->
+                </div>
+                <button type="button" class="btn-save" onclick="addServiceToBudget()" style="margin-bottom: 20px;">
+                    <i class="fas fa-plus"></i> Adicionar Serviço
+                </button>
+
+                <h3><i class="fas fa-box"></i> Produtos</h3>
+                <div id="budgetProducts">
+                    <!-- Produtos serão adicionados aqui -->
+                </div>
+                <button type="button" class="btn-save" onclick="addProductToBudget()" style="margin-bottom: 20px;">
+                    <i class="fas fa-plus"></i> Adicionar Produto
+                </button>
+
+                <hr style="margin: 20px 0;">
+
+                <div class="input-group" style="grid-column: 1 / -1;">
+                    <label>Defeito Relatado:</label>
+                    <textarea id="budgetDefect" rows="3" placeholder="Descreva o problema relatado pelo cliente..."></textarea>
+                </div>
+
+                <div class="input-group" style="grid-column: 1 / -1;">
+                    <label>Laudo Técnico:</label>
+                    <textarea id="budgetReport" rows="3" placeholder="Diagnóstico técnico detalhado..."></textarea>
+                </div>
+
+                <div class="input-group" style="grid-column: 1 / -1;">
+                    <label>Solução Aplicada:</label>
+                    <textarea id="budgetSolution" rows="3" placeholder="Serviços e produtos aplicados..."></textarea>
+                </div>
+
+                <div class="input-group" style="grid-column: 1 / -1;">
+                    <label>Observações:</label>
+                    <textarea id="budgetObservations" rows="2" placeholder="Informações adicionais..."></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label>Garantia:</label>
+                    <input type="text" id="budgetWarranty" placeholder="Ex: 3 Meses">
+                </div>
+
+                <div class="input-group">
+                    <label><strong>Total: R$ <span id="budgetTotal">0,00</span></strong></label>
+                </div>
+
+                <hr style="margin: 20px 0;">
+
+                <button type="button" class="btn-save" onclick="saveBudget()">
+                    <i class="fas fa-save"></i> Salvar Orçamento/Laudo
+                </button>
+                
+                <button type="button" class="btn-save" onclick="generatePDF()" style="background: #dc3545;">
+                    <i class="fas fa-file-pdf"></i> Gerar PDF
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Gestão de Imagens da Tela Inicial -->
+    <div id="tab-slider" class="tab-content">
+        <div class="clients-container">
+            <h2><i class="fas fa-images"></i> Gerenciar Imagens do Carrossel da Tela Inicial</h2>
+            <p style="color: #666; margin-bottom: 20px;">
+                Gerencie as imagens que aparecem no carrossel da tela inicial do site. Você pode adicionar, editar ou remover imagens.
+            </p>
+
+            <button class="btn-save" onclick="addNewSlide()" style="margin-bottom: 20px;">
+                <i class="fas fa-plus"></i> Adicionar Nova Imagem
+            </button>
+
+            <div id="slidesContainer" class="slides-grid">
+                <!-- Slides serão inseridos aqui -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Senha de acesso (você pode alterar aqui)
+        const ADMIN_PASSWORD = 'pcformatech2026';
+
+        // Dados padrão dos serviços
+        const defaultServices = {
+            formatacao: {
+                name: 'Formatação de Computadores',
+                price: 80,
+                description: 'Formatação completa com instalação do Windows',
+                features: ['Windows 10 ou 11', 'Drivers atualizados', 'Programas básicos']
+            },
+            programas: {
+                name: 'Instalação de Programas',
+                price: 50,
+                description: 'Instalação de programas essenciais',
+                features: ['Office', 'Antivírus', 'Navegadores']
+            },
+            seguranca: {
+                name: 'Proteção e Segurança',
+                price: 60,
+                description: 'Antivírus e proteção completa',
+                features: ['Antivírus premium', 'Firewall', 'Anti-malware']
+            },
+            manutencao: {
+                name: 'Manutenção Preventiva',
+                price: 70,
+                description: 'Limpeza e otimização do sistema',
+                features: ['Limpeza de disco', 'Otimização', 'Desfragmentação']
+            },
+            drivers: {
+                name: 'Instalação de Drivers',
+                price: 40,
+                description: 'Drivers para todos os componentes',
+                features: ['Placa de vídeo', 'Som', 'Rede']
+            },
+            backup: {
+                name: 'Backup de Dados',
+                price: 45,
+                description: 'Backup seguro dos seus arquivos',
+                features: ['Documentos', 'Fotos', 'Vídeos']
+            },
+            remoto: {
+                name: 'Atendimento Remoto',
+                price: 0,
+                discount: 20,
+                description: 'Desconto de 20% no atendimento remoto',
+                features: ['Via AnyDesk', 'Sem sair de casa', '20% OFF']
+            }
+        };
+
+        // Estrutura de dados para clientes
+        let clients = [];
+        let editingClientId = null;
+
+        // Slides da tela inicial
+        let heroSlides = [];
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            loadClientsFromStorage();
+            populateServiceTypes();
+            loadHeroSlides();
+        });
+
+        // ===== SISTEMA DE TABS =====
+        function switchTab(tabName) {
+            // Remover active de todos os botões e conteúdos
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // Ativar tab selecionada
+            event.target.classList.add('active');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+            
+            // Carregar dados conforme a tab
+            if (tabName === 'dashboard') {
+                updateDashboard();
+            } else if (tabName === 'clients') {
+                loadClientsTable();
+            } else if (tabName === 'services') {
+                loadServiceClients();
+            } else if (tabName === 'products') {
+                loadProductsTable();
+            } else if (tabName === 'budgets') {
+                loadBudgetsTable();
+            } else if (tabName === 'prices') {
+                loadServices();
+            } else if (tabName === 'slider') {
+                renderSlides();
+            }
+        }
+
+        // ===== LOGIN/LOGOUT =====
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const password = document.getElementById('password').value;
+            
+            if (password === ADMIN_PASSWORD) {
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                updateDashboard();
+                loadClientsTable();
+            } else {
+                alert('Senha incorreta!');
+            }
+        });
+
+        function logout() {
+            document.getElementById('adminPanel').style.display = 'none';
+            document.getElementById('loginContainer').style.display = 'block';
+            document.getElementById('password').value = '';
+        }
+
+        // ===== GESTÃO DE CLIENTES =====
+        function loadClientsFromStorage() {
+            const saved = localStorage.getItem('pcformatech_clients');
+            clients = saved ? JSON.parse(saved) : [];
+        }
+
+        function saveClientsToStorage() {
+            localStorage.setItem('pcformatech_clients', JSON.stringify(clients));
+        }
+
+        function saveClient() {
+            const name = document.getElementById('clientName').value.trim();
+            const phone = document.getElementById('clientPhone').value.trim();
+            const email = document.getElementById('clientEmail').value.trim();
+            const cpf = document.getElementById('clientCPF').value.trim();
+            const address = document.getElementById('clientAddress').value.trim();
+            const city = document.getElementById('clientCity').value.trim();
+
+            if (!name || !phone) {
+                alert('Por favor, preencha o nome e telefone do cliente!');
+                return;
+            }
+
+            const client = {
+                id: editingClientId || Date.now(),
+                name,
+                phone,
+                email,
+                cpf,
+                address,
+                city,
+                services: editingClientId ? clients.find(c => c.id === editingClientId).services : [],
+                createdAt: editingClientId ? clients.find(c => c.id === editingClientId).createdAt : new Date().toISOString()
+            };
+
+            if (editingClientId) {
+                // Editar cliente existente
+                const index = clients.findIndex(c => c.id === editingClientId);
+                clients[index] = client;
+                editingClientId = null;
+            } else {
+                // Novo cliente
+                clients.push(client);
+            }
+
+            saveClientsToStorage();
+            clearClientForm();
+            loadClientsTable();
+            showSuccess();
+        }
+
+        function clearClientForm() {
+            document.getElementById('clientForm').reset();
+            editingClientId = null;
+        }
+
+        function loadClientsTable() {
+            const tbody = document.getElementById('clientsTableBody');
+            tbody.innerHTML = '';
+
+            const searchTerm = document.getElementById('searchClient')?.value.toLowerCase() || '';
+            
+            const filteredClients = clients.filter(client => 
+                client.name.toLowerCase().includes(searchTerm) ||
+                client.phone.toLowerCase().includes(searchTerm) ||
+                (client.cpf && client.cpf.toLowerCase().includes(searchTerm))
+            );
+
+            filteredClients.forEach(client => {
+                const row = document.createElement('tr');
+                const serviceCount = client.services ? client.services.length : 0;
+                
+                row.innerHTML = `
+                    <td><strong>${client.name}</strong></td>
+                    <td>${client.phone}</td>
+                    <td>${client.email || '-'}</td>
+                    <td><span class="service-status status-${serviceCount > 0 ? 'concluido' : 'pendente'}">${serviceCount} serviço(s)</span></td>
+                    <td>
+                        <button class="btn-action btn-view" onclick="viewClient(${client.id})">
+                            <i class="fas fa-eye"></i> Ver
+                        </button>
+                        <button class="btn-action btn-edit" onclick="editClient(${client.id})">
+                            <i class="fas fa-edit"></i> Editar
+                        </button>
+                        <button class="btn-action btn-whatsapp" onclick="openWhatsApp('${client.phone}', '${client.name}')">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </button>
+                        <button class="btn-action btn-delete" onclick="deleteClient(${client.id})">
+                            <i class="fas fa-trash"></i> Excluir
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function searchClients() {
+            loadClientsTable();
+        }
+
+        function viewClient(clientId) {
+            const client = clients.find(c => c.id === clientId);
+            if (!client) return;
+
+            const details = document.getElementById('clientDetails');
+            const totalValue = client.services ? client.services.reduce((sum, s) => sum + s.price, 0) : 0;
+            
+            details.innerHTML = `
+                <div style="margin-bottom: 20px;">
+                    <h3><i class="fas fa-user-circle"></i> ${client.name}</h3>
+                    <p><strong>WhatsApp:</strong> ${client.phone}</p>
+                    <p><strong>E-mail:</strong> ${client.email || '-'}</p>
+                    <p><strong>CPF:</strong> ${client.cpf || '-'}</p>
+                    <p><strong>Endereço:</strong> ${client.address || '-'}</p>
+                    <p><strong>Cidade:</strong> ${client.city || '-'}</p>
+                    <p><strong>Cliente desde:</strong> ${new Date(client.createdAt).toLocaleDateString('pt-BR')}</p>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <h3><i class="fas fa-briefcase"></i> Histórico de Serviços (${client.services ? client.services.length : 0})</h3>
+                    <p><strong>Valor Total:</strong> R$ ${totalValue.toFixed(2).replace('.', ',')}</p>
+                    
+                    <button class="btn-save" onclick="openAddServiceModal(${client.id})" style="margin: 15px 0;">
+                        <i class="fas fa-plus"></i> Adicionar Novo Serviço
+                    </button>
+                    
+                    ${client.services && client.services.length > 0 ? `
+                        <div>
+                            ${client.services.map((service, index) => `
+                                <div class="service-item">
+                                    <div class="service-header">
+                                        <strong>${service.type}</strong>
+                                        <span class="service-status status-${service.status}">${service.status.toUpperCase()}</span>
+                                    </div>
+                                    <p><strong>Descrição:</strong> ${service.description || '-'}</p>
+                                    <p><strong>Valor:</strong> R$ ${service.price.toFixed(2).replace('.', ',')}</p>
+                                    <p><strong>Data:</strong> ${new Date(service.date).toLocaleDateString('pt-BR')}</p>
+                                    <button class="btn-action btn-edit" onclick="editService(${client.id}, ${index})">
+                                        <i class="fas fa-edit"></i> Editar Status
+                                    </button>
+                                    <button class="btn-action btn-delete" onclick="deleteService(${client.id}, ${index})">
+                                        <i class="fas fa-trash"></i> Remover
+                                    </button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : '<p style="color: #999; text-align: center; padding: 20px;">Nenhum serviço registrado ainda.</p>'}
+                </div>
+            `;
+            
+            document.getElementById('clientModal').style.display = 'block';
+        }
+
+        function editClient(clientId) {
+            const client = clients.find(c => c.id === clientId);
+            if (!client) return;
+
+            editingClientId = clientId;
+            document.getElementById('clientName').value = client.name;
+            document.getElementById('clientPhone').value = client.phone;
+            document.getElementById('clientEmail').value = client.email || '';
+            document.getElementById('clientCPF').value = client.cpf || '';
+            document.getElementById('clientAddress').value = client.address || '';
+            document.getElementById('clientCity').value = client.city || '';
+
+            // Scroll para o formulário
+            document.getElementById('clientForm').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function deleteClient(clientId) {
+            if (confirm('Tem certeza que deseja excluir este cliente e todo seu histórico?')) {
+                clients = clients.filter(c => c.id !== clientId);
+                saveClientsToStorage();
+                loadClientsTable();
+                showSuccess();
+            }
+        }
+
+        function openWhatsApp(phone, name) {
+            const cleanPhone = phone.replace(/\D/g, '');
+            const message = `Olá ${name}! Aqui é da PC Formatech. Como posso ajudá-lo(a) hoje?`;
+            const url = `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
+        }
+
+        // ===== GESTÃO DE SERVIÇOS =====
+        function populateServiceTypes() {
+            const select = document.getElementById('serviceType');
+            const saved = localStorage.getItem('pcformatech_services');
+            const services = saved ? JSON.parse(saved) : defaultServices;
+            
+            Object.keys(services).forEach(key => {
+                if (key !== 'remoto') { // Remoto é desconto, não serviço direto
+                    const option = document.createElement('option');
+                    option.value = key;
+                    option.textContent = `${services[key].name} - R$ ${services[key].price.toFixed(2)}`;
+                    select.appendChild(option);
+                }
+            });
+        }
+
+        function openAddServiceModal(clientId) {
+            document.getElementById('serviceClientId').value = clientId;
+            document.getElementById('serviceClientSelectGroup').style.display = 'none';
+            document.getElementById('addServiceForm').reset();
+            document.getElementById('serviceModal').style.display = 'block';
+        }
+        
+        function openAddServiceDirectModal() {
+            // Mostrar seleção de cliente
+            document.getElementById('serviceClientSelectGroup').style.display = 'block';
+            document.getElementById('serviceClientId').value = '';
+            
+            // Popular lista de clientes
+            const select = document.getElementById('serviceClientSelect');
+            select.innerHTML = '<option value="">Selecione um cliente...</option>';
+            clients.forEach(client => {
+                const option = document.createElement('option');
+                option.value = client.id;
+                option.textContent = `${client.name} - ${client.phone}`;
+                select.appendChild(option);
+            });
+            
+            document.getElementById('addServiceForm').reset();
+            document.getElementById('serviceModal').style.display = 'block';
+        }
+
+        document.getElementById('addServiceForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Pegar clientId do campo hidden ou do select
+            let clientId = parseInt(document.getElementById('serviceClientId').value);
+            
+            // Se não tiver clientId no hidden, pegar do select
+            if (!clientId) {
+                const selectValue = document.getElementById('serviceClientSelect').value;
+                if (!selectValue) {
+                    alert('Por favor, selecione um cliente!');
+                    return;
+                }
+                clientId = parseInt(selectValue);
+            }
+            
+            const serviceKey = document.getElementById('serviceType').value;
+            const description = document.getElementById('serviceDescription').value;
+            const price = parseFloat(document.getElementById('servicePrice').value);
+            const status = document.getElementById('serviceStatus').value;
+            
+            const saved = localStorage.getItem('pcformatech_services');
+            const services = saved ? JSON.parse(saved) : defaultServices;
+            
+            const service = {
+                type: services[serviceKey].name,
+                description,
+                price,
+                status,
+                date: new Date().toISOString()
+            };
+            
+            const client = clients.find(c => c.id === clientId);
+            if (!client) {
+                alert('Cliente não encontrado!');
+                return;
+            }
+            if (!client.services) client.services = [];
+            client.services.push(service);
+            
+            saveClientsToStorage();
+            closeModal('serviceModal');
+            
+            // Se foi aberto da visualização do cliente, atualizar
+            const clientModal = document.getElementById('clientModal');
+            if (clientModal.style.display === 'block') {
+                viewClient(clientId);
+            } else {
+                // Se foi aberto da aba de serviços, recarregar a lista
+                loadServiceClients();
+            }
+            
+            showSuccess();
+        });
+
+        // Preencher preço automaticamente ao selecionar serviço
+        document.getElementById('serviceType').addEventListener('change', (e) => {
+            const serviceKey = e.target.value;
+            if (!serviceKey) return;
+            
+            const saved = localStorage.getItem('pcformatech_services');
+            const services = saved ? JSON.parse(saved) : defaultServices;
+            
+            document.getElementById('servicePrice').value = services[serviceKey].price;
+        });
+
+        function editService(clientId, serviceIndex) {
+            const client = clients.find(c => c.id === clientId);
+            const service = client.services[serviceIndex];
+            
+            const newStatus = prompt('Novo status do serviço:\n1 - Pendente\n2 - Em Andamento\n3 - Concluído\n4 - Cancelado', '1');
+            
+            const statusMap = {
+                '1': 'pendente',
+                '2': 'andamento',
+                '3': 'concluido',
+                '4': 'cancelado'
+            };
+            
+            if (newStatus && statusMap[newStatus]) {
+                service.status = statusMap[newStatus];
+                saveClientsToStorage();
+                viewClient(clientId);
+                showSuccess();
+            }
+        }
+
+        function deleteService(clientId, serviceIndex) {
+            if (confirm('Tem certeza que deseja remover este serviço?')) {
+                const client = clients.find(c => c.id === clientId);
+                client.services.splice(serviceIndex, 1);
+                saveClientsToStorage();
+                viewClient(clientId);
+                showSuccess();
+            }
+        }
+
+        function loadServiceClients() {
+            const container = document.getElementById('serviceClientsContainer');
+            container.innerHTML = '';
+
+            const searchTerm = document.getElementById('searchServiceClient')?.value.toLowerCase() || '';
+            
+            const filteredClients = clients.filter(client => 
+                client.name.toLowerCase().includes(searchTerm) &&
+                client.services && client.services.length > 0
+            );
+
+            if (filteredClients.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #999; padding: 40px;">Nenhum cliente com serviços encontrado.</p>';
+                return;
+            }
+
+            filteredClients.forEach(client => {
+                const totalValue = client.services.reduce((sum, s) => sum + s.price, 0);
+                const pendingServices = client.services.filter(s => s.status === 'pendente' || s.status === 'andamento').length;
+                
+                const clientCard = document.createElement('div');
+                clientCard.className = 'service-card';
+                clientCard.innerHTML = `
+                    <h3>${client.name} <span style="font-size: 14px; color: #666;">(${client.phone})</span></h3>
+                    <p><strong>Total de Serviços:</strong> ${client.services.length}</p>
+                    <p><strong>Serviços Pendentes:</strong> ${pendingServices}</p>
+                    <p><strong>Valor Total:</strong> R$ ${totalValue.toFixed(2).replace('.', ',')}</p>
+                    <button class="btn-save" onclick="viewClient(${client.id})">
+                        <i class="fas fa-eye"></i> Ver Detalhes Completos
+                    </button>
+                `;
+                container.appendChild(clientCard);
+            });
+        }
+
+        function searchServiceClients() {
+            loadServiceClients();
+        }
+
+        // ===== DASHBOARD =====
+        function updateDashboard() {
+            const totalClients = clients.length;
+            let totalServices = 0;
+            let pendingServices = 0;
+            let totalRevenue = 0;
+
+            clients.forEach(client => {
+                if (client.services) {
+                    totalServices += client.services.length;
+                    client.services.forEach(service => {
+                        if (service.status === 'pendente' || service.status === 'andamento') {
+                            pendingServices++;
+                        }
+                        if (service.status === 'concluido') {
+                            totalRevenue += service.price;
+                        }
+                    });
+                }
+            });
+
+            document.getElementById('totalClients').textContent = totalClients;
+            document.getElementById('totalServices').textContent = totalServices;
+            document.getElementById('pendingServices').textContent = pendingServices;
+            document.getElementById('totalRevenue').textContent = `R$ ${totalRevenue.toFixed(2).replace('.', ',')}`;
+            
+            // Atualizar gráfico
+            updateStatsChart();
+        }
+
+        // ===== GRÁFICO DE ESTATÍSTICAS =====
+        let statsChart = null;
+
+        function getMonthlyData() {
+            const months = [];
+            const now = new Date();
+            
+            // Gerar labels dos últimos 3 meses e próximos 3 meses
+            for (let i = -3; i <= 3; i++) {
+                const date = new Date(now.getFullYear(), now.getMonth() + i, 1);
+                const monthName = date.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' });
+                months.push(monthName);
+            }
+            
+            // Preparar dados
+            const clientsData = new Array(7).fill(0);
+            const servicesCompletedData = new Array(7).fill(0);
+            const servicesPendingData = new Array(7).fill(0);
+            
+            // Calcular dados reais dos últimos 3 meses
+            clients.forEach(client => {
+                const clientDate = new Date(client.createdAt);
+                const monthDiff = (now.getFullYear() - clientDate.getFullYear()) * 12 + now.getMonth() - clientDate.getMonth();
+                
+                if (monthDiff >= 0 && monthDiff <= 3) {
+                    const index = 3 - monthDiff;
+                    clientsData[index]++;
+                }
+                
+                if (client.services) {
+                    client.services.forEach(service => {
+                        const serviceDate = new Date(service.date);
+                        const serviceDiff = (now.getFullYear() - serviceDate.getFullYear()) * 12 + now.getMonth() - serviceDate.getMonth();
+                        
+                        if (serviceDiff >= 0 && serviceDiff <= 3) {
+                            const index = 3 - serviceDiff;
+                            if (service.status === 'concluido') {
+                                servicesCompletedData[index]++;
+                            } else if (service.status === 'pendente' || service.status === 'andamento') {
+                                servicesPendingData[index]++;
+                            }
+                        }
+                    });
+                }
+            });
+            
+            // Projeção simples para os próximos 3 meses (média dos últimos 3)
+            const avgClients = clientsData.slice(0, 4).reduce((a, b) => a + b, 0) / 4;
+            const avgCompleted = servicesCompletedData.slice(0, 4).reduce((a, b) => a + b, 0) / 4;
+            const avgPending = servicesPendingData.slice(0, 4).reduce((a, b) => a + b, 0) / 4;
+            
+            for (let i = 4; i < 7; i++) {
+                clientsData[i] = Math.round(avgClients * (1 + Math.random() * 0.2 - 0.1));
+                servicesCompletedData[i] = Math.round(avgCompleted * (1 + Math.random() * 0.2 - 0.1));
+                servicesPendingData[i] = Math.round(avgPending * (1 + Math.random() * 0.2 - 0.1));
+            }
+            
+            return {
+                labels: months,
+                clientsData,
+                servicesCompletedData,
+                servicesPendingData
+            };
+        }
+
+        function updateStatsChart() {
+            const data = getMonthlyData();
+            const ctx = document.getElementById('statsChart');
+            
+            if (!ctx) return;
+            
+            // Destruir gráfico anterior se existir
+            if (statsChart) {
+                statsChart.destroy();
+            }
+            
+            statsChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [
+                        {
+                            label: 'Clientes Cadastrados',
+                            data: data.clientsData,
+                            borderColor: '#40998F',
+                            backgroundColor: 'rgba(64, 153, 143, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Serviços Realizados',
+                            data: data.servicesCompletedData,
+                            borderColor: '#4CAF50',
+                            backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Serviços Pendentes',
+                            data: data.servicesPendingData,
+                            borderColor: '#FF9800',
+                            backgroundColor: 'rgba(255, 152, 0, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                },
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            titleFont: {
+                                size: 14,
+                                weight: 'bold'
+                            },
+                            bodyFont: {
+                                size: 13
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1,
+                                font: {
+                                    size: 12
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: {
+                                    size: 12
+                                }
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    interaction: {
+                        mode: 'nearest',
+                        axis: 'x',
+                        intersect: false
+                    }
+                }
+            });
+        }
+
+        // ===== GESTÃO DE PREÇOS (código original) =====
+        // ===== GESTÃO DE PREÇOS (código original) =====
+        function loadServices() {
+            const saved = localStorage.getItem('pcformatech_services');
+            const services = saved ? JSON.parse(saved) : defaultServices;
+            
+            const grid = document.getElementById('servicesGrid');
+            grid.innerHTML = '';
+
+            Object.keys(services).forEach(key => {
+                const service = services[key];
+                const card = document.createElement('div');
+                card.className = 'service-card';
+                card.innerHTML = `
+                    <h3>${service.name}</h3>
+                    <div class="input-group">
+                        <label>Nome do Serviço:</label>
+                        <input type="text" id="${key}_name" value="${service.name}">
+                    </div>
+                    <div class="input-group">
+                        <label>Preço (R$):</label>
+                        <input type="number" id="${key}_price" value="${service.price}" step="0.01">
+                    </div>
+                    <div class="input-group">
+                        <label>Descrição:</label>
+                        <textarea id="${key}_description">${service.description}</textarea>
+                    </div>
+                    ${service.discount ? `
+                    <div class="discount-section">
+                        <h4>Desconto Especial</h4>
+                        <div class="input-group">
+                            <label>Desconto (%):</label>
+                            <input type="number" id="${key}_discount" value="${service.discount}" min="0" max="100">
+                        </div>
+                    </div>
+                    ` : ''}
+                    <button class="btn-save" onclick="saveService('${key}')">
+                        <i class="fas fa-save"></i> Salvar Alterações
+                    </button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Salvar serviço individual
+        function saveService(key) {
+            const saved = localStorage.getItem('pcformatech_services');
+            const services = saved ? JSON.parse(saved) : defaultServices;
+            
+            services[key].name = document.getElementById(`${key}_name`).value;
+            services[key].price = parseFloat(document.getElementById(`${key}_price`).value);
+            services[key].description = document.getElementById(`${key}_description`).value;
+            
+            if (services[key].discount !== undefined) {
+                services[key].discount = parseFloat(document.getElementById(`${key}_discount`).value);
+            }
+
+            localStorage.setItem('pcformatech_services', JSON.stringify(services));
+            
+            showSuccess();
+            populateServiceTypes(); // Atualizar opções de serviço
+        }
+
+        // ===== MODALS =====
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Fechar modal ao clicar fora
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+
+        // ===== UTILITÁRIOS =====
+        function showSuccess() {
+            const msg = document.getElementById('successMessage');
+            msg.style.display = 'block';
+            setTimeout(() => {
+                msg.style.display = 'none';
+            }, 3000);
+        }
+
+        // Exportar dados para o site principal
+        function getServiceData() {
+            const saved = localStorage.getItem('pcformatech_services');
+            return saved ? JSON.parse(saved) : defaultServices;
+        }
+
+        // Máscaras para inputs
+        document.getElementById('clientPhone')?.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length <= 11) {
+                value = value.replace(/^(\d{2})(\d)/g, '($1) $2');
+                value = value.replace(/(\d)(\d{4})$/, '$1-$2');
+            }
+            e.target.value = value;
+        });
+
+        document.getElementById('clientCPF')?.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length <= 11) {
+                value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            }
+            e.target.value = value;
+        });
+        
+        // ===== GESTÃO DE PRODUTOS =====
+        let products = [];
+        let editingProductId = null;
+
+        function loadProductsFromStorage() {
+            const saved = localStorage.getItem('pcformatech_products');
+            products = saved ? JSON.parse(saved) : [];
+        }
+
+        function saveProductsToStorage() {
+            localStorage.setItem('pcformatech_products', JSON.stringify(products));
+        }
+
+        function saveProduct() {
+            const name = document.getElementById('productName').value.trim();
+            const price = parseFloat(document.getElementById('productPrice').value);
+            const stock = parseInt(document.getElementById('productStock').value) || 0;
+            const category = document.getElementById('productCategory').value;
+            const description = document.getElementById('productDescription').value.trim();
+
+            if (!name || !price) {
+                alert('Por favor, preencha nome e preço do produto!');
+                return;
+            }
+
+            const product = {
+                id: editingProductId || Date.now(),
+                name,
+                price,
+                stock,
+                category,
+                description,
+                createdAt: editingProductId ? products.find(p => p.id === editingProductId).createdAt : new Date().toISOString()
+            };
+
+            if (editingProductId) {
+                const index = products.findIndex(p => p.id === editingProductId);
+                products[index] = product;
+                editingProductId = null;
+            } else {
+                products.push(product);
+            }
+
+            saveProductsToStorage();
+            clearProductForm();
+            loadProductsTable();
+            showSuccess();
+        }
+
+        function clearProductForm() {
+            document.getElementById('productForm').reset();
+            editingProductId = null;
+        }
+
+        function loadProductsTable() {
+            const tbody = document.getElementById('productsTableBody');
+            tbody.innerHTML = '';
+
+            const searchTerm = document.getElementById('searchProduct')?.value.toLowerCase() || '';
+            
+            const filteredProducts = products.filter(product => 
+                product.name.toLowerCase().includes(searchTerm) ||
+                product.category.toLowerCase().includes(searchTerm)
+            );
+
+            filteredProducts.forEach(product => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${product.name}</strong><br><small style="color: #666;">${product.description || ''}</small></td>
+                    <td>R$ ${product.price.toFixed(2).replace('.', ',')}</td>
+                    <td><span class="service-status ${product.stock > 0 ? 'status-concluido' : 'status-cancelado'}">${product.stock} un</span></td>
+                    <td>${getCategoryName(product.category)}</td>
+                    <td>
+                        <button class="btn-action btn-edit" onclick="editProduct(${product.id})">
+                            <i class="fas fa-edit"></i> Editar
+                        </button>
+                        <button class="btn-action btn-delete" onclick="deleteProduct(${product.id})">
+                            <i class="fas fa-trash"></i> Excluir
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function getCategoryName(category) {
+            const categories = {
+                hardware: 'Hardware',
+                software: 'Software',
+                perifericos: 'Periféricos',
+                acessorios: 'Acessórios',
+                outros: 'Outros'
+            };
+            return categories[category] || category;
+        }
+
+        function searchProducts() {
+            loadProductsTable();
+        }
+
+        function editProduct(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            editingProductId = productId;
+            document.getElementById('productName').value = product.name;
+            document.getElementById('productPrice').value = product.price;
+            document.getElementById('productStock').value = product.stock;
+            document.getElementById('productCategory').value = product.category;
+            document.getElementById('productDescription').value = product.description || '';
+
+            document.getElementById('productForm').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function deleteProduct(productId) {
+            if (confirm('Tem certeza que deseja excluir este produto?')) {
+                products = products.filter(p => p.id !== productId);
+                saveProductsToStorage();
+                loadProductsTable();
+                showSuccess();
+            }
+        }
+
+        // ===== GESTÃO DE ORÇAMENTOS E LAUDOS =====
+        let budgets = [];
+        let currentBudget = null;
+
+        function loadBudgetsFromStorage() {
+            const saved = localStorage.getItem('pcformatech_budgets');
+            budgets = saved ? JSON.parse(saved) : [];
+        }
+
+        function saveBudgetsToStorage() {
+            localStorage.setItem('pcformatech_budgets', JSON.stringify(budgets));
+        }
+
+        function getNextBudgetNumber() {
+            const lastNumber = budgets.length > 0 ? Math.max(...budgets.map(b => b.number || 0)) : 0;
+            return (lastNumber + 1).toString().padStart(4, '0') + '-25';
+        }
+
+        function openNewBudgetModal() {
+            // Calcular data de vencimento da garantia (90 dias = 3 meses)
+            const dataAtual = new Date();
+            const dataGarantia = new Date(dataAtual);
+            dataGarantia.setDate(dataGarantia.getDate() + 90);
+            
+            const diaGarantia = String(dataGarantia.getDate()).padStart(2, '0');
+            const mesGarantia = String(dataGarantia.getMonth() + 1).padStart(2, '0');
+            const anoGarantia = dataGarantia.getFullYear();
+            const dataGarantiaFormatada = `${diaGarantia}/${mesGarantia}/${anoGarantia}`;
+            
+            currentBudget = {
+                id: null,
+                number: getNextBudgetNumber(),
+                clientId: null,
+                date: new Date().toISOString().split('T')[0],
+                type: 'orcamento',
+                services: [],
+                products: [],
+                defect: '',
+                report: '',
+                solution: '',
+                observations: '',
+                warranty: `3 Meses (válido até ${dataGarantiaFormatada})`
+            };
+
+            populateClientSelect();
+            document.getElementById('budgetDate').value = currentBudget.date;
+            document.getElementById('budgetType').value = currentBudget.type;
+            document.getElementById('budgetServices').innerHTML = '';
+            document.getElementById('budgetProducts').innerHTML = '';
+            document.getElementById('budgetDefect').value = '';
+            document.getElementById('budgetReport').value = '';
+            document.getElementById('budgetSolution').value = '';
+            document.getElementById('budgetObservations').value = '';
+            document.getElementById('budgetWarranty').value = currentBudget.warranty;
+            updateBudgetTotal();
+
+            document.getElementById('budgetModal').style.display = 'block';
+        }
+
+        function populateClientSelect() {
+            const select = document.getElementById('budgetClientId');
+            select.innerHTML = '<option value="">Selecione um cliente...</option>';
+            
+            clients.forEach(client => {
+                const option = document.createElement('option');
+                option.value = client.id;
+                option.textContent = `${client.name} - ${client.phone}`;
+                select.appendChild(option);
+            });
+        }
+
+        function addServiceToBudget() {
+            const container = document.getElementById('budgetServices');
+            const index = currentBudget.services.length;
+            
+            const saved = localStorage.getItem('pcformatech_services');
+            const services = saved ? JSON.parse(saved) : defaultServices;
+
+            const serviceDiv = document.createElement('div');
+            serviceDiv.className = 'service-card';
+            serviceDiv.innerHTML = `
+                <div class="client-form">
+                    <div class="input-group">
+                        <label>Serviço:</label>
+                        <select onchange="updateServicePrice(${index}, this.value)">
+                            <option value="">Selecione...</option>
+                            ${Object.keys(services).filter(k => k !== 'remoto').map(key => 
+                                `<option value="${key}" data-price="${services[key].price}">${services[key].name}</option>`
+                            ).join('')}
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Quantidade:</label>
+                        <input type="number" value="1" min="1" onchange="updateBudgetTotal()">
+                    </div>
+                    <div class="input-group">
+                        <label>Unidade:</label>
+                        <input type="text" value="un" readonly>
+                    </div>
+                    <div class="input-group">
+                        <label>Valor Unitário (R$):</label>
+                        <input type="number" step="0.01" value="0" onchange="updateBudgetTotal()">
+                    </div>
+                    <div class="input-group">
+                        <button type="button" class="btn-action btn-delete" onclick="removeServiceFromBudget(${index})">
+                            <i class="fas fa-trash"></i> Remover
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            container.appendChild(serviceDiv);
+            currentBudget.services.push({name: '', quantity: 1, unit: 'un', price: 0});
+        }
+
+        function updateServicePrice(index, serviceKey) {
+            if (!serviceKey) return;
+            
+            const saved = localStorage.getItem('pcformatech_services');
+            const services = saved ? JSON.parse(saved) : defaultServices;
+            
+            const container = document.getElementById('budgetServices');
+            const serviceDiv = container.children[index];
+            const inputs = serviceDiv.querySelectorAll('input[type="number"]');
+            
+            currentBudget.services[index].name = services[serviceKey].name;
+            currentBudget.services[index].price = services[serviceKey].price;
+            
+            inputs[1].value = services[serviceKey].price;
+            updateBudgetTotal();
+        }
+
+        function removeServiceFromBudget(index) {
+            const container = document.getElementById('budgetServices');
+            container.children[index].remove();
+            currentBudget.services.splice(index, 1);
+            updateBudgetTotal();
+        }
+
+        function addProductToBudget() {
+            const container = document.getElementById('budgetProducts');
+            const index = currentBudget.products.length;
+
+            const productDiv = document.createElement('div');
+            productDiv.className = 'service-card';
+            productDiv.innerHTML = `
+                <div class="client-form">
+                    <div class="input-group">
+                        <label>Produto:</label>
+                        <select onchange="updateProductPrice(${index}, this.value)">
+                            <option value="">Selecione...</option>
+                            ${products.map(p => 
+                                `<option value="${p.id}" data-price="${p.price}">${p.name}</option>`
+                            ).join('')}
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Quantidade:</label>
+                        <input type="number" value="1" min="1" onchange="updateBudgetTotal()">
+                    </div>
+                    <div class="input-group">
+                        <label>Unidade:</label>
+                        <input type="text" value="un" readonly>
+                    </div>
+                    <div class="input-group">
+                        <label>Valor Unitário (R$):</label>
+                        <input type="number" step="0.01" value="0" onchange="updateBudgetTotal()">
+                    </div>
+                    <div class="input-group">
+                        <button type="button" class="btn-action btn-delete" onclick="removeProductFromBudget(${index})">
+                            <i class="fas fa-trash"></i> Remover
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            container.appendChild(productDiv);
+            currentBudget.products.push({name: '', quantity: 1, unit: 'un', price: 0});
+        }
+
+        function updateProductPrice(index, productId) {
+            if (!productId) return;
+            
+            const product = products.find(p => p.id == productId);
+            if (!product) return;
+            
+            const container = document.getElementById('budgetProducts');
+            const productDiv = container.children[index];
+            const inputs = productDiv.querySelectorAll('input[type="number"]');
+            
+            currentBudget.products[index].name = product.name;
+            currentBudget.products[index].price = product.price;
+            
+            inputs[1].value = product.price;
+            updateBudgetTotal();
+        }
+
+        function removeProductFromBudget(index) {
+            const container = document.getElementById('budgetProducts');
+            container.children[index].remove();
+            currentBudget.products.splice(index, 1);
+            updateBudgetTotal();
+        }
+
+        function updateBudgetTotal() {
+            let total = 0;
+            
+            // Calcular total dos serviços
+            const servicesContainer = document.getElementById('budgetServices');
+            Array.from(servicesContainer.children).forEach((div, index) => {
+                const inputs = div.querySelectorAll('input[type="number"]');
+                const quantity = parseFloat(inputs[0].value) || 0;
+                const price = parseFloat(inputs[1].value) || 0;
+                total += quantity * price;
+            });
+            
+            // Calcular total dos produtos
+            const productsContainer = document.getElementById('budgetProducts');
+            Array.from(productsContainer.children).forEach((div, index) => {
+                const inputs = div.querySelectorAll('input[type="number"]');
+                const quantity = parseFloat(inputs[0].value) || 0;
+                const price = parseFloat(inputs[1].value) || 0;
+                total += quantity * price;
+            });
+            
+            document.getElementById('budgetTotal').textContent = total.toFixed(2).replace('.', ',');
+        }
+
+        function saveBudget() {
+            const clientId = parseInt(document.getElementById('budgetClientId').value);
+            if (!clientId) {
+                alert('Por favor, selecione um cliente!');
+                return;
+            }
+
+            // Coletar dados dos serviços
+            const servicesContainer = document.getElementById('budgetServices');
+            const services = [];
+            Array.from(servicesContainer.children).forEach((div) => {
+                const select = div.querySelector('select');
+                const inputs = div.querySelectorAll('input');
+                const selectedOption = select.options[select.selectedIndex];
+                
+                if (selectedOption.value) {
+                    services.push({
+                        name: selectedOption.textContent,
+                        quantity: parseInt(inputs[0].value) || 1,
+                        unit: inputs[1].value || 'un',
+                        price: parseFloat(inputs[2].value) || 0
+                    });
+                }
+            });
+
+            // Coletar dados dos produtos
+            const productsContainer = document.getElementById('budgetProducts');
+            const budgetProducts = [];
+            Array.from(productsContainer.children).forEach((div) => {
+                const select = div.querySelector('select');
+                const inputs = div.querySelectorAll('input');
+                const selectedOption = select.options[select.selectedIndex];
+                
+                if (selectedOption.value) {
+                    budgetProducts.push({
+                        name: selectedOption.textContent,
+                        quantity: parseInt(inputs[0].value) || 1,
+                        unit: inputs[1].value || 'un',
+                        price: parseFloat(inputs[2].value) || 0
+                    });
+                }
+            });
+
+            // Calcular data de vencimento da garantia se for um valor padrão
+            let warrantyValue = document.getElementById('budgetWarranty').value;
+            if (warrantyValue === '3 Meses' || warrantyValue.startsWith('3 Meses (válido até')) {
+                const dataAtual = new Date();
+                const dataGarantia = new Date(dataAtual);
+                dataGarantia.setDate(dataGarantia.getDate() + 90);
+                
+                const diaGarantia = String(dataGarantia.getDate()).padStart(2, '0');
+                const mesGarantia = String(dataGarantia.getMonth() + 1).padStart(2, '0');
+                const anoGarantia = dataGarantia.getFullYear();
+                const dataGarantiaFormatada = `${diaGarantia}/${mesGarantia}/${anoGarantia}`;
+                
+                warrantyValue = `3 Meses (válido até ${dataGarantiaFormatada})`;
+            }
+            
+            const budget = {
+                id: currentBudget.id || Date.now(),
+                number: currentBudget.number,
+                clientId,
+                date: document.getElementById('budgetDate').value,
+                type: document.getElementById('budgetType').value,
+                services,
+                products: budgetProducts,
+                defect: document.getElementById('budgetDefect').value,
+                report: document.getElementById('budgetReport').value,
+                solution: document.getElementById('budgetSolution').value,
+                observations: document.getElementById('budgetObservations').value,
+                warranty: warrantyValue,
+                createdAt: currentBudget.createdAt || new Date().toISOString()
+            };
+
+            if (currentBudget.id) {
+                const index = budgets.findIndex(b => b.id === currentBudget.id);
+                budgets[index] = budget;
+            } else {
+                budgets.push(budget);
+            }
+
+            saveBudgetsToStorage();
+            closeModal('budgetModal');
+            loadBudgetsTable();
+            showSuccess();
+        }
+
+        function loadBudgetsTable() {
+            const tbody = document.getElementById('budgetsTableBody');
+            tbody.innerHTML = '';
+
+            const searchTerm = document.getElementById('searchBudget')?.value.toLowerCase() || '';
+            
+            const filteredBudgets = budgets.filter(budget => {
+                const client = clients.find(c => c.id === budget.clientId);
+                const clientName = client ? client.name.toLowerCase() : '';
+                return clientName.includes(searchTerm) || budget.number.includes(searchTerm);
+            });
+
+            filteredBudgets.reverse().forEach(budget => {
+                const client = clients.find(c => c.id === budget.clientId);
+                const total = calculateBudgetTotal(budget);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${budget.number}</strong></td>
+                    <td>${client ? client.name : 'Cliente não encontrado'}</td>
+                    <td>${new Date(budget.date).toLocaleDateString('pt-BR')}</td>
+                    <td><strong>R$ ${total.toFixed(2).replace('.', ',')}</strong></td>
+                    <td><span class="service-status ${budget.type === 'laudo' ? 'status-concluido' : 'status-andamento'}">${budget.type === 'laudo' ? 'Laudo' : 'Orçamento'}</span></td>
+                    <td>
+                        <button class="btn-action btn-view" onclick="viewBudget(${budget.id})">
+                            <i class="fas fa-eye"></i> Ver
+                        </button>
+                        <button class="btn-action btn-convert" onclick="convertBudgetToService(${budget.id})" title="Converter em Serviço">
+                            <i class="fas fa-exchange-alt"></i> Converter
+                        </button>
+                        <button class="btn-action btn-whatsapp" onclick="generatePDFForBudget(${budget.id})">
+                            <i class="fas fa-file-pdf"></i> PDF
+                        </button>
+                        <button class="btn-action btn-delete" onclick="deleteBudget(${budget.id})">
+                            <i class="fas fa-trash"></i> Excluir
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function calculateBudgetTotal(budget) {
+            let total = 0;
+            
+            if (budget.services) {
+                budget.services.forEach(service => {
+                    total += (service.quantity || 1) * (service.price || 0);
+                });
+            }
+            
+            if (budget.products) {
+                budget.products.forEach(product => {
+                    total += (product.quantity || 1) * (product.price || 0);
+                });
+            }
+            
+            return total;
+        }
+
+        function searchBudgets() {
+            loadBudgetsTable();
+        }
+
+        function viewBudget(budgetId) {
+            const budget = budgets.find(b => b.id === budgetId);
+            if (!budget) return;
+
+            currentBudget = {...budget};
+            
+            document.getElementById('budgetClientId').value = budget.clientId;
+            document.getElementById('budgetDate').value = budget.date;
+            document.getElementById('budgetType').value = budget.type;
+            document.getElementById('budgetDefect').value = budget.defect || '';
+            document.getElementById('budgetReport').value = budget.report || '';
+            document.getElementById('budgetSolution').value = budget.solution || '';
+            document.getElementById('budgetObservations').value = budget.observations || '';
+            document.getElementById('budgetWarranty').value = budget.warranty || '';
+
+            // Recarregar serviços
+            const servicesContainer = document.getElementById('budgetServices');
+            servicesContainer.innerHTML = '';
+            // Implementar lógica de reload
+
+            document.getElementById('budgetModal').style.display = 'block';
+        }
+
+        function deleteBudget(budgetId) {
+            if (confirm('Tem certeza que deseja excluir este orçamento/laudo?')) {
+                budgets = budgets.filter(b => b.id !== budgetId);
+                saveBudgetsToStorage();
+                loadBudgetsTable();
+                showSuccess();
+            }
+        }
+
+        function generatePDF() {
+            if (!currentBudget || !currentBudget.clientId) {
+                alert('Por favor, preencha todos os dados obrigatórios!');
+                return;
+            }
+
+            const clientId = parseInt(document.getElementById('budgetClientId').value);
+            const client = clients.find(c => c.id === clientId);
+            
+            if (!client) {
+                alert('Cliente não encontrado!');
+                return;
+            }
+
+            generatePDFDocument(currentBudget, client);
+        }
+
+        function generatePDFForBudget(budgetId) {
+            const budget = budgets.find(b => b.id === budgetId);
+            const client = clients.find(c => c.id === budget.clientId);
+            
+            if (!budget || !client) {
+                alert('Dados não encontrados!');
+                return;
+            }
+
+            generatePDFDocument(budget, client);
+        }
+
+        function convertBudgetToService(budgetId) {
+            const budget = budgets.find(b => b.id === budgetId);
+            if (!budget) {
+                alert('Orçamento/Laudo não encontrado!');
+                return;
+            }
+            
+            const client = clients.find(c => c.id === budget.clientId);
+            if (!client) {
+                alert('Cliente não encontrado!');
+                return;
+            }
+            
+            const confirmMsg = `Deseja converter este ${budget.type === 'laudo' ? 'Laudo' : 'Orçamento'} em serviços para o cliente ${client.name}?\n\nSerão adicionados ${budget.services.length} serviço(s) ao histórico do cliente.`;
+            
+            if (!confirm(confirmMsg)) {
+                return;
+            }
+            
+            // Inicializar array de serviços se não existir
+            if (!client.services) client.services = [];
+            
+            // Adicionar cada serviço do orçamento ao cliente
+            budget.services.forEach(budgetService => {
+                const service = {
+                    type: budgetService.name,
+                    description: `Convertido do ${budget.type} Nº ${budget.number}${budget.defect ? ' - ' + budget.defect : ''}`,
+                    price: budgetService.quantity * budgetService.price,
+                    status: 'concluido', // Assumindo que está concluído
+                    date: budget.date
+                };
+                client.services.push(service);
+            });
+            
+            // Adicionar produtos como serviços também, se houver
+            if (budget.products && budget.products.length > 0) {
+                budget.products.forEach(budgetProduct => {
+                    const service = {
+                        type: `Produto: ${budgetProduct.name}`,
+                        description: `Produto fornecido - Convertido do ${budget.type} Nº ${budget.number}`,
+                        price: budgetProduct.quantity * budgetProduct.price,
+                        status: 'concluido',
+                        date: budget.date
+                    };
+                    client.services.push(service);
+                });
+            }
+            
+            saveClientsToStorage();
+            updateDashboard();
+            
+            alert(`✅ Sucesso!\n\n${budget.services.length + (budget.products ? budget.products.length : 0)} item(ns) convertido(s) em serviço(s) para o cliente ${client.name}.`);
+            
+            // Atualizar a visualização se estiver na aba de orçamentos
+            loadBudgetsTable();
+        }
+        
+        function generatePDFDocument(budget, client) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Cabeçalho
+            doc.setFontSize(18);
+            doc.setFont('helvetica', 'bold');
+            doc.text('PC Formatech', 105, 20, { align: 'center' });
+            
+            doc.setFontSize(9);
+            doc.setFont('helvetica', 'normal');
+            doc.text('62.712.268/0001-03', 105, 26, { align: 'center' });
+            doc.text('Rodovia PA-160 - Serra Dourada II', 105, 31, { align: 'center' });
+            doc.text('68352-193 - Canaã dos Carajas/PA', 105, 36, { align: 'center' });
+            
+            doc.text('contatopcformatech@gmail.com', 190, 20, { align: 'right' });
+
+            // Dados do Cliente
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(128, 128, 128);
+            doc.text('Dados do Cliente', 20, 50);
+            
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(0, 0, 0);
+            doc.text(client.name, 20, 58);
+            
+            const budgetDate = new Date(budget.date).toLocaleDateString('pt-BR');
+            doc.text(`Data: ${budgetDate}`, 190, 58, { align: 'right' });
+
+            // Número do Laudo
+            doc.setFillColor(128, 128, 128);
+            doc.rect(20, 65, 170, 10, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFont('helvetica', 'bold');
+            const title = budget.type === 'laudo' ? 'LAUDO TÉCNICO' : 'ORÇAMENTO';
+            doc.text(`${title} Nº ${budget.number}`, 105, 72, { align: 'center' });
+
+            // Serviços
+            doc.setTextColor(0, 0, 0);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Serviços', 20, 85);
+
+            let yPos = 90;
+            let totalServicos = 0;
+
+            if (budget.services && budget.services.length > 0) {
+                const servicesData = budget.services.map(s => [
+                    s.name,
+                    s.quantity,
+                    s.unit,
+                    `R$ ${s.price.toFixed(2).replace('.', ',')}`,
+                    `R$ ${(s.quantity * s.price).toFixed(2).replace('.', ',')}`
+                ]);
+
+                doc.autoTable({
+                    startY: yPos,
+                    head: [['Nome', 'Quantidade', 'Unidade', 'Valor Unitário', 'Valor Total']],
+                    body: servicesData,
+                    theme: 'grid',
+                    headStyles: { fillColor: [200, 200, 200], textColor: [0, 0, 0] },
+                    margin: { left: 20, right: 20 }
+                });
+
+                totalServicos = budget.services.reduce((sum, s) => sum + (s.quantity * s.price), 0);
+                yPos = doc.lastAutoTable.finalY + 5;
+                
+                doc.setFont('helvetica', 'bold');
+                doc.text(`Total Serviços`, 140, yPos);
+                doc.text(`R$ ${totalServicos.toFixed(2).replace('.', ',')}`, 190, yPos, { align: 'right' });
+                yPos += 10;
+            }
+
+            // Produtos
+            if (budget.products && budget.products.length > 0) {
+                doc.setFont('helvetica', 'bold');
+                doc.text('Produtos', 20, yPos);
+                yPos += 5;
+
+                const productsData = budget.products.map(p => [
+                    p.name,
+                    p.quantity,
+                    p.unit,
+                    `R$ ${p.price.toFixed(2).replace('.', ',')}`,
+                    `R$ ${(p.quantity * p.price).toFixed(2).replace('.', ',')}`
+                ]);
+
+                doc.autoTable({
+                    startY: yPos,
+                    head: [['Nome', 'Quantidade', 'Unidade', 'Valor Unitário', 'Valor Total']],
+                    body: productsData,
+                    theme: 'grid',
+                    headStyles: { fillColor: [200, 200, 200], textColor: [0, 0, 0] },
+                    margin: { left: 20, right: 20 }
+                });
+
+                const totalProdutos = budget.products.reduce((sum, p) => sum + (p.quantity * p.price), 0);
+                yPos = doc.lastAutoTable.finalY + 5;
+                
+                doc.setFont('helvetica', 'bold');
+                doc.text(`Total Produtos`, 140, yPos);
+                doc.text(`R$ ${totalProdutos.toFixed(2).replace('.', ',')}`, 190, yPos, { align: 'right' });
+                yPos += 10;
+            }
+
+            // Total Geral
+            const total = calculateBudgetTotal(budget);
+            doc.setFont('helvetica', 'bold');
+            doc.text(`Subtotal`, 140, yPos);
+            doc.text(`R$ ${total.toFixed(2).replace('.', ',')}`, 190, yPos, { align: 'right' });
+            yPos += 5;
+            doc.text(`Total`, 140, yPos);
+            doc.text(`R$ ${total.toFixed(2).replace('.', ',')}`, 190, yPos, { align: 'right' });
+            yPos += 10;
+
+            // Seções adicionais
+            if (budget.defect) {
+                doc.setFont('helvetica', 'bold');
+                doc.text('Defeito', 20, yPos);
+                yPos += 5;
+                doc.setFont('helvetica', 'normal');
+                const defectLines = doc.splitTextToSize(budget.defect, 170);
+                doc.text(defectLines, 20, yPos);
+                yPos += (defectLines.length * 5) + 5;
+            }
+
+            if (budget.report) {
+                doc.setFont('helvetica', 'bold');
+                doc.text('Laudo', 20, yPos);
+                yPos += 5;
+                doc.setFont('helvetica', 'normal');
+                const reportLines = doc.splitTextToSize(budget.report, 170);
+                doc.text(reportLines, 20, yPos);
+                yPos += (reportLines.length * 5) + 5;
+            }
+
+            if (budget.solution) {
+                doc.setFont('helvetica', 'bold');
+                doc.text('Solução', 20, yPos);
+                yPos += 5;
+                doc.setFont('helvetica', 'normal');
+                const solutionLines = doc.splitTextToSize(budget.solution, 170);
+                doc.text(solutionLines, 20, yPos);
+                yPos += (solutionLines.length * 5) + 5;
+            }
+
+            if (budget.observations) {
+                doc.setFont('helvetica', 'bold');
+                doc.text('Observações', 20, yPos);
+                yPos += 5;
+                doc.setFont('helvetica', 'normal');
+                const obsLines = doc.splitTextToSize(budget.observations, 170);
+                doc.text(obsLines, 20, yPos);
+                yPos += (obsLines.length * 5) + 5;
+            }
+
+            if (budget.warranty) {
+                doc.setFont('helvetica', 'bold');
+                doc.text(`Garantia: ${budget.warranty}`, 20, yPos);
+                yPos += 10;
+            }
+
+            // Assinatura
+            yPos = Math.max(yPos, 250);
+            doc.line(65, yPos, 145, yPos);
+            doc.setFont('helvetica', 'normal');
+            doc.text('PC Formatech', 105, yPos + 5, { align: 'center' });
+
+            // Rodapé
+            doc.setFontSize(8);
+            doc.text('instagram: @pcformatech', 20, 285);
+
+            // Salvar PDF
+            const fileName = `${budget.type}_${budget.number}_${client.name.replace(/\s/g, '_')}.pdf`;
+            doc.save(fileName);
+        }
+
+        // Inicialização de produtos e orçamentos
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProductsFromStorage();
+            loadBudgetsFromStorage();
+        });
+
+        // ===== GESTÃO DE IMAGENS DO SLIDER =====
+        
+        // Slides padrão
+        const defaultSlides = [
+            { url: 'https://images.unsplash.com/photo-1587202372634-32705e3bf49c?auto=format&fit=crop&q=90&w=2400', alt: 'Laptop em Manutenção' },
+            { url: 'https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&q=90&w=2400', alt: 'Workspace com Laptop' },
+            { url: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=90&w=2400', alt: 'Programação e Desenvolvimento' },
+            { url: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&q=90&w=2400', alt: 'Computador Profissional' },
+            { url: 'https://images.unsplash.com/photo-1551033406-611cf9a28f67?auto=format&fit=crop&q=90&w=2400', alt: 'Laptop em Ambiente Profissional' },
+            { url: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=90&w=2400', alt: 'Setup Moderno de Programação' },
+            { url: 'https://images.unsplash.com/photo-1547658719-da2b51169166?auto=format&fit=crop&q=90&w=2400', alt: 'Hardware e Componentes' },
+            { url: 'https://images.unsplash.com/photo-1484788984921-03950022c9ef?auto=format&fit=crop&q=90&w=2400', alt: 'MacBook Pro Workspace' },
+            { url: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=90&w=2400', alt: 'Tech Workspace Minimalista' },
+            { url: 'https://images.unsplash.com/photo-1537498425277-c283d32ef9db?auto=format&fit=crop&q=90&w=2400', alt: 'Gaming PC Setup' }
+        ];
+
+        function loadHeroSlides() {
+            const saved = localStorage.getItem('pcformatech_hero_slides');
+            heroSlides = saved ? JSON.parse(saved) : defaultSlides;
+        }
+
+        function saveHeroSlides() {
+            localStorage.setItem('pcformatech_hero_slides', JSON.stringify(heroSlides));
+        }
+
+        function renderSlides() {
+            const container = document.getElementById('slidesContainer');
+            container.innerHTML = '';
+
+            heroSlides.forEach((slide, index) => {
+                const card = document.createElement('div');
+                card.className = 'slide-card';
+                card.innerHTML = `
+                    <img src="${slide.url}" alt="${slide.alt}" class="slide-preview" onerror="this.src='https://via.placeholder.com/800x400?text=Imagem+Indispon%C3%ADvel'">
+                    <div class="slide-info">
+                        <div class="slide-order">
+                            <span>Imagem ${index + 1}</span>
+                        </div>
+                        <input type="text" id="slide-url-${index}" value="${slide.url}" placeholder="URL da imagem">
+                        <input type="text" id="slide-alt-${index}" value="${slide.alt}" placeholder="Texto alternativo">
+                        <div class="slide-actions">
+                            <button class="btn-update" onclick="updateSlide(${index})">
+                                <i class="fas fa-save"></i> Salvar
+                            </button>
+                            <button class="btn-remove" onclick="removeSlide(${index})">
+                                <i class="fas fa-trash"></i> Remover
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function addNewSlide() {
+            const url = prompt('Cole a URL da nova imagem:');
+            if (!url) return;
+
+            const alt = prompt('Digite o texto alternativo (descrição) da imagem:');
+            if (!alt) return;
+
+            heroSlides.push({ url, alt });
+            saveHeroSlides();
+            renderSlides();
+            updateIndexHtml();
+            showSuccess();
+        }
+
+        function updateSlide(index) {
+            const url = document.getElementById(`slide-url-${index}`).value;
+            const alt = document.getElementById(`slide-alt-${index}`).value;
+
+            if (!url || !alt) {
+                alert('Por favor, preencha a URL e o texto alternativo!');
+                return;
+            }
+
+            heroSlides[index] = { url, alt };
+            saveHeroSlides();
+            renderSlides();
+            updateIndexHtml();
+            showSuccess();
+        }
+
+        function removeSlide(index) {
+            if (heroSlides.length <= 1) {
+                alert('Você precisa ter pelo menos 1 imagem no carrossel!');
+                return;
+            }
+
+            if (confirm('Tem certeza que deseja remover esta imagem?')) {
+                heroSlides.splice(index, 1);
+                saveHeroSlides();
+                renderSlides();
+                updateIndexHtml();
+                showSuccess();
+            }
+        }
+
+        function updateIndexHtml() {
+            alert('⚠️ ATENÇÃO!\n\nAs alterações foram salvas no painel.\n\nPara aplicar as mudanças no site, você precisa atualizar o arquivo index.html.\n\nVocê pode:\n1. Copiar o código HTML gerado abaixo\n2. Ou usar a funcão "Exportar HTML" que será criada\n\nDeseja ver o código HTML agora?');
+            
+            // Gerar HTML dos slides
+            let html = '';
+            heroSlides.forEach((slide, index) => {
+                const activeClass = index === 0 ? ' active' : '';
+                html += `                <div class="hero-slide${activeClass}">\n`;
+                html += `                    <img src="${slide.url}" alt="${slide.alt}">\n`;
+                html += `                </div>\n`;
+            });
+            
+            console.log('HTML dos slides:\n', html);
+            console.log('\nIndicadores:\n');
+            
+            let indicators = '';
+            heroSlides.forEach((slide, index) => {
+                const activeClass = index === 0 ? ' active' : '';
+                indicators += `                <span class="indicator${activeClass}" data-slide="${index}"></span>\n`;
+            });
+            
+            console.log(indicators);
+        }
+    </script>
+</body>
+</html>
