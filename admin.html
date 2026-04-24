@@ -1374,7 +1374,21 @@
                     firebaseDb.collection('data').doc('services').get()
                 ]);
                 if (clientsDoc.exists && clientsDoc.data().data) {
-                    clients = clientsDoc.data().data;
+                    const carregados = clientsDoc.data().data;
+                    // Remover duplicatas pelo nome (mantém o primeiro cadastrado)
+                    const vistos = new Set();
+                    const semDuplicatas = carregados.filter(c => {
+                        const chave = c.name.toLowerCase().replace(/\s+/g, ' ').trim();
+                        if (vistos.has(chave)) return false;
+                        vistos.add(chave);
+                        return true;
+                    });
+                    if (semDuplicatas.length < carregados.length) {
+                        console.warn(`⚠️ ${carregados.length - semDuplicatas.length} cliente(s) duplicado(s) removido(s) automaticamente`);
+                        // Salvar lista limpa de volta no Firebase
+                        _syncToFirebase('clients', semDuplicatas);
+                    }
+                    clients = semDuplicatas;
                     localStorage.setItem('pcformatech_clients', JSON.stringify(clients));
                     console.log('✅ Clientes carregados do Firebase');
                 }
