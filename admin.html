@@ -330,11 +330,31 @@
             border-collapse: collapse;
         }
 
+        #clientsTable,
+        #productsTable {
+            min-width: 760px;
+        }
+
+        #budgetsTable {
+            min-width: 980px;
+        }
+
         .clients-table th,
         .clients-table td {
             padding: 12px;
             text-align: left;
             border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+
+        .clients-table td:last-child {
+            white-space: nowrap;
+        }
+
+        .service-status {
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
         }
 
         .clients-table th {
@@ -851,6 +871,7 @@
                 padding: 5px 8px;
                 font-size: 11px;
                 margin: 2px;
+                white-space: nowrap;
             }
 
             /* Modal ocupa mais da tela */
@@ -869,9 +890,19 @@
         }
 
         @media (max-width: 480px) {
+            .admin-tabs {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 0;
+                overflow: visible;
+            }
+
             .tab-button {
-                padding: 9px 11px;
+                min-width: 0;
+                white-space: normal;
+                padding: 10px 8px;
                 font-size: 11px;
+                line-height: 1.2;
             }
 
             .stat-card h3 {
@@ -977,6 +1008,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="firebase-config.js"></script>
+    <link rel="stylesheet" href="theme-system.css">
+    <script src="theme-system.js" defer></script>
 </head>
 <body>
     <!-- Tela de Login -->
@@ -2242,6 +2275,24 @@
         // ===== GRÁFICO DE ESTATÍSTICAS =====
         let statsChart = null;
 
+        function isDarkThemeEnabled() {
+            return document.documentElement.getAttribute('data-theme') === 'dark';
+        }
+
+        function getChartThemePalette() {
+            const dark = isDarkThemeEnabled();
+            return {
+                legendColor: dark ? '#dce7f3' : '#2e3f54',
+                tickColor: dark ? '#b9c9db' : '#5d6a7c',
+                gridColor: dark ? 'rgba(156, 178, 203, 0.2)' : 'rgba(0, 0, 0, 0.06)',
+                tooltipBg: dark ? 'rgba(15, 28, 45, 0.96)' : 'rgba(11, 61, 61, 0.92)',
+                tooltipText: '#ffffff',
+                doughnutBorder: dark ? '#17263b' : '#ffffff',
+                revenueBar: dark ? 'rgba(98, 200, 189, 0.72)' : 'rgba(64,153,143,0.7)',
+                revenueBorder: dark ? '#62c8bd' : '#40998F'
+            };
+        }
+
         function getMonthlyData() {
             const months = [];
             const now = new Date();
@@ -2327,6 +2378,7 @@
             }
 
             const isMobile = window.innerWidth <= 768;
+            const palette = getChartThemePalette();
 
             statsChart = new Chart(ctx, {
                 type: 'line',
@@ -2424,13 +2476,16 @@
                                 filter: function(item) {
                                     if (isMobile) return !item.text.includes('Projeção');
                                     return true;
-                                }
+                                },
+                                color: palette.legendColor
                             }
                         },
                         tooltip: {
                             mode: 'index',
                             intersect: false,
-                            backgroundColor: 'rgba(11, 61, 61, 0.92)',
+                            backgroundColor: palette.tooltipBg,
+                            titleColor: palette.tooltipText,
+                            bodyColor: palette.tooltipText,
                             padding: isMobile ? 8 : 12,
                             titleFont: { size: isMobile ? 12 : 14, weight: 'bold' },
                             bodyFont: { size: isMobile ? 11 : 13 },
@@ -2449,15 +2504,17 @@
                             ticks: {
                                 stepSize: 1,
                                 font: { size: isMobile ? 10 : 12 },
-                                maxTicksLimit: isMobile ? 5 : 8
+                                maxTicksLimit: isMobile ? 5 : 8,
+                                color: palette.tickColor
                             },
-                            grid: { color: 'rgba(0, 0, 0, 0.05)' }
+                            grid: { color: palette.gridColor }
                         },
                         x: {
                             ticks: {
                                 font: { size: isMobile ? 9 : 12 },
                                 maxRotation: isMobile ? 45 : 0,
                                 minRotation: isMobile ? 45 : 0,
+                                color: palette.tickColor,
                                 // No mobile mostrar apenas alguns labels para não sobrepor
                                 callback: function(val, index) {
                                     if (isMobile) {
@@ -3938,25 +3995,30 @@
                 total: sumRev((c.services||[]).filter(s => s.status==='concluido')),
                 count: (c.services||[]).length
             })).sort((a,b) => b.total-a.total).slice(0,5);
-            const maxCli = topClients.length ? topClients[0].total : 1;
-            const cliHtml = topClients.some(c => c.total > 0) ? topClients.filter(c => c.total > 0).map(([_, c], i) => `
+            const maxCli = topClients.length ? Math.max(topClients[0].total, 1) : 1;
+            const topCliComFat = topClients.filter(c => c.total > 0);
+            const cliHtml = topCliComFat.length > 0
+                ? topCliComFat.map((c, i) => `
                 <li>
                     <div class="rt-li-left">
                         <span class="rt-rank">${i+1}</span>
                         <div>
-                            <div class="rt-li-name">${topClients[i].name}</div>
-                            <div class="rt-bar-bg"><div class="rt-bar-fill" style="width:${Math.round((topClients[i].total/maxCli)*100)}%"></div></div>
+                            <div class="rt-li-name">${c.name}</div>
+                            <div class="rt-bar-bg"><div class="rt-bar-fill" style="width:${Math.round((c.total/maxCli)*100)}%"></div></div>
                         </div>
                     </div>
-                    <span class="rt-val">${_rtFmt(topClients[i].total)}</span>
-                </li>`).join('') : topClients.map((c,i) => `
+                    <span class="rt-val">${_rtFmt(c.total)}</span>
+                </li>`).join('')
+                : topClients.length > 0
+                    ? topClients.map((c, i) => `
                 <li>
                     <div class="rt-li-left">
                         <span class="rt-rank">${i+1}</span>
                         <div class="rt-li-name">${c.name}</div>
                     </div>
                     <span class="rt-val">${c.count} serv.</span>
-                </li>`).join('') || '<li class="rt-empty">Sem clientes cadastrados</li>';
+                </li>`).join('')
+                    : '<li class="rt-empty">Sem clientes cadastrados</li>';
             const cliEl = document.getElementById('rt-top-clientes');
             if (cliEl) cliEl.innerHTML = cliHtml;
 
@@ -3994,6 +4056,7 @@
             if (!ctx) return;
             if (_rtStatusChart) { _rtStatusChart.destroy(); _rtStatusChart = null; }
             if (pend + and + conc + canc === 0) return;
+            const palette = getChartThemePalette();
             _rtStatusChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
@@ -4002,13 +4065,16 @@
                         data: [pend, and, conc, canc],
                         backgroundColor: ['#FF9800','#2196F3','#4CAF50','#E91E63'],
                         borderWidth: 2,
-                        borderColor: '#fff'
+                        borderColor: palette.doughnutBorder
                     }]
                 },
                 options: {
                     responsive: true, maintainAspectRatio: false,
                     plugins: {
-                        legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 10 } }
+                        legend: {
+                            position: 'bottom',
+                            labels: { font: { size: 11 }, padding: 10, color: palette.legendColor }
+                        }
                     }
                 }
             });
@@ -4033,6 +4099,7 @@
             const ctx = document.getElementById('rt-revenue-chart');
             if (!ctx) return;
             if (_rtRevenueChart) { _rtRevenueChart.destroy(); _rtRevenueChart = null; }
+            const palette = getChartThemePalette();
 
             const now = new Date();
             const tz = 'America/Belem';
@@ -4055,8 +4122,8 @@
                     datasets: [{
                         label: 'Receita (R$)',
                         data,
-                        backgroundColor: 'rgba(64,153,143,0.7)',
-                        borderColor: '#40998F',
+                        backgroundColor: palette.revenueBar,
+                        borderColor: palette.revenueBorder,
                         borderWidth: 2,
                         borderRadius: 6
                     }]
@@ -4069,14 +4136,24 @@
                             beginAtZero: true,
                             ticks: {
                                 font: { size: 11 },
+                                color: palette.tickColor,
                                 callback: v => 'R$ ' + v.toFixed(0)
-                            }
+                            },
+                            grid: { color: palette.gridColor }
                         },
-                        x: { ticks: { font: { size: 11 } } }
+                        x: { ticks: { font: { size: 11 }, color: palette.tickColor }, grid: { display: false } }
                     }
                 }
             });
         }
+
+        // Re-renderiza gráficos quando o tema muda
+        window.addEventListener('pcformatech:themechange', () => {
+            updateStatsChart();
+            if (document.getElementById('tab-realtime')?.classList.contains('active')) {
+                updateRealtimeDashboard();
+            }
+        });
     </script>
 </body>
 </html>
