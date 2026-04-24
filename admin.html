@@ -747,7 +747,7 @@
             </div>
             
             <div class="chart-container">
-                <h2><i class="fas fa-chart-area"></i> Estatísticas Mensais (6 Meses)</h2>
+                <h2><i class="fas fa-chart-area"></i> Estatísticas Mensais (Últimos 6 Meses)</h2>
                 <div class="chart-wrapper">
                     <canvas id="statsChart"></canvas>
                 </div>
@@ -1743,36 +1743,39 @@
         function getMonthlyData() {
             const months = [];
             const now = new Date();
-            
-            // Gerar labels dos últimos 3 meses e próximos 3 meses
-            for (let i = -3; i <= 3; i++) {
+
+            // Mostrar apenas os últimos 6 meses (apenas dados reais, sem projeção)
+            for (let i = -5; i <= 0; i++) {
                 const date = new Date(now.getFullYear(), now.getMonth() + i, 1);
-                const monthName = date.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' });
+                const monthName = date.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric', timeZone: 'America/Belem' });
                 months.push(monthName);
             }
-            
-            // Preparar dados
-            const clientsData = new Array(7).fill(0);
-            const servicesCompletedData = new Array(7).fill(0);
-            const servicesPendingData = new Array(7).fill(0);
-            
-            // Calcular dados reais dos últimos 3 meses
+
+            const clientsData = new Array(6).fill(0);
+            const servicesCompletedData = new Array(6).fill(0);
+            const servicesPendingData = new Array(6).fill(0);
+
             clients.forEach(client => {
+                // Ignorar datas inválidas
                 const clientDate = new Date(client.createdAt);
+                if (isNaN(clientDate.getTime())) return;
+
                 const monthDiff = (now.getFullYear() - clientDate.getFullYear()) * 12 + now.getMonth() - clientDate.getMonth();
-                
-                if (monthDiff >= 0 && monthDiff <= 3) {
-                    const index = 3 - monthDiff;
+
+                if (monthDiff >= 0 && monthDiff <= 5) {
+                    const index = 5 - monthDiff;
                     clientsData[index]++;
                 }
-                
+
                 if (client.services) {
                     client.services.forEach(service => {
                         const serviceDate = new Date(service.date);
+                        if (isNaN(serviceDate.getTime())) return;
+
                         const serviceDiff = (now.getFullYear() - serviceDate.getFullYear()) * 12 + now.getMonth() - serviceDate.getMonth();
-                        
-                        if (serviceDiff >= 0 && serviceDiff <= 3) {
-                            const index = 3 - serviceDiff;
+
+                        if (serviceDiff >= 0 && serviceDiff <= 5) {
+                            const index = 5 - serviceDiff;
                             if (service.status === 'concluido') {
                                 servicesCompletedData[index]++;
                             } else if (service.status === 'pendente' || service.status === 'andamento') {
@@ -1782,18 +1785,7 @@
                     });
                 }
             });
-            
-            // Projeção simples para os próximos 3 meses (média dos últimos 3)
-            const avgClients = clientsData.slice(0, 4).reduce((a, b) => a + b, 0) / 4;
-            const avgCompleted = servicesCompletedData.slice(0, 4).reduce((a, b) => a + b, 0) / 4;
-            const avgPending = servicesPendingData.slice(0, 4).reduce((a, b) => a + b, 0) / 4;
-            
-            for (let i = 4; i < 7; i++) {
-                clientsData[i] = Math.round(avgClients * (1 + Math.random() * 0.2 - 0.1));
-                servicesCompletedData[i] = Math.round(avgCompleted * (1 + Math.random() * 0.2 - 0.1));
-                servicesPendingData[i] = Math.round(avgPending * (1 + Math.random() * 0.2 - 0.1));
-            }
-            
+
             return {
                 labels: months,
                 clientsData,
