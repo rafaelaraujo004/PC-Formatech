@@ -4,6 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Painel Administrativo - PC Formatech</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="icon" type="image/svg+xml" href="/icon.svg">
+    <link rel="shortcut icon" href="/favicon-32x32.png">
+
+    <!-- PWA / Adicionar à tela inicial -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="PC Formatech">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0B3D3D">
+    <meta name="msapplication-TileImage" content="/icon-192.png">
+    <meta name="msapplication-TileColor" content="#0B3D3D">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
@@ -666,7 +682,10 @@
     <!-- Painel Admin -->
     <div class="admin-panel" id="adminPanel">
         <div class="admin-header">
-            <h1><i class="fas fa-tools"></i> Painel Administrativo</h1>
+            <h1 style="display:flex;align-items:center;gap:12px;">
+                <img src="/icon-192.png" alt="PC Formatech" style="width:40px;height:40px;border-radius:8px;">
+                Painel Administrativo
+            </h1>
             <div class="header-buttons">
                 <a href="index.html" class="btn-back-to-site" title="Voltar ao Site">
                     <i class="fas fa-home"></i>
