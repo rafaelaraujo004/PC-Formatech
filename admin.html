@@ -540,6 +540,183 @@
         .chart-container h2 .chart-title-short { display: none; }
         .chart-container h2 .chart-title-full  { display: inline; }
 
+        /* ===== DASHBOARD EM TEMPO REAL ===== */
+        .rt-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+        .rt-kpi {
+            background: white;
+            border-radius: 12px;
+            padding: 18px 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            position: relative;
+            overflow: hidden;
+        }
+        .rt-kpi::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 4px; height: 100%;
+            background: var(--kpi-color, #40998F);
+        }
+        .rt-kpi-icon {
+            width: 44px; height: 44px;
+            border-radius: 10px;
+            background: var(--kpi-bg, #e8f5f4);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
+            color: var(--kpi-color, #40998F);
+            flex-shrink: 0;
+        }
+        .rt-kpi-body { flex: 1; min-width: 0; }
+        .rt-kpi-value { font-size: 22px; font-weight: 700; color: #0B3D3D; line-height: 1; }
+        .rt-kpi-label { font-size: 11px; color: #888; margin-top: 4px; }
+        .rt-kpi-badge {
+            position: absolute;
+            top: 10px; right: 10px;
+            font-size: 10px; font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 20px;
+        }
+        .rt-kpi-badge.up { background: #e8f5e9; color: #2e7d32; }
+        .rt-kpi-badge.down { background: #fce4ec; color: #c62828; }
+        .rt-kpi-badge.neutral { background: #f3e5f5; color: #6a1b9a; }
+        .rt-section-title {
+            font-size: 15px; font-weight: 700;
+            color: #0B3D3D;
+            margin: 22px 0 10px;
+            display: flex; align-items: center; gap: 8px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e8f5f4;
+        }
+        .rt-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+        .rt-card {
+            background: white;
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .rt-card h4 {
+            font-size: 13px; font-weight: 700;
+            color: #0B3D3D;
+            margin-bottom: 12px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .rt-list { list-style: none; }
+        .rt-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 7px 0;
+            border-bottom: 1px solid #f5f5f5;
+            font-size: 13px;
+            color: #444;
+        }
+        .rt-list li:last-child { border-bottom: none; }
+        .rt-list .rt-rank {
+            width: 20px; height: 20px;
+            border-radius: 50%;
+            background: #e8f5f4;
+            color: #40998F;
+            font-size: 10px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+        .rt-list .rt-li-left { display: flex; align-items: center; min-width: 0; }
+        .rt-list .rt-li-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px; }
+        .rt-list .rt-val { font-weight: 700; color: #0B3D3D; flex-shrink: 0; margin-left: 8px; }
+        .rt-bar-bg { background: #f0f0f0; border-radius: 4px; height: 5px; margin-top: 3px; width: 100%; }
+        .rt-bar-fill { height: 5px; border-radius: 4px; background: linear-gradient(90deg, #40998F, #2D7A7A); transition: width 0.7s; }
+        .rt-status-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+        .rt-badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 5px 11px;
+            border-radius: 20px;
+            font-size: 12px; font-weight: 600;
+        }
+        .rt-badge.pendente { background: #fff3e0; color: #e65100; }
+        .rt-badge.andamento { background: #e3f2fd; color: #1565c0; }
+        .rt-badge.concluido { background: #e8f5e9; color: #2e7d32; }
+        .rt-badge.cancelado { background: #fce4ec; color: #880e4f; }
+        .rt-funnel { display: flex; flex-direction: column; gap: 6px; }
+        .rt-funnel-step { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+        .rt-funnel-label { width: 130px; text-align: right; color: #666; font-size: 11px; flex-shrink: 0; }
+        .rt-funnel-bar-bg {
+            flex: 1;
+            background: #f0f0f0;
+            border-radius: 4px;
+            height: 26px;
+            position: relative;
+            overflow: hidden;
+        }
+        .rt-funnel-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            display: flex; align-items: center; justify-content: flex-end;
+            padding-right: 8px;
+            color: white; font-size: 11px; font-weight: 700;
+            transition: width 0.8s;
+            min-width: 26px;
+        }
+        .rt-alert-list { display: flex; flex-direction: column; gap: 8px; }
+        .rt-alert {
+            display: flex; align-items: flex-start; gap: 10px;
+            background: #f8fffe;
+            border: 1px solid #c8e6c9;
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 12px;
+        }
+        .rt-alert.new { border-color: #FFB300; background: #fffde7; }
+        .rt-alert-icon { font-size: 15px; margin-top: 1px; }
+        .rt-alert-time { font-size: 10px; color: #999; margin-top: 2px; }
+        .rt-empty { text-align: center; color: #bbb; font-size: 13px; padding: 20px 0; }
+        .rt-fat-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+        .rt-fat-item { text-align: center; }
+        .rt-fat-item .rt-fat-val { font-size: 16px; font-weight: 700; color: #0B3D3D; }
+        .rt-fat-item .rt-fat-label { font-size: 10px; color: #888; margin-top: 2px; }
+        .rt-last-update { text-align: right; font-size: 11px; color: #bbb; margin-top: 6px; }
+        .rt-pulse {
+            display: inline-block;
+            width: 8px; height: 8px;
+            background: #4CAF50;
+            border-radius: 50%;
+            margin-right: 5px;
+            animation: rtpulse 1.5s infinite;
+        }
+        @keyframes rtpulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.4); }
+        }
+        .rt-chart-wrap { position: relative; height: 200px; }
+        .rt-full { grid-column: 1 / -1; }
+        @media (max-width: 768px) {
+            .rt-row { grid-template-columns: 1fr; }
+            .rt-grid { grid-template-columns: repeat(2, 1fr); }
+            .rt-fat-row { grid-template-columns: repeat(2, 1fr); }
+            .rt-funnel-label { width: 80px; font-size: 10px; }
+        }
+        @media (max-width: 480px) {
+            .rt-kpi-value { font-size: 18px; }
+        }
+
         /* ===== RESPONSIVIDADE MOBILE ===== */
         @media (max-width: 768px) {
 
@@ -844,6 +1021,9 @@
             </button>
             <button class="tab-button" onclick="switchTab('slider')">
                 <i class="fas fa-images"></i> Imagens da Tela Inicial
+            </button>
+            <button class="tab-button" onclick="switchTab('realtime')">
+                <i class="fas fa-satellite-dish"></i> Dashboard Tempo Real
             </button>
         </div>
 
@@ -1282,6 +1462,148 @@
         </div>
     </div>
 
+    <!-- ===== ABA: DASHBOARD EM TEMPO REAL ===== -->
+    <div id="tab-realtime" class="tab-content">
+        <div class="clients-container">
+            <h2 style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+                <i class="fas fa-satellite-dish" style="color:#40998F;"></i>
+                Dashboard em Tempo Real
+                <span style="font-size:12px;font-weight:400;color:#888;margin-left:4px;">
+                    <span class="rt-pulse"></span>Atualizando automaticamente a cada 30s
+                </span>
+            </h2>
+            <p id="rt-last-update" class="rt-last-update" style="margin-bottom:16px;">—</p>
+
+            <!-- KPIs principais -->
+            <div class="rt-grid" id="rt-kpis">
+                <div class="rt-kpi" style="--kpi-color:#40998F;--kpi-bg:#e8f5f4;">
+                    <div class="rt-kpi-icon"><i class="fas fa-users"></i></div>
+                    <div class="rt-kpi-body">
+                        <div class="rt-kpi-value" id="rt-total-clientes">—</div>
+                        <div class="rt-kpi-label">Total de Clientes</div>
+                    </div>
+                    <span class="rt-kpi-badge neutral" id="rt-novos-mes-badge">+0 este mês</span>
+                </div>
+                <div class="rt-kpi" style="--kpi-color:#2196F3;--kpi-bg:#e3f2fd;">
+                    <div class="rt-kpi-icon"><i class="fas fa-briefcase"></i></div>
+                    <div class="rt-kpi-body">
+                        <div class="rt-kpi-value" id="rt-total-servicos">—</div>
+                        <div class="rt-kpi-label">Total de Serviços</div>
+                    </div>
+                </div>
+                <div class="rt-kpi" style="--kpi-color:#4CAF50;--kpi-bg:#e8f5e9;">
+                    <div class="rt-kpi-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="rt-kpi-body">
+                        <div class="rt-kpi-value" id="rt-serv-concluido">—</div>
+                        <div class="rt-kpi-label">Serviços Concluídos</div>
+                    </div>
+                </div>
+                <div class="rt-kpi" style="--kpi-color:#FF9800;--kpi-bg:#fff3e0;">
+                    <div class="rt-kpi-icon"><i class="fas fa-clock"></i></div>
+                    <div class="rt-kpi-body">
+                        <div class="rt-kpi-value" id="rt-serv-pendente">—</div>
+                        <div class="rt-kpi-label">Serviços Pendentes</div>
+                    </div>
+                </div>
+                <div class="rt-kpi" style="--kpi-color:#9C27B0;--kpi-bg:#f3e5f5;">
+                    <div class="rt-kpi-icon"><i class="fas fa-file-invoice"></i></div>
+                    <div class="rt-kpi-body">
+                        <div class="rt-kpi-value" id="rt-orc-abertos">—</div>
+                        <div class="rt-kpi-label">Orçamentos em Aberto</div>
+                    </div>
+                </div>
+                <div class="rt-kpi" style="--kpi-color:#E91E63;--kpi-bg:#fce4ec;">
+                    <div class="rt-kpi-icon"><i class="fas fa-percentage"></i></div>
+                    <div class="rt-kpi-body">
+                        <div class="rt-kpi-value" id="rt-taxa-conversao">—</div>
+                        <div class="rt-kpi-label">Taxa de Conversão</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Faturamento -->
+            <div class="rt-section-title"><i class="fas fa-money-bill-wave" style="color:#4CAF50;"></i> Faturamento (Serviços Concluídos)</div>
+            <div class="rt-card" style="margin-bottom:14px;">
+                <div class="rt-fat-row">
+                    <div class="rt-fat-item">
+                        <div class="rt-fat-val" id="rt-fat-dia">R$ 0,00</div>
+                        <div class="rt-fat-label">Hoje</div>
+                    </div>
+                    <div class="rt-fat-item">
+                        <div class="rt-fat-val" id="rt-fat-semana">R$ 0,00</div>
+                        <div class="rt-fat-label">Esta Semana</div>
+                    </div>
+                    <div class="rt-fat-item">
+                        <div class="rt-fat-val" id="rt-fat-mes">R$ 0,00</div>
+                        <div class="rt-fat-label">Este Mês</div>
+                    </div>
+                    <div class="rt-fat-item">
+                        <div class="rt-fat-val" id="rt-fat-total">R$ 0,00</div>
+                        <div class="rt-fat-label">Total Geral</div>
+                    </div>
+                </div>
+                <div style="margin-top:10px;padding-top:10px;border-top:1px solid #f0f0f0;display:flex;align-items:center;gap:8px;">
+                    <span style="font-size:12px;color:#888;">Ticket médio por cliente:</span>
+                    <span style="font-weight:700;color:#0B3D3D;font-size:14px;" id="rt-ticket-medio">R$ 0,00</span>
+                </div>
+            </div>
+
+            <!-- Linha: Gráfico de receita + Status dos serviços -->
+            <div class="rt-section-title"><i class="fas fa-chart-line" style="color:#2196F3;"></i> Receita Mensal (últimos 6 meses)</div>
+            <div class="rt-row">
+                <div class="rt-card rt-full">
+                    <div class="rt-chart-wrap">
+                        <canvas id="rt-revenue-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Linha: Status dos serviços + Funil de conversão -->
+            <div class="rt-section-title"><i class="fas fa-filter" style="color:#FF9800;"></i> Status e Funil de Conversão</div>
+            <div class="rt-row">
+                <div class="rt-card">
+                    <h4><i class="fas fa-tasks"></i> Status dos Serviços</h4>
+                    <div class="rt-status-row" id="rt-status-badges">
+                        <span class="rt-badge pendente">⏳ Pendente: <span id="rt-b-pendente">0</span></span>
+                        <span class="rt-badge andamento">🔧 Andamento: <span id="rt-b-andamento">0</span></span>
+                        <span class="rt-badge concluido">✅ Concluído: <span id="rt-b-concluido">0</span></span>
+                        <span class="rt-badge cancelado">❌ Cancelado: <span id="rt-b-cancelado">0</span></span>
+                    </div>
+                    <canvas id="rt-status-chart" style="max-height:160px;"></canvas>
+                </div>
+                <div class="rt-card">
+                    <h4><i class="fas fa-funnel-dollar"></i> Funil de Conversão</h4>
+                    <div class="rt-funnel" id="rt-funnel"></div>
+                </div>
+            </div>
+
+            <!-- Linha: Top serviços + Top clientes -->
+            <div class="rt-section-title"><i class="fas fa-trophy" style="color:#FF9800;"></i> Rankings</div>
+            <div class="rt-row">
+                <div class="rt-card">
+                    <h4><i class="fas fa-star"></i> Top 5 Serviços Mais Solicitados</h4>
+                    <ul class="rt-list" id="rt-top-servicos">
+                        <li class="rt-empty">Sem dados ainda</li>
+                    </ul>
+                </div>
+                <div class="rt-card">
+                    <h4><i class="fas fa-crown"></i> Top 5 Clientes por Faturamento</h4>
+                    <ul class="rt-list" id="rt-top-clientes">
+                        <li class="rt-empty">Sem dados ainda</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Alertas e últimas atividades -->
+            <div class="rt-section-title"><i class="fas fa-bell" style="color:#E91E63;"></i> Últimas Atividades</div>
+            <div class="rt-card">
+                <div class="rt-alert-list" id="rt-atividades">
+                    <div class="rt-empty">Nenhuma atividade registrada ainda.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Senha de acesso (você pode alterar aqui)
         const ADMIN_PASSWORD = 'pcformatech2026';
@@ -1448,6 +1770,8 @@
                 loadServices();
             } else if (tabName === 'slider') {
                 renderSlides();
+            } else if (tabName === 'realtime') {
+                initRealtimeDashboard();
             }
         }
 
@@ -3416,6 +3740,282 @@
             });
             
             console.log(indicators);
+        }
+
+        // ===== DASHBOARD EM TEMPO REAL =====
+        let _rtInterval = null;
+        let _rtFirebaseUnsub = null;
+        let _rtRevenueChart = null;
+        let _rtStatusChart = null;
+
+        function _rtFmt(val) {
+            return 'R$ ' + (val || 0).toFixed(2).replace('.', ',');
+        }
+
+        function _rtSet(id, val) {
+            const el = document.getElementById(id);
+            if (el) el.textContent = val;
+        }
+
+        function initRealtimeDashboard() {
+            updateRealtimeDashboard();
+
+            // Listener Firestore em tempo real
+            const fdb = getFirebaseDB();
+            if (fdb) {
+                if (_rtFirebaseUnsub) _rtFirebaseUnsub();
+                _rtFirebaseUnsub = fdb.collection('data').doc('clients').onSnapshot(() => {
+                    _loadAllFromFirebase().then(() => updateRealtimeDashboard());
+                });
+            }
+
+            // Polling 30s
+            if (_rtInterval) clearInterval(_rtInterval);
+            _rtInterval = setInterval(updateRealtimeDashboard, 30000);
+        }
+
+        function updateRealtimeDashboard() {
+            const now = new Date();
+            const tz = 'America/Belem';
+
+            // ── Helpers de data ──────────────────────────────────────
+            const mesAtualStr = now.toLocaleDateString('pt-BR', { month: '2-digit', year: 'numeric', timeZone: tz });
+            const hojeStr = now.toLocaleDateString('pt-BR', { timeZone: tz });
+            const inicioSemana = new Date(now);
+            inicioSemana.setDate(now.getDate() - now.getDay());
+            inicioSemana.setHours(0,0,0,0);
+
+            function mesStr(d) { return new Date(d).toLocaleDateString('pt-BR', { month: '2-digit', year: 'numeric', timeZone: tz }); }
+
+            // ── Clientes ──────────────────────────────────────────────
+            const totalClientes = clients.length;
+            const novosMes = clients.filter(c => c.createdAt && mesStr(c.createdAt) === mesAtualStr).length;
+
+            // ── Todos os serviços (achatados) ─────────────────────────
+            const allSvcs = clients.flatMap(c => (c.services || []).map(s => ({ ...s, clientName: c.name, clientId: c.id })));
+            const svPendente  = allSvcs.filter(s => s.status === 'pendente').length;
+            const svAndamento = allSvcs.filter(s => s.status === 'andamento').length;
+            const svConcluido = allSvcs.filter(s => s.status === 'concluido').length;
+            const svCancelado = allSvcs.filter(s => s.status === 'cancelado').length;
+            const svConcDocs  = allSvcs.filter(s => s.status === 'concluido');
+
+            // ── Faturamento ───────────────────────────────────────────
+            function sumRev(arr) { return arr.reduce((t, s) => t + (parseFloat(s.price) || 0), 0); }
+            const fatTotal   = sumRev(svConcDocs);
+            const fatDia     = sumRev(svConcDocs.filter(s => s.date && new Date(s.date).toLocaleDateString('pt-BR', { timeZone: tz }) === hojeStr));
+            const fatSemana  = sumRev(svConcDocs.filter(s => s.date && new Date(s.date) >= inicioSemana));
+            const fatMes     = sumRev(svConcDocs.filter(s => s.date && mesStr(s.date) === mesAtualStr));
+            const clientsComFat = clients.filter(c => (c.services||[]).some(s => s.status==='concluido')).length;
+            const ticketMedio = clientsComFat > 0 ? fatTotal / clientsComFat : 0;
+
+            // ── Orçamentos ────────────────────────────────────────────
+            const orcAbertos   = budgets.filter(b => !b.finalizado).length;
+            const orcFechados  = budgets.filter(b => b.finalizado).length;
+            const taxaConv     = budgets.length > 0 ? Math.round((svConcluido / budgets.length) * 100) : 0;
+
+            // ── Atualizar KPIs ────────────────────────────────────────
+            _rtSet('rt-total-clientes', totalClientes);
+            _rtSet('rt-total-servicos', allSvcs.length);
+            _rtSet('rt-serv-concluido', svConcluido);
+            _rtSet('rt-serv-pendente', svPendente);
+            _rtSet('rt-orc-abertos', orcAbertos);
+            _rtSet('rt-taxa-conversao', taxaConv + '%');
+            _rtSet('rt-fat-dia', _rtFmt(fatDia));
+            _rtSet('rt-fat-semana', _rtFmt(fatSemana));
+            _rtSet('rt-fat-mes', _rtFmt(fatMes));
+            _rtSet('rt-fat-total', _rtFmt(fatTotal));
+            _rtSet('rt-ticket-medio', _rtFmt(ticketMedio));
+
+            const badge = document.getElementById('rt-novos-mes-badge');
+            if (badge) {
+                badge.textContent = '+' + novosMes + ' este mês';
+                badge.className = 'rt-kpi-badge ' + (novosMes > 0 ? 'up' : 'neutral');
+            }
+
+            // ── Badges de status ──────────────────────────────────────
+            _rtSet('rt-b-pendente', svPendente);
+            _rtSet('rt-b-andamento', svAndamento);
+            _rtSet('rt-b-concluido', svConcluido);
+            _rtSet('rt-b-cancelado', svCancelado);
+
+            // ── Gráfico de status (doughnut) ──────────────────────────
+            _rtRenderStatusChart(svPendente, svAndamento, svConcluido, svCancelado);
+
+            // ── Funil ─────────────────────────────────────────────────
+            const comServico = clients.filter(c => (c.services||[]).length > 0).length;
+            _rtRenderFunnel([
+                { label: 'Clientes cadastrados', val: totalClientes, color: '#40998F' },
+                { label: 'Com orçamento', val: Math.min(budgets.length, totalClientes), color: '#2196F3' },
+                { label: 'Com serviço', val: comServico, color: '#FF9800' },
+                { label: 'Serviços concluídos', val: svConcluido, color: '#4CAF50' }
+            ]);
+
+            // ── Top serviços ──────────────────────────────────────────
+            const svCount = {};
+            allSvcs.forEach(s => {
+                const k = s.type || 'Outros';
+                svCount[k] = (svCount[k] || 0) + 1;
+            });
+            const topSvcs = Object.entries(svCount).sort((a,b) => b[1]-a[1]).slice(0,5);
+            const maxSvc = topSvcs.length ? topSvcs[0][1] : 1;
+            const svHtml = topSvcs.length ? topSvcs.map(([name, cnt], i) => `
+                <li>
+                    <div class="rt-li-left">
+                        <span class="rt-rank">${i+1}</span>
+                        <div>
+                            <div class="rt-li-name">${name}</div>
+                            <div class="rt-bar-bg"><div class="rt-bar-fill" style="width:${Math.round((cnt/maxSvc)*100)}%"></div></div>
+                        </div>
+                    </div>
+                    <span class="rt-val">${cnt}x</span>
+                </li>`).join('') : '<li class="rt-empty">Sem serviços cadastrados</li>';
+            const svEl = document.getElementById('rt-top-servicos');
+            if (svEl) svEl.innerHTML = svHtml;
+
+            // ── Top clientes ──────────────────────────────────────────
+            const topClients = clients.map(c => ({
+                name: c.name,
+                total: sumRev((c.services||[]).filter(s => s.status==='concluido')),
+                count: (c.services||[]).length
+            })).sort((a,b) => b.total-a.total).slice(0,5);
+            const maxCli = topClients.length ? topClients[0].total : 1;
+            const cliHtml = topClients.some(c => c.total > 0) ? topClients.filter(c => c.total > 0).map(([_, c], i) => `
+                <li>
+                    <div class="rt-li-left">
+                        <span class="rt-rank">${i+1}</span>
+                        <div>
+                            <div class="rt-li-name">${topClients[i].name}</div>
+                            <div class="rt-bar-bg"><div class="rt-bar-fill" style="width:${Math.round((topClients[i].total/maxCli)*100)}%"></div></div>
+                        </div>
+                    </div>
+                    <span class="rt-val">${_rtFmt(topClients[i].total)}</span>
+                </li>`).join('') : topClients.map((c,i) => `
+                <li>
+                    <div class="rt-li-left">
+                        <span class="rt-rank">${i+1}</span>
+                        <div class="rt-li-name">${c.name}</div>
+                    </div>
+                    <span class="rt-val">${c.count} serv.</span>
+                </li>`).join('') || '<li class="rt-empty">Sem clientes cadastrados</li>';
+            const cliEl = document.getElementById('rt-top-clientes');
+            if (cliEl) cliEl.innerHTML = cliHtml;
+
+            // ── Últimas atividades ────────────────────────────────────
+            const recentSvcs = [...allSvcs]
+                .filter(s => s.date)
+                .sort((a,b) => new Date(b.date)-new Date(a.date))
+                .slice(0,8);
+            const recentBudgets = [...budgets]
+                .filter(b => b.date)
+                .sort((a,b) => new Date(b.date)-new Date(a.date))
+                .slice(0,4);
+
+            const statusIcon = { pendente:'⏳', andamento:'🔧', concluido:'✅', cancelado:'❌' };
+            const atHtml = recentSvcs.length ? recentSvcs.map(s => `
+                <div class="rt-alert">
+                    <div class="rt-alert-icon">${statusIcon[s.status] || '🔧'}</div>
+                    <div class="rt-alert-body">
+                        <strong>${s.type || 'Serviço'}</strong> — ${s.clientName}
+                        <div class="rt-alert-time">${s.date ? new Date(s.date).toLocaleDateString('pt-BR') : '—'} · ${_rtFmt(parseFloat(s.price)||0)} · <span class="rt-badge ${s.status}" style="padding:1px 6px;font-size:10px;">${s.status}</span></div>
+                    </div>
+                </div>`).join('') : '<div class="rt-empty">Nenhuma atividade registrada ainda.</div>';
+            const atEl = document.getElementById('rt-atividades');
+            if (atEl) atEl.innerHTML = atHtml;
+
+            // ── Gráfico de receita mensal ─────────────────────────────
+            _rtRenderRevenueChart();
+
+            // ── Timestamp ─────────────────────────────────────────────
+            _rtSet('rt-last-update', 'Atualizado às ' + now.toLocaleTimeString('pt-BR', { timeZone: tz }));
+        }
+
+        function _rtRenderStatusChart(pend, and, conc, canc) {
+            const ctx = document.getElementById('rt-status-chart');
+            if (!ctx) return;
+            if (_rtStatusChart) { _rtStatusChart.destroy(); _rtStatusChart = null; }
+            if (pend + and + conc + canc === 0) return;
+            _rtStatusChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pendente','Em Andamento','Concluído','Cancelado'],
+                    datasets: [{
+                        data: [pend, and, conc, canc],
+                        backgroundColor: ['#FF9800','#2196F3','#4CAF50','#E91E63'],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 10 } }
+                    }
+                }
+            });
+        }
+
+        function _rtRenderFunnel(steps) {
+            const el = document.getElementById('rt-funnel');
+            if (!el) return;
+            const maxVal = steps[0].val || 1;
+            el.innerHTML = steps.map(s => {
+                const pct = Math.max(8, Math.round((s.val / maxVal) * 100));
+                return `<div class="rt-funnel-step">
+                    <div class="rt-funnel-label">${s.label}</div>
+                    <div class="rt-funnel-bar-bg">
+                        <div class="rt-funnel-bar-fill" style="width:${pct}%;background:${s.color};">${s.val}</div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function _rtRenderRevenueChart() {
+            const ctx = document.getElementById('rt-revenue-chart');
+            if (!ctx) return;
+            if (_rtRevenueChart) { _rtRevenueChart.destroy(); _rtRevenueChart = null; }
+
+            const now = new Date();
+            const tz = 'America/Belem';
+            const labels = [], data = [];
+
+            for (let i = 5; i >= 0; i--) {
+                const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                labels.push(d.toLocaleDateString('pt-BR', { month: 'short', year: '2-digit', timeZone: tz }));
+                const mStr = d.toLocaleDateString('pt-BR', { month: '2-digit', year: 'numeric', timeZone: tz });
+                const rev = clients.flatMap(c => (c.services||[]))
+                    .filter(s => s.status === 'concluido' && s.date && new Date(s.date).toLocaleDateString('pt-BR', { month: '2-digit', year: 'numeric', timeZone: tz }) === mStr)
+                    .reduce((t,s) => t+(parseFloat(s.price)||0), 0);
+                data.push(rev);
+            }
+
+            _rtRevenueChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'Receita (R$)',
+                        data,
+                        backgroundColor: 'rgba(64,153,143,0.7)',
+                        borderColor: '#40998F',
+                        borderWidth: 2,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                font: { size: 11 },
+                                callback: v => 'R$ ' + v.toFixed(0)
+                            }
+                        },
+                        x: { ticks: { font: { size: 11 } } }
+                    }
+                }
+            });
         }
     </script>
 </body>
