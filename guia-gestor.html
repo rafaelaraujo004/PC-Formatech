@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia Rápido - Gestor de Serviços PC Formatech</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0B3D3D 0%, #1A5C5C 100%);
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #0B3D3D;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #40998F;
+            margin-bottom: 40px;
+            font-size: 1.2em;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            color: #0B3D3D;
+            border-left: 5px solid #40998F;
+            padding-left: 15px;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #40998F;
+        }
+
+        .card h3 {
+            color: #0B3D3D;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .steps {
+            list-style: none;
+            counter-reset: step-counter;
+        }
+
+        .steps li {
+            counter-increment: step-counter;
+            margin-bottom: 15px;
+            padding-left: 45px;
+            position: relative;
+            line-height: 1.6;
+        }
+
+        .steps li:before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: #40998F;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .feature {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .feature:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature i {
+            font-size: 3em;
+            color: #40998F;
+            margin-bottom: 15px;
+        }
+
+        .feature h3 {
+            color: #0B3D3D;
+            margin-bottom: 10px;
+        }
+
+        .feature p {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .btn-admin {
+            display: inline-block;
+            background: linear-gradient(135deg, #40998F 0%, #2D7A7A 100%);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin: 20px auto;
+            display: block;
+            text-align: center;
+            max-width: 300px;
+            transition: all 0.3s;
+        }
+
+        .btn-admin:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(64, 153, 143, 0.4);
+        }
+
+        .alert {
+            background: #FFF3CD;
+            border-left: 4px solid #FFC107;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .alert-success {
+            background: #D4EDDA;
+            border-left-color: #28A745;
+        }
+
+        .workflow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: 30px 0;
+        }
+
+        .workflow-step {
+            flex: 1;
+            min-width: 150px;
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            margin: 5px;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .workflow-step:not(:last-child):after {
+            content: '→';
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2em;
+            color: #40998F;
+        }
+
+        .workflow-step i {
+            font-size: 2em;
+            color: #40998F;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .workflow-step strong {
+            display: block;
+            color: #0B3D3D;
+            margin-bottom: 5px;
+        }
+
+        .workflow-step small {
+            color: #666;
+        }
+
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #e83e8c;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .workflow-step:after {
+                content: '↓';
+                right: auto;
+                bottom: -25px;
+                top: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-book-open"></i> Guia Rápido</h1>
+        <p class="subtitle">Sistema de Gestão de Serviços - PC Formatech</p>
+
+        <div class="alert alert-success">
+            <strong><i class="fas fa-check-circle"></i> Sistema Instalado com Sucesso!</strong><br>
+            Agora você pode gerenciar clientes, serviços e acompanhar toda a sua operação em um único lugar.
+        </div>
+
+        <a href="admin.html" class="btn-admin">
+            <i class="fas fa-sign-in-alt"></i> Acessar Painel Administrativo
+        </a>
+
+        <!-- Recursos Principais -->
+        <div class="section">
+            <h2><i class="fas fa-star"></i> Recursos Principais</h2>
+            <div class="grid">
+                <div class="feature">
+                    <i class="fas fa-users"></i>
+                    <h3>Gestão de Clientes</h3>
+                    <p>Cadastre e gerencie todos os seus clientes com informações completas</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-briefcase"></i>
+                    <h3>Controle de Serviços</h3>
+                    <p>Registre todos os serviços realizados para cada cliente</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Dashboard Completo</h3>
+                    <p>Visualize estatísticas e métricas em tempo real</p>
+                </div>
+                <div class="feature">
+                    <i class="fab fa-whatsapp"></i>
+                    <h3>Integração WhatsApp</h3>
+                    <p>Comunique-se diretamente com seus clientes</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-tasks"></i>
+                    <h3>Status de Serviços</h3>
+                    <p>Acompanhe pendentes, em andamento e concluídos</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-dollar-sign"></i>
+                    <h3>Controle Financeiro</h3>
+                    <p>Veja receita total e gerencie preços</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fluxo de Trabalho -->
+        <div class="section">
+            <h2><i class="fas fa-route"></i> Fluxo de Trabalho Recomendado</h2>
+            <div class="workflow">
+                <div class="workflow-step">
+                    <i class="fas fa-phone"></i>
+                    <strong>1. Solicitação</strong>
+                    <small>Cliente entra em contato</small>
+                </div>
+                <div class="workflow-step">
+                    <i class="fas fa-user-plus"></i>
+                    <strong>2. Cadastro</strong>
+                    <small>Registre o cliente</small>
+                </div>
+                <div class="workflow-step">
+                    <i class="fas fa-plus-circle"></i>
+                    <strong>3. Serviço</strong>
+                    <small>Adicione o serviço</small>
+                </div>
+                <div class="workflow-step">
+                    <i class="fab fa-whatsapp"></i>
+                    <strong>4. Confirmação</strong>
+                    <small>Envie pelo WhatsApp</small>
+                </div>
+                <div class="workflow-step">
+                    <i class="fas fa-check"></i>
+                    <strong>5. Execução</strong>
+                    <small>Atualize o status</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Como Usar -->
+        <div class="section">
+            <h2><i class="fas fa-question-circle"></i> Como Usar</h2>
+
+            <div class="card">
+                <h3><i class="fas fa-user-plus"></i> 1. Cadastrar Cliente</h3>
+                <ol class="steps">
+                    <li>Acesse a aba <strong>"Clientes"</strong></li>
+                    <li>Preencha nome e WhatsApp (obrigatórios)</li>
+                    <li>Adicione informações extras se disponível</li>
+                    <li>Clique em <strong>"Cadastrar Cliente"</strong></li>
+                </ol>
+            </div>
+
+            <div class="card">
+                <h3><i class="fas fa-briefcase"></i> 2. Adicionar Serviço</h3>
+                <ol class="steps">
+                    <li>Encontre o cliente na lista</li>
+                    <li>Clique em <strong>"Ver"</strong></li>
+                    <li>Clique em <strong>"Adicionar Novo Serviço"</strong></li>
+                    <li>Selecione o tipo de serviço</li>
+                    <li>O preço será preenchido automaticamente</li>
+                    <li>Defina o status e adicione observações</li>
+                    <li>Clique em <strong>"Adicionar Serviço"</strong></li>
+                </ol>
+            </div>
+
+            <div class="card">
+                <h3><i class="fab fa-whatsapp"></i> 3. Enviar Mensagem WhatsApp</h3>
+                <ol class="steps">
+                    <li>Localize o cliente na lista</li>
+                    <li>Clique no botão <strong>"WhatsApp"</strong> (verde)</li>
+                    <li>Será aberto o WhatsApp com mensagem pré-pronta</li>
+                    <li>Personalize e envie a mensagem</li>
+                </ol>
+            </div>
+
+            <div class="card">
+                <h3><i class="fas fa-sync-alt"></i> 4. Atualizar Status do Serviço</h3>
+                <ol class="steps">
+                    <li>Abra os detalhes do cliente</li>
+                    <li>Localize o serviço no histórico</li>
+                    <li>Clique em <strong>"Editar Status"</strong></li>
+                    <li>Escolha: Pendente, Em Andamento, Concluído ou Cancelado</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Status dos Serviços -->
+        <div class="section">
+            <h2><i class="fas fa-info-circle"></i> Status dos Serviços</h2>
+            <div class="grid">
+                <div style="background: #FFF3CD; padding: 15px; border-radius: 8px; text-align: center;">
+                    <strong style="color: #856404;">🟡 PENDENTE</strong><br>
+                    <small>Aguardando início</small>
+                </div>
+                <div style="background: #D1ECF1; padding: 15px; border-radius: 8px; text-align: center;">
+                    <strong style="color: #0C5460;">🔵 EM ANDAMENTO</strong><br>
+                    <small>Sendo executado</small>
+                </div>
+                <div style="background: #D4EDDA; padding: 15px; border-radius: 8px; text-align: center;">
+                    <strong style="color: #155724;">🟢 CONCLUÍDO</strong><br>
+                    <small>Finalizado (conta na receita)</small>
+                </div>
+                <div style="background: #F8D7DA; padding: 15px; border-radius: 8px; text-align: center;">
+                    <strong style="color: #721C24;">🔴 CANCELADO</strong><br>
+                    <small>Cancelado</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Acesso -->
+        <div class="section">
+            <h2><i class="fas fa-key"></i> Informações de Acesso</h2>
+            <div class="card">
+                <p><strong>Arquivo:</strong> <code>admin.html</code></p>
+                <p><strong>Senha Padrão:</strong> <code>pcformatech2026</code></p>
+                <p style="margin-top: 15px;">
+                    <i class="fas fa-exclamation-triangle"></i> 
+                    <strong>Importante:</strong> Altere a senha no código para maior segurança!
+                </p>
+            </div>
+        </div>
+
+        <!-- Dicas -->
+        <div class="section">
+            <h2><i class="fas fa-lightbulb"></i> Dicas Importantes</h2>
+            
+            <div class="alert">
+                <strong><i class="fas fa-save"></i> Backup Regular</strong><br>
+                Faça backup dos dados regularmente. Use o console do navegador (F12) para exportar os dados do localStorage.
+            </div>
+
+            <div class="alert">
+                <strong><i class="fas fa-search"></i> Use a Busca</strong><br>
+                Utilize as barras de pesquisa para encontrar clientes rapidamente por nome, telefone ou CPF.
+            </div>
+
+            <div class="alert">
+                <strong><i class="fas fa-sync"></i> Mantenha Status Atualizado</strong><br>
+                Atualize o status dos serviços regularmente para ter estatísticas precisas no dashboard.
+            </div>
+
+            <div class="alert">
+                <strong><i class="fas fa-mobile-alt"></i> Acesso Mobile</strong><br>
+                O sistema é responsivo! Você pode acessar de qualquer dispositivo.
+            </div>
+        </div>
+
+        <!-- Navegação -->
+        <div class="section">
+            <h2><i class="fas fa-compass"></i> Navegação do Sistema</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3><i class="fas fa-chart-line"></i> Dashboard</h3>
+                    <p>Visão geral com estatísticas: total de clientes, serviços, pendências e receita.</p>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-users"></i> Clientes</h3>
+                    <p>Cadastro, edição, busca e visualização de todos os clientes.</p>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-cog"></i> Serviços</h3>
+                    <p>Visualize clientes com serviços e gerencie o histórico de cada um.</p>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-dollar-sign"></i> Preços</h3>
+                    <p>Configure preços padrão dos serviços oferecidos pela empresa.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rodapé -->
+        <div style="text-align: center; margin-top: 60px; padding-top: 30px; border-top: 2px solid #eee;">
+            <a href="admin.html" class="btn-admin">
+                <i class="fas fa-rocket"></i> Começar a Usar Agora
+            </a>
+            <p style="margin-top: 20px; color: #666;">
+                <strong>PC Formatech</strong> - Sistema de Gestão de Serviços v2.0<br>
+                <small>Janeiro 2026</small>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

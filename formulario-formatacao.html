@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Formulário de Formatação - PC Formatech</title>
+    
+    <meta name="description" content="Preencha o formulário de formatação de computador da PC Formatech. Serviço profissional, rápido e confiável.">
+    <meta name="theme-color" content="#2D7A7A">
+    
+    <!-- Open Graph / Facebook / WhatsApp -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://pcformatech.com/formulario-formatacao.html">
+    <meta property="og:title" content="💻 Formulário de Formatação - PC Formatech">
+    <meta property="og:description" content="Soluções Profissionais em Formatação e Instalação de Software. Serviço profissional e confiável para seu computador. Preencha o formulário agora!">
+    <meta property="og:image" content="https://pcformatech.com/preview-formulario.jpg">
+    <meta property="og:image:alt" content="PC Formatech - Especialistas em Tecnologia - Soluções Profissionais em Formatação">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:site_name" content="PC Formatech">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://pcformatech.com/formulario-formatacao.html">
+    <meta name="twitter:title" content="💻 Formulário de Formatação - PC Formatech">
+    <meta name="twitter:description" content="Soluções Profissionais em Formatação e Instalação de Software. Serviço profissional e confiável para seu computador. Preencha o formulário agora!">
+    <meta name="twitter:image" content="https://pcformatech.com/preview-formulario.jpg">
+    <meta name="twitter:image:alt" content="PC Formatech - Especialistas em Tecnologia">
+    
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles2.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* Prevenir zoom em inputs no mobile */
+        * {
+            -webkit-text-size-adjust: 100%;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        input, select, textarea, button {
+            font-size: 16px !important;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            font-size: 16px !important;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+        
+        .form-page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 0 1rem;
+        }
+        
+        .form-page-header h1 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-page-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .back-to-home {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            background: white;
+            color: var(--primary-color);
+            text-decoration: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+        
+        .back-to-home:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .client-form-section {
+            padding: 2rem 1rem;
+        }
+        
+        @media screen and (max-width: 768px) {
+            .form-page-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .form-page-header p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-page-header">
+        <a href="index.html" class="back-to-home">
+            <i class="fas fa-arrow-left"></i> Voltar para o Site
+        </a>
+        <h1><i class="fas fa-laptop-code"></i> PC Formatech</h1>
+        <p>Formulário de Formatação de Computador</p>
+    </div>
+
+    <section id="formulario-formatacao" class="client-form-section">
+        <div class="client-form-container">
+            <div class="form-header">
+                <i class="fas fa-laptop-code"></i>
+                <h2>Formulário de Formatação de Computador</h2>
+                <p>Preencha todas as informações para que possamos realizar o melhor serviço</p>
+            </div>
+
+            <form id="formatacao-form" class="client-form">
+                <!-- 1. Dados do Cliente -->
+                <div class="form-section">
+                    <h3><i class="fas fa-user"></i> 1. Dados do Cliente</h3>
+                    
+                    <div class="form-group">
+                        <label for="cliente-nome">
+                            <i class="fas fa-user"></i> Nome Completo *
+                        </label>
+                        <input type="text" id="cliente-nome" name="cliente-nome" required placeholder="Digite seu nome completo">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="cliente-telefone">
+                                <i class="fas fa-phone"></i> Telefone / WhatsApp *
+                            </label>
+                            <input type="tel" id="cliente-telefone" name="cliente-telefone" required placeholder="(00) 00000-0000">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cliente-cidade">
+                                <i class="fas fa-city"></i> Cidade *
+                            </label>
+                            <input type="text" id="cliente-cidade" name="cliente-cidade" required placeholder="Nome da sua cidade">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Informações do Computador -->
+                <div class="form-section">
+                    <h3><i class="fas fa-laptop"></i> 2. Informações do Computador</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="tipo-computador">
+                                <i class="fas fa-desktop"></i> Tipo de Computador *
+                            </label>
+                            <select id="tipo-computador" name="tipo-computador" required>
+                                <option value="">Selecione</option>
+                                <option value="Desktop">Desktop</option>
+                                <option value="Notebook">Notebook</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="pc-liga">
+                                <i class="fas fa-power-off"></i> O computador liga normalmente? *
+                            </label>
+                            <select id="pc-liga" name="pc-liga" required>
+                                <option value="">Selecione</option>
+                                <option value="Sim">Sim</option>
+                                <option value="Não">Não</option>
+                                <option value="Às vezes">Às vezes</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sistema-atual">
+                            <i class="fab fa-windows"></i> Sistema Operacional Atual *
+                        </label>
+                        <select id="sistema-atual" name="sistema-atual" required>
+                            <option value="">Selecione</option>
+                            <option value="Windows 10">Windows 10</option>
+                            <option value="Windows 11">Windows 11</option>
+                            <option value="Outro">Outro</option>
+                            <option value="Não sei">Não sei</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 3. Motivo da Formatação -->
+                <div class="form-section">
+                    <h3><i class="fas fa-exclamation-triangle"></i> 3. Motivo da Formatação</h3>
+                    
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-bug"></i> Problemas Apresentados * (Selecione todos que se aplicam)
+                        </label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="problema[]" value="Muito lento">
+                                <span>Muito lento</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="problema[]" value="Travando">
+                                <span>Travando</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="problema[]" value="Vírus">
+                                <span>Vírus</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="problema[]" value="Programas não abrem">
+                                <span>Programas não abrem</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="problema[]" value="Tela azul / erro">
+                                <span>Tela azul / erro</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="problema[]" value="Outro" id="problema-outro-check">
+                                <span>Outro</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="problema-outro-grupo" style="display: none;">
+                        <label for="problema-outro-texto">
+                            <i class="fas fa-edit"></i> Descreva o outro problema
+                        </label>
+                        <textarea id="problema-outro-texto" name="problema-outro-texto" rows="3" placeholder="Descreva detalhadamente o problema..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tempo-problema">
+                            <i class="fas fa-clock"></i> Tempo Aproximado do Problema *
+                        </label>
+                        <select id="tempo-problema" name="tempo-problema" required>
+                            <option value="">Selecione</option>
+                            <option value="Dias">Dias</option>
+                            <option value="Semanas">Semanas</option>
+                            <option value="Meses">Meses</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 4. Backup de Arquivos -->
+                <div class="form-section critical-section">
+                    <h3><i class="fas fa-database"></i> 4. Backup de Arquivos</h3>
+                    
+                    <div class="alert-warning" style="border-left: 4px solid #ff6b6b; background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%); padding: 0.8rem 0.8rem 0.8rem 0.6rem; border-radius: 10px; margin-bottom: 1.5rem; box-shadow: 0 3px 10px rgba(255, 107, 107, 0.12);">
+                        <div style="display: flex; align-items: flex-start; gap: 0.6rem;">
+                            <div style="font-size: 1.8rem; color: #ff6b6b; line-height: 1; flex-shrink: 0; margin-top: 0.1rem;">
+                                ⚠️
+                            </div>
+                            <div style="flex: 1; min-width: 0;">
+                                <div style="font-size: 1.05rem; font-weight: 700; color: #c92a2a; margin-bottom: 0.7rem; line-height: 1.2;">
+                                    ATENÇÃO - Campo Crítico!
+                                </div>
+                                
+                                <div style="background: white; padding: 0.75rem; border-radius: 6px; margin-bottom: 0.7rem; border: 2px solid #ff8787;">
+                                    <p style="margin: 0; font-size: 0.9rem; line-height: 1.4; color: #212529;">
+                                        Durante a formatação, <strong style="color: #c92a2a; text-decoration: underline;">TODOS os arquivos serão apagados PERMANENTEMENTE!</strong>
+                                    </p>
+                                </div>
+                                
+                                <div style="background: linear-gradient(135deg, #fff9db 0%, #fff3bf 100%); padding: 0.75rem; border-radius: 6px; border-left: 3px solid #ffd43b; margin-bottom: 0.7rem;">
+                                    <div style="display: flex; align-items: start; gap: 0.5rem;">
+                                        <div style="font-size: 1.2rem; line-height: 1; flex-shrink: 0; margin-top: 0.1rem;">
+                                            🛡️
+                                        </div>
+                                        <div style="min-width: 0;">
+                                            <strong style="color: #862e9c; font-size: 0.9rem; display: block; margin-bottom: 0.3rem; line-height: 1.3;">
+                                                Proteção Essencial:
+                                            </strong>
+                                            <p style="margin: 0; color: #495057; font-size: 0.85rem; line-height: 1.4;">
+                                                É <strong style="color: #862e9c;">FUNDAMENTAL</strong> fazer backup dos arquivos importantes.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div style="background: #e7f5ff; padding: 0.65rem; border-radius: 6px; border-left: 3px solid #339af0;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <i class="fas fa-info-circle" style="color: #1971c2; font-size: 1rem; flex-shrink: 0;"></i>
+                                        <p style="margin: 0; color: #1864ab; font-weight: 500; font-size: 0.82rem; line-height: 1.3;">
+                                            Nossa equipe pode auxiliar com o backup.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="tem-arquivos">
+                            <i class="fas fa-folder-open"></i> Existem Arquivos Importantes? *
+                        </label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="tem-arquivos" value="Sim" id="arquivos-sim" required>
+                                <span>Sim</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="tem-arquivos" value="Não" id="arquivos-nao" required>
+                                <span>Não</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="backup-detalhes" style="display: none;">
+                        <div class="form-group">
+                            <label>
+                                <i class="fas fa-file"></i> Tipos de Arquivos para Backup (Selecione todos que se aplicam)
+                            </label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="tipo-arquivo[]" value="Fotos">
+                                    <span><i class="fas fa-image"></i> Fotos</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="tipo-arquivo[]" value="Vídeos">
+                                    <span><i class="fas fa-video"></i> Vídeos</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="tipo-arquivo[]" value="Documentos">
+                                    <span><i class="fas fa-file-word"></i> Documentos</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="tipo-arquivo[]" value="Arquivos de trabalho">
+                                    <span><i class="fas fa-briefcase"></i> Arquivos de trabalho</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="tipo-arquivo[]" value="Não sei identificar">
+                                    <span><i class="fas fa-question"></i> Não sei identificar</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="local-backup">
+                                <i class="fas fa-save"></i> Onde Deseja Salvar o Backup? *
+                            </label>
+                            <select id="local-backup" name="local-backup">
+                                <option value="">Selecione</option>
+                                <option value="HD externo">HD externo</option>
+                                <option value="Pen drive">Pen drive</option>
+                                <option value="Nuvem">Nuvem (OneDrive, Google Drive, etc.)</option>
+                                <option value="Preciso de orientação">Preciso de orientação</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Programas Necessários Após Formatação -->
+                <div class="form-section">
+                    <h3><i class="fas fa-download"></i> 5. Programas Necessários Após Formatação</h3>
+                    
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-apps"></i> Programas Desejados (Selecione todos que se aplicam)
+                        </label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="programa[]" value="Pacote Office">
+                                <span><i class="fab fa-microsoft"></i> Pacote Office</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="programa[]" value="Navegadores">
+                                <span><i class="fas fa-globe"></i> Progrmas Essenciais (Navegadores, Antivírus, etc.)</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="programa[]" value="WhatsApp">
+                                <span><i class="fab fa-whatsapp"></i> WhatsApp</span>
+                            </label>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="programa[]" value="Outros" id="programas-outros-check">
+                                <span><i class="fas fa-plus"></i> Programas de trabalho (Específicos)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="programas-outros-grupo" style="display: none;">
+                        <label for="programas-outros-texto">
+                            <i class="fas fa-keyboard"></i> Especifique outros programas
+                        </label>
+                        <textarea id="programas-outros-texto" name="programas-outros-texto" rows="3" placeholder="Liste os programas que deseja instalar..."></textarea>
+                    </div>
+                </div>
+
+                <!-- 6. Contas e Acessos -->
+                <div class="form-section">
+                    <h3><i class="fas fa-key"></i> 6. Contas e Acessos</h3>
+                    <div class="alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <div>
+                            <strong>📌 Importante:</strong>
+                            <p style="margin: 0.5rem 0;">Após a formatação, você precisará fazer login novamente em todas as suas contas:</p>
+                            <ul>
+                                <li>E-mail (Gmail, Outlook, etc.)</li>
+                                <li>Redes sociais (Facebook, Instagram, etc.)</li>
+                                <li>Aplicativos bancários</li>
+                                <li>Contas de trabalho</li>
+                            </ul>
+                            <p style="margin-top: 1rem; padding-top: 0.8rem; border-top: 1px solid rgba(23, 162, 184, 0.2);">
+                                <strong>💡 Dica:</strong> Certifique-se de ter suas senhas anotadas ou salvas em um gerenciador seguro.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="possui-senhas">
+                            <i class="fas fa-lock"></i> Possui as Senhas de E-mail e Contas Importantes? *
+                        </label>
+                        <select id="possui-senhas" name="possui-senhas" required>
+                            <option value="">Selecione</option>
+                            <option value="Sim">Sim, tenho todas</option>
+                            <option value="Algumas">Tenho algumas</option>
+                            <option value="Não">Não tenho</option>
+                        </select>
+                        <small class="help-text">
+                            <i class="fas fa-lightbulb"></i> Se não tiver as senhas, recomendamos recuperá-las antes da formatação.
+                        </small>
+                    </div>
+                </div>
+
+                <!-- 7. Expectativa do Cliente -->
+                <div class="form-section">
+                    <h3><i class="fas fa-bullseye"></i> 7. Expectativa do Cliente</h3>
+                    
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-star"></i> O Que Espera Após a Formatação? (Selecione todos que se aplicam)
+                        </label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="expectativa[]" value="Computador mais rápido">
+                                <span><i class="fas fa-tachometer-alt"></i> Computador mais rápido</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="expectativa[]" value="Sem travamentos">
+                                <span><i class="fas fa-check-circle"></i> Sem travamentos</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="expectativa[]" value="Limpo e organizado">
+                                <span><i class="fas fa-broom"></i> Limpo e organizado</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="expectativa[]" value="Pronto para trabalho">
+                                <span><i class="fas fa-laptop-house"></i> Pronto para trabalho</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="expectativa[]" value="Pronto para estudos">
+                                <span><i class="fas fa-graduation-cap"></i> Pronto para estudos</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 8. Sugestões Técnicas -->
+                <div class="form-section">
+                    <h3><i class="fas fa-tools"></i> 8. Sugestões Técnicas</h3>
+                    <div class="alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <div>
+                            <strong>Melhore o desempenho do seu computador:</strong>
+                            <p style="margin: 0.5rem 0;">Durante a avaliação, podemos sugerir melhorias como:</p>
+                            <ul>
+                                <li><strong>Instalação de SSD</strong> - Deixa o computador até 10x mais rápido</li>
+                                <li><strong>Upgrade de memória RAM</strong> - Mais capacidade para multitarefas</li>
+                                <li><strong>Limpeza preventiva</strong> - Remove poeira e melhora refrigeração</li>
+                            </ul>
+                            <p style="margin-top: 1rem; padding-top: 0.8rem; border-top: 1px solid rgba(23, 162, 184, 0.2);">
+                                <strong>💡 Importante:</strong> Todas as sugestões serão apresentadas com orçamento detalhado e só serão realizadas com sua aprovação prévia.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="autoriza-avaliacao">
+                            <i class="fas fa-clipboard-check"></i> Autoriza Avaliação para Possíveis Melhorias? *
+                        </label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="autoriza-avaliacao" value="Sim" required>
+                                <span>Sim, gostaria de receber sugestões</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="autoriza-avaliacao" value="Não" required>
+                                <span>Não, apenas formatar</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 9. Autorização Final -->
+                <div class="form-section critical-section">
+                    <h3><i class="fas fa-file-signature"></i> 9. Autorização Final</h3>
+                    
+                    <div class="form-group">
+                        <label class="checkbox-label authorization-checkbox">
+                            <input type="checkbox" name="autorizacao-final" id="autorizacao-final" required>
+                            <span>
+                                <strong>Li e compreendi todas as informações acima e AUTORIZO a formatação do meu computador conforme os dados fornecidos.</strong><br>
+                                <small>Declaro estar ciente de que todos os dados serão apagados durante o processo e que realizei ou solicitei o backup dos arquivos importantes.</small>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="reset" class="btn-reset">
+                        <i class="fas fa-undo"></i> Limpar Formulário
+                    </button>
+                    <button type="submit" class="btn-submit">
+                        <i class="fab fa-whatsapp"></i> Enviar via WhatsApp
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <script src="formatacao-form.js"></script>
+</body>
+</html>

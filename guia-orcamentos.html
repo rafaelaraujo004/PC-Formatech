@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia: Orçamentos e Laudos - PC Formatech</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0B3D3D 0%, #1A5C5C 100%);
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #0B3D3D;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #40998F;
+            margin-bottom: 40px;
+            font-size: 1.2em;
+        }
+
+        h2 {
+            color: #0B3D3D;
+            border-left: 5px solid #40998F;
+            padding-left: 15px;
+            margin: 40px 0 20px 0;
+            font-size: 1.8em;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid #40998F;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .feature-card h3 {
+            color: #0B3D3D;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .feature-card i {
+            font-size: 2.5em;
+            color: #40998F;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .feature-card p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .steps {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .steps ol {
+            list-style: none;
+            counter-reset: step-counter;
+        }
+
+        .steps li {
+            counter-increment: step-counter;
+            margin-bottom: 20px;
+            padding-left: 50px;
+            position: relative;
+            line-height: 1.6;
+        }
+
+        .steps li:before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: #40998F;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .example {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 2px solid #40998F;
+        }
+
+        .example h4 {
+            color: #0B3D3D;
+            margin-bottom: 15px;
+        }
+
+        .example-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #40998F 0%, #2D7A7A 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin: 10px 5px;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(64, 153, 143, 0.4);
+        }
+
+        .alert {
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            border-color: #17a2b8;
+            color: #0c5460;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            border-color: #ffc107;
+            color: #856404;
+        }
+
+        .comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .comparison-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .comparison-card h3 {
+            color: #0B3D3D;
+            margin-bottom: 15px;
+        }
+
+        .comparison-card .icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .icon-green { color: #28a745; }
+        .icon-blue { color: #17a2b8; }
+
+        .cta {
+            background: linear-gradient(135deg, #40998F 0%, #2D7A7A 100%);
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+        }
+
+        .cta h2 {
+            color: white;
+            border: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            h2 {
+                font-size: 1.4em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-file-invoice-dollar"></i> Orçamentos e Laudos Técnicos</h1>
+        <p class="subtitle">Sistema Profissional de Documentação - PC Formatech</p>
+
+        <div class="alert alert-success">
+            <strong><i class="fas fa-check-circle"></i> Novos Recursos Disponíveis!</strong><br>
+            Agora você pode criar orçamentos profissionais, laudos técnicos e gerar PDFs automaticamente!
+        </div>
+
+        <!-- Principais Recursos -->
+        <h2><i class="fas fa-star"></i> Principais Recursos</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <i class="fas fa-box"></i>
+                <h3>Gestão de Produtos</h3>
+                <p>Cadastre produtos com preço, estoque e categoria. Adicione aos orçamentos com um clique.</p>
+            </div>
+
+            <div class="feature-card">
+                <i class="fas fa-file-invoice"></i>
+                <h3>Orçamentos Profissionais</h3>
+                <p>Crie orçamentos completos com serviços e produtos. Envie ao cliente antes de executar o trabalho.</p>
+            </div>
+
+            <div class="feature-card">
+                <i class="fas fa-file-medical"></i>
+                <h3>Laudos Técnicos</h3>
+                <p>Documente o diagnóstico, defeito e solução aplicada. Entregue ao cliente junto com o computador.</p>
+            </div>
+
+            <div class="feature-card">
+                <i class="fas fa-file-pdf"></i>
+                <h3>Geração de PDF</h3>
+                <p>Exporte orçamentos e laudos em PDF profissional com logo, dados da empresa e numeração automática.</p>
+            </div>
+
+            <div class="feature-card">
+                <i class="fas fa-hashtag"></i>
+                <h3>Numeração Sequencial</h3>
+                <p>Laudos numerados automaticamente: 0001-25, 0002-25... Controle total do histórico.</p>
+            </div>
+
+            <div class="feature-card">
+                <i class="fas fa-calculator"></i>
+                <h3>Cálculo Automático</h3>
+                <p>Total calculado automaticamente. Preços preenchidos ao selecionar serviços/produtos.</p>
+            </div>
+        </div>
+
+        <!-- Orçamento vs Laudo -->
+        <h2><i class="fas fa-balance-scale"></i> Orçamento vs Laudo Técnico</h2>
+        <div class="comparison">
+            <div class="comparison-card">
+                <div class="icon icon-blue"><i class="fas fa-file-invoice"></i></div>
+                <h3>Orçamento</h3>
+                <p><strong>Quando usar:</strong></p>
+                <p>✓ Cliente solicita preço<br>
+                   ✓ Antes de executar serviço<br>
+                   ✓ Proposta comercial</p>
+            </div>
+
+            <div class="comparison-card">
+                <div class="icon icon-green"><i class="fas fa-file-medical"></i></div>
+                <h3>Laudo Técnico</h3>
+                <p><strong>Quando usar:</strong></p>
+                <p>✓ Serviço já executado<br>
+                   ✓ Documentar diagnóstico<br>
+                   ✓ Comprovante de trabalho</p>
+            </div>
+        </div>
+
+        <!-- Como Cadastrar Produtos -->
+        <h2><i class="fas fa-box-open"></i> Como Cadastrar Produtos</h2>
+        <div class="steps">
+            <ol>
+                <li>Acesse a aba <strong>"Produtos"</strong> no painel admin</li>
+                <li>Preencha o nome do produto (ex: "SSD Knup 128GB")</li>
+                <li>Informe o preço (ex: R$ 207,87)</li>
+                <li>Defina a quantidade em estoque (ex: 5 unidades)</li>
+                <li>Escolha a categoria (Hardware, Software, Periféricos, etc.)</li>
+                <li>Adicione uma descrição se desejar</li>
+                <li>Clique em <strong>"Cadastrar Produto"</strong></li>
+            </ol>
+        </div>
+
+        <div class="example">
+            <h4>Exemplo de Produto:</h4>
+            <div class="example-content">
+Nome: SSD Knup 128GB<br>
+Preço: R$ 207,87<br>
+Estoque: 5 unidades<br>
+Categoria: Hardware<br>
+Descrição: SSD SATA III 2.5" de alta performance
+            </div>
+        </div>
+
+        <!-- Como Criar Orçamento/Laudo -->
+        <h2><i class="fas fa-plus-circle"></i> Como Criar Orçamento/Laudo</h2>
+        <div class="steps">
+            <ol>
+                <li>Acesse a aba <strong>"Orçamentos/Laudos"</strong></li>
+                <li>Clique em <strong>"Novo Orçamento/Laudo"</strong></li>
+                <li>Selecione o <strong>Cliente</strong> da lista</li>
+                <li>Escolha a <strong>Data</strong></li>
+                <li>Defina o <strong>Tipo</strong> (Orçamento ou Laudo)</li>
+                <li>Clique em <strong>"Adicionar Serviço"</strong> e selecione da lista</li>
+                <li>Clique em <strong>"Adicionar Produto"</strong> e selecione da lista</li>
+                <li>Para laudos, preencha: Defeito, Laudo Técnico, Solução, Observações e Garantia</li>
+                <li>Clique em <strong>"Salvar Orçamento/Laudo"</strong></li>
+                <li>Clique em <strong>"Gerar PDF"</strong> para baixar</li>
+            </ol>
+        </div>
+
+        <!-- Exemplo de Laudo -->
+        <h2><i class="fas fa-file-alt"></i> Exemplo de Laudo Técnico Completo</h2>
+        <div class="example">
+            <h4>Laudo Técnico Nº 0013-25</h4>
+            <div class="example-content">
+<strong>Cliente:</strong> João Vítor<br>
+<strong>Data:</strong> 04/12/2025<br><br>
+
+<strong>SERVIÇOS:</strong><br>
+• Formatação e Instalação Office - R$ 130,00<br>
+Total Serviços: R$ 130,00<br><br>
+
+<strong>PRODUTOS:</strong><br>
+• SSD Knup 128GB - R$ 207,87<br>
+Total Produtos: R$ 207,87<br><br>
+
+<strong>TOTAL: R$ 337,87</strong><br><br>
+
+<strong>DEFEITO:</strong><br>
+Computador muito lento, travando ao abrir programas.<br><br>
+
+<strong>LAUDO:</strong><br>
+HD com setores defeituosos causando lentidão extrema.<br><br>
+
+<strong>SOLUÇÃO:</strong><br>
+Substituição do HD por SSD, formatação e instalação<br>
+completa do sistema operacional e pacote Office.<br><br>
+
+<strong>GARANTIA:</strong> 3 Meses
+            </div>
+        </div>
+
+        <!-- Dicas Importantes -->
+        <h2><i class="fas fa-lightbulb"></i> Dicas Importantes</h2>
+        <div class="alert alert-info">
+            <strong><i class="fas fa-info-circle"></i> Preços Automáticos</strong><br>
+            Ao selecionar um serviço ou produto, o preço é preenchido automaticamente. Mas você pode alterá-lo manualmente se precisar fazer desconto ou ajuste.
+        </div>
+
+        <div class="alert alert-warning">
+            <strong><i class="fas fa-exclamation-triangle"></i> Estoque Manual</strong><br>
+            O sistema NÃO atualiza o estoque automaticamente ao usar produtos em orçamentos/laudos. Você deve atualizar manualmente na aba "Produtos".
+        </div>
+
+        <div class="alert alert-info">
+            <strong><i class="fas fa-hashtag"></i> Numeração Sequencial</strong><br>
+            Os laudos são numerados automaticamente (0001-25, 0002-25, etc.). Não é possível alterar o número manualmente para evitar duplicidades.
+        </div>
+
+        <!-- Fluxo de Trabalho -->
+        <h2><i class="fas fa-project-diagram"></i> Fluxo de Trabalho Recomendado</h2>
+        
+        <h3 style="margin-top: 30px;">📊 Criar Orçamento:</h3>
+        <div class="steps">
+            <ol>
+                <li>Cliente solicita orçamento via WhatsApp</li>
+                <li>Cadastre o cliente (se não existir)</li>
+                <li>Crie novo orçamento no sistema</li>
+                <li>Adicione serviços e produtos necessários</li>
+                <li>Gere o PDF</li>
+                <li>Envie pelo WhatsApp ao cliente</li>
+                <li>Aguarde aprovação</li>
+            </ol>
+        </div>
+
+        <h3 style="margin-top: 30px;">📋 Criar Laudo Técnico:</h3>
+        <div class="steps">
+            <ol>
+                <li>Execute o serviço no computador do cliente</li>
+                <li>Crie novo laudo técnico no sistema</li>
+                <li>Adicione serviços realizados</li>
+                <li>Adicione produtos utilizados/vendidos</li>
+                <li>Preencha: Defeito, Laudo, Solução, Observações e Garantia</li>
+                <li>Gere o PDF</li>
+                <li>Entregue o PDF ao cliente junto com o computador</li>
+                <li>Atualize o estoque dos produtos utilizados</li>
+            </ol>
+        </div>
+
+        <!-- Como Enviar pelo WhatsApp -->
+        <h2><i class="fab fa-whatsapp"></i> Como Enviar PDF pelo WhatsApp</h2>
+        <div class="steps">
+            <ol>
+                <li>Gere o PDF (será baixado automaticamente)</li>
+                <li>Na lista de clientes, clique no botão <strong>"WhatsApp"</strong></li>
+                <li>No WhatsApp, clique no ícone de <strong>"Anexar"</strong> (📎)</li>
+                <li>Selecione <strong>"Documento"</strong></li>
+                <li>Escolha o PDF que você gerou</li>
+                <li>Adicione uma mensagem explicativa</li>
+                <li>Envie!</li>
+            </ol>
+        </div>
+
+        <div class="example">
+            <h4>Mensagem Sugerida:</h4>
+            <div class="example-content">
+Olá João Vítor!<br><br>
+
+Segue em anexo o laudo técnico do seu computador.<br><br>
+
+Número do documento: 0013-25<br>
+Total: R$ 337,87<br>
+Garantia: 3 Meses<br><br>
+
+Qualquer dúvida, estou à disposição!<br><br>
+
+PC Formatech
+            </div>
+        </div>
+
+        <!-- Acesso Rápido -->
+        <div class="cta">
+            <h2><i class="fas fa-rocket"></i> Comece Agora!</h2>
+            <p>Acesse o painel administrativo e experimente os novos recursos</p>
+            <a href="admin.html" class="btn" style="background: white; color: #0B3D3D;">
+                <i class="fas fa-sign-in-alt"></i> Acessar Admin
+            </a>
+            <a href="ORCAMENTOS-LAUDOS.md" class="btn" style="background: transparent; border: 2px solid white;">
+                <i class="fas fa-book"></i> Documentação Completa
+            </a>
+        </div>
+
+        <!-- Footer -->
+        <div style="text-align: center; margin-top: 40px; padding-top: 30px; border-top: 2px solid #eee; color: #666;">
+            <p><strong>PC Formatech</strong> - Sistema de Orçamentos e Laudos v2.1</p>
+            <p style="margin-top: 10px;"><small>Janeiro 2026</small></p>
+        </div>
+    </div>
+</body>
+</html>

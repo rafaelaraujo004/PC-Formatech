@@ -1,0 +1,12 @@
+{
+  "name": "pcformatech",
+  "version": "1.0.0",
+  "description": "Projeto PCFORMATECH",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js",
+    "dev": "node main.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
