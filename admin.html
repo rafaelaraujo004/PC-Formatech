@@ -747,7 +747,7 @@
             </div>
             
             <div class="chart-container">
-                <h2><i class="fas fa-chart-area"></i> Estatísticas Mensais (Últimos 6 Meses)</h2>
+                <h2><i class="fas fa-chart-area"></i> Estatísticas Mensais (6 meses atrás · mês atual · 6 meses à frente)</h2>
                 <div class="chart-wrapper">
                     <canvas id="statsChart"></canvas>
                 </div>
@@ -1744,27 +1744,27 @@
             const months = [];
             const now = new Date();
 
-            // Mostrar apenas os últimos 6 meses (apenas dados reais, sem projeção)
-            for (let i = -5; i <= 0; i++) {
+            // 6 meses atrás + mês atual + 6 meses futuros = 13 meses
+            for (let i = -6; i <= 6; i++) {
                 const date = new Date(now.getFullYear(), now.getMonth() + i, 1);
                 const monthName = date.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric', timeZone: 'America/Belem' });
                 months.push(monthName);
             }
 
-            const clientsData = new Array(6).fill(0);
-            const servicesCompletedData = new Array(6).fill(0);
-            const servicesPendingData = new Array(6).fill(0);
+            // Dados reais: índices 0-6 (6 meses atrás até mês atual)
+            const clientsReal = new Array(7).fill(0);
+            const servicesCompletedReal = new Array(7).fill(0);
+            const servicesPendingReal = new Array(7).fill(0);
 
             clients.forEach(client => {
-                // Ignorar datas inválidas
                 const clientDate = new Date(client.createdAt);
                 if (isNaN(clientDate.getTime())) return;
 
                 const monthDiff = (now.getFullYear() - clientDate.getFullYear()) * 12 + now.getMonth() - clientDate.getMonth();
 
-                if (monthDiff >= 0 && monthDiff <= 5) {
-                    const index = 5 - monthDiff;
-                    clientsData[index]++;
+                if (monthDiff >= 0 && monthDiff <= 6) {
+                    const index = 6 - monthDiff;
+                    clientsReal[index]++;
                 }
 
                 if (client.services) {
@@ -1774,23 +1774,42 @@
 
                         const serviceDiff = (now.getFullYear() - serviceDate.getFullYear()) * 12 + now.getMonth() - serviceDate.getMonth();
 
-                        if (serviceDiff >= 0 && serviceDiff <= 5) {
-                            const index = 5 - serviceDiff;
+                        if (serviceDiff >= 0 && serviceDiff <= 6) {
+                            const index = 6 - serviceDiff;
                             if (service.status === 'concluido') {
-                                servicesCompletedData[index]++;
+                                servicesCompletedReal[index]++;
                             } else if (service.status === 'pendente' || service.status === 'andamento') {
-                                servicesPendingData[index]++;
+                                servicesPendingReal[index]++;
                             }
                         }
                     });
                 }
             });
 
+            // Projeção fixa para próximos 6 meses (média dos dados reais — sem aleatoriedade)
+            const avgClients = Math.round(clientsReal.reduce((a, b) => a + b, 0) / 7);
+            const avgCompleted = Math.round(servicesCompletedReal.reduce((a, b) => a + b, 0) / 7);
+            const avgPending = Math.round(servicesPendingReal.reduce((a, b) => a + b, 0) / 7);
+
+            // Arrays completos (13 pontos)
+            // Dados reais: índices 0-6, null para futuros
+            const clientsData = [...clientsReal, ...new Array(6).fill(null)];
+            const servicesCompletedData = [...servicesCompletedReal, ...new Array(6).fill(null)];
+            const servicesPendingData = [...servicesPendingReal, ...new Array(6).fill(null)];
+
+            // Projeção: null para passado, conecta no mês atual (índice 6) e segue
+            const clientsProj = [...new Array(6).fill(null), clientsReal[6], ...new Array(6).fill(avgClients)];
+            const servicesCompletedProj = [...new Array(6).fill(null), servicesCompletedReal[6], ...new Array(6).fill(avgCompleted)];
+            const servicesPendingProj = [...new Array(6).fill(null), servicesPendingReal[6], ...new Array(6).fill(avgPending)];
+
             return {
                 labels: months,
                 clientsData,
                 servicesCompletedData,
-                servicesPendingData
+                servicesPendingData,
+                clientsProj,
+                servicesCompletedProj,
+                servicesPendingProj
             };
         }
 
@@ -1817,7 +1836,20 @@
                             backgroundColor: 'rgba(64, 153, 143, 0.1)',
                             borderWidth: 3,
                             fill: true,
-                            tension: 0.4
+                            tension: 0.4,
+                            spanGaps: false
+                        },
+                        {
+                            label: 'Clientes (Projeção)',
+                            data: data.clientsProj,
+                            borderColor: '#40998F',
+                            backgroundColor: 'transparent',
+                            borderWidth: 2,
+                            borderDash: [6, 4],
+                            fill: false,
+                            tension: 0.4,
+                            spanGaps: false,
+                            pointRadius: 3
                         },
                         {
                             label: 'Serviços Realizados',
@@ -1826,7 +1858,20 @@
                             backgroundColor: 'rgba(76, 175, 80, 0.1)',
                             borderWidth: 3,
                             fill: true,
-                            tension: 0.4
+                            tension: 0.4,
+                            spanGaps: false
+                        },
+                        {
+                            label: 'Serviços Realizados (Projeção)',
+                            data: data.servicesCompletedProj,
+                            borderColor: '#4CAF50',
+                            backgroundColor: 'transparent',
+                            borderWidth: 2,
+                            borderDash: [6, 4],
+                            fill: false,
+                            tension: 0.4,
+                            spanGaps: false,
+                            pointRadius: 3
                         },
                         {
                             label: 'Serviços Pendentes',
@@ -1835,7 +1880,20 @@
                             backgroundColor: 'rgba(255, 152, 0, 0.1)',
                             borderWidth: 3,
                             fill: true,
-                            tension: 0.4
+                            tension: 0.4,
+                            spanGaps: false
+                        },
+                        {
+                            label: 'Serviços Pendentes (Projeção)',
+                            data: data.servicesPendingProj,
+                            borderColor: '#FF9800',
+                            backgroundColor: 'transparent',
+                            borderWidth: 2,
+                            borderDash: [6, 4],
+                            fill: false,
+                            tension: 0.4,
+                            spanGaps: false,
+                            pointRadius: 3
                         }
                     ]
                 },
