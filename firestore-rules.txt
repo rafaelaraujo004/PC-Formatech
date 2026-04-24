@@ -15,6 +15,12 @@ service cloud.firestore {
       allow read, write: if true;
     }
 
+    // ===== PRESENÇA / VISITANTES ONLINE =====
+    // Cada visitante grava seu próprio documento de sessão
+    match /presence/{sessionId} {
+      allow read, write: if true;
+    }
+
     // ===== BLOQUEIO PADRÃO =====
     match /{document=**} {
       allow read, write: if false;

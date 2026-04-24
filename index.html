@@ -1196,6 +1196,45 @@
             }
         }
 
+        // ── Rastreamento de presença (visitantes online) ──────────────
+        (function() {
+            const sessionId = sessionStorage.getItem('pcft_sess') || ('sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9));
+            sessionStorage.setItem('pcft_sess', sessionId);
+
+            let presenceRef = null;
+            let hbTimer = null;
+
+            function registrar() {
+                if (typeof db === 'undefined' || !db) return;
+                try {
+                    presenceRef = db.collection('presence').doc(sessionId);
+                    presenceRef.set({
+                        sessionId: sessionId,
+                        page: 'home',
+                        pagina: 'Página Principal',
+                        entrou: firebase.firestore.FieldValue.serverTimestamp(),
+                        lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+                        dispositivo: /Mobi|Android/i.test(navigator.userAgent) ? 'mobile' : 'desktop'
+                    }).catch(() => {});
+                    clearInterval(hbTimer);
+                    hbTimer = setInterval(() => {
+                        if (presenceRef) presenceRef.update({ lastSeen: firebase.firestore.FieldValue.serverTimestamp() }).catch(() => {});
+                    }, 25000);
+                } catch(e) {}
+            }
+
+            function remover() {
+                clearInterval(hbTimer);
+                if (presenceRef) presenceRef.delete().catch(() => {});
+            }
+
+            window.addEventListener('load', () => setTimeout(registrar, 1800));
+            window.addEventListener('beforeunload', remover);
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) { remover(); } else { setTimeout(registrar, 500); }
+            });
+        })();
+
         document.addEventListener('DOMContentLoaded', () => {
             // Tentar carregar do Firebase primeiro
             if (typeof db !== 'undefined' && db) {

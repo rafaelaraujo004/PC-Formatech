@@ -705,6 +705,19 @@
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.4; transform: scale(1.4); }
         }
+        @keyframes rt-blink {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(76,175,80,.6); }
+            50% { opacity: 0.7; box-shadow: 0 0 0 4px rgba(76,175,80,0); }
+        }
+        .rt-online-row {
+            display: flex; align-items: center; gap: 10px;
+            padding: 8px 4px; border-bottom: 1px solid #f5f5f5;
+        }
+        .rt-online-row:last-child { border-bottom: none; }
+        .rt-online-dot {
+            width: 9px; height: 9px; border-radius: 50%; background: #4CAF50;
+            flex-shrink: 0; box-shadow: 0 0 0 3px rgba(76,175,80,.15);
+        }
         .rt-chart-wrap { position: relative; height: 200px; }
         .rt-full { grid-column: 1 / -1; }
         @media (max-width: 768px) {
@@ -1518,6 +1531,25 @@
                         <div class="rt-kpi-value" id="rt-taxa-conversao">—</div>
                         <div class="rt-kpi-label">Taxa de Conversão</div>
                     </div>
+                </div>
+                <div class="rt-kpi" style="--kpi-color:#00BCD4;--kpi-bg:#e0f7fa;">
+                    <div class="rt-kpi-icon" style="position:relative;">
+                        <i class="fas fa-wifi"></i>
+                        <span style="position:absolute;top:-3px;right:-3px;width:9px;height:9px;background:#4CAF50;border-radius:50%;border:2px solid #fff;animation:rt-blink 1.4s infinite;"></span>
+                    </div>
+                    <div class="rt-kpi-body">
+                        <div class="rt-kpi-value" id="rt-online-agora">0</div>
+                        <div class="rt-kpi-label">Online Agora</div>
+                    </div>
+                    <span class="rt-kpi-badge neutral" id="rt-online-badge">no site</span>
+                </div>
+            </div>
+
+            <!-- Visitantes Online -->
+            <div class="rt-section-title"><i class="fas fa-wifi" style="color:#00BCD4;"></i> Visitantes Online Agora</div>
+            <div class="rt-card" style="margin-bottom:14px;">
+                <div id="rt-online-lista">
+                    <div class="rt-empty">Aguardando dados de presença…</div>
                 </div>
             </div>
 
@@ -3745,6 +3777,7 @@
         // ===== DASHBOARD EM TEMPO REAL =====
         let _rtInterval = null;
         let _rtFirebaseUnsub = null;
+        let _rtPresenceUnsub = null;
         let _rtRevenueChart = null;
         let _rtStatusChart = null;
 
@@ -3760,18 +3793,69 @@
         function initRealtimeDashboard() {
             updateRealtimeDashboard();
 
-            // Listener Firestore em tempo real
+            // Listener Firestore em tempo real (dados)
             const fdb = getFirebaseDB();
             if (fdb) {
                 if (_rtFirebaseUnsub) _rtFirebaseUnsub();
                 _rtFirebaseUnsub = fdb.collection('data').doc('clients').onSnapshot(() => {
                     _loadAllFromFirebase().then(() => updateRealtimeDashboard());
                 });
+
+                // Listener de presença em tempo real
+                if (_rtPresenceUnsub) _rtPresenceUnsub();
+                _rtPresenceUnsub = fdb.collection('presence').onSnapshot((snap) => {
+                    _rtUpdatePresence(snap.docs);
+                });
             }
 
             // Polling 30s
             if (_rtInterval) clearInterval(_rtInterval);
             _rtInterval = setInterval(updateRealtimeDashboard, 30000);
+        }
+
+        function _rtUpdatePresence(docs) {
+            const LIMITE_MS = 2 * 60 * 1000; // 2 minutos sem heartbeat = offline
+            const agora = Date.now();
+
+            const ativos = (docs || []).filter(doc => {
+                const d = doc.data();
+                if (!d.lastSeen) return false;
+                const ts = d.lastSeen.toDate ? d.lastSeen.toDate().getTime() : Number(d.lastSeen);
+                return (agora - ts) < LIMITE_MS;
+            });
+
+            _rtSet('rt-online-agora', ativos.length);
+            const badge = document.getElementById('rt-online-badge');
+            if (badge) {
+                badge.textContent = ativos.length === 1 ? 'visitante' : 'visitantes';
+                badge.className = 'rt-kpi-badge ' + (ativos.length > 0 ? 'up' : 'neutral');
+            }
+
+            const listaEl = document.getElementById('rt-online-lista');
+            if (!listaEl) return;
+
+            if (ativos.length === 0) {
+                listaEl.innerHTML = '<div class="rt-empty">Nenhum visitante online no momento</div>';
+                return;
+            }
+
+            listaEl.innerHTML = ativos.map(doc => {
+                const d = doc.data();
+                const entrou = d.entrou?.toDate ? d.entrou.toDate() : null;
+                const minutos = entrou ? Math.floor((agora - entrou.getTime()) / 60000) : 0;
+                const disp = d.dispositivo || 'desktop';
+                const icon = disp === 'mobile' ? 'fa-mobile-alt' : 'fa-desktop';
+                const tempoTxt = minutos <= 0 ? 'recém chegou' : minutos === 1 ? '1 min no site' : minutos + ' min no site';
+                return `<div class="rt-online-row">
+                    <span class="rt-online-dot"></span>
+                    <i class="fas ${icon}" style="color:#aaa;font-size:13px;"></i>
+                    <div style="flex:1;">
+                        <span style="font-size:13px;font-weight:600;color:#333;">${d.pagina || 'Site'}</span>
+                        <span style="font-size:11px;color:#bbb;margin-left:6px;">${disp}</span>
+                    </div>
+                    <span style="font-size:11px;color:#888;white-space:nowrap;">${tempoTxt}</span>
+                </div>`;
+            }).join('');
         }
 
         function updateRealtimeDashboard() {
