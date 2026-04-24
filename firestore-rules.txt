@@ -2,28 +2,28 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    // Qualquer usuário autenticado (incluindo anônimo via admin) pode acessar os dados
-    function isAuthenticated() {
-      return request.auth != null;
+
+    // ===== CLIENTES =====
+    match /clients/{document} {
+      allow read, write: if true;
     }
 
-    // ===== DADOS DO PAINEL ADMIN =====
-    // Apenas usuários autenticados (admin logado) podem ler/escrever
-    match /data/{document} {
-      allow read, write: if isAuthenticated();
+    // ===== ORÇAMENTOS =====
+    match /budgets/{document} {
+      allow read, write: if true;
+    }
+
+    // ===== PRODUTOS =====
+    match /products/{document} {
+      allow read, write: if true;
     }
 
     // ===== SLIDES DO CARROSSEL =====
-    // Qualquer pessoa pode LER (para exibir no site público)
-    // Apenas admin autenticado pode ESCREVER
-    match /slider/{document} {
-      allow read: if true;
-      allow write: if isAuthenticated();
+    match /hero_slides/{document} {
+      allow read, write: if true;
     }
 
     // ===== BLOQUEIO PADRÃO =====
-    // Bloquear tudo que não foi especificado acima
     match /{document=**} {
       allow read, write: if false;
     }

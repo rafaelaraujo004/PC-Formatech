@@ -1323,22 +1323,11 @@
             const password = document.getElementById('password').value;
             
             if (password === ADMIN_PASSWORD) {
-                // Autenticar no Firebase anonimamente para liberar acesso ao Firestore
-                try {
-                    const firebaseDb = getFirebaseDB();
-                    if (firebaseDb && firebase.auth) {
-                        await firebase.auth().signInAnonymously();
-                        console.log('✅ Autenticado no Firebase');
-                    }
-                } catch (authErr) {
-                    console.warn('Aviso: autenticação Firebase falhou, salvando localmente.', authErr.message);
-                }
-
                 document.getElementById('loginContainer').style.display = 'none';
                 document.getElementById('adminPanel').style.display = 'block';
                 updateDashboard();
                 loadClientsTable();
-                // Recarregar dados do Firebase após autenticação
+                // Carregar dados do Firebase
                 _loadAllFromFirebase();
             } else {
                 alert('Senha incorreta!');
