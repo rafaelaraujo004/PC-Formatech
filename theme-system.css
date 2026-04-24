@@ -1,0 +1,415 @@
+/* Tema global claro/escuro para todas as páginas */
+:root {
+    --theme-bg: #f4f7fb;
+    --theme-text: #12263a;
+    --theme-surface: #ffffff;
+    --theme-surface-2: #eef3f8;
+    --theme-border: #d9e2ec;
+    --theme-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+    --theme-muted: #5f6c7b;
+    --theme-accent: #40998F;
+    --theme-accent-2: #2D7A7A;
+}
+
+html[data-theme='dark'] {
+    --theme-bg: #0b1220;
+    --theme-text: #e5edf5;
+    --theme-surface: #151f30;
+    --theme-surface-2: #1c2a40;
+    --theme-border: #30425d;
+    --theme-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+    --theme-muted: #a4b3c5;
+    --theme-accent: #62c8bd;
+    --theme-accent-2: #3ea399;
+}
+
+body {
+    background: var(--theme-bg);
+    color: var(--theme-text);
+    transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Superfícies comuns do projeto */
+.login-container,
+.admin-header,
+.admin-tabs,
+.service-card,
+.clients-container,
+.stat-card,
+.chart-container,
+.modal-content,
+.rt-kpi,
+.rt-card,
+.container,
+.feature-card,
+.demo-section,
+.screenshot,
+.steps,
+.example-data,
+.check-item,
+.whatsapp-chat,
+.whatsapp-footer,
+.whatsapp-message,
+.schedule-form,
+.about-stats,
+.alert,
+.form-page-header,
+.total-price-display {
+    transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+html[data-theme='dark'] .login-container,
+html[data-theme='dark'] .admin-header,
+html[data-theme='dark'] .admin-tabs,
+html[data-theme='dark'] .service-card,
+html[data-theme='dark'] .clients-container,
+html[data-theme='dark'] .stat-card,
+html[data-theme='dark'] .chart-container,
+html[data-theme='dark'] .modal-content,
+html[data-theme='dark'] .rt-kpi,
+html[data-theme='dark'] .rt-card,
+html[data-theme='dark'] .container,
+html[data-theme='dark'] .feature-card,
+html[data-theme='dark'] .demo-section,
+html[data-theme='dark'] .screenshot,
+html[data-theme='dark'] .steps,
+html[data-theme='dark'] .example-data,
+html[data-theme='dark'] .check-item,
+html[data-theme='dark'] .whatsapp-chat,
+html[data-theme='dark'] .whatsapp-footer,
+html[data-theme='dark'] .whatsapp-message,
+html[data-theme='dark'] .schedule-form,
+html[data-theme='dark'] .about-stats,
+html[data-theme='dark'] .alert,
+html[data-theme='dark'] .form-page-header,
+html[data-theme='dark'] .total-price-display {
+    background: var(--theme-surface) !important;
+    color: var(--theme-text) !important;
+    border-color: var(--theme-border) !important;
+    box-shadow: var(--theme-shadow) !important;
+}
+
+html[data-theme='dark'] .hero,
+html[data-theme='dark'] .hero-slide,
+html[data-theme='dark'] .services-summary,
+html[data-theme='dark'] .whatsapp-header,
+html[data-theme='dark'] .whatsapp-toggle {
+    filter: brightness(0.92) saturate(0.9);
+}
+
+html[data-theme='dark'] h1,
+html[data-theme='dark'] h2,
+html[data-theme='dark'] h3,
+html[data-theme='dark'] h4,
+html[data-theme='dark'] h5,
+html[data-theme='dark'] h6,
+html[data-theme='dark'] p,
+html[data-theme='dark'] span,
+html[data-theme='dark'] li,
+html[data-theme='dark'] label,
+html[data-theme='dark'] .subtitle,
+html[data-theme='dark'] .message-text,
+html[data-theme='dark'] .message-sender,
+html[data-theme='dark'] .rt-kpi-value,
+html[data-theme='dark'] .rt-kpi-label,
+html[data-theme='dark'] .rt-section-title,
+html[data-theme='dark'] .rt-list li,
+html[data-theme='dark'] .rt-funnel-label,
+html[data-theme='dark'] .rt-alert-time,
+html[data-theme='dark'] .rt-last-update {
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] .services-subtitle,
+html[data-theme='dark'] .form-page-header p,
+html[data-theme='dark'] .schedule-info,
+html[data-theme='dark'] .wati-badge,
+html[data-theme='dark'] .rt-empty,
+html[data-theme='dark'] .alert-info,
+html[data-theme='dark'] .alert-warning,
+html[data-theme='dark'] .alert-success {
+    color: var(--theme-muted) !important;
+}
+
+html[data-theme='dark'] input,
+html[data-theme='dark'] select,
+html[data-theme='dark'] textarea,
+html[data-theme='dark'] .search-box input,
+html[data-theme='dark'] .slide-info input {
+    background: var(--theme-surface-2) !important;
+    color: var(--theme-text) !important;
+    border-color: var(--theme-border) !important;
+}
+
+html[data-theme='dark'] input::placeholder,
+html[data-theme='dark'] textarea::placeholder {
+    color: #a6b4c6 !important;
+}
+
+html[data-theme='dark'] .clients-table th,
+html[data-theme='dark'] .clients-table td {
+    border-bottom-color: var(--theme-border) !important;
+}
+
+html[data-theme='dark'] .clients-table th,
+html[data-theme='dark'] .tab-button:hover,
+html[data-theme='dark'] .service-item,
+html[data-theme='dark'] .rt-alert,
+html[data-theme='dark'] .rt-funnel-bar-bg,
+html[data-theme='dark'] .rt-bar-bg {
+    background: var(--theme-surface-2) !important;
+}
+
+html[data-theme='dark'] .btn-login,
+html[data-theme='dark'] .btn-save,
+html[data-theme='dark'] .btn-back-to-site,
+html[data-theme='dark'] .btn-update,
+html[data-theme='dark'] .submit-schedule-btn,
+html[data-theme='dark'] .summary-btn,
+html[data-theme='dark'] .whatsapp-button {
+    background: linear-gradient(135deg, var(--theme-accent), var(--theme-accent-2)) !important;
+}
+
+#themeToggleBtn {
+    position: fixed;
+    left: 16px;
+    bottom: 16px;
+    z-index: 5000;
+    width: 46px;
+    height: 46px;
+    border: 0;
+    border-radius: 999px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #ffffff;
+    background: linear-gradient(135deg, #2D7A7A, #40998F);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.28);
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+#themeToggleBtn:hover {
+    transform: translateY(-2px) scale(1.03);
+    filter: brightness(1.08);
+}
+
+#themeToggleBtn:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+}
+
+/* Ajustes avançados para melhorar o dark mode em todo o app */
+html[data-theme='dark'] {
+    color-scheme: dark;
+
+    /* Sobrescreve variáveis usadas por styles.css/styles2.css */
+    --primary-color: #e6eef8;
+    --secondary-color: #62c8bd;
+    --accent-color: #4db8ac;
+    --success-color: #62c8bd;
+    --warning-color: #8bd9cf;
+    --text-color: #dce7f3;
+    --text-light: #a9bbcf;
+    --light-bg: #203049;
+    --white: #151f30;
+    --gradient: linear-gradient(135deg, #0f1c2d 0%, #16253b 100%);
+    --gradient-accent: linear-gradient(135deg, #3ea399 0%, #62c8bd 100%);
+    --gradient-subtle: linear-gradient(135deg, #15263c 0%, #1b304b 100%);
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
+    --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 26px rgba(0, 0, 0, 0.45);
+}
+
+html[data-theme='dark'] body {
+    background: radial-gradient(circle at 20% 0%, #13243a 0%, #0b1220 55%, #090f1a 100%) !important;
+}
+
+html[data-theme='dark'] .header,
+html[data-theme='dark'] .hero,
+html[data-theme='dark'] .services-summary,
+html[data-theme='dark'] .footer {
+    background: linear-gradient(135deg, #11253a 0%, #0c1a2b 100%) !important;
+}
+
+html[data-theme='dark'] .services,
+html[data-theme='dark'] .testimonials,
+html[data-theme='dark'] .faq,
+html[data-theme='dark'] .scheduling,
+html[data-theme='dark'] .about,
+html[data-theme='dark'] .contact,
+html[data-theme='dark'] .clients-container,
+html[data-theme='dark'] .chart-container,
+html[data-theme='dark'] .admin-tabs,
+html[data-theme='dark'] .admin-header {
+    background: linear-gradient(180deg, #111d30 0%, #0f1a2b 100%) !important;
+}
+
+html[data-theme='dark'] .nav-links a,
+html[data-theme='dark'] .brand-name,
+html[data-theme='dark'] .tagline,
+html[data-theme='dark'] .tab-button,
+html[data-theme='dark'] .summary-count,
+html[data-theme='dark'] .summary-total,
+html[data-theme='dark'] .clients-table,
+html[data-theme='dark'] .clients-table td,
+html[data-theme='dark'] .clients-table th {
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] .tab-button {
+    background: #17263b !important;
+    border-bottom-color: transparent !important;
+}
+
+html[data-theme='dark'] .tab-button.active {
+    color: #7fe2d6 !important;
+    background: #16283f !important;
+    border-bottom-color: #62c8bd !important;
+}
+
+html[data-theme='dark'] .admin-tabs {
+    border: 1px solid #2f4764 !important;
+}
+
+html[data-theme='dark'] .admin-tabs .tab-button,
+html[data-theme='dark'] .admin-tabs .tab-button i {
+    color: #dce7f3 !important;
+}
+
+html[data-theme='dark'] .admin-tabs .tab-button:hover {
+    background: #1b2d45 !important;
+}
+
+html[data-theme='dark'] .service-card,
+html[data-theme='dark'] .faq-item,
+html[data-theme='dark'] .about-content,
+html[data-theme='dark'] .contact-form,
+html[data-theme='dark'] .testimonial-card,
+html[data-theme='dark'] .announcement-content {
+    background: #17263b !important;
+    border-color: #2f4764 !important;
+}
+
+html[data-theme='dark'] .service-card:hover,
+html[data-theme='dark'] .feature-card:hover,
+html[data-theme='dark'] .slide-card:hover {
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45) !important;
+    border-color: #62c8bd !important;
+}
+
+html[data-theme='dark'] .service-card .service-check-mark {
+    background: #203049 !important;
+    border-color: #3a5473 !important;
+}
+
+html[data-theme='dark'] .clients-table tr:hover,
+html[data-theme='dark'] .rt-list li:hover {
+    background: #1a2d46 !important;
+}
+
+html[data-theme='dark'] .modal {
+    background-color: rgba(2, 8, 20, 0.75) !important;
+}
+
+html[data-theme='dark'] .whatsapp-body {
+    background: #1a2b42 !important;
+}
+
+html[data-theme='dark'] .alert-info,
+html[data-theme='dark'] .alert-warning,
+html[data-theme='dark'] .alert-success,
+html[data-theme='dark'] .status-pendente,
+html[data-theme='dark'] .status-andamento,
+html[data-theme='dark'] .status-concluido,
+html[data-theme='dark'] .status-cancelado {
+    background: #203049 !important;
+    border-left-color: #62c8bd !important;
+}
+
+html[data-theme='dark'] .search-box input,
+html[data-theme='dark'] .form-group input,
+html[data-theme='dark'] .form-group select,
+html[data-theme='dark'] .form-group textarea,
+html[data-theme='dark'] .service-checkbox,
+html[data-theme='dark'] .services-checkbox-group {
+    background: #1b2c43 !important;
+    border-color: #304862 !important;
+}
+
+/* Fallback para elementos com estilos inline claros no admin */
+html[data-theme='dark'] #adminPanel [style*='background: white'],
+html[data-theme='dark'] #adminPanel [style*='background:white'],
+html[data-theme='dark'] #adminPanel [style*='background-color: white'],
+html[data-theme='dark'] #adminPanel [style*='background-color:white'],
+html[data-theme='dark'] #adminPanel [style*='background: #f8f9fa'],
+html[data-theme='dark'] #adminPanel [style*='background:#f8f9fa'],
+html[data-theme='dark'] #adminPanel [style*='background: #f0f0f0'],
+html[data-theme='dark'] #adminPanel [style*='background:#f0f0f0'] {
+    background: #17263b !important;
+    border-color: #304862 !important;
+}
+
+html[data-theme='dark'] #adminPanel [style*='color: #0B3D3D'],
+html[data-theme='dark'] #adminPanel [style*='color:#0B3D3D'],
+html[data-theme='dark'] #adminPanel [style*='color: #666'],
+html[data-theme='dark'] #adminPanel [style*='color:#666'],
+html[data-theme='dark'] #adminPanel [style*='color: #888'],
+html[data-theme='dark'] #adminPanel [style*='color:#888'],
+html[data-theme='dark'] #adminPanel [style*='color: #999'],
+html[data-theme='dark'] #adminPanel [style*='color:#999'] {
+    color: #dce7f3 !important;
+}
+
+html[data-theme='dark'] #adminPanel hr,
+html[data-theme='dark'] #adminPanel [style*='border-top:1px solid #f0f0f0'],
+html[data-theme='dark'] #adminPanel [style*='border-bottom: 2px solid #e0e0e0'],
+html[data-theme='dark'] #adminPanel [style*='border-bottom:2px solid #e0e0e0'] {
+    border-color: #304862 !important;
+}
+
+html[data-theme='dark'] #adminPanel .tab-btn,
+html[data-theme='dark'] #adminPanel .tab-btn.active {
+    color: #dce7f3 !important;
+    background: transparent !important;
+    border-bottom-color: #62c8bd !important;
+}
+
+html[data-theme='dark'] .close,
+html[data-theme='dark'] .close-modal {
+    color: #d6e3f2 !important;
+}
+
+html[data-theme='dark'] .close:hover,
+html[data-theme='dark'] .close-modal:hover {
+    color: #ffffff !important;
+    background: #2c425f !important;
+}
+
+html[data-theme='dark'] ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+html[data-theme='dark'] ::-webkit-scrollbar-track {
+    background: #0e1a2b;
+}
+
+html[data-theme='dark'] ::-webkit-scrollbar-thumb {
+    background: #375473;
+    border-radius: 999px;
+}
+
+html[data-theme='dark'] ::-webkit-scrollbar-thumb:hover {
+    background: #4a6c92;
+}
+
+@media (max-width: 768px) {
+    #themeToggleBtn {
+        width: 44px;
+        height: 44px;
+        left: 12px;
+        bottom: 12px;
+    }
+}
