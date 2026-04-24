@@ -1364,6 +1364,9 @@
                 return;
             }
 
+            const agora = new Date();
+            const createdAtISO = agora.toISOString(); // ex: "2026-04-23T14:35:00.000Z"
+
             const client = {
                 id: editingClientId || Date.now(),
                 name,
@@ -1373,7 +1376,7 @@
                 address,
                 city,
                 services: editingClientId ? clients.find(c => c.id === editingClientId).services : [],
-                createdAt: editingClientId ? clients.find(c => c.id === editingClientId).createdAt : new Date().toISOString()
+                createdAt: editingClientId ? clients.find(c => c.id === editingClientId).createdAt : createdAtISO
             };
 
             if (editingClientId) {
@@ -1456,7 +1459,7 @@
                     <p><strong>CPF:</strong> ${client.cpf || '-'}</p>
                     <p><strong>Endereço:</strong> ${client.address || '-'}</p>
                     <p><strong>Cidade:</strong> ${client.city || '-'}</p>
-                    <p><strong>Cliente desde:</strong> ${new Date(client.createdAt).toLocaleDateString('pt-BR')}</p>
+                    <p><strong>Cliente desde:</strong> ${new Date(client.createdAt).toLocaleDateString('pt-BR', { timeZone: 'America/Belem', day: '2-digit', month: '2-digit', year: 'numeric' })}</p>
                 </div>
 
                 <div style="margin-top: 30px;">
