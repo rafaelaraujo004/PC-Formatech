@@ -3,23 +3,15 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // ===== CLIENTES =====
-    match /clients/{document} {
+    // ===== DADOS DO PAINEL ADMIN =====
+    // clients, products, budgets, services ficam como documentos dentro de "data"
+    match /data/{document} {
       allow read, write: if true;
     }
 
-    // ===== ORÇAMENTOS =====
-    match /budgets/{document} {
-      allow read, write: if true;
-    }
-
-    // ===== PRODUTOS =====
-    match /products/{document} {
-      allow read, write: if true;
-    }
-
-    // ===== SLIDES DO CARROSSEL =====
-    match /hero_slides/{document} {
+    // ===== IMAGENS DO CARROSSEL =====
+    // O app acessa slider/images
+    match /slider/{document} {
       allow read, write: if true;
     }
 
