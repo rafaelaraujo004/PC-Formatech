@@ -3714,7 +3714,6 @@
             
             await saveHeroSlides();
             renderSlides();
-            updateIndexHtml();
             showSuccess('✓ Imagem sincronizada com sucesso!');
             closeSlideModal();
         }
@@ -3745,34 +3744,11 @@
                 heroSlides.splice(index, 1);
                 await saveHeroSlides();
                 renderSlides();
-                updateIndexHtml();
                 showSuccess('✓ Imagem removida');
             }
         }
 
-        function updateIndexHtml() {
-            alert('⚠️ ATENÇÃO!\n\nAs alterações foram salvas no painel.\n\nPara aplicar as mudanças no site, você precisa atualizar o arquivo index.html.\n\nVocê pode:\n1. Copiar o código HTML gerado abaixo\n2. Ou usar a funcão "Exportar HTML" que será criada\n\nDeseja ver o código HTML agora?');
-            
-            // Gerar HTML dos slides
-            let html = '';
-            heroSlides.forEach((slide, index) => {
-                const activeClass = index === 0 ? ' active' : '';
-                html += `                <div class="hero-slide${activeClass}">\n`;
-                html += `                    <img src="${slide.url}" alt="${slide.alt}">\n`;
-                html += `                </div>\n`;
-            });
-            
-            console.log('HTML dos slides:\n', html);
-            console.log('\nIndicadores:\n');
-            
-            let indicators = '';
-            heroSlides.forEach((slide, index) => {
-                const activeClass = index === 0 ? ' active' : '';
-                indicators += `                <span class="indicator${activeClass}" data-slide="${index}"></span>\n`;
-            });
-            
-            console.log(indicators);
-        }
+
 
         // ===== DASHBOARD EM TEMPO REAL =====
         let _rtInterval = null;
