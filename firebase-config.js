@@ -25,23 +25,12 @@ function initFirebase() {
         }
         if (primeiraVez) {
             // settings() deve ser chamado ANTES de qualquer operação no Firestore
-            // e com merge:true para não sobrescrever configurações internas
             firebase.firestore().settings({
                 cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED,
                 merge: true
             });
         }
         db = firebase.firestore();
-        if (primeiraVez) {
-            // enablePersistence ativa cache offline (dados disponíveis sem internet)
-            db.enablePersistence({ synchronizeTabs: true }).catch((err) => {
-                if (err.code === 'failed-precondition') {
-                    console.warn('Cache offline: feche outras abas do app para ativar');
-                } else if (err.code === 'unimplemented') {
-                    console.warn('Cache offline não suportado neste navegador');
-                }
-            });
-        }
         if (typeof firebase.auth !== 'undefined') {
             auth = firebase.auth();
         }
