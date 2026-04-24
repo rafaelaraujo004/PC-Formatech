@@ -1484,6 +1484,17 @@
                 return;
             }
 
+            // Verificar duplicidade pelo nome (ignorando maiúsculas/minúsculas e espaços extras)
+            const nomaNormalizado = name.toLowerCase().replace(/\s+/g, ' ').trim();
+            const duplicado = clients.find(c =>
+                c.id !== editingClientId &&
+                c.name.toLowerCase().replace(/\s+/g, ' ').trim() === nomaNormalizado
+            );
+            if (duplicado) {
+                alert(`Já existe um cliente cadastrado com o nome "${duplicado.name}".\nVerifique a lista antes de cadastrar novamente.`);
+                return;
+            }
+
             const agora = new Date();
             const createdAtISO = agora.toISOString(); // ex: "2026-04-23T14:35:00.000Z"
 
