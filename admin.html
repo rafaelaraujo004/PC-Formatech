@@ -1406,9 +1406,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             loadClientsFromStorage();
             populateServiceTypes();
-            loadHeroSlides();
-            // Carregar do Firebase (sobrescreve localStorage com dados mais recentes da nuvem)
-            _loadAllFromFirebase();
+            // loadHeroSlides e _loadAllFromFirebase só rodam após login
         });
 
         // ===== SISTEMA DE TABS =====
@@ -1447,10 +1445,10 @@
             if (password === ADMIN_PASSWORD) {
                 document.getElementById('loginContainer').style.display = 'none';
                 document.getElementById('adminPanel').style.display = 'block';
+                loadHeroSlides();          // Iniciar listener de slides após login
+                _loadAllFromFirebase();    // Carregar dados da nuvem após login
                 updateDashboard();
                 loadClientsTable();
-                // Carregar dados do Firebase
-                _loadAllFromFirebase();
             } else {
                 alert('Senha incorreta!');
             }
@@ -1524,6 +1522,7 @@
 
         function loadClientsTable() {
             const tbody = document.getElementById('clientsTableBody');
+            if (!tbody) return; // Painel ainda não visível
             tbody.innerHTML = '';
 
             const searchTerm = document.getElementById('searchClient')?.value.toLowerCase() || '';
@@ -2169,7 +2168,7 @@
 
         // Fechar modal ao clicar fora
         window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
+            if (event.target && event.target.classList && event.target.classList.contains('modal')) {
                 event.target.style.display = 'none';
             }
         }
@@ -3119,6 +3118,7 @@
 
         function renderSlides() {
             const container = document.getElementById('slidesContainer');
+            if (!container) return; // Painel ainda não visível
             container.innerHTML = '';
 
             heroSlides.forEach((slide, index) => {
