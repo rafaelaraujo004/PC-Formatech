@@ -3086,34 +3086,10 @@
         }
 
         async function uploadImageToFirebase(base64Data, fileName) {
-            if ((!db && !initFirebase()) || !firebase.storage) {
-                console.warn('Firebase Storage não disponível, usando Base64');
-                return base64Data;
-            }
-
-            try {
-                const storageRef = firebase.storage().ref();
-                const imageRef = storageRef.child(`slider/${fileName}`);
-                
-                // Converter Base64 para Blob
-                const byteString = atob(base64Data.split(',')[1]);
-                const ab = new ArrayBuffer(byteString.length);
-                const ia = new Uint8Array(ab);
-                for (let i = 0; i < byteString.length; i++) {
-                    ia[i] = byteString.charCodeAt(i);
-                }
-                const blob = new Blob([ab], { type: 'image/jpeg' });
-                
-                // Fazer upload
-                await imageRef.put(blob);
-                const downloadUrl = await imageRef.getDownloadURL();
-                console.log('✅ Imagem enviada para nuvem:', downloadUrl);
-                return downloadUrl;
-            } catch (error) {
-                console.error('Erro ao fazer upload:', error);
-                console.warn('Usando Base64 como fallback');
-                return base64Data;
-            }
+            // Imagens são armazenadas como Base64 no Firestore (sem CORS, funciona em qualquer dispositivo)
+            // Firebase Storage foi desativado por exigir configuração de CORS e regras de autenticação
+            console.log('Imagem processada e pronta para salvar no Firestore:', fileName);
+            return base64Data;
         }
 
         function renderSlides() {
@@ -3234,7 +3210,7 @@
             }
         }
 
-        function resizeAndConvertImage(file, maxWidth = 800, maxHeight = 400, quality = 0.85) {
+        function resizeAndConvertImage(file, maxWidth = 600, maxHeight = 300, quality = 0.70) {
             return new Promise((resolve, reject) => {
                 if (!file.type.startsWith('image/')) {
                     reject(new Error('Por favor, selecione um arquivo de imagem válido'));
@@ -3330,18 +3306,17 @@
                 return;
             }
             
-            // Mostrar indicador de processamento
             let finalUrl = url;
             
-            // Se for Base64 (upload do dispositivo), fazer upload para Firebase
+            // Se for Base64 (upload do dispositivo), verificar tamanho antes de salvar
             if (url.startsWith('data:image/')) {
-                try {
-                    const timestamp = Date.now();
-                    const fileName = `slide-${timestamp}.jpg`;
-                    finalUrl = await uploadImageToFirebase(url, fileName);
-                } catch (error) {
-                    console.error('Erro ao fazer upload:', error);
-                    alert('Erro ao sincronizar imagem. Verifique sua conexão.');
+                const fileName = `slide-${Date.now()}.jpg`;
+                finalUrl = await uploadImageToFirebase(url, fileName);
+                
+                // Verificar tamanho total estimado do documento Firestore (limite ~900KB)
+                const totalSize = heroSlides.reduce((acc, s) => acc + (s.url.startsWith('data:') ? s.url.length : 500), 0) + finalUrl.length;
+                if (totalSize > 900000) {
+                    alert('Limite de imagens atingido! Remova uma imagem existente antes de adicionar outra.');
                     return;
                 }
             }
