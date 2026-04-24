@@ -3030,8 +3030,8 @@
         ];
 
         function loadHeroSlides() {
-            // Inicializar Firebase primeiro
-            if (!initFirebase()) {
+            // Inicializar Firebase apenas se ainda não foi feito
+            if (!db && !initFirebase()) {
                 console.warn('Firebase não disponível, usando localStorage');
                 const saved = localStorage.getItem('pcformatech_hero_slides');
                 heroSlides = saved ? JSON.parse(saved) : defaultSlides;
@@ -3086,7 +3086,7 @@
         }
 
         async function uploadImageToFirebase(base64Data, fileName) {
-            if (!initFirebase() || !firebase.storage) {
+            if ((!db && !initFirebase()) || !firebase.storage) {
                 console.warn('Firebase Storage não disponível, usando Base64');
                 return base64Data;
             }
