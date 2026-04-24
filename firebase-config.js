@@ -23,16 +23,25 @@ function initFirebase() {
         if (primeiraVez) {
             firebase.initializeApp(firebaseConfig);
         }
-        db = firebase.firestore();
-        // enablePersistence só pode ser chamado UMA vez, antes de qualquer operação
+        // Configurar cache offline (nova API - substitui enablePersistence deprecado)
         if (primeiraVez) {
-            db.enablePersistence({ synchronizeTabs: true }).catch((err) => {
-                if (err.code === 'failed-precondition') {
-                    console.warn('Persistência offline: múltiplas abas abertas');
-                } else if (err.code === 'unimplemented') {
-                    console.warn('Persistência offline não suportada neste navegador');
-                }
-            });
+            try {
+                db = firebase.firestore();
+                db.settings({
+                    cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED
+                });
+                db.enablePersistence({ synchronizeTabs: true }).catch((err) => {
+                    if (err.code === 'failed-precondition') {
+                        console.warn('Persistência offline: múltiplas abas abertas');
+                    } else if (err.code === 'unimplemented') {
+                        console.warn('Persistência offline não suportada neste navegador');
+                    }
+                });
+            } catch(e) {
+                db = firebase.firestore();
+            }
+        } else {
+            db = firebase.firestore();
         }
         if (typeof firebase.auth !== 'undefined') {
             auth = firebase.auth();
