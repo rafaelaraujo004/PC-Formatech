@@ -4,8 +4,8 @@
   "description": "Projeto PCFORMATECH",
   "main": "main.js",
   "scripts": {
-    "start": "node main.js",
-    "dev": "node main.js"
+    "start": "npx http-server . -p 8080 -c-1 --cors -o",
+    "dev": "npx http-server . -p 8080 -c-1 --cors -o"
   },
   "author": "",
   "license": "ISC",
