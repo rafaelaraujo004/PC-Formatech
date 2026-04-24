@@ -1344,9 +1344,9 @@
 
         // Garante que Firebase está pronto e retorna o db
         function getFirebaseDB() {
-            if (db) return db;
-            initFirebase();
-            return db;
+            if (typeof db !== 'undefined' && db) return db;
+            if (typeof initFirebase === 'function') initFirebase();
+            return (typeof db !== 'undefined') ? db : null;
         }
 
         // Sincroniza qualquer coleção com Firestore (em background, sem bloquear a UI)
@@ -3031,7 +3031,8 @@
 
         function loadHeroSlides() {
             // Inicializar Firebase apenas se ainda não foi feito
-            if (!db && !initFirebase()) {
+            const firebaseDb = getFirebaseDB();
+            if (!firebaseDb) {
                 console.warn('Firebase não disponível, usando localStorage');
                 const saved = localStorage.getItem('pcformatech_hero_slides');
                 heroSlides = saved ? JSON.parse(saved) : defaultSlides;
@@ -3040,8 +3041,8 @@
             }
 
             // Carregar do Firestore em tempo real
-            if (db) {
-                db.collection('slider')
+            if (firebaseDb) {
+                firebaseDb.collection('slider')
                     .doc('images')
                     .onSnapshot((doc) => {
                         if (doc.exists) {
@@ -3068,13 +3069,14 @@
             localStorage.setItem('pcformatech_hero_slides', JSON.stringify(heroSlides));
             
             // Salvar no Firebase se disponível
-            if (!db) {
+            const firebaseDb = getFirebaseDB();
+            if (!firebaseDb) {
                 console.warn('Firebase não disponível, salvo apenas localmente');
                 return;
             }
 
             try {
-                await db.collection('slider').doc('images').set({
+                await firebaseDb.collection('slider').doc('images').set({
                     slides: heroSlides,
                     updatedAt: new Date()
                 });
