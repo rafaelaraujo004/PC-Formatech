@@ -537,37 +537,159 @@
             font-weight: 600;
         }
 
-        /* Responsividade Mobile */
+        .chart-container h2 .chart-title-short { display: none; }
+        .chart-container h2 .chart-title-full  { display: inline; }
+
+        /* ===== RESPONSIVIDADE MOBILE ===== */
         @media (max-width: 768px) {
-            .admin-header h1 {
-                font-size: 18px;
+
+            body {
+                padding: 10px;
             }
 
+            /* Header compacto */
+            .admin-header {
+                padding: 14px 16px;
+                margin-bottom: 14px;
+                border-radius: 10px;
+            }
+
+            .admin-header h1 {
+                font-size: 16px;
+                gap: 8px !important;
+            }
+
+            .admin-header h1 img {
+                width: 32px !important;
+                height: 32px !important;
+            }
+
+            /* Tabs: scroll horizontal em 1 linha */
             .admin-tabs {
-                border-radius: 8px;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                overflow-y: hidden;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                border-radius: 10px;
+                margin-bottom: 14px;
+                gap: 0;
+            }
+
+            .admin-tabs::-webkit-scrollbar {
+                display: none;
             }
 
             .tab-button {
-                flex: 1 1 calc(50% - 4px);
-                min-width: calc(50% - 4px);
-                padding: 14px 10px;
-                font-size: 13px;
-                margin: 2px;
+                flex: 0 0 auto;
+                min-width: unset;
+                padding: 10px 14px;
+                font-size: 12px;
+                font-weight: 700;
+                white-space: nowrap;
+                border-bottom-width: 3px;
+                margin: 0;
             }
 
             .tab-button i {
-                display: block;
-                margin-bottom: 4px;
-                font-size: 18px;
+                display: inline;
+                margin-right: 4px;
+                font-size: 13px;
+            }
+
+            /* Stats cards: sempre 2 colunas */
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+                margin-bottom: 14px;
+            }
+
+            .stat-card {
+                padding: 16px 12px;
+                border-radius: 10px;
+            }
+
+            .stat-card h3 {
+                font-size: 26px;
+                margin-bottom: 6px;
+            }
+
+            .stat-card p {
+                font-size: 12px;
+            }
+
+            /* Gráfico: altura reduzida, título compacto */
+            .chart-container {
+                padding: 16px 12px;
+                border-radius: 10px;
+                margin-top: 14px;
+            }
+
+            .chart-container h2 {
+                font-size: 13px;
+                margin-bottom: 12px;
+                gap: 6px;
+            }
+
+            .chart-container h2 .chart-title-full { display: none; }
+            .chart-container h2 .chart-title-short { display: inline; }
+
+            .chart-wrapper {
+                height: 260px;
+            }
+
+            /* Formulário de clientes em coluna única */
+            .client-form {
+                grid-template-columns: 1fr;
+            }
+
+            .clients-container {
+                padding: 16px 12px;
+                border-radius: 10px;
             }
 
             .clients-table {
-                font-size: 13px;
+                font-size: 12px;
             }
 
             .clients-table th,
             .clients-table td {
-                padding: 10px 8px;
+                padding: 8px 6px;
+            }
+
+            .btn-action {
+                padding: 5px 8px;
+                font-size: 11px;
+                margin: 2px;
+            }
+
+            /* Modal ocupa mais da tela */
+            .modal-content {
+                margin: 10px auto;
+                padding: 20px 14px;
+                width: 96%;
+                max-height: 95vh;
+                border-radius: 10px;
+            }
+
+            /* Slides grid: 1 coluna */
+            .slides-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tab-button {
+                padding: 9px 11px;
+                font-size: 11px;
+            }
+
+            .stat-card h3 {
+                font-size: 22px;
+            }
+
+            .chart-wrapper {
+                height: 220px;
             }
         }
 
@@ -747,7 +869,7 @@
             </div>
             
             <div class="chart-container">
-                <h2><i class="fas fa-chart-area"></i> Estatísticas Mensais (6 meses atrás · mês atual · 6 meses à frente)</h2>
+                <h2><i class="fas fa-chart-area"></i><span class="chart-title-full"> Estatísticas Mensais (6 meses atrás · mês atual · 6 meses à frente)</span><span class="chart-title-short" style="display:none"> Estatísticas Mensais</span></h2>
                 <div class="chart-wrapper">
                     <canvas id="statsChart"></canvas>
                 </div>
@@ -1823,7 +1945,9 @@
             if (statsChart) {
                 statsChart.destroy();
             }
-            
+
+            const isMobile = window.innerWidth <= 768;
+
             statsChart = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -1833,67 +1957,71 @@
                             label: 'Clientes Cadastrados',
                             data: data.clientsData,
                             borderColor: '#40998F',
-                            backgroundColor: 'rgba(64, 153, 143, 0.1)',
-                            borderWidth: 3,
+                            backgroundColor: 'rgba(64, 153, 143, 0.12)',
+                            borderWidth: isMobile ? 2 : 3,
                             fill: true,
                             tension: 0.4,
-                            spanGaps: false
+                            spanGaps: false,
+                            pointRadius: isMobile ? 2 : 4
                         },
                         {
                             label: 'Clientes (Projeção)',
                             data: data.clientsProj,
                             borderColor: '#40998F',
                             backgroundColor: 'transparent',
-                            borderWidth: 2,
+                            borderWidth: isMobile ? 1.5 : 2,
                             borderDash: [6, 4],
                             fill: false,
                             tension: 0.4,
                             spanGaps: false,
-                            pointRadius: 3
+                            pointRadius: isMobile ? 0 : 3,
+                            hidden: false
                         },
                         {
                             label: 'Serviços Realizados',
                             data: data.servicesCompletedData,
                             borderColor: '#4CAF50',
-                            backgroundColor: 'rgba(76, 175, 80, 0.1)',
-                            borderWidth: 3,
+                            backgroundColor: 'rgba(76, 175, 80, 0.12)',
+                            borderWidth: isMobile ? 2 : 3,
                             fill: true,
                             tension: 0.4,
-                            spanGaps: false
+                            spanGaps: false,
+                            pointRadius: isMobile ? 2 : 4
                         },
                         {
                             label: 'Serviços Realizados (Projeção)',
                             data: data.servicesCompletedProj,
                             borderColor: '#4CAF50',
                             backgroundColor: 'transparent',
-                            borderWidth: 2,
+                            borderWidth: isMobile ? 1.5 : 2,
                             borderDash: [6, 4],
                             fill: false,
                             tension: 0.4,
                             spanGaps: false,
-                            pointRadius: 3
+                            pointRadius: isMobile ? 0 : 3
                         },
                         {
                             label: 'Serviços Pendentes',
                             data: data.servicesPendingData,
                             borderColor: '#FF9800',
-                            backgroundColor: 'rgba(255, 152, 0, 0.1)',
-                            borderWidth: 3,
+                            backgroundColor: 'rgba(255, 152, 0, 0.12)',
+                            borderWidth: isMobile ? 2 : 3,
                             fill: true,
                             tension: 0.4,
-                            spanGaps: false
+                            spanGaps: false,
+                            pointRadius: isMobile ? 2 : 4
                         },
                         {
                             label: 'Serviços Pendentes (Projeção)',
                             data: data.servicesPendingProj,
                             borderColor: '#FF9800',
                             backgroundColor: 'transparent',
-                            borderWidth: 2,
+                            borderWidth: isMobile ? 1.5 : 2,
                             borderDash: [6, 4],
                             fill: false,
                             tension: 0.4,
                             spanGaps: false,
-                            pointRadius: 3
+                            pointRadius: isMobile ? 0 : 3
                         }
                     ]
                 },
@@ -1903,27 +2031,35 @@
                     plugins: {
                         legend: {
                             display: true,
-                            position: 'top',
+                            position: isMobile ? 'bottom' : 'top',
                             labels: {
                                 font: {
-                                    size: 14,
+                                    size: isMobile ? 11 : 14,
                                     weight: 'bold'
                                 },
-                                padding: 20,
-                                usePointStyle: true
+                                padding: isMobile ? 10 : 20,
+                                usePointStyle: true,
+                                boxWidth: isMobile ? 10 : 16,
+                                // Ocultar linhas de projeção da legenda no mobile
+                                filter: function(item) {
+                                    if (isMobile) return !item.text.includes('Projeção');
+                                    return true;
+                                }
                             }
                         },
                         tooltip: {
                             mode: 'index',
                             intersect: false,
-                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                            padding: 12,
-                            titleFont: {
-                                size: 14,
-                                weight: 'bold'
-                            },
-                            bodyFont: {
-                                size: 13
+                            backgroundColor: 'rgba(11, 61, 61, 0.92)',
+                            padding: isMobile ? 8 : 12,
+                            titleFont: { size: isMobile ? 12 : 14, weight: 'bold' },
+                            bodyFont: { size: isMobile ? 11 : 13 },
+                            callbacks: {
+                                label: function(ctx) {
+                                    const label = ctx.dataset.label || '';
+                                    const value = ctx.raw ?? '—';
+                                    return ` ${label}: ${value}`;
+                                }
                             }
                         }
                     },
@@ -1932,23 +2068,25 @@
                             beginAtZero: true,
                             ticks: {
                                 stepSize: 1,
-                                font: {
-                                    size: 12
-                                }
+                                font: { size: isMobile ? 10 : 12 },
+                                maxTicksLimit: isMobile ? 5 : 8
                             },
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.05)'
-                            }
+                            grid: { color: 'rgba(0, 0, 0, 0.05)' }
                         },
                         x: {
                             ticks: {
-                                font: {
-                                    size: 12
+                                font: { size: isMobile ? 9 : 12 },
+                                maxRotation: isMobile ? 45 : 0,
+                                minRotation: isMobile ? 45 : 0,
+                                // No mobile mostrar apenas alguns labels para não sobrepor
+                                callback: function(val, index) {
+                                    if (isMobile) {
+                                        return index % 2 === 0 ? this.getLabelForValue(val) : '';
+                                    }
+                                    return this.getLabelForValue(val);
                                 }
                             },
-                            grid: {
-                                display: false
-                            }
+                            grid: { display: false }
                         }
                     },
                     interaction: {
