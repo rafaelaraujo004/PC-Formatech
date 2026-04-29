@@ -582,7 +582,7 @@ textarea {
 
 .hero-next {
     right: 50%;
-    transform: translateX(calc(50% + 560px));
+    transform: translateX(calc(50% + 216px));
 }
 
 /* Responsivo para botões de navegação */

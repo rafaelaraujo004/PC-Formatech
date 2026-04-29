@@ -4,6 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Painel Administrativo - PC Formatech</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="icon" type="image/svg+xml" href="/icon.svg">
+    <link rel="shortcut icon" href="/favicon-32x32.png">
+
+    <!-- PWA / Adicionar à tela inicial -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="PC Formatech">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0B3D3D">
+    <meta name="msapplication-TileImage" content="/icon-192.png">
+    <meta name="msapplication-TileColor" content="#0B3D3D">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
@@ -314,11 +330,31 @@
             border-collapse: collapse;
         }
 
+        #clientsTable,
+        #productsTable {
+            min-width: 760px;
+        }
+
+        #budgetsTable {
+            min-width: 980px;
+        }
+
         .clients-table th,
         .clients-table td {
             padding: 12px;
             text-align: left;
             border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+
+        .clients-table td:last-child {
+            white-space: nowrap;
+        }
+
+        .service-status {
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
         }
 
         .clients-table th {
@@ -521,37 +557,401 @@
             font-weight: 600;
         }
 
-        /* Responsividade Mobile */
+        .chart-container h2 .chart-title-short { display: none; }
+        .chart-container h2 .chart-title-full  { display: inline; }
+
+        /* ===== DASHBOARD EM TEMPO REAL ===== */
+        .rt-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+        .rt-kpi {
+            background: white;
+            border-radius: 12px;
+            padding: 18px 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            position: relative;
+            overflow: hidden;
+        }
+        .rt-kpi::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 4px; height: 100%;
+            background: var(--kpi-color, #40998F);
+        }
+        .rt-kpi-icon {
+            width: 44px; height: 44px;
+            border-radius: 10px;
+            background: var(--kpi-bg, #e8f5f4);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
+            color: var(--kpi-color, #40998F);
+            flex-shrink: 0;
+        }
+        .rt-kpi-body { flex: 1; min-width: 0; }
+        .rt-kpi-value { font-size: 22px; font-weight: 700; color: #0B3D3D; line-height: 1; }
+        .rt-kpi-label { font-size: 11px; color: #888; margin-top: 4px; }
+        .rt-kpi-badge {
+            position: absolute;
+            top: 10px; right: 10px;
+            font-size: 10px; font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 20px;
+        }
+        .rt-kpi-badge.up { background: #e8f5e9; color: #2e7d32; }
+        .rt-kpi-badge.down { background: #fce4ec; color: #c62828; }
+        .rt-kpi-badge.neutral { background: #f3e5f5; color: #6a1b9a; }
+        .rt-section-title {
+            font-size: 15px; font-weight: 700;
+            color: #0B3D3D;
+            margin: 22px 0 10px;
+            display: flex; align-items: center; gap: 8px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e8f5f4;
+        }
+        .rt-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+        .rt-card {
+            background: white;
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .rt-card h4 {
+            font-size: 13px; font-weight: 700;
+            color: #0B3D3D;
+            margin-bottom: 12px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .rt-list { list-style: none; }
+        .rt-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 7px 0;
+            border-bottom: 1px solid #f5f5f5;
+            font-size: 13px;
+            color: #444;
+        }
+        .rt-list li:last-child { border-bottom: none; }
+        .rt-list .rt-rank {
+            width: 20px; height: 20px;
+            border-radius: 50%;
+            background: #e8f5f4;
+            color: #40998F;
+            font-size: 10px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+        .rt-list .rt-li-left { display: flex; align-items: center; min-width: 0; }
+        .rt-list .rt-li-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px; }
+        .rt-list .rt-val { font-weight: 700; color: #0B3D3D; flex-shrink: 0; margin-left: 8px; }
+        .rt-bar-bg { background: #f0f0f0; border-radius: 4px; height: 5px; margin-top: 3px; width: 100%; }
+        .rt-bar-fill { height: 5px; border-radius: 4px; background: linear-gradient(90deg, #40998F, #2D7A7A); transition: width 0.7s; }
+        .rt-status-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+        .rt-badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 5px 11px;
+            border-radius: 20px;
+            font-size: 12px; font-weight: 600;
+        }
+        .rt-badge.pendente { background: #fff3e0; color: #e65100; }
+        .rt-badge.andamento { background: #e3f2fd; color: #1565c0; }
+        .rt-badge.concluido { background: #e8f5e9; color: #2e7d32; }
+        .rt-badge.cancelado { background: #fce4ec; color: #880e4f; }
+        .rt-funnel { display: flex; flex-direction: column; gap: 6px; }
+        .rt-funnel-step { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+        .rt-funnel-label { width: 130px; text-align: right; color: #666; font-size: 11px; flex-shrink: 0; }
+        .rt-funnel-bar-bg {
+            flex: 1;
+            background: #f0f0f0;
+            border-radius: 4px;
+            height: 26px;
+            position: relative;
+            overflow: hidden;
+        }
+        .rt-funnel-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            display: flex; align-items: center; justify-content: flex-end;
+            padding-right: 8px;
+            color: white; font-size: 11px; font-weight: 700;
+            transition: width 0.8s;
+            min-width: 26px;
+        }
+        .rt-alert-list { display: flex; flex-direction: column; gap: 8px; }
+        .rt-alert {
+            display: flex; align-items: flex-start; gap: 10px;
+            background: #f8fffe;
+            border: 1px solid #c8e6c9;
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 12px;
+        }
+        .rt-alert.new { border-color: #FFB300; background: #fffde7; }
+        .rt-alert-icon { font-size: 15px; margin-top: 1px; }
+        .rt-alert-time { font-size: 10px; color: #999; margin-top: 2px; }
+        .rt-empty { text-align: center; color: #bbb; font-size: 13px; padding: 20px 0; }
+        .rt-fat-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+        .rt-fat-item { text-align: center; }
+        .rt-fat-item .rt-fat-val { font-size: 16px; font-weight: 700; color: #0B3D3D; }
+        .rt-fat-item .rt-fat-label { font-size: 10px; color: #888; margin-top: 2px; }
+        .rt-last-update { text-align: right; font-size: 11px; color: #bbb; margin-top: 6px; }
+        .rt-pulse {
+            display: inline-block;
+            width: 8px; height: 8px;
+            background: #4CAF50;
+            border-radius: 50%;
+            margin-right: 5px;
+            animation: rtpulse 1.5s infinite;
+        }
+        @keyframes rtpulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.4); }
+        }
+        @keyframes rt-blink {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(76,175,80,.6); }
+            50% { opacity: 0.7; box-shadow: 0 0 0 4px rgba(76,175,80,0); }
+        }
+        .rt-online-row {
+            display: flex; align-items: center; gap: 10px;
+            padding: 8px 4px; border-bottom: 1px solid #f5f5f5;
+        }
+        .rt-online-row:last-child { border-bottom: none; }
+        .rt-online-dot {
+            width: 9px; height: 9px; border-radius: 50%; background: #4CAF50;
+            flex-shrink: 0; box-shadow: 0 0 0 3px rgba(76,175,80,.15);
+        }
+        .rt-online-device-icon { color: #8a8a8a; font-size: 13px; }
+        .rt-online-main { flex: 1; min-width: 0; }
+        .rt-online-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            min-width: 0;
+        }
+        .rt-online-device-text {
+            font-size: 10px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: .35px;
+            flex-shrink: 0;
+        }
+        .rt-online-page {
+            font-size: 11px;
+            color: #777;
+            margin-top: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 300px;
+        }
+        .rt-online-meta {
+            font-size: 10px;
+            color: #999;
+            margin-top: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .rt-online-duration {
+            font-size: 11px;
+            color: #888;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .rt-chart-wrap { position: relative; height: 200px; }
+        .rt-full { grid-column: 1 / -1; }
         @media (max-width: 768px) {
-            .admin-header h1 {
-                font-size: 18px;
+            .rt-row { grid-template-columns: 1fr; }
+            .rt-grid { grid-template-columns: repeat(2, 1fr); }
+            .rt-fat-row { grid-template-columns: repeat(2, 1fr); }
+            .rt-funnel-label { width: 80px; font-size: 10px; }
+        }
+        @media (max-width: 480px) {
+            .rt-kpi-value { font-size: 18px; }
+        }
+
+        /* ===== RESPONSIVIDADE MOBILE ===== */
+        @media (max-width: 768px) {
+
+            body {
+                padding: 10px;
             }
 
+            /* Header compacto */
+            .admin-header {
+                padding: 14px 16px;
+                margin-bottom: 14px;
+                border-radius: 10px;
+            }
+
+            .admin-header h1 {
+                font-size: 16px;
+                gap: 8px !important;
+            }
+
+            .admin-header h1 img {
+                width: 32px !important;
+                height: 32px !important;
+            }
+
+            /* Tabs: scroll horizontal em 1 linha */
             .admin-tabs {
-                border-radius: 8px;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                overflow-y: hidden;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                border-radius: 10px;
+                margin-bottom: 14px;
+                gap: 0;
+            }
+
+            .admin-tabs::-webkit-scrollbar {
+                display: none;
             }
 
             .tab-button {
-                flex: 1 1 calc(50% - 4px);
-                min-width: calc(50% - 4px);
-                padding: 14px 10px;
-                font-size: 13px;
-                margin: 2px;
+                flex: 0 0 auto;
+                min-width: unset;
+                padding: 10px 14px;
+                font-size: 12px;
+                font-weight: 700;
+                white-space: nowrap;
+                border-bottom-width: 3px;
+                margin: 0;
             }
 
             .tab-button i {
-                display: block;
-                margin-bottom: 4px;
-                font-size: 18px;
+                display: inline;
+                margin-right: 4px;
+                font-size: 13px;
+            }
+
+            /* Stats cards: sempre 2 colunas */
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+                margin-bottom: 14px;
+            }
+
+            .stat-card {
+                padding: 16px 12px;
+                border-radius: 10px;
+            }
+
+            .stat-card h3 {
+                font-size: 26px;
+                margin-bottom: 6px;
+            }
+
+            .stat-card p {
+                font-size: 12px;
+            }
+
+            /* Gráfico: altura reduzida, título compacto */
+            .chart-container {
+                padding: 16px 12px;
+                border-radius: 10px;
+                margin-top: 14px;
+            }
+
+            .chart-container h2 {
+                font-size: 13px;
+                margin-bottom: 12px;
+                gap: 6px;
+            }
+
+            .chart-container h2 .chart-title-full { display: none; }
+            .chart-container h2 .chart-title-short { display: inline; }
+
+            .chart-wrapper {
+                height: 260px;
+            }
+
+            /* Formulário de clientes em coluna única */
+            .client-form {
+                grid-template-columns: 1fr;
+            }
+
+            .clients-container {
+                padding: 16px 12px;
+                border-radius: 10px;
             }
 
             .clients-table {
-                font-size: 13px;
+                font-size: 12px;
             }
 
             .clients-table th,
             .clients-table td {
+                padding: 8px 6px;
+            }
+
+            .btn-action {
+                padding: 5px 8px;
+                font-size: 11px;
+                margin: 2px;
+                white-space: nowrap;
+            }
+
+            /* Modal ocupa mais da tela */
+            .modal-content {
+                margin: 10px auto;
+                padding: 20px 14px;
+                width: 96%;
+                max-height: 95vh;
+                border-radius: 10px;
+            }
+
+            /* Slides grid: 1 coluna */
+            .slides-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .admin-tabs {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 0;
+                overflow: visible;
+            }
+
+            .tab-button {
+                min-width: 0;
+                white-space: normal;
                 padding: 10px 8px;
+                font-size: 11px;
+                line-height: 1.2;
+            }
+
+            .stat-card h3 {
+                font-size: 22px;
+            }
+
+            .chart-wrapper {
+                height: 220px;
             }
         }
 
@@ -641,7 +1041,275 @@
             font-weight: 600;
             color: #40998F;
         }
+
+        /* ===== PARCELAMENTO ===== */
+        .parcelas-section {
+            background: #f0fff8;
+            border: 1px solid #b2dfdb;
+            border-radius: 10px;
+            padding: 16px;
+            margin-top: 14px;
+        }
+        .parcelas-section h4 {
+            color: #0B3D3D;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+        }
+        .parcela-preview {
+            background: #e8f5e9;
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-top: 10px;
+            font-size: 13px;
+            color: #1b5e20;
+            display: none;
+        }
+        .parcela-preview strong { font-size: 15px; }
+
+        /* Tabela de parcelas */
+        .parcelas-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+        .parcelas-table th {
+            background: #0B3D3D;
+            color: white;
+            padding: 8px 10px;
+            text-align: left;
+        }
+        .parcelas-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+        .parcelas-table tr:hover td { background: #f5f5f5; }
+        .parcelas-table .pago-sim td { background: #f1fff6; }
+        .parcela-badge-pago {
+            background: #c8e6c9;
+            color: #1b5e20;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .parcela-badge-pendente {
+            background: #fff3cd;
+            color: #856404;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .parcela-badge-vencida {
+            background: #fce4ec;
+            color: #880e4f;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .parcela-badge-entrada {
+            background: #e3f2fd;
+            color: #1565c0;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        /* Aba parcelamentos */
+        .parc-filter-bar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+            align-items: center;
+        }
+        .parc-filter-bar select,
+        .parc-filter-bar input {
+            padding: 9px 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .parc-summary-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .parc-summary-card {
+            background: white;
+            border-radius: 10px;
+            padding: 14px 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            border-left: 4px solid var(--parc-color, #40998F);
+            text-align: center;
+        }
+        .parc-summary-card .ps-val {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--parc-color, #40998F);
+        }
+        .parc-summary-card .ps-label {
+            font-size: 11px;
+            color: #888;
+            margin-top: 2px;
+        }
+        .parc-group-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #0B3D3D;
+            padding: 10px 0 6px;
+            border-bottom: 2px solid #e8f5f4;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-pagar-parcela {
+            background: #40998F;
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn-pagar-parcela:hover {
+            background: #2D7A7A;
+            transform: translateY(-1px);
+        }
+        .btn-estornar-parcela {
+            background: #FF9800;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn-estornar-parcela:hover {
+            background: #e65100;
+        }
+        @media (max-width: 768px) {
+            .parc-summary-bar { grid-template-columns: repeat(2,1fr); }
+            .parcelas-table { font-size: 11px; }
+            .parcelas-table th, .parcelas-table td { padding: 6px 6px; }
+        }
+        /* ===== NOTIFICAÇÕES ===== */
+        .btn-notif {
+            position: relative;
+            width: 36px; height: 36px;
+            padding: 0;
+            background: linear-gradient(135deg, #FF9800, #e65100);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        .btn-notif:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255,152,0,.45); }
+        .btn-notif .notif-badge {
+            position: absolute;
+            top: -4px; right: -4px;
+            background: #E91E63;
+            color: #fff;
+            font-size: 9px;
+            font-weight: 700;
+            min-width: 16px; height: 16px;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            padding: 0 3px;
+            border: 2px solid #fff;
+            pointer-events: none;
+        }
+        #notif-permission-bar {
+            background: linear-gradient(90deg, #fff3e0, #ffe0b2);
+            border: 1px solid #FFB74D;
+            border-radius: 8px;
+            padding: 10px 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            font-size: 13px;
+            color: #7c4700;
+        }
+        #notif-permission-bar .notif-bar-btns { display: flex; gap: 8px; margin-left: auto; }
+        .btn-ativar-notif {
+            background: #FF9800; color: white;
+            border: none; padding: 6px 14px;
+            border-radius: 6px; cursor: pointer;
+            font-weight: 600; font-size: 12px;
+        }
+        .btn-testar-notif {
+            background: #40998F; color: white;
+            border: none; padding: 6px 14px;
+            border-radius: 6px; cursor: pointer;
+            font-weight: 600; font-size: 12px;
+        }
+        .btn-fechar-bar {
+            background: none; color: #7c4700;
+            border: none; cursor: pointer;
+            font-size: 16px; padding: 2px 4px;
+        }
+        /* Botão parcelar serviço existente */
+        .btn-parcelar-servico {
+            background: linear-gradient(135deg, #40998F, #2D7A7A);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex; align-items: center; gap: 5px;
+            transition: all 0.2s;
+        }
+        .btn-parcelar-servico:hover { background: #0B3D3D; transform: translateY(-1px); }
+        /* Parcelas inline na visualização do cliente */
+        .parc-inline-acoes { display: flex; gap: 6px; flex-wrap: wrap; }
+        .parc-inline-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 5px 0; border-bottom: 1px solid #e8f5f3; }
+        .parc-inline-row:last-child { border-bottom: none; }
+        .parc-inline-info { font-size: 12px; color: #444; flex: 1; min-width: 180px; }
+        /* Modal parcelar serviço existente */
+        #parcelarServicoModal .modal-content { max-width: 480px; }
+        .parc-servico-preview {
+            background: linear-gradient(135deg,#e8f5f3,#f0fff8);
+            border: 1px solid #b2dfdb;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 13px;
+            color: #0B3D3D;
+            margin-top: 8px;
+            display: none;
+        }
     </style>
+    
+    <!-- Firebase Scripts (compat API - expõe objeto global firebase) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="firebase-config.secure.js"></script>
+    <link rel="stylesheet" href="theme-system.css">
+    <script src="theme-system.secure.js" defer></script>
+    <script src="auth-system.secure.js" defer></script>
 </head>
 <body>
     <!-- Tela de Login -->
@@ -649,8 +1317,13 @@
         <h1><i class="fas fa-lock"></i> Acesso Administrativo</h1>
         <form id="loginForm">
             <div class="form-group">
+                <label for="adminEmail">Usuário (E-mail)</label>
+                <input type="email" id="adminEmail" placeholder="rafaelaraujo004@gmail.com" autocomplete="username" required>
+                <small style="display:block;margin-top:6px;color:#666;">Utilize o usuário autorizado para acessar o painel administrativo.</small>
+            </div>
+            <div class="form-group">
                 <label for="password">Senha de Acesso:</label>
-                <input type="password" id="password" placeholder="Digite a senha" required>
+                <input type="password" id="password" placeholder="Digite a senha" autocomplete="current-password" required>
             </div>
             <button type="submit" class="btn-login">Entrar</button>
         </form>
@@ -659,8 +1332,15 @@
     <!-- Painel Admin -->
     <div class="admin-panel" id="adminPanel">
         <div class="admin-header">
-            <h1><i class="fas fa-tools"></i> Painel Administrativo</h1>
+            <h1 style="display:flex;align-items:center;gap:12px;">
+                <img src="/icon-192.png" alt="PC Formatech" style="width:40px;height:40px;border-radius:8px;">
+                Painel Administrativo
+            </h1>
             <div class="header-buttons">
+                <button class="btn-notif" id="btnNotifHeader" title="Notificações de Parcelas" onclick="testarNotificacao()">
+                    <i class="fas fa-bell"></i>
+                    <span class="notif-badge" id="notifBadgeHeader" style="display:none">0</span>
+                </button>
                 <a href="index.html" class="btn-back-to-site" title="Voltar ao Site">
                     <i class="fas fa-home"></i>
                 </a>
@@ -670,6 +1350,16 @@
             </div>
         </div>
 
+        <!-- Barra de Permissão de Notificações -->
+        <div id="notif-permission-bar" style="display:none">
+            <i class="fas fa-bell" style="font-size:18px;"></i>
+            <span><strong>Ativar Notificações</strong> — Receba alertas de parcelas vencendo amanhã e hoje.</span>
+            <div class="notif-bar-btns">
+                <button class="btn-ativar-notif" onclick="solicitarPermissaoNotificacao()"><i class="fas fa-check"></i> Ativar</button>
+                <button class="btn-testar-notif" onclick="testarNotificacao()"><i class="fas fa-vial"></i> Testar</button>
+                <button class="btn-fechar-bar" onclick="document.getElementById('notif-permission-bar').style.display='none'" title="Fechar">&times;</button>
+            </div>
+        </div>
         <div class="success-message" id="successMessage">
             <i class="fas fa-check-circle"></i> Alterações salvas com sucesso!
         </div>
@@ -697,6 +1387,15 @@
             <button class="tab-button" onclick="switchTab('slider')">
                 <i class="fas fa-images"></i> Imagens da Tela Inicial
             </button>
+            <button class="tab-button" onclick="switchTab('themes')">
+                <i class="fas fa-palette"></i> Gerenciador de Temas
+            </button>
+            <button class="tab-button" onclick="switchTab('realtime')">
+                <i class="fas fa-satellite-dish"></i> Dashboard Tempo Real
+            </button>
+            <button class="tab-button" onclick="switchTab('parcelamentos')">
+                <i class="fas fa-hand-holding-usd"></i> Parcelamentos / Prazo
+            </button>
         </div>
 
         <!-- Dashboard -->
@@ -721,7 +1420,12 @@
             </div>
             
             <div class="chart-container">
-                <h2><i class="fas fa-chart-area"></i> Estatísticas Mensais (6 Meses)</h2>
+                <h2 style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+                    <span><i class="fas fa-chart-area"></i><span class="chart-title-full"> Estatísticas Mensais</span><span class="chart-title-short" style="display:none"> Estatísticas</span></span>
+                    <button id="btnToggleProjecao" onclick="toggleProjecaoChart()" style="font-size:12px;padding:5px 12px;background:#f0f7ff;border:1.5px solid #40998F;color:#0B3D3D;border-radius:6px;cursor:pointer;font-weight:600;">
+                        <i class="fas fa-eye-slash"></i> Ocultar Projeção
+                    </button>
+                </h2>
                 <div class="chart-wrapper">
                     <canvas id="statsChart"></canvas>
                 </div>
@@ -917,6 +1621,124 @@
         </div>
     </div>
 
+    <!-- ===== ABA: PARCELAMENTOS ===== -->
+    <div id="tab-parcelamentos" class="tab-content">
+        <div class="clients-container">
+            <h2 style="margin-bottom:6px;"><i class="fas fa-hand-holding-usd" style="color:#40998F;"></i> Parcelamentos e A Prazo</h2>
+            <p style="color:#666;margin-bottom:18px;">Gerencie cobranças parceladas e serviços lançados a prazo para seus clientes.</p>
+
+            <!-- Resumo -->
+            <div class="parc-summary-bar" id="parc-summary">
+                <div class="parc-summary-card" style="--parc-color:#FF9800;">
+                    <div class="ps-val" id="parc-tot-pendente">R$ 0,00</div>
+                    <div class="ps-label">A Receber (Pendentes)</div>
+                </div>
+                <div class="parc-summary-card" style="--parc-color:#E91E63;">
+                    <div class="ps-val" id="parc-tot-vencido">R$ 0,00</div>
+                    <div class="ps-label">Vencidas</div>
+                </div>
+                <div class="parc-summary-card" style="--parc-color:#4CAF50;">
+                    <div class="ps-val" id="parc-tot-pago">R$ 0,00</div>
+                    <div class="ps-label">Já Recebido</div>
+                </div>
+                <div class="parc-summary-card" style="--parc-color:#2196F3;">
+                    <div class="ps-val" id="parc-tot-servicos">0</div>
+                    <div class="ps-label">Serviços em Cobrança</div>
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="parc-filter-bar">
+                <input type="text" id="parc-search" placeholder="🔍 Buscar cliente..." oninput="renderParcelamentosTab()">
+                <select id="parc-filtro-status" onchange="renderParcelamentosTab()">
+                    <option value="todos">Todos os status</option>
+                    <option value="pendente">Pendentes</option>
+                    <option value="vencida">Vencidas</option>
+                    <option value="pago">Pagas</option>
+                </select>
+                <select id="parc-filtro-ordem" onchange="renderParcelamentosTab()">
+                    <option value="vencimento">Ordenar por vencimento</option>
+                    <option value="cliente">Ordenar por cliente</option>
+                    <option value="valor">Ordenar por valor</option>
+                </select>
+            </div>
+
+            <!-- Lista de parcelas -->
+            <div id="parc-lista-container"></div>
+
+            <!-- Botão de Teste de Notificações -->
+            <div style="margin-top:30px;padding:16px;background:#f8fffc;border:1px solid #b2dfdb;border-radius:10px;">
+                <p style="font-weight:700;color:#0B3D3D;margin-bottom:8px;"><i class="fas fa-bell" style="color:#FF9800"></i> Notificações de Cobranças</p>
+                <p style="font-size:13px;color:#555;margin-bottom:12px;">O sistema avisa automaticamente <strong>1 dia antes</strong> e <strong>no dia do vencimento</strong> de cada parcela ou cobrança a prazo pendente.</p>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                    <button class="btn-pagar-parcela" onclick="solicitarPermissaoNotificacao()" style="background:#FF9800;">
+                        <i class="fas fa-bell"></i> Ativar Notificações
+                    </button>
+                    <button class="btn-pagar-parcela" onclick="testarNotificacao()">
+                        <i class="fas fa-vial"></i> Testar Notificação Agora
+                    </button>
+                    <button class="btn-pagar-parcela" onclick="verificarNotificacoesParcelas()" style="background:#2196F3;">
+                        <i class="fas fa-sync"></i> Verificar Vencimentos
+                    </button>
+                </div>
+                <p id="notif-status-text" style="margin-top:10px;font-size:12px;color:#777;">Status: carregando...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Parcelar Serviço Existente -->
+    <div id="parcelarServicoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-hand-holding-usd" style="color:#40998F"></i> Configurar Cobrança</h2>
+                <span class="close" onclick="closeModal('parcelarServicoModal')">&times;</span>
+            </div>
+            <div id="parcelarServicoInfo" style="background:#f0fff8;border:1px solid #b2dfdb;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:13px;color:#0B3D3D;"></div>
+            <form id="parcelarServicoForm">
+                <input type="hidden" id="parcServicoClientId">
+                <input type="hidden" id="parcServicoIdx">
+                <div class="form-group">
+                    <label>Condição de Cobrança</label>
+                    <select id="parcServicoCondicao" onchange="toggleParcelamentoExistente()">
+                        <option value="parcelado">Parcelado</option>
+                        <option value="a_prazo">A Prazo</option>
+                    </select>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div class="form-group" id="parcServicoNParcelasGroup">
+                        <label>Número de Parcelas</label>
+                        <select id="parcServicoNParcelas" oninput="calcularPreviewParcelasExistente()">
+                            <option value="2">2x</option>
+                            <option value="3">3x</option>
+                            <option value="4">4x</option>
+                            <option value="5">5x</option>
+                            <option value="6">6x</option>
+                            <option value="7">7x</option>
+                            <option value="8">8x</option>
+                            <option value="9">9x</option>
+                            <option value="10">10x</option>
+                            <option value="11">11x</option>
+                            <option value="12">12x</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="parcServicoEntradaGroup">
+                        <label>Entrada (R$) <span style="color:#888;font-size:11px;">— deixe 0 para sem entrada</span></label>
+                        <input type="number" id="parcServicoEntrada" value="0" min="0" step="0.01" oninput="calcularPreviewParcelasExistente()">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label id="parcServicoVencLabel">Data da 1ª Parcela</label>
+                    <input type="date" id="parcServicoPrimeiroVenc" oninput="calcularPreviewParcelasExistente()" required>
+                </div>
+                <div class="parc-servico-preview" id="parcServicoPreview"></div>
+                <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
+                    <button type="submit" class="btn-save" style="flex:1;"><i class="fas fa-check"></i> Salvar Cobrança</button>
+                    <button type="button" class="btn-cancel" style="flex:0 0 auto;" onclick="closeModal('parcelarServicoModal')">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Modal de Adicionar Serviço -->
     <div id="serviceModal" class="modal">
         <div class="modal-content">
@@ -960,7 +1782,52 @@
                         <option value="cancelado">Cancelado</option>
                     </select>
                 </div>
-                
+
+                <!-- Seção de Cobrança -->
+                <div class="parcelas-section">
+                    <h4><i class="fas fa-hand-holding-usd"></i> Cobrança do Serviço</h4>
+                    <div class="input-group" style="margin-bottom:10px;">
+                        <label>Condição de Pagamento</label>
+                        <select id="serviceCondicaoPagamento" onchange="toggleParcelamento()">
+                            <option value="vista">À Vista</option>
+                            <option value="parcelado">Parcelado</option>
+                            <option value="a_prazo">A Prazo</option>
+                        </select>
+                    </div>
+
+                    <div id="parcelamentoFields" style="display:none;">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                            <div class="input-group" id="serviceNParcelasGroup">
+                                <label>Nº de Parcelas: *</label>
+                                <select id="serviceNParcelas" onchange="calcularPreviewParcelas()">
+                                    <option value="2">2x</option>
+                                    <option value="3">3x</option>
+                                    <option value="4">4x</option>
+                                    <option value="5">5x</option>
+                                    <option value="6">6x</option>
+                                    <option value="7">7x</option>
+                                    <option value="8">8x</option>
+                                    <option value="9">9x</option>
+                                    <option value="10">10x</option>
+                                    <option value="11">11x</option>
+                                    <option value="12">12x</option>
+                                </select>
+                            </div>
+                            <div class="input-group" id="serviceEntradaGroup">
+                                <label>Entrada (R$):</label>
+                                <input type="number" id="serviceEntrada" step="0.01" min="0" value="0" placeholder="0,00" oninput="calcularPreviewParcelas()">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label id="servicePrimeiroVencLabel">Data 1ª Parcela: *</label>
+                            <input type="date" id="servicePrimeiroVenc" onchange="calcularPreviewParcelas()">
+                        </div>
+                        <div class="parcela-preview" id="parcelaPreview">
+                            <!-- Preview calculado -->
+                        </div>
+                    </div>
+                </div>
+
                 <button type="submit" class="btn-save">
                     <i class="fas fa-check"></i> Adicionar Serviço
                 </button>
@@ -1062,15 +1929,69 @@
         </div>
     </div>
 
+    <!-- Modal de Adicionar/Editar Imagem -->
+    <div id="slideModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-image"></i> <span id="slideModalTitle">Adicionar Nova Imagem</span></h2>
+                <span class="close" onclick="closeSlideModal()">&times;</span>
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e0e0e0; padding-bottom: 15px;">
+                <button type="button" class="tab-btn active" onclick="switchSlideTab('url')" style="flex: 1; padding: 10px; border: none; background: transparent; cursor: pointer; font-weight: 600; color: #0B3D3D; border-bottom: 3px solid #40998F;">
+                    <i class="fas fa-link"></i> Usar URL
+                </button>
+                <button type="button" class="tab-btn" onclick="switchSlideTab('upload')" style="flex: 1; padding: 10px; border: none; background: transparent; cursor: pointer; font-weight: 600; color: #999;">
+                    <i class="fas fa-upload"></i> Fazer Upload
+                </button>
+            </div>
+            
+            <form id="slideForm" onsubmit="saveSlideFromModal(event)">
+                <input type="hidden" id="slideIndex">
+                
+                <!-- Aba URL -->
+                <div id="slideUrlTab" style="display: block;">
+                    <div class="input-group">
+                        <label>URL da Imagem: *</label>
+                        <input type="url" id="slideUrl" placeholder="https://exemplo.com/imagem.jpg">
+                    </div>
+                </div>
+                
+                <!-- Aba Upload -->
+                <div id="slideUploadTab" style="display: none;">
+                    <div class="input-group">
+                        <label>Selecione uma imagem do seu dispositivo: *</label>
+                        <input type="file" id="slideFile" accept="image/*" style="padding: 10px; border: 2px dashed #40998F; border-radius: 8px; cursor: pointer;">
+                        <small style="color: #666; margin-top: 5px; display: block;">Formato: JPG, PNG, WebP. Tamanho máximo: 10MB. A imagem será redimensionada automaticamente para 800x400px.</small>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label>Texto Alternativo (Descrição): *</label>
+                    <input type="text" id="slideAlt" placeholder="Descrição da imagem para acessibilidade" required>
+                </div>
+                
+                <div class="input-group">
+                    <label>Pré-visualização:</label>
+                    <img id="slidePreview" style="max-width: 100%; max-height: 300px; border-radius: 8px; display: none; margin: 10px 0;">
+                </div>
+                
+                <button type="submit" class="btn-save">
+                    <i class="fas fa-save"></i> <span id="slideModalButtonText">Adicionar</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- Gestão de Imagens da Tela Inicial -->
     <div id="tab-slider" class="tab-content">
         <div class="clients-container">
             <h2><i class="fas fa-images"></i> Gerenciar Imagens do Carrossel da Tela Inicial</h2>
             <p style="color: #666; margin-bottom: 20px;">
-                Gerencie as imagens que aparecem no carrossel da tela inicial do site. Você pode adicionar, editar ou remover imagens.
+                Gerencie as imagens que aparecem no carrossel da tela inicial do site. Elas seguem como fallback manual quando nenhum banner temático estiver publicado.
             </p>
 
-            <button class="btn-save" onclick="addNewSlide()" style="margin-bottom: 20px;">
+            <button class="btn-save" onclick="openSlideModal()" style="margin-bottom: 20px;">
                 <i class="fas fa-plus"></i> Adicionar Nova Imagem
             </button>
 
@@ -1080,1721 +2001,213 @@
         </div>
     </div>
 
-    <script>
-        // Senha de acesso (você pode alterar aqui)
-        const ADMIN_PASSWORD = 'pcformatech2026';
+    <div id="tab-themes" class="tab-content">
+        <div class="clients-container">
+            <h2><i class="fas fa-palette"></i> Gerenciador de Temas</h2>
+            <p style="color: #666; margin-bottom: 20px;">
+                Escolha o tema visual publicado para todo o site, visualize o banner ativo e configure a automação sazonal sem editar código.
+            </p>
 
-        // Dados padrão dos serviços
-        const defaultServices = {
-            formatacao: {
-                name: 'Formatação de Computadores',
-                price: 80,
-                description: 'Formatação completa com instalação do Windows',
-                features: ['Windows 10 ou 11', 'Drivers atualizados', 'Programas básicos']
-            },
-            programas: {
-                name: 'Instalação de Programas',
-                price: 50,
-                description: 'Instalação de programas essenciais',
-                features: ['Office', 'Antivírus', 'Navegadores']
-            },
-            seguranca: {
-                name: 'Proteção e Segurança',
-                price: 60,
-                description: 'Antivírus e proteção completa',
-                features: ['Antivírus premium', 'Firewall', 'Anti-malware']
-            },
-            manutencao: {
-                name: 'Manutenção Preventiva',
-                price: 70,
-                description: 'Limpeza e otimização do sistema',
-                features: ['Limpeza de disco', 'Otimização', 'Desfragmentação']
-            },
-            drivers: {
-                name: 'Instalação de Drivers',
-                price: 40,
-                description: 'Drivers para todos os componentes',
-                features: ['Placa de vídeo', 'Som', 'Rede']
-            },
-            backup: {
-                name: 'Backup de Dados',
-                price: 45,
-                description: 'Backup seguro dos seus arquivos',
-                features: ['Documentos', 'Fotos', 'Vídeos']
-            },
-            remoto: {
-                name: 'Atendimento Remoto',
-                price: 0,
-                discount: 20,
-                description: 'Desconto de 20% no atendimento remoto',
-                features: ['Via AnyDesk', 'Sem sair de casa', '20% OFF']
-            }
-        };
-
-        // Estrutura de dados para clientes
-        let clients = [];
-        let editingClientId = null;
-
-        // Slides da tela inicial
-        let heroSlides = [];
-
-        // Inicialização
-        document.addEventListener('DOMContentLoaded', () => {
-            loadClientsFromStorage();
-            populateServiceTypes();
-            loadHeroSlides();
-        });
-
-        // ===== SISTEMA DE TABS =====
-        function switchTab(tabName) {
-            // Remover active de todos os botões e conteúdos
-            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            
-            // Ativar tab selecionada
-            event.target.classList.add('active');
-            document.getElementById(`tab-${tabName}`).classList.add('active');
-            
-            // Carregar dados conforme a tab
-            if (tabName === 'dashboard') {
-                updateDashboard();
-            } else if (tabName === 'clients') {
-                loadClientsTable();
-            } else if (tabName === 'services') {
-                loadServiceClients();
-            } else if (tabName === 'products') {
-                loadProductsTable();
-            } else if (tabName === 'budgets') {
-                loadBudgetsTable();
-            } else if (tabName === 'prices') {
-                loadServices();
-            } else if (tabName === 'slider') {
-                renderSlides();
-            }
-        }
-
-        // ===== LOGIN/LOGOUT =====
-        document.getElementById('loginForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const password = document.getElementById('password').value;
-            
-            if (password === ADMIN_PASSWORD) {
-                document.getElementById('loginContainer').style.display = 'none';
-                document.getElementById('adminPanel').style.display = 'block';
-                updateDashboard();
-                loadClientsTable();
-            } else {
-                alert('Senha incorreta!');
-            }
-        });
-
-        function logout() {
-            document.getElementById('adminPanel').style.display = 'none';
-            document.getElementById('loginContainer').style.display = 'block';
-            document.getElementById('password').value = '';
-        }
-
-        // ===== GESTÃO DE CLIENTES =====
-        function loadClientsFromStorage() {
-            const saved = localStorage.getItem('pcformatech_clients');
-            clients = saved ? JSON.parse(saved) : [];
-        }
-
-        function saveClientsToStorage() {
-            localStorage.setItem('pcformatech_clients', JSON.stringify(clients));
-        }
-
-        function saveClient() {
-            const name = document.getElementById('clientName').value.trim();
-            const phone = document.getElementById('clientPhone').value.trim();
-            const email = document.getElementById('clientEmail').value.trim();
-            const cpf = document.getElementById('clientCPF').value.trim();
-            const address = document.getElementById('clientAddress').value.trim();
-            const city = document.getElementById('clientCity').value.trim();
-
-            if (!name || !phone) {
-                alert('Por favor, preencha o nome e telefone do cliente!');
-                return;
-            }
-
-            const client = {
-                id: editingClientId || Date.now(),
-                name,
-                phone,
-                email,
-                cpf,
-                address,
-                city,
-                services: editingClientId ? clients.find(c => c.id === editingClientId).services : [],
-                createdAt: editingClientId ? clients.find(c => c.id === editingClientId).createdAt : new Date().toISOString()
-            };
-
-            if (editingClientId) {
-                // Editar cliente existente
-                const index = clients.findIndex(c => c.id === editingClientId);
-                clients[index] = client;
-                editingClientId = null;
-            } else {
-                // Novo cliente
-                clients.push(client);
-            }
-
-            saveClientsToStorage();
-            clearClientForm();
-            loadClientsTable();
-            showSuccess();
-        }
-
-        function clearClientForm() {
-            document.getElementById('clientForm').reset();
-            editingClientId = null;
-        }
-
-        function loadClientsTable() {
-            const tbody = document.getElementById('clientsTableBody');
-            tbody.innerHTML = '';
-
-            const searchTerm = document.getElementById('searchClient')?.value.toLowerCase() || '';
-            
-            const filteredClients = clients.filter(client => 
-                client.name.toLowerCase().includes(searchTerm) ||
-                client.phone.toLowerCase().includes(searchTerm) ||
-                (client.cpf && client.cpf.toLowerCase().includes(searchTerm))
-            );
-
-            filteredClients.forEach(client => {
-                const row = document.createElement('tr');
-                const serviceCount = client.services ? client.services.length : 0;
-                
-                row.innerHTML = `
-                    <td><strong>${client.name}</strong></td>
-                    <td>${client.phone}</td>
-                    <td>${client.email || '-'}</td>
-                    <td><span class="service-status status-${serviceCount > 0 ? 'concluido' : 'pendente'}">${serviceCount} serviço(s)</span></td>
-                    <td>
-                        <button class="btn-action btn-view" onclick="viewClient(${client.id})">
-                            <i class="fas fa-eye"></i> Ver
-                        </button>
-                        <button class="btn-action btn-edit" onclick="editClient(${client.id})">
-                            <i class="fas fa-edit"></i> Editar
-                        </button>
-                        <button class="btn-action btn-whatsapp" onclick="openWhatsApp('${client.phone}', '${client.name}')">
-                            <i class="fab fa-whatsapp"></i> WhatsApp
-                        </button>
-                        <button class="btn-action btn-delete" onclick="deleteClient(${client.id})">
-                            <i class="fas fa-trash"></i> Excluir
-                        </button>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-
-        function searchClients() {
-            loadClientsTable();
-        }
-
-        function viewClient(clientId) {
-            const client = clients.find(c => c.id === clientId);
-            if (!client) return;
-
-            const details = document.getElementById('clientDetails');
-            const totalValue = client.services ? client.services.reduce((sum, s) => sum + s.price, 0) : 0;
-            
-            details.innerHTML = `
-                <div style="margin-bottom: 20px;">
-                    <h3><i class="fas fa-user-circle"></i> ${client.name}</h3>
-                    <p><strong>WhatsApp:</strong> ${client.phone}</p>
-                    <p><strong>E-mail:</strong> ${client.email || '-'}</p>
-                    <p><strong>CPF:</strong> ${client.cpf || '-'}</p>
-                    <p><strong>Endereço:</strong> ${client.address || '-'}</p>
-                    <p><strong>Cidade:</strong> ${client.city || '-'}</p>
-                    <p><strong>Cliente desde:</strong> ${new Date(client.createdAt).toLocaleDateString('pt-BR')}</p>
-                </div>
-
-                <div style="margin-top: 30px;">
-                    <h3><i class="fas fa-briefcase"></i> Histórico de Serviços (${client.services ? client.services.length : 0})</h3>
-                    <p><strong>Valor Total:</strong> R$ ${totalValue.toFixed(2).replace('.', ',')}</p>
-                    
-                    <button class="btn-save" onclick="openAddServiceModal(${client.id})" style="margin: 15px 0;">
-                        <i class="fas fa-plus"></i> Adicionar Novo Serviço
+            <div class="theme-toolbar">
+                <h3>Publicação global</h3>
+                <p>O tema ativo vale para todos os visitantes. Quando a automação sazonal estiver ligada, temas comemorativos assumem automaticamente nas datas configuradas.</p>
+                <div class="theme-toolbar__row">
+                    <label class="theme-toggle-option">
+                        <input type="checkbox" id="themeAutoSeasonal">
+                        Ativar temas sazonais automaticamente
+                    </label>
+                    <select id="themeFallbackSelect" class="theme-fallback-select" aria-label="Tema padrão de fallback"></select>
+                    <button class="btn-save" type="button" onclick="saveThemeAutomation()">
+                        <i class="fas fa-save"></i> Salvar automação
                     </button>
-                    
-                    ${client.services && client.services.length > 0 ? `
-                        <div>
-                            ${client.services.map((service, index) => `
-                                <div class="service-item">
-                                    <div class="service-header">
-                                        <strong>${service.type}</strong>
-                                        <span class="service-status status-${service.status}">${service.status.toUpperCase()}</span>
-                                    </div>
-                                    <p><strong>Descrição:</strong> ${service.description || '-'}</p>
-                                    <p><strong>Valor:</strong> R$ ${service.price.toFixed(2).replace('.', ',')}</p>
-                                    <p><strong>Data:</strong> ${new Date(service.date).toLocaleDateString('pt-BR')}</p>
-                                    <button class="btn-action btn-edit" onclick="editService(${client.id}, ${index})">
-                                        <i class="fas fa-edit"></i> Editar Status
-                                    </button>
-                                    <button class="btn-action btn-delete" onclick="deleteService(${client.id}, ${index})">
-                                        <i class="fas fa-trash"></i> Remover
-                                    </button>
-                                </div>
-                            `).join('')}
-                        </div>
-                    ` : '<p style="color: #999; text-align: center; padding: 20px;">Nenhum serviço registrado ainda.</p>'}
                 </div>
-            `;
-            
-            document.getElementById('clientModal').style.display = 'block';
-        }
+            </div>
 
-        function editClient(clientId) {
-            const client = clients.find(c => c.id === clientId);
-            if (!client) return;
+            <div class="theme-manager-shell">
+                <div>
+                    <div id="themeCatalog" class="theme-catalog-grid"></div>
+                </div>
 
-            editingClientId = clientId;
-            document.getElementById('clientName').value = client.name;
-            document.getElementById('clientPhone').value = client.phone;
-            document.getElementById('clientEmail').value = client.email || '';
-            document.getElementById('clientCPF').value = client.cpf || '';
-            document.getElementById('clientAddress').value = client.address || '';
-            document.getElementById('clientCity').value = client.city || '';
-
-            // Scroll para o formulário
-            document.getElementById('clientForm').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function deleteClient(clientId) {
-            if (confirm('Tem certeza que deseja excluir este cliente e todo seu histórico?')) {
-                clients = clients.filter(c => c.id !== clientId);
-                saveClientsToStorage();
-                loadClientsTable();
-                showSuccess();
-            }
-        }
-
-        function openWhatsApp(phone, name) {
-            const cleanPhone = phone.replace(/\D/g, '');
-            const message = `Olá ${name}! Aqui é da PC Formatech. Como posso ajudá-lo(a) hoje?`;
-            const url = `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(message)}`;
-            window.open(url, '_blank');
-        }
-
-        // ===== GESTÃO DE SERVIÇOS =====
-        function populateServiceTypes() {
-            const select = document.getElementById('serviceType');
-            const saved = localStorage.getItem('pcformatech_services');
-            const services = saved ? JSON.parse(saved) : defaultServices;
-            
-            Object.keys(services).forEach(key => {
-                if (key !== 'remoto') { // Remoto é desconto, não serviço direto
-                    const option = document.createElement('option');
-                    option.value = key;
-                    option.textContent = `${services[key].name} - R$ ${services[key].price.toFixed(2)}`;
-                    select.appendChild(option);
-                }
-            });
-        }
-
-        function openAddServiceModal(clientId) {
-            document.getElementById('serviceClientId').value = clientId;
-            document.getElementById('serviceClientSelectGroup').style.display = 'none';
-            document.getElementById('addServiceForm').reset();
-            document.getElementById('serviceModal').style.display = 'block';
-        }
-        
-        function openAddServiceDirectModal() {
-            // Mostrar seleção de cliente
-            document.getElementById('serviceClientSelectGroup').style.display = 'block';
-            document.getElementById('serviceClientId').value = '';
-            
-            // Popular lista de clientes
-            const select = document.getElementById('serviceClientSelect');
-            select.innerHTML = '<option value="">Selecione um cliente...</option>';
-            clients.forEach(client => {
-                const option = document.createElement('option');
-                option.value = client.id;
-                option.textContent = `${client.name} - ${client.phone}`;
-                select.appendChild(option);
-            });
-            
-            document.getElementById('addServiceForm').reset();
-            document.getElementById('serviceModal').style.display = 'block';
-        }
-
-        document.getElementById('addServiceForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            // Pegar clientId do campo hidden ou do select
-            let clientId = parseInt(document.getElementById('serviceClientId').value);
-            
-            // Se não tiver clientId no hidden, pegar do select
-            if (!clientId) {
-                const selectValue = document.getElementById('serviceClientSelect').value;
-                if (!selectValue) {
-                    alert('Por favor, selecione um cliente!');
-                    return;
-                }
-                clientId = parseInt(selectValue);
-            }
-            
-            const serviceKey = document.getElementById('serviceType').value;
-            const description = document.getElementById('serviceDescription').value;
-            const price = parseFloat(document.getElementById('servicePrice').value);
-            const status = document.getElementById('serviceStatus').value;
-            
-            const saved = localStorage.getItem('pcformatech_services');
-            const services = saved ? JSON.parse(saved) : defaultServices;
-            
-            const service = {
-                type: services[serviceKey].name,
-                description,
-                price,
-                status,
-                date: new Date().toISOString()
-            };
-            
-            const client = clients.find(c => c.id === clientId);
-            if (!client) {
-                alert('Cliente não encontrado!');
-                return;
-            }
-            if (!client.services) client.services = [];
-            client.services.push(service);
-            
-            saveClientsToStorage();
-            closeModal('serviceModal');
-            
-            // Se foi aberto da visualização do cliente, atualizar
-            const clientModal = document.getElementById('clientModal');
-            if (clientModal.style.display === 'block') {
-                viewClient(clientId);
-            } else {
-                // Se foi aberto da aba de serviços, recarregar a lista
-                loadServiceClients();
-            }
-            
-            showSuccess();
-        });
-
-        // Preencher preço automaticamente ao selecionar serviço
-        document.getElementById('serviceType').addEventListener('change', (e) => {
-            const serviceKey = e.target.value;
-            if (!serviceKey) return;
-            
-            const saved = localStorage.getItem('pcformatech_services');
-            const services = saved ? JSON.parse(saved) : defaultServices;
-            
-            document.getElementById('servicePrice').value = services[serviceKey].price;
-        });
-
-        function editService(clientId, serviceIndex) {
-            const client = clients.find(c => c.id === clientId);
-            const service = client.services[serviceIndex];
-            
-            const newStatus = prompt('Novo status do serviço:\n1 - Pendente\n2 - Em Andamento\n3 - Concluído\n4 - Cancelado', '1');
-            
-            const statusMap = {
-                '1': 'pendente',
-                '2': 'andamento',
-                '3': 'concluido',
-                '4': 'cancelado'
-            };
-            
-            if (newStatus && statusMap[newStatus]) {
-                service.status = statusMap[newStatus];
-                saveClientsToStorage();
-                viewClient(clientId);
-                showSuccess();
-            }
-        }
-
-        function deleteService(clientId, serviceIndex) {
-            if (confirm('Tem certeza que deseja remover este serviço?')) {
-                const client = clients.find(c => c.id === clientId);
-                client.services.splice(serviceIndex, 1);
-                saveClientsToStorage();
-                viewClient(clientId);
-                showSuccess();
-            }
-        }
-
-        function loadServiceClients() {
-            const container = document.getElementById('serviceClientsContainer');
-            container.innerHTML = '';
-
-            const searchTerm = document.getElementById('searchServiceClient')?.value.toLowerCase() || '';
-            
-            const filteredClients = clients.filter(client => 
-                client.name.toLowerCase().includes(searchTerm) &&
-                client.services && client.services.length > 0
-            );
-
-            if (filteredClients.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: #999; padding: 40px;">Nenhum cliente com serviços encontrado.</p>';
-                return;
-            }
-
-            filteredClients.forEach(client => {
-                const totalValue = client.services.reduce((sum, s) => sum + s.price, 0);
-                const pendingServices = client.services.filter(s => s.status === 'pendente' || s.status === 'andamento').length;
-                
-                const clientCard = document.createElement('div');
-                clientCard.className = 'service-card';
-                clientCard.innerHTML = `
-                    <h3>${client.name} <span style="font-size: 14px; color: #666;">(${client.phone})</span></h3>
-                    <p><strong>Total de Serviços:</strong> ${client.services.length}</p>
-                    <p><strong>Serviços Pendentes:</strong> ${pendingServices}</p>
-                    <p><strong>Valor Total:</strong> R$ ${totalValue.toFixed(2).replace('.', ',')}</p>
-                    <button class="btn-save" onclick="viewClient(${client.id})">
-                        <i class="fas fa-eye"></i> Ver Detalhes Completos
-                    </button>
-                `;
-                container.appendChild(clientCard);
-            });
-        }
-
-        function searchServiceClients() {
-            loadServiceClients();
-        }
-
-        // ===== DASHBOARD =====
-        function updateDashboard() {
-            const totalClients = clients.length;
-            let totalServices = 0;
-            let pendingServices = 0;
-            let totalRevenue = 0;
-
-            clients.forEach(client => {
-                if (client.services) {
-                    totalServices += client.services.length;
-                    client.services.forEach(service => {
-                        if (service.status === 'pendente' || service.status === 'andamento') {
-                            pendingServices++;
-                        }
-                        if (service.status === 'concluido') {
-                            totalRevenue += service.price;
-                        }
-                    });
-                }
-            });
-
-            document.getElementById('totalClients').textContent = totalClients;
-            document.getElementById('totalServices').textContent = totalServices;
-            document.getElementById('pendingServices').textContent = pendingServices;
-            document.getElementById('totalRevenue').textContent = `R$ ${totalRevenue.toFixed(2).replace('.', ',')}`;
-            
-            // Atualizar gráfico
-            updateStatsChart();
-        }
-
-        // ===== GRÁFICO DE ESTATÍSTICAS =====
-        let statsChart = null;
-
-        function getMonthlyData() {
-            const months = [];
-            const now = new Date();
-            
-            // Gerar labels dos últimos 3 meses e próximos 3 meses
-            for (let i = -3; i <= 3; i++) {
-                const date = new Date(now.getFullYear(), now.getMonth() + i, 1);
-                const monthName = date.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' });
-                months.push(monthName);
-            }
-            
-            // Preparar dados
-            const clientsData = new Array(7).fill(0);
-            const servicesCompletedData = new Array(7).fill(0);
-            const servicesPendingData = new Array(7).fill(0);
-            
-            // Calcular dados reais dos últimos 3 meses
-            clients.forEach(client => {
-                const clientDate = new Date(client.createdAt);
-                const monthDiff = (now.getFullYear() - clientDate.getFullYear()) * 12 + now.getMonth() - clientDate.getMonth();
-                
-                if (monthDiff >= 0 && monthDiff <= 3) {
-                    const index = 3 - monthDiff;
-                    clientsData[index]++;
-                }
-                
-                if (client.services) {
-                    client.services.forEach(service => {
-                        const serviceDate = new Date(service.date);
-                        const serviceDiff = (now.getFullYear() - serviceDate.getFullYear()) * 12 + now.getMonth() - serviceDate.getMonth();
-                        
-                        if (serviceDiff >= 0 && serviceDiff <= 3) {
-                            const index = 3 - serviceDiff;
-                            if (service.status === 'concluido') {
-                                servicesCompletedData[index]++;
-                            } else if (service.status === 'pendente' || service.status === 'andamento') {
-                                servicesPendingData[index]++;
-                            }
-                        }
-                    });
-                }
-            });
-            
-            // Projeção simples para os próximos 3 meses (média dos últimos 3)
-            const avgClients = clientsData.slice(0, 4).reduce((a, b) => a + b, 0) / 4;
-            const avgCompleted = servicesCompletedData.slice(0, 4).reduce((a, b) => a + b, 0) / 4;
-            const avgPending = servicesPendingData.slice(0, 4).reduce((a, b) => a + b, 0) / 4;
-            
-            for (let i = 4; i < 7; i++) {
-                clientsData[i] = Math.round(avgClients * (1 + Math.random() * 0.2 - 0.1));
-                servicesCompletedData[i] = Math.round(avgCompleted * (1 + Math.random() * 0.2 - 0.1));
-                servicesPendingData[i] = Math.round(avgPending * (1 + Math.random() * 0.2 - 0.1));
-            }
-            
-            return {
-                labels: months,
-                clientsData,
-                servicesCompletedData,
-                servicesPendingData
-            };
-        }
-
-        function updateStatsChart() {
-            const data = getMonthlyData();
-            const ctx = document.getElementById('statsChart');
-            
-            if (!ctx) return;
-            
-            // Destruir gráfico anterior se existir
-            if (statsChart) {
-                statsChart.destroy();
-            }
-            
-            statsChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: data.labels,
-                    datasets: [
-                        {
-                            label: 'Clientes Cadastrados',
-                            data: data.clientsData,
-                            borderColor: '#40998F',
-                            backgroundColor: 'rgba(64, 153, 143, 0.1)',
-                            borderWidth: 3,
-                            fill: true,
-                            tension: 0.4
-                        },
-                        {
-                            label: 'Serviços Realizados',
-                            data: data.servicesCompletedData,
-                            borderColor: '#4CAF50',
-                            backgroundColor: 'rgba(76, 175, 80, 0.1)',
-                            borderWidth: 3,
-                            fill: true,
-                            tension: 0.4
-                        },
-                        {
-                            label: 'Serviços Pendentes',
-                            data: data.servicesPendingData,
-                            borderColor: '#FF9800',
-                            backgroundColor: 'rgba(255, 152, 0, 0.1)',
-                            borderWidth: 3,
-                            fill: true,
-                            tension: 0.4
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top',
-                            labels: {
-                                font: {
-                                    size: 14,
-                                    weight: 'bold'
-                                },
-                                padding: 20,
-                                usePointStyle: true
-                            }
-                        },
-                        tooltip: {
-                            mode: 'index',
-                            intersect: false,
-                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                            padding: 12,
-                            titleFont: {
-                                size: 14,
-                                weight: 'bold'
-                            },
-                            bodyFont: {
-                                size: 13
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                stepSize: 1,
-                                font: {
-                                    size: 12
-                                }
-                            },
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.05)'
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                font: {
-                                    size: 12
-                                }
-                            },
-                            grid: {
-                                display: false
-                            }
-                        }
-                    },
-                    interaction: {
-                        mode: 'nearest',
-                        axis: 'x',
-                        intersect: false
-                    }
-                }
-            });
-        }
-
-        // ===== GESTÃO DE PREÇOS (código original) =====
-        // ===== GESTÃO DE PREÇOS (código original) =====
-        function loadServices() {
-            const saved = localStorage.getItem('pcformatech_services');
-            const services = saved ? JSON.parse(saved) : defaultServices;
-            
-            const grid = document.getElementById('servicesGrid');
-            grid.innerHTML = '';
-
-            Object.keys(services).forEach(key => {
-                const service = services[key];
-                const card = document.createElement('div');
-                card.className = 'service-card';
-                card.innerHTML = `
-                    <h3>${service.name}</h3>
-                    <div class="input-group">
-                        <label>Nome do Serviço:</label>
-                        <input type="text" id="${key}_name" value="${service.name}">
-                    </div>
-                    <div class="input-group">
-                        <label>Preço (R$):</label>
-                        <input type="number" id="${key}_price" value="${service.price}" step="0.01">
-                    </div>
-                    <div class="input-group">
-                        <label>Descrição:</label>
-                        <textarea id="${key}_description">${service.description}</textarea>
-                    </div>
-                    ${service.discount ? `
-                    <div class="discount-section">
-                        <h4>Desconto Especial</h4>
-                        <div class="input-group">
-                            <label>Desconto (%):</label>
-                            <input type="number" id="${key}_discount" value="${service.discount}" min="0" max="100">
-                        </div>
-                    </div>
-                    ` : ''}
-                    <button class="btn-save" onclick="saveService('${key}')">
-                        <i class="fas fa-save"></i> Salvar Alterações
-                    </button>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        // Salvar serviço individual
-        function saveService(key) {
-            const saved = localStorage.getItem('pcformatech_services');
-            const services = saved ? JSON.parse(saved) : defaultServices;
-            
-            services[key].name = document.getElementById(`${key}_name`).value;
-            services[key].price = parseFloat(document.getElementById(`${key}_price`).value);
-            services[key].description = document.getElementById(`${key}_description`).value;
-            
-            if (services[key].discount !== undefined) {
-                services[key].discount = parseFloat(document.getElementById(`${key}_discount`).value);
-            }
-
-            localStorage.setItem('pcformatech_services', JSON.stringify(services));
-            
-            showSuccess();
-            populateServiceTypes(); // Atualizar opções de serviço
-        }
-
-        // ===== MODALS =====
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
-
-        // Fechar modal ao clicar fora
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
-                event.target.style.display = 'none';
-            }
-        }
-
-        // ===== UTILITÁRIOS =====
-        function showSuccess() {
-            const msg = document.getElementById('successMessage');
-            msg.style.display = 'block';
-            setTimeout(() => {
-                msg.style.display = 'none';
-            }, 3000);
-        }
-
-        // Exportar dados para o site principal
-        function getServiceData() {
-            const saved = localStorage.getItem('pcformatech_services');
-            return saved ? JSON.parse(saved) : defaultServices;
-        }
-
-        // Máscaras para inputs
-        document.getElementById('clientPhone')?.addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, '');
-            if (value.length <= 11) {
-                value = value.replace(/^(\d{2})(\d)/g, '($1) $2');
-                value = value.replace(/(\d)(\d{4})$/, '$1-$2');
-            }
-            e.target.value = value;
-        });
-
-        document.getElementById('clientCPF')?.addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, '');
-            if (value.length <= 11) {
-                value = value.replace(/(\d{3})(\d)/, '$1.$2');
-                value = value.replace(/(\d{3})(\d)/, '$1.$2');
-                value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-            }
-            e.target.value = value;
-        });
-        
-        // ===== GESTÃO DE PRODUTOS =====
-        let products = [];
-        let editingProductId = null;
-
-        function loadProductsFromStorage() {
-            const saved = localStorage.getItem('pcformatech_products');
-            products = saved ? JSON.parse(saved) : [];
-        }
-
-        function saveProductsToStorage() {
-            localStorage.setItem('pcformatech_products', JSON.stringify(products));
-        }
-
-        function saveProduct() {
-            const name = document.getElementById('productName').value.trim();
-            const price = parseFloat(document.getElementById('productPrice').value);
-            const stock = parseInt(document.getElementById('productStock').value) || 0;
-            const category = document.getElementById('productCategory').value;
-            const description = document.getElementById('productDescription').value.trim();
-
-            if (!name || !price) {
-                alert('Por favor, preencha nome e preço do produto!');
-                return;
-            }
-
-            const product = {
-                id: editingProductId || Date.now(),
-                name,
-                price,
-                stock,
-                category,
-                description,
-                createdAt: editingProductId ? products.find(p => p.id === editingProductId).createdAt : new Date().toISOString()
-            };
-
-            if (editingProductId) {
-                const index = products.findIndex(p => p.id === editingProductId);
-                products[index] = product;
-                editingProductId = null;
-            } else {
-                products.push(product);
-            }
-
-            saveProductsToStorage();
-            clearProductForm();
-            loadProductsTable();
-            showSuccess();
-        }
-
-        function clearProductForm() {
-            document.getElementById('productForm').reset();
-            editingProductId = null;
-        }
-
-        function loadProductsTable() {
-            const tbody = document.getElementById('productsTableBody');
-            tbody.innerHTML = '';
-
-            const searchTerm = document.getElementById('searchProduct')?.value.toLowerCase() || '';
-            
-            const filteredProducts = products.filter(product => 
-                product.name.toLowerCase().includes(searchTerm) ||
-                product.category.toLowerCase().includes(searchTerm)
-            );
-
-            filteredProducts.forEach(product => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td><strong>${product.name}</strong><br><small style="color: #666;">${product.description || ''}</small></td>
-                    <td>R$ ${product.price.toFixed(2).replace('.', ',')}</td>
-                    <td><span class="service-status ${product.stock > 0 ? 'status-concluido' : 'status-cancelado'}">${product.stock} un</span></td>
-                    <td>${getCategoryName(product.category)}</td>
-                    <td>
-                        <button class="btn-action btn-edit" onclick="editProduct(${product.id})">
-                            <i class="fas fa-edit"></i> Editar
+                <aside class="theme-preview-panel">
+                    <h3>Preview rápido</h3>
+                    <p id="themePreviewSummary">Selecione um tema para ver o banner, as cores principais e o estado atual de publicação.</p>
+                    <div class="theme-preview-banner" id="themePreviewBanner"></div>
+                    <div class="theme-preview-metrics" id="themePreviewMetrics"></div>
+                    <div class="theme-current-status" id="themeCurrentStatus"></div>
+                    <div class="theme-preview-actions">
+                        <button class="btn-save" type="button" id="themeApplyPreviewBtn" onclick="applyPreviewedTheme()">
+                            <i class="fas fa-check"></i> Ativar preview
                         </button>
-                        <button class="btn-action btn-delete" onclick="deleteProduct(${product.id})">
-                            <i class="fas fa-trash"></i> Excluir
+                        <button class="theme-secondary" type="button" id="themeResetPreviewBtn" onclick="resetThemePreview()">
+                            <i class="fas fa-undo"></i> Voltar ao tema publicado
                         </button>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-
-        function getCategoryName(category) {
-            const categories = {
-                hardware: 'Hardware',
-                software: 'Software',
-                perifericos: 'Periféricos',
-                acessorios: 'Acessórios',
-                outros: 'Outros'
-            };
-            return categories[category] || category;
-        }
-
-        function searchProducts() {
-            loadProductsTable();
-        }
-
-        function editProduct(productId) {
-            const product = products.find(p => p.id === productId);
-            if (!product) return;
-
-            editingProductId = productId;
-            document.getElementById('productName').value = product.name;
-            document.getElementById('productPrice').value = product.price;
-            document.getElementById('productStock').value = product.stock;
-            document.getElementById('productCategory').value = product.category;
-            document.getElementById('productDescription').value = product.description || '';
-
-            document.getElementById('productForm').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function deleteProduct(productId) {
-            if (confirm('Tem certeza que deseja excluir este produto?')) {
-                products = products.filter(p => p.id !== productId);
-                saveProductsToStorage();
-                loadProductsTable();
-                showSuccess();
-            }
-        }
-
-        // ===== GESTÃO DE ORÇAMENTOS E LAUDOS =====
-        let budgets = [];
-        let currentBudget = null;
-
-        function loadBudgetsFromStorage() {
-            const saved = localStorage.getItem('pcformatech_budgets');
-            budgets = saved ? JSON.parse(saved) : [];
-        }
-
-        function saveBudgetsToStorage() {
-            localStorage.setItem('pcformatech_budgets', JSON.stringify(budgets));
-        }
-
-        function getNextBudgetNumber() {
-            const lastNumber = budgets.length > 0 ? Math.max(...budgets.map(b => b.number || 0)) : 0;
-            return (lastNumber + 1).toString().padStart(4, '0') + '-25';
-        }
-
-        function openNewBudgetModal() {
-            // Calcular data de vencimento da garantia (90 dias = 3 meses)
-            const dataAtual = new Date();
-            const dataGarantia = new Date(dataAtual);
-            dataGarantia.setDate(dataGarantia.getDate() + 90);
-            
-            const diaGarantia = String(dataGarantia.getDate()).padStart(2, '0');
-            const mesGarantia = String(dataGarantia.getMonth() + 1).padStart(2, '0');
-            const anoGarantia = dataGarantia.getFullYear();
-            const dataGarantiaFormatada = `${diaGarantia}/${mesGarantia}/${anoGarantia}`;
-            
-            currentBudget = {
-                id: null,
-                number: getNextBudgetNumber(),
-                clientId: null,
-                date: new Date().toISOString().split('T')[0],
-                type: 'orcamento',
-                services: [],
-                products: [],
-                defect: '',
-                report: '',
-                solution: '',
-                observations: '',
-                warranty: `3 Meses (válido até ${dataGarantiaFormatada})`
-            };
-
-            populateClientSelect();
-            document.getElementById('budgetDate').value = currentBudget.date;
-            document.getElementById('budgetType').value = currentBudget.type;
-            document.getElementById('budgetServices').innerHTML = '';
-            document.getElementById('budgetProducts').innerHTML = '';
-            document.getElementById('budgetDefect').value = '';
-            document.getElementById('budgetReport').value = '';
-            document.getElementById('budgetSolution').value = '';
-            document.getElementById('budgetObservations').value = '';
-            document.getElementById('budgetWarranty').value = currentBudget.warranty;
-            updateBudgetTotal();
-
-            document.getElementById('budgetModal').style.display = 'block';
-        }
-
-        function populateClientSelect() {
-            const select = document.getElementById('budgetClientId');
-            select.innerHTML = '<option value="">Selecione um cliente...</option>';
-            
-            clients.forEach(client => {
-                const option = document.createElement('option');
-                option.value = client.id;
-                option.textContent = `${client.name} - ${client.phone}`;
-                select.appendChild(option);
-            });
-        }
-
-        function addServiceToBudget() {
-            const container = document.getElementById('budgetServices');
-            const index = currentBudget.services.length;
-            
-            const saved = localStorage.getItem('pcformatech_services');
-            const services = saved ? JSON.parse(saved) : defaultServices;
-
-            const serviceDiv = document.createElement('div');
-            serviceDiv.className = 'service-card';
-            serviceDiv.innerHTML = `
-                <div class="client-form">
-                    <div class="input-group">
-                        <label>Serviço:</label>
-                        <select onchange="updateServicePrice(${index}, this.value)">
-                            <option value="">Selecione...</option>
-                            ${Object.keys(services).filter(k => k !== 'remoto').map(key => 
-                                `<option value="${key}" data-price="${services[key].price}">${services[key].name}</option>`
-                            ).join('')}
-                        </select>
                     </div>
-                    <div class="input-group">
-                        <label>Quantidade:</label>
-                        <input type="number" value="1" min="1" onchange="updateBudgetTotal()">
+                </aside>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== ABA: DASHBOARD EM TEMPO REAL ===== -->
+    <div id="tab-realtime" class="tab-content">
+        <div class="clients-container">
+            <h2 style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+                <i class="fas fa-satellite-dish" style="color:#40998F;"></i>
+                Dashboard em Tempo Real
+                <span style="font-size:12px;font-weight:400;color:#888;margin-left:4px;">
+                    <span class="rt-pulse"></span>Atualizando automaticamente a cada 30s
+                </span>
+            </h2>
+            <p id="rt-last-update" class="rt-last-update" style="margin-bottom:16px;">—</p>
+
+            <!-- KPIs principais -->
+            <div class="rt-grid" id="rt-kpis">
+                <div class="rt-kpi" style="--kpi-color:#40998F;--kpi-bg:#e8f5f4;">
+                    <div class="rt-kpi-icon"><i class="fas fa-users"></i></div>
+                    <div class="rt-kpi-body">
+                        <div class="rt-kpi-value" id="rt-total-clientes">—</div>
+                        <div class="rt-kpi-label">Total de Clientes</div>
                     </div>
-                    <div class="input-group">
-                        <label>Unidade:</label>
-                        <input type="text" value="un" readonly>
-                    </div>
-                    <div class="input-group">
-                        <label>Valor Unitário (R$):</label>
-                        <input type="number" step="0.01" value="0" onchange="updateBudgetTotal()">
-                    </div>
-                    <div class="input-group">
-                        <button type="button" class="btn-action btn-delete" onclick="removeServiceFromBudget(${index})">
-                            <i class="fas fa-trash"></i> Remover
-                        </button>
+                    <span class="rt-kpi-badge neutral" id="rt-novos-mes-badge">+0 este mês</span>
+                </div>
+                <div class="rt-kpi" style="--kpi-color:#2196F3;--kpi-bg:#e3f2fd;">
+                    <div class="rt-kpi-icon"><i class="fas fa-briefcase"></i></div>
+                    <div class="rt-kpi-body">
+                        <div class="rt-kpi-value" id="rt-total-servicos">—</div>
+                        <div class="rt-kpi-label">Total de Serviços</div>
                     </div>
                 </div>
-            `;
-            
-            container.appendChild(serviceDiv);
-            currentBudget.services.push({name: '', quantity: 1, unit: 'un', price: 0});
-        }
-
-        function updateServicePrice(index, serviceKey) {
-            if (!serviceKey) return;
-            
-            const saved = localStorage.getItem('pcformatech_services');
-            const services = saved ? JSON.parse(saved) : defaultServices;
-            
-            const container = document.getElementById('budgetServices');
-            const serviceDiv = container.children[index];
-            const inputs = serviceDiv.querySelectorAll('input[type="number"]');
-            
-            currentBudget.services[index].name = services[serviceKey].name;
-            currentBudget.services[index].price = services[serviceKey].price;
-            
-            inputs[1].value = services[serviceKey].price;
-            updateBudgetTotal();
-        }
-
-        function removeServiceFromBudget(index) {
-            const container = document.getElementById('budgetServices');
-            container.children[index].remove();
-            currentBudget.services.splice(index, 1);
-            updateBudgetTotal();
-        }
-
-        function addProductToBudget() {
-            const container = document.getElementById('budgetProducts');
-            const index = currentBudget.products.length;
-
-            const productDiv = document.createElement('div');
-            productDiv.className = 'service-card';
-            productDiv.innerHTML = `
-                <div class="client-form">
-                    <div class="input-group">
-                        <label>Produto:</label>
-                        <select onchange="updateProductPrice(${index}, this.value)">
-                            <option value="">Selecione...</option>
-                            ${products.map(p => 
-                                `<option value="${p.id}" data-price="${p.price}">${p.name}</option>`
-                            ).join('')}
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label>Quantidade:</label>
-                        <input type="number" value="1" min="1" onchange="updateBudgetTotal()">
-                    </div>
-                    <div class="input-group">
-                        <label>Unidade:</label>
-                        <input type="text" value="un" readonly>
-                    </div>
-                    <div class="input-group">
-                        <label>Valor Unitário (R$):</label>
-                        <input type="number" step="0.01" value="0" onchange="updateBudgetTotal()">
-                    </div>
-                    <div class="input-group">
-                        <button type="button" class="btn-action btn-delete" onclick="removeProductFromBudget(${index})">
-                            <i class="fas fa-trash"></i> Remover
-                        </button>
+                <div class="rt-kpi" style="--kpi-color:#4CAF50;--kpi-bg:#e8f5e9;">
+                    <div class="rt-kpi-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="rt-kpi-body">
+                        <div class="rt-kpi-value" id="rt-serv-concluido">—</div>
+                        <div class="rt-kpi-label">Serviços Concluídos</div>
                     </div>
                 </div>
-            `;
-            
-            container.appendChild(productDiv);
-            currentBudget.products.push({name: '', quantity: 1, unit: 'un', price: 0});
-        }
-
-        function updateProductPrice(index, productId) {
-            if (!productId) return;
-            
-            const product = products.find(p => p.id == productId);
-            if (!product) return;
-            
-            const container = document.getElementById('budgetProducts');
-            const productDiv = container.children[index];
-            const inputs = productDiv.querySelectorAll('input[type="number"]');
-            
-            currentBudget.products[index].name = product.name;
-            currentBudget.products[index].price = product.price;
-            
-            inputs[1].value = product.price;
-            updateBudgetTotal();
-        }
-
-        function removeProductFromBudget(index) {
-            const container = document.getElementById('budgetProducts');
-            container.children[index].remove();
-            currentBudget.products.splice(index, 1);
-            updateBudgetTotal();
-        }
-
-        function updateBudgetTotal() {
-            let total = 0;
-            
-            // Calcular total dos serviços
-            const servicesContainer = document.getElementById('budgetServices');
-            Array.from(servicesContainer.children).forEach((div, index) => {
-                const inputs = div.querySelectorAll('input[type="number"]');
-                const quantity = parseFloat(inputs[0].value) || 0;
-                const price = parseFloat(inputs[1].value) || 0;
-                total += quantity * price;
-            });
-            
-            // Calcular total dos produtos
-            const productsContainer = document.getElementById('budgetProducts');
-            Array.from(productsContainer.children).forEach((div, index) => {
-                const inputs = div.querySelectorAll('input[type="number"]');
-                const quantity = parseFloat(inputs[0].value) || 0;
-                const price = parseFloat(inputs[1].value) || 0;
-                total += quantity * price;
-            });
-            
-            document.getElementById('budgetTotal').textContent = total.toFixed(2).replace('.', ',');
-        }
-
-        function saveBudget() {
-            const clientId = parseInt(document.getElementById('budgetClientId').value);
-            if (!clientId) {
-                alert('Por favor, selecione um cliente!');
-                return;
-            }
-
-            // Coletar dados dos serviços
-            const servicesContainer = document.getElementById('budgetServices');
-            const services = [];
-            Array.from(servicesContainer.children).forEach((div) => {
-                const select = div.querySelector('select');
-                const inputs = div.querySelectorAll('input');
-                const selectedOption = select.options[select.selectedIndex];
-                
-                if (selectedOption.value) {
-                    services.push({
-                        name: selectedOption.textContent,
-                        quantity: parseInt(inputs[0].value) || 1,
-                        unit: inputs[1].value || 'un',
-                        price: parseFloat(inputs[2].value) || 0
-                    });
-                }
-            });
-
-            // Coletar dados dos produtos
-            const productsContainer = document.getElementById('budgetProducts');
-            const budgetProducts = [];
-            Array.from(productsContainer.children).forEach((div) => {
-                const select = div.querySelector('select');
-                const inputs = div.querySelectorAll('input');
-                const selectedOption = select.options[select.selectedIndex];
-                
-                if (selectedOption.value) {
-                    budgetProducts.push({
-                        name: selectedOption.textContent,
-                        quantity: parseInt(inputs[0].value) || 1,
-                        unit: inputs[1].value || 'un',
-                        price: parseFloat(inputs[2].value) || 0
-                    });
-                }
-            });
-
-            // Calcular data de vencimento da garantia se for um valor padrão
-            let warrantyValue = document.getElementById('budgetWarranty').value;
-            if (warrantyValue === '3 Meses' || warrantyValue.startsWith('3 Meses (válido até')) {
-                const dataAtual = new Date();
-                const dataGarantia = new Date(dataAtual);
-                dataGarantia.setDate(dataGarantia.getDate() + 90);
-                
-                const diaGarantia = String(dataGarantia.getDate()).padStart(2, '0');
-                const mesGarantia = String(dataGarantia.getMonth() + 1).padStart(2, '0');
-                const anoGarantia = dataGarantia.getFullYear();
-                const dataGarantiaFormatada = `${diaGarantia}/${mesGarantia}/${anoGarantia}`;
-                
-                warrantyValue = `3 Meses (válido até ${dataGarantiaFormatada})`;
-            }
-            
-            const budget = {
-                id: currentBudget.id || Date.now(),
-                number: currentBudget.number,
-                clientId,
-                date: document.getElementById('budgetDate').value,
-                type: document.getElementById('budgetType').value,
-                services,
-                products: budgetProducts,
-                defect: document.getElementById('budgetDefect').value,
-                report: document.getElementById('budgetReport').value,
-                solution: document.getElementById('budgetSolution').value,
-                observations: document.getElementById('budgetObservations').value,
-                warranty: warrantyValue,
-                createdAt: currentBudget.createdAt || new Date().toISOString()
-            };
-
-            if (currentBudget.id) {
-                const index = budgets.findIndex(b => b.id === currentBudget.id);
-                budgets[index] = budget;
-            } else {
-                budgets.push(budget);
-            }
-
-            saveBudgetsToStorage();
-            closeModal('budgetModal');
-            loadBudgetsTable();
-            showSuccess();
-        }
-
-        function loadBudgetsTable() {
-            const tbody = document.getElementById('budgetsTableBody');
-            tbody.innerHTML = '';
-
-            const searchTerm = document.getElementById('searchBudget')?.value.toLowerCase() || '';
-            
-            const filteredBudgets = budgets.filter(budget => {
-                const client = clients.find(c => c.id === budget.clientId);
-                const clientName = client ? client.name.toLowerCase() : '';
-                return clientName.includes(searchTerm) || budget.number.includes(searchTerm);
-            });
-
-            filteredBudgets.reverse().forEach(budget => {
-                const client = clients.find(c => c.id === budget.clientId);
-                const total = calculateBudgetTotal(budget);
-                
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td><strong>${budget.number}</strong></td>
-                    <td>${client ? client.name : 'Cliente não encontrado'}</td>
-                    <td>${new Date(budget.date).toLocaleDateString('pt-BR')}</td>
-                    <td><strong>R$ ${total.toFixed(2).replace('.', ',')}</strong></td>
-                    <td><span class="service-status ${budget.type === 'laudo' ? 'status-concluido' : 'status-andamento'}">${budget.type === 'laudo' ? 'Laudo' : 'Orçamento'}</span></td>
-                    <td>
-                        <button class="btn-action btn-view" onclick="viewBudget(${budget.id})">
-                            <i class="fas fa-eye"></i> Ver
-                        </button>
-                        <button class="btn-action btn-convert" onclick="convertBudgetToService(${budget.id})" title="Converter em Serviço">
-                            <i class="fas fa-exchange-alt"></i> Converter
-                        </button>
-                        <button class="btn-action btn-whatsapp" onclick="generatePDFForBudget(${budget.id})">
-                            <i class="fas fa-file-pdf"></i> PDF
-                        </button>
-                        <button class="btn-action btn-delete" onclick="deleteBudget(${budget.id})">
-                            <i class="fas fa-trash"></i> Excluir
-                        </button>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-
-        function calculateBudgetTotal(budget) {
-            let total = 0;
-            
-            if (budget.services) {
-                budget.services.forEach(service => {
-                    total += (service.quantity || 1) * (service.price || 0);
-                });
-            }
-            
-            if (budget.products) {
-                budget.products.forEach(product => {
-                    total += (product.quantity || 1) * (product.price || 0);
-                });
-            }
-            
-            return total;
-        }
-
-        function searchBudgets() {
-            loadBudgetsTable();
-        }
-
-        function viewBudget(budgetId) {
-            const budget = budgets.find(b => b.id === budgetId);
-            if (!budget) return;
-
-            currentBudget = {...budget};
-            
-            document.getElementById('budgetClientId').value = budget.clientId;
-            document.getElementById('budgetDate').value = budget.date;
-            document.getElementById('budgetType').value = budget.type;
-            document.getElementById('budgetDefect').value = budget.defect || '';
-            document.getElementById('budgetReport').value = budget.report || '';
-            document.getElementById('budgetSolution').value = budget.solution || '';
-            document.getElementById('budgetObservations').value = budget.observations || '';
-            document.getElementById('budgetWarranty').value = budget.warranty || '';
-
-            // Recarregar serviços
-            const servicesContainer = document.getElementById('budgetServices');
-            servicesContainer.innerHTML = '';
-            // Implementar lógica de reload
-
-            document.getElementById('budgetModal').style.display = 'block';
-        }
-
-        function deleteBudget(budgetId) {
-            if (confirm('Tem certeza que deseja excluir este orçamento/laudo?')) {
-                budgets = budgets.filter(b => b.id !== budgetId);
-                saveBudgetsToStorage();
-                loadBudgetsTable();
-                showSuccess();
-            }
-        }
-
-        function generatePDF() {
-            if (!currentBudget || !currentBudget.clientId) {
-                alert('Por favor, preencha todos os dados obrigatórios!');
-                return;
-            }
-
-            const clientId = parseInt(document.getElementById('budgetClientId').value);
-            const client = clients.find(c => c.id === clientId);
-            
-            if (!client) {
-                alert('Cliente não encontrado!');
-                return;
-            }
-
-            generatePDFDocument(currentBudget, client);
-        }
-
-        function generatePDFForBudget(budgetId) {
-            const budget = budgets.find(b => b.id === budgetId);
-            const client = clients.find(c => c.id === budget.clientId);
-            
-            if (!budget || !client) {
-                alert('Dados não encontrados!');
-                return;
-            }
-
-            generatePDFDocument(budget, client);
-        }
-
-        function convertBudgetToService(budgetId) {
-            const budget = budgets.find(b => b.id === budgetId);
-            if (!budget) {
-                alert('Orçamento/Laudo não encontrado!');
-                return;
-            }
-            
-            const client = clients.find(c => c.id === budget.clientId);
-            if (!client) {
-                alert('Cliente não encontrado!');
-                return;
-            }
-            
-            const confirmMsg = `Deseja converter este ${budget.type === 'laudo' ? 'Laudo' : 'Orçamento'} em serviços para o cliente ${client.name}?\n\nSerão adicionados ${budget.services.length} serviço(s) ao histórico do cliente.`;
-            
-            if (!confirm(confirmMsg)) {
-                return;
-            }
-            
-            // Inicializar array de serviços se não existir
-            if (!client.services) client.services = [];
-            
-            // Adicionar cada serviço do orçamento ao cliente
-            budget.services.forEach(budgetService => {
-                const service = {
-                    type: budgetService.name,
-                    description: `Convertido do ${budget.type} Nº ${budget.number}${budget.defect ? ' - ' + budget.defect : ''}`,
-                    price: budgetService.quantity * budgetService.price,
-                    status: 'concluido', // Assumindo que está concluído
-                    date: budget.date
-                };
-                client.services.push(service);
-            });
-            
-            // Adicionar produtos como serviços também, se houver
-            if (budget.products && budget.products.length > 0) {
-                budget.products.forEach(budgetProduct => {
-                    const service = {
-                        type: `Produto: ${budgetProduct.name}`,
-                        description: `Produto fornecido - Convertido do ${budget.type} Nº ${budget.number}`,
-                        price: budgetProduct.quantity * budgetProduct.price,
-                        status: 'concluido',
-                        date: budget.date
-                    };
-                    client.services.push(service);
-                });
-            }
-            
-            saveClientsToStorage();
-            updateDashboard();
-            
-            alert(`✅ Sucesso!\n\n${budget.services.length + (budget.products ? budget.products.length : 0)} item(ns) convertido(s) em serviço(s) para o cliente ${client.name}.`);
-            
-            // Atualizar a visualização se estiver na aba de orçamentos
-            loadBudgetsTable();
-        }
-        
-        function generatePDFDocument(budget, client) {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-
-            // Cabeçalho
-            doc.setFontSize(18);
-            doc.setFont('helvetica', 'bold');
-            doc.text('PC Formatech', 105, 20, { align: 'center' });
-            
-            doc.setFontSize(9);
-            doc.setFont('helvetica', 'normal');
-            doc.text('62.712.268/0001-03', 105, 26, { align: 'center' });
-            doc.text('Rodovia PA-160 - Serra Dourada II', 105, 31, { align: 'center' });
-            doc.text('68352-193 - Canaã dos Carajas/PA', 105, 36, { align: 'center' });
-            
-            doc.text('contatopcformatech@gmail.com', 190, 20, { align: 'right' });
-
-            // Dados do Cliente
-            doc.setFontSize(10);
-            doc.setFont('helvetica', 'bold');
-            doc.setTextColor(128, 128, 128);
-            doc.text('Dados do Cliente', 20, 50);
-            
-            doc.setFont('helvetica', 'normal');
-            doc.setTextColor(0, 0, 0);
-            doc.text(client.name, 20, 58);
-            
-            const budgetDate = new Date(budget.date).toLocaleDateString('pt-BR');
-            doc.text(`Data: ${budgetDate}`, 190, 58, { align: 'right' });
-
-            // Número do Laudo
-            doc.setFillColor(128, 128, 128);
-            doc.rect(20, 65, 170, 10, 'F');
-            doc.setTextColor(255, 255, 255);
-            doc.setFont('helvetica', 'bold');
-            const title = budget.type === 'laudo' ? 'LAUDO TÉCNICO' : 'ORÇAMENTO';
-            doc.text(`${title} Nº ${budget.number}`, 105, 72, { align: 'center' });
-
-            // Serviços
-            doc.setTextColor(0, 0, 0);
-            doc.setFont('helvetica', 'bold');
-            doc.text('Serviços', 20, 85);
-
-            let yPos = 90;
-            let totalServicos = 0;
-
-            if (budget.services && budget.services.length > 0) {
-                const servicesData = budget.services.map(s => [
-                    s.name,
-                    s.quantity,
-                    s.unit,
-                    `R$ ${s.price.toFixed(2).replace('.', ',')}`,
-                    `R$ ${(s.quantity * s.price).toFixed(2).replace('.', ',')}`
-                ]);
-
-                doc.autoTable({
-                    startY: yPos,
-                    head: [['Nome', 'Quantidade', 'Unidade', 'Valor Unitário', 'Valor Total']],
-                    body: servicesData,
-                    theme: 'grid',
-                    headStyles: { fillColor: [200, 200, 200], textColor: [0, 0, 0] },
-                    margin: { left: 20, right: 20 }
-                });
-
-                totalServicos = budget.services.reduce((sum, s) => sum + (s.quantity * s.price), 0);
-                yPos = doc.lastAutoTable.finalY + 5;
-                
-                doc.setFont('helvetica', 'bold');
-                doc.text(`Total Serviços`, 140, yPos);
-                doc.text(`R$ ${totalServicos.toFixed(2).replace('.', ',')}`, 190, yPos, { align: 'right' });
-                yPos += 10;
-            }
-
-            // Produtos
-            if (budget.products && budget.products.length > 0) {
-                doc.setFont('helvetica', 'bold');
-                doc.text('Produtos', 20, yPos);
-                yPos += 5;
-
-                const productsData = budget.products.map(p => [
-                    p.name,
-                    p.quantity,
-                    p.unit,
-                    `R$ ${p.price.toFixed(2).replace('.', ',')}`,
-                    `R$ ${(p.quantity * p.price).toFixed(2).replace('.', ',')}`
-                ]);
-
-                doc.autoTable({
-                    startY: yPos,
-                    head: [['Nome', 'Quantidade', 'Unidade', 'Valor Unitário', 'Valor Total']],
-                    body: productsData,
-                    theme: 'grid',
-                    headStyles: { fillColor: [200, 200, 200], textColor: [0, 0, 0] },
-                    margin: { left: 20, right: 20 }
-                });
-
-                const totalProdutos = budget.products.reduce((sum, p) => sum + (p.quantity * p.price), 0);
-                yPos = doc.lastAutoTable.finalY + 5;
-                
-                doc.setFont('helvetica', 'bold');
-                doc.text(`Total Produtos`, 140, yPos);
-                doc.text(`R$ ${totalProdutos.toFixed(2).replace('.', ',')}`, 190, yPos, { align: 'right' });
-                yPos += 10;
-            }
-
-            // Total Geral
-            const total = calculateBudgetTotal(budget);
-            doc.setFont('helvetica', 'bold');
-            doc.text(`Subtotal`, 140, yPos);
-            doc.text(`R$ ${total.toFixed(2).replace('.', ',')}`, 190, yPos, { align: 'right' });
-            yPos += 5;
-            doc.text(`Total`, 140, yPos);
-            doc.text(`R$ ${total.toFixed(2).replace('.', ',')}`, 190, yPos, { align: 'right' });
-            yPos += 10;
-
-            // Seções adicionais
-            if (budget.defect) {
-                doc.setFont('helvetica', 'bold');
-                doc.text('Defeito', 20, yPos);
-                yPos += 5;
-                doc.setFont('helvetica', 'normal');
-                const defectLines = doc.splitTextToSize(budget.defect, 170);
-                doc.text(defectLines, 20, yPos);
-                yPos += (defectLines.length * 5) + 5;
-            }
-
-            if (budget.report) {
-                doc.setFont('helvetica', 'bold');
-                doc.text('Laudo', 20, yPos);
-                yPos += 5;
-                doc.setFont('helvetica', 'normal');
-                const reportLines = doc.splitTextToSize(budget.report, 170);
-                doc.text(reportLines, 20, yPos);
-                yPos += (reportLines.length * 5) + 5;
-            }
-
-            if (budget.solution) {
-                doc.setFont('helvetica', 'bold');
-                doc.text('Solução', 20, yPos);
-                yPos += 5;
-                doc.setFont('helvetica', 'normal');
-                const solutionLines = doc.splitTextToSize(budget.solution, 170);
-                doc.text(solutionLines, 20, yPos);
-                yPos += (solutionLines.length * 5) + 5;
-            }
-
-            if (budget.observations) {
-                doc.setFont('helvetica', 'bold');
-                doc.text('Observações', 20, yPos);
-                yPos += 5;
-                doc.setFont('helvetica', 'normal');
-                const obsLines = doc.splitTextToSize(budget.observations, 170);
-                doc.text(obsLines, 20, yPos);
-                yPos += (obsLines.length * 5) + 5;
-            }
-
-            if (budget.warranty) {
-                doc.setFont('helvetica', 'bold');
-                doc.text(`Garantia: ${budget.warranty}`, 20, yPos);
-                yPos += 10;
-            }
-
-            // Assinatura
-            yPos = Math.max(yPos, 250);
-            doc.line(65, yPos, 145, yPos);
-            doc.setFont('helvetica', 'normal');
-            doc.text('PC Formatech', 105, yPos + 5, { align: 'center' });
-
-            // Rodapé
-            doc.setFontSize(8);
-            doc.text('instagram: @pcformatech', 20, 285);
-
-            // Salvar PDF
-            const fileName = `${budget.type}_${budget.number}_${client.name.replace(/\s/g, '_')}.pdf`;
-            doc.save(fileName);
-        }
-
-        // Inicialização de produtos e orçamentos
-        document.addEventListener('DOMContentLoaded', () => {
-            loadProductsFromStorage();
-            loadBudgetsFromStorage();
-        });
-
-        // ===== GESTÃO DE IMAGENS DO SLIDER =====
-        
-        // Slides padrão
-        const defaultSlides = [
-            { url: 'https://images.unsplash.com/photo-1587202372634-32705e3bf49c?auto=format&fit=crop&q=90&w=2400', alt: 'Laptop em Manutenção' },
-            { url: 'https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&q=90&w=2400', alt: 'Workspace com Laptop' },
-            { url: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=90&w=2400', alt: 'Programação e Desenvolvimento' },
-            { url: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&q=90&w=2400', alt: 'Computador Profissional' },
-            { url: 'https://images.unsplash.com/photo-1551033406-611cf9a28f67?auto=format&fit=crop&q=90&w=2400', alt: 'Laptop em Ambiente Profissional' },
-            { url: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=90&w=2400', alt: 'Setup Moderno de Programação' },
-            { url: 'https://images.unsplash.com/photo-1547658719-da2b51169166?auto=format&fit=crop&q=90&w=2400', alt: 'Hardware e Componentes' },
-            { url: 'https://images.unsplash.com/photo-1484788984921-03950022c9ef?auto=format&fit=crop&q=90&w=2400', alt: 'MacBook Pro Workspace' },
-            { url: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=90&w=2400', alt: 'Tech Workspace Minimalista' },
-            { url: 'https://images.unsplash.com/photo-1537498425277-c283d32ef9db?auto=format&fit=crop&q=90&w=2400', alt: 'Gaming PC Setup' }
-        ];
-
-        function loadHeroSlides() {
-            const saved = localStorage.getItem('pcformatech_hero_slides');
-            heroSlides = saved ? JSON.parse(saved) : defaultSlides;
-        }
-
-        function saveHeroSlides() {
-            localStorage.setItem('pcformatech_hero_slides', JSON.stringify(heroSlides));
-        }
-
-        function renderSlides() {
-            const container = document.getElementById('slidesContainer');
-            container.innerHTML = '';
-
-            heroSlides.forEach((slide, index) => {
-                const card = document.createElement('div');
-                card.className = 'slide-card';
-                card.innerHTML = `
-                    <img src="${slide.url}" alt="${slide.alt}" class="slide-preview" onerror="this.src='https://via.placeholder.com/800x400?text=Imagem+Indispon%C3%ADvel'">
-                    <div class="slide-info">
-                        <div class="slide-order">
-                            <span>Imagem ${index + 1}</span>
-                        </div>
-                        <input type="text" id="slide-url-${index}" value="${slide.url}" placeholder="URL da imagem">
-                        <input type="text" id="slide-alt-${index}" value="${slide.alt}" placeholder="Texto alternativo">
-                        <div class="slide-actions">
-                            <button class="btn-update" onclick="updateSlide(${index})">
-                                <i class="fas fa-save"></i> Salvar
-                            </button>
-                            <button class="btn-remove" onclick="removeSlide(${index})">
-                                <i class="fas fa-trash"></i> Remover
-                            </button>
-                        </div>
+                <div class="rt-kpi" style="--kpi-color:#FF9800;--kpi-bg:#fff3e0;">
+                    <div class="rt-kpi-icon"><i class="fas fa-clock"></i></div>
+                    <div class="rt-kpi-body">
+                        <div class="rt-kpi-value" id="rt-serv-pendente">—</div>
+                        <div class="rt-kpi-label">Serviços Pendentes</div>
                     </div>
-                `;
-                container.appendChild(card);
-            });
-        }
+                </div>
+                <div class="rt-kpi" style="--kpi-color:#9C27B0;--kpi-bg:#f3e5f5;">
+                    <div class="rt-kpi-icon"><i class="fas fa-file-invoice"></i></div>
+                    <div class="rt-kpi-body">
+                        <div class="rt-kpi-value" id="rt-orc-abertos">—</div>
+                        <div class="rt-kpi-label">Orçamentos em Aberto</div>
+                    </div>
+                </div>
+                <div class="rt-kpi" style="--kpi-color:#E91E63;--kpi-bg:#fce4ec;">
+                    <div class="rt-kpi-icon"><i class="fas fa-percentage"></i></div>
+                    <div class="rt-kpi-body">
+                        <div class="rt-kpi-value" id="rt-taxa-conversao">—</div>
+                        <div class="rt-kpi-label">Taxa de Conversão</div>
+                    </div>
+                </div>
+                <div class="rt-kpi" style="--kpi-color:#00BCD4;--kpi-bg:#e0f7fa;">
+                    <div class="rt-kpi-icon" style="position:relative;">
+                        <i class="fas fa-wifi"></i>
+                        <span style="position:absolute;top:-3px;right:-3px;width:9px;height:9px;background:#4CAF50;border-radius:50%;border:2px solid #fff;animation:rt-blink 1.4s infinite;"></span>
+                    </div>
+                    <div class="rt-kpi-body">
+                        <div class="rt-kpi-value" id="rt-online-agora">0</div>
+                        <div class="rt-kpi-label">Online Agora</div>
+                    </div>
+                    <span class="rt-kpi-badge neutral" id="rt-online-badge">no site</span>
+                </div>
+            </div>
 
-        function addNewSlide() {
-            const url = prompt('Cole a URL da nova imagem:');
-            if (!url) return;
+            <!-- Visitantes Online -->
+            <div class="rt-section-title"><i class="fas fa-wifi" style="color:#00BCD4;"></i> Visitantes Online Agora</div>
+            <div class="rt-card" style="margin-bottom:14px;">
+                <div id="rt-online-lista">
+                    <div class="rt-empty">Aguardando dados de presença…</div>
+                </div>
+            </div>
 
-            const alt = prompt('Digite o texto alternativo (descrição) da imagem:');
-            if (!alt) return;
+            <!-- Faturamento -->
+            <div class="rt-section-title"><i class="fas fa-money-bill-wave" style="color:#4CAF50;"></i> Faturamento (Serviços Concluídos)</div>
+            <div class="rt-card" style="margin-bottom:14px;">
+                <div class="rt-fat-row">
+                    <div class="rt-fat-item">
+                        <div class="rt-fat-val" id="rt-fat-dia">R$ 0,00</div>
+                        <div class="rt-fat-label">Hoje</div>
+                    </div>
+                    <div class="rt-fat-item">
+                        <div class="rt-fat-val" id="rt-fat-semana">R$ 0,00</div>
+                        <div class="rt-fat-label">Esta Semana</div>
+                    </div>
+                    <div class="rt-fat-item">
+                        <div class="rt-fat-val" id="rt-fat-mes">R$ 0,00</div>
+                        <div class="rt-fat-label">Este Mês</div>
+                    </div>
+                    <div class="rt-fat-item">
+                        <div class="rt-fat-val" id="rt-fat-total">R$ 0,00</div>
+                        <div class="rt-fat-label">Total Geral</div>
+                    </div>
+                </div>
+                <div style="margin-top:10px;padding-top:10px;border-top:1px solid #f0f0f0;display:flex;align-items:center;gap:8px;">
+                    <span style="font-size:12px;color:#888;">Ticket médio por cliente:</span>
+                    <span style="font-weight:700;color:#0B3D3D;font-size:14px;" id="rt-ticket-medio">R$ 0,00</span>
+                </div>
+            </div>
 
-            heroSlides.push({ url, alt });
-            saveHeroSlides();
-            renderSlides();
-            updateIndexHtml();
-            showSuccess();
-        }
+            <!-- Linha: Gráfico de receita + Status dos serviços -->
+            <div class="rt-section-title"><i class="fas fa-chart-line" style="color:#2196F3;"></i> Receita Mensal (últimos 6 meses)</div>
+            <div class="rt-row">
+                <div class="rt-card rt-full">
+                    <div class="rt-chart-wrap">
+                        <canvas id="rt-revenue-chart"></canvas>
+                    </div>
+                </div>
+            </div>
 
-        function updateSlide(index) {
-            const url = document.getElementById(`slide-url-${index}`).value;
-            const alt = document.getElementById(`slide-alt-${index}`).value;
+            <!-- Linha: Status dos serviços + Funil de conversão -->
+            <div class="rt-section-title"><i class="fas fa-filter" style="color:#FF9800;"></i> Status e Funil de Conversão</div>
+            <div class="rt-row">
+                <div class="rt-card">
+                    <h4><i class="fas fa-tasks"></i> Status dos Serviços</h4>
+                    <div class="rt-status-row" id="rt-status-badges">
+                        <span class="rt-badge pendente">⏳ Pendente: <span id="rt-b-pendente">0</span></span>
+                        <span class="rt-badge andamento">🔧 Andamento: <span id="rt-b-andamento">0</span></span>
+                        <span class="rt-badge concluido">✅ Concluído: <span id="rt-b-concluido">0</span></span>
+                        <span class="rt-badge cancelado">❌ Cancelado: <span id="rt-b-cancelado">0</span></span>
+                    </div>
+                    <canvas id="rt-status-chart" style="max-height:160px;"></canvas>
+                </div>
+                <div class="rt-card">
+                    <h4><i class="fas fa-funnel-dollar"></i> Funil de Conversão</h4>
+                    <div class="rt-funnel" id="rt-funnel"></div>
+                </div>
+            </div>
 
-            if (!url || !alt) {
-                alert('Por favor, preencha a URL e o texto alternativo!');
-                return;
-            }
+            <!-- Linha: Top serviços + Top clientes -->
+            <div class="rt-section-title"><i class="fas fa-trophy" style="color:#FF9800;"></i> Rankings</div>
+            <div class="rt-row">
+                <div class="rt-card">
+                    <h4><i class="fas fa-star"></i> Top 5 Serviços Mais Solicitados</h4>
+                    <ul class="rt-list" id="rt-top-servicos">
+                        <li class="rt-empty">Sem dados ainda</li>
+                    </ul>
+                </div>
+                <div class="rt-card">
+                    <h4><i class="fas fa-crown"></i> Top 5 Clientes por Faturamento</h4>
+                    <ul class="rt-list" id="rt-top-clientes">
+                        <li class="rt-empty">Sem dados ainda</li>
+                    </ul>
+                </div>
+            </div>
 
-            heroSlides[index] = { url, alt };
-            saveHeroSlides();
-            renderSlides();
-            updateIndexHtml();
-            showSuccess();
-        }
+            <!-- Alertas e últimas atividades -->
+            <div class="rt-section-title"><i class="fas fa-bell" style="color:#E91E63;"></i> Últimas Atividades</div>
+            <div class="rt-card">
+                <div class="rt-alert-list" id="rt-atividades">
+                    <div class="rt-empty">Nenhuma atividade registrada ainda.</div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        function removeSlide(index) {
-            if (heroSlides.length <= 1) {
-                alert('Você precisa ter pelo menos 1 imagem no carrossel!');
-                return;
-            }
-
-            if (confirm('Tem certeza que deseja remover esta imagem?')) {
-                heroSlides.splice(index, 1);
-                saveHeroSlides();
-                renderSlides();
-                updateIndexHtml();
-                showSuccess();
-            }
-        }
-
-        function updateIndexHtml() {
-            alert('⚠️ ATENÇÃO!\n\nAs alterações foram salvas no painel.\n\nPara aplicar as mudanças no site, você precisa atualizar o arquivo index.html.\n\nVocê pode:\n1. Copiar o código HTML gerado abaixo\n2. Ou usar a funcão "Exportar HTML" que será criada\n\nDeseja ver o código HTML agora?');
-            
-            // Gerar HTML dos slides
-            let html = '';
-            heroSlides.forEach((slide, index) => {
-                const activeClass = index === 0 ? ' active' : '';
-                html += `                <div class="hero-slide${activeClass}">\n`;
-                html += `                    <img src="${slide.url}" alt="${slide.alt}">\n`;
-                html += `                </div>\n`;
-            });
-            
-            console.log('HTML dos slides:\n', html);
-            console.log('\nIndicadores:\n');
-            
-            let indicators = '';
-            heroSlides.forEach((slide, index) => {
-                const activeClass = index === 0 ? ' active' : '';
-                indicators += `                <span class="indicator${activeClass}" data-slide="${index}"></span>\n`;
-            });
-            
-            console.log(indicators);
-        }
-    </script>
+        <script src="admin-app.secure.js"></script>
 </body>
 </html>

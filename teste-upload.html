@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Upload de Imagem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        .form-group {
+            margin: 20px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="file"] {
+            padding: 10px;
+            border: 2px dashed #40998F;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            background: #40998F;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        button:hover {
+            background: #2D7A7A;
+        }
+        .preview {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .preview img {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0f8f7;
+            border-left: 4px solid #40998F;
+            border-radius: 4px;
+            display: none;
+        }
+        .result.show {
+            display: block;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+    <link rel="stylesheet" href="theme-system.css">
+    <script src="theme-system.secure.js" defer></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Teste de Upload de Imagem com Redimensionamento</h1>
+        
+        <div class="form-group">
+            <label for="fileInput">Selecione uma imagem:</label>
+            <input type="file" id="fileInput" accept="image/*">
+            <small style="color: #999; display: block; margin-top: 5px;">
+                Formatos: JPG, PNG, WebP. Máximo 10MB. 
+                Será redimensionada para 800x400px.
+            </small>
+        </div>
+        
+        <div class="form-group">
+            <label for="altText">Texto Alternativo (Descrição):</label>
+            <input type="text" id="altText" placeholder="Descrição da imagem">
+        </div>
+        
+        <div class="preview" id="preview"></div>
+        
+        <button onclick="submitImage()">Processar Imagem</button>
+        
+        <div class="result" id="result">
+            <h3>Resultado do Processamento:</h3>
+            <p><strong>Status:</strong> <span id="status">Pronto</span></p>
+            <p><strong>Tamanho Original:</strong> <span id="originalSize">-</span></p>
+            <p><strong>Tamanho Processado:</strong> <span id="processedSize">-</span></p>
+            <p><strong>Descrição:</strong> <span id="altResult">-</span></p>
+            <p><strong>Base64 (primeiros 100 caracteres):</strong></p>
+            <textarea id="base64Output" readonly></textarea>
+            <p style="margin-top: 15px; color: #666; font-size: 12px;">
+                ✓ Este é o formato que será armazenado no localStorage do painel administrativo.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        let selectedFile = null;
+        let processedBase64 = null;
+
+        function resizeAndConvertImage(file, maxWidth = 800, maxHeight = 400, quality = 0.85) {
+            return new Promise((resolve, reject) => {
+                if (!file.type.startsWith('image/')) {
+                    reject(new Error('Por favor, selecione um arquivo de imagem válido'));
+                    return;
+                }
+
+                if (file.size > 10 * 1024 * 1024) {
+                    reject(new Error('Arquivo muito grande. Máximo 10MB'));
+                    return;
+                }
+
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+
+                        // Manter proporção enquanto redimensiona
+                        if (width > height) {
+                            if (width > maxWidth) {
+                                height = Math.round((height * maxWidth) / width);
+                                width = maxWidth;
+                            }
+                        } else {
+                            if (height > maxHeight) {
+                                width = Math.round((width * maxHeight) / height);
+                                height = maxHeight;
+                            }
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        // Converter para Base64 com qualidade apropriada
+                        const base64 = canvas.toDataURL('image/jpeg', quality);
+                        resolve({
+                            base64: base64,
+                            originalSize: formatBytes(file.size),
+                            processedSize: formatBytes(base64.length),
+                            width: width,
+                            height: height
+                        });
+                    };
+
+                    img.onerror = function() {
+                        reject(new Error('Erro ao processar imagem'));
+                    };
+
+                    img.src = e.target.result;
+                };
+
+                reader.onerror = function() {
+                    reject(new Error('Erro ao ler arquivo'));
+                };
+
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
+        }
+
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            selectedFile = e.target.files[0];
+            if (selectedFile) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const preview = document.getElementById('preview');
+                    preview.innerHTML = `<img src="${event.target.result}" alt="Preview">`;
+                };
+                reader.readAsDataURL(selectedFile);
+            }
+        });
+
+        async function submitImage() {
+            const altText = document.getElementById('altText').value;
+            const resultDiv = document.getElementById('result');
+
+            if (!selectedFile) {
+                alert('Por favor, selecione uma imagem');
+                return;
+            }
+
+            if (!altText) {
+                alert('Por favor, preencha o texto alternativo');
+                return;
+            }
+
+            try {
+                document.getElementById('status').textContent = 'Processando...';
+                
+                const result = await resizeAndConvertImage(selectedFile);
+                
+                processedBase64 = result.base64;
+                
+                document.getElementById('originalSize').textContent = result.originalSize;
+                document.getElementById('processedSize').textContent = result.processedSize;
+                document.getElementById('altResult').textContent = altText;
+                document.getElementById('base64Output').value = result.base64.substring(0, 200) + '...[truncado]';
+                document.getElementById('status').textContent = `✓ Sucesso! Redimensionada para ${result.width}x${result.height}px`;
+                
+                resultDiv.classList.add('show');
+            } catch (error) {
+                alert('Erro: ' + error.message);
+                document.getElementById('status').textContent = 'Erro';
+            }
+        }
+    </script>
+</body>
+</html>

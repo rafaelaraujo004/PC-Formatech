@@ -32,9 +32,24 @@
     <meta property="og:image:alt" content="PC Formatech - Serviços de Informática">
     
     <!-- Tema do navegador -->
-    <meta name="theme-color" content="#2D7A7A">
-    <meta name="msapplication-navbutton-color" content="#2D7A7A">
-    <meta name="apple-mobile-web-app-status-bar-style" content="#2D7A7A">
+    <meta name="theme-color" content="#0B3D3D">
+    <meta name="msapplication-navbutton-color" content="#0B3D3D">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="icon" type="image/svg+xml" href="/icon.svg">
+    <link rel="shortcut icon" href="/favicon-32x32.png">
+
+    <!-- PWA / Adicionar à tela inicial -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="PC Formatech">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="msapplication-TileImage" content="/icon-192.png">
+    <meta name="msapplication-TileColor" content="#0B3D3D">
     
     <!-- Google Fonts - Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -283,6 +298,13 @@
             }
         }
     </style>
+    
+    <!-- Firebase Scripts (compat API - expõe objeto global firebase) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.secure.js"></script>
+    <link rel="stylesheet" href="theme-system.css">
+    <script src="theme-system.secure.js" defer></script>
 </head>
 <body>
 
@@ -290,20 +312,7 @@
         <nav class="nav-bar">
             <div class="logo">
                 <a href="admin.html" title="Painel Administrativo">
-                    <svg class="logo-img gear-icon" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Monitor/Screen -->
-                        <rect x="8" y="10" width="34" height="24" rx="2" fill="#0080C0" stroke="#00b3ff" stroke-width="1.5"/>
-                        <rect x="11" y="13" width="28" height="18" rx="1" fill="#1a1a2e"/>
-                        <!-- Screen detail lines -->
-                        <line x1="15" y1="17" x2="35" y2="17" stroke="#0080C0" stroke-width="1.5" opacity="0.6"/>
-                        <line x1="15" y1="21" x2="30" y2="21" stroke="#0080C0" stroke-width="1.5" opacity="0.6"/>
-                        <line x1="15" y1="25" x2="33" y2="25" stroke="#0080C0" stroke-width="1.5" opacity="0.6"/>
-                        <!-- Stand -->
-                        <rect x="22" y="34" width="6" height="4" fill="#0080C0"/>
-                        <rect x="18" y="38" width="14" height="2" rx="1" fill="#0080C0"/>
-                        <!-- Power indicator -->
-                        <circle cx="25" cy="32" r="1.5" fill="#00ff00"/>
-                    </svg>
+                    <img src="/icon-192.png" alt="PC Formatech" class="logo-img" style="width:44px;height:44px;border-radius:10px;">
                 </a>
                 <div class="brand-text">
                     <span class="brand-name">PCFORMATECH</span>
@@ -360,23 +369,7 @@
         </button>
     </div>
 
-    <script>
-        function toggleWhatsApp() {
-            const chat = document.getElementById('whatsappChat');
-            chat.classList.toggle('active');
-        }
-        
-        // Fechar ao clicar fora
-        document.addEventListener('click', function(event) {
-            const widget = document.querySelector('.whatsapp-widget');
-            const chat = document.getElementById('whatsappChat');
-            if (!widget.contains(event.target) && chat.classList.contains('active')) {
-                chat.classList.remove('active');
-            }
-        });
-    </script>
-
-    <main>
+<main>
         <section id="home" class="hero">
             <div class="hero-slider">
                 <div class="hero-slide active">
@@ -796,24 +789,76 @@
         </section>
 
         <section id="social" class="social-proof">
-            <h2><i class="fas fa-share-alt"></i> Conecte-se Conosco</h2>
-            <div class="social-container">
-                <div class="social-links">
-                    <a href="https://instagram.com/pcformatech" target="_blank" class="social-link instagram">
-                        <i class="fab fa-instagram"></i>
-                        <span><strong>@pcformatech</strong> no Instagram</span>
-                        <small>181 seguindo • 94 seguidores • 34 posts</small>
-                    </a>
-                    <a href="https://api.whatsapp.com/send?phone=5594984305772&text=Olá! Gostaria de atendimento rápido pelo WhatsApp." target="_blank" class="social-link whatsapp">
-                        <i class="fab fa-whatsapp"></i>
-                        <span><strong>Agende pelo WhatsApp</strong></span>
-                        <small>(94) 98430-5772 • Atendimento Rápido</small>
-                    </a>
-                    <div class="location-info">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span><strong>Canaã dos Carajás, PA</strong></span>
-                        <small>📍 Atendemos em toda a Região</small>
-                    </div>
+            <div class="social-container social-proof-shell">
+                <div class="social-proof-header" data-aos="fade-up">
+                    <span class="social-proof-kicker">Prova social</span>
+                    <h2><i class="fas fa-share-alt"></i> Resultado real que transmite confiança</h2>
+                    <p>Mostre na prática o cuidado com cada entrega: equipamento organizado, pronto para uso e atendimento que deixa boa impressão antes mesmo do primeiro contato.</p>
+                </div>
+
+                <div class="social-proof-grid">
+                    <article class="social-proof-featured" data-aos="fade-up">
+                        <figure class="social-proof-media">
+                            <div class="social-proof-badge">
+                                <i class="fas fa-camera"></i>
+                                Atendimento em destaque
+                            </div>
+                            <!-- Se a foto real for salva como social-proof-cliente.jpg na raiz do projeto, ela substituirá o visual de reserva automaticamente. -->
+                            <img src="social-proof-cliente.jpg" alt="Mesa branca com monitor externo e dois notebooks, mostrando um setup entregue ao cliente após a formatação." loading="lazy" decoding="async" onerror="this.onerror=null; this.src='social-proof-placeholder.svg';">
+                            <figcaption>Entrega organizada, setup finalizado e cliente pronto para voltar à rotina com segurança.</figcaption>
+                        </figure>
+
+                        <div class="social-proof-copy">
+                            <span class="social-proof-chip">Capricho que aparece</span>
+                            <h3>Seu computador volta bonito, rápido e pronto para trabalhar</h3>
+                            <p>Essa vitrine reforça exatamente o que convence na home: atendimento cuidadoso, acabamento limpo e uma apresentação que passa profissionalismo de imediato.</p>
+
+                            <div class="social-proof-points">
+                                <div class="social-proof-point">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Visual de entrega que inspira confiança</span>
+                                </div>
+                                <div class="social-proof-point">
+                                    <i class="fas fa-bolt"></i>
+                                    <span>Equipamento configurado e pronto para uso</span>
+                                </div>
+                                <div class="social-proof-point">
+                                    <i class="fas fa-heart"></i>
+                                    <span>Atendimento com atenção aos detalhes</span>
+                                </div>
+                            </div>
+
+                            <a href="https://api.whatsapp.com/send?phone=5594984305772&text=Olá! Gostaria desse mesmo cuidado para o meu computador." target="_blank" class="social-proof-cta">
+                                <i class="fab fa-whatsapp"></i>
+                                Quero esse cuidado no meu PC
+                            </a>
+                        </div>
+                    </article>
+
+                    <aside class="social-proof-side" data-aos="fade-up" data-aos-delay="100">
+                        <div class="social-links-card">
+                            <h3>Fale com a PC Formatech</h3>
+                            <p>Se a entrega importa para você, o atendimento começa aqui. Escolha o canal mais rápido e fale direto com a equipe.</p>
+
+                            <div class="social-links">
+                                <a href="https://instagram.com/pcformatech" target="_blank" class="social-link instagram">
+                                    <i class="fab fa-instagram"></i>
+                                    <span><strong>@pcformatech</strong> no Instagram</span>
+                                    <small>181 seguindo • 94 seguidores • 34 posts</small>
+                                </a>
+                                <a href="https://api.whatsapp.com/send?phone=5594984305772&text=Olá! Gostaria de atendimento rápido pelo WhatsApp." target="_blank" class="social-link whatsapp">
+                                    <i class="fab fa-whatsapp"></i>
+                                    <span><strong>Agende pelo WhatsApp</strong></span>
+                                    <small>(94) 98430-5772 • Atendimento Rápido</small>
+                                </a>
+                                <div class="location-info">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span><strong>Canaã dos Carajás, PA</strong></span>
+                                    <small>📍 Atendemos em toda a Região</small>
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
                 </div>
             </div>
         </section>
@@ -1156,44 +1201,8 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
-    <script src="main.js"></script>
-    <script src="formatacao-form.js"></script>
-    
-    <!-- Script para carregar slides personalizados do admin -->
-    <script>
-        // Carregar slides do localStorage se existirem
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedSlides = localStorage.getItem('pcformatech_hero_slides');
-            
-            if (savedSlides) {
-                const slides = JSON.parse(savedSlides);
-                const heroSlider = document.querySelector('.hero-slider');
-                const heroIndicators = document.querySelector('.hero-indicators');
-                
-                if (heroSlider && slides.length > 0) {
-                    // Limpar slides existentes
-                    heroSlider.innerHTML = '';
-                    heroIndicators.innerHTML = '';
-                    
-                    // Adicionar novos slides
-                    slides.forEach((slide, index) => {
-                        // Criar slide
-                        const slideDiv = document.createElement('div');
-                        slideDiv.className = 'hero-slide' + (index === 0 ? ' active' : '');
-                        slideDiv.innerHTML = `<img src="${slide.url}" alt="${slide.alt}">`;
-                        heroSlider.appendChild(slideDiv);
-                        
-                        // Criar indicador
-                        const indicator = document.createElement('span');
-                        indicator.className = 'indicator' + (index === 0 ? ' active' : '');
-                        indicator.setAttribute('data-slide', index);
-                        heroIndicators.appendChild(indicator);
-                    });
-                    
-                    console.log('✅ Slides personalizados carregados do painel admin!');
-                }
-            }
-        });
-    </script>
+    <script src="main.secure.js"></script>
+    <script src="formatacao-form.secure.js"></script>
+    <script src="index-app.secure.js"></script>
 </body>
 </html>

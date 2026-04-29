@@ -1,61 +1,176 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Carrossel Hero
-    const slides = document.querySelectorAll('.hero-slide');
-    const indicators = document.querySelectorAll('.indicator');
+    const indicatorsContainer = document.querySelector('.hero-indicators');
     let currentSlide = 0;
-    let slideInterval;
+    let slideTimer = null;
+    const HERO_SLIDE_INTERVAL_MS = 10000;
+
+    function getSlides() {
+        return Array.from(document.querySelectorAll('.hero-slide'));
+    }
+
+    function getIndicators() {
+        return Array.from(document.querySelectorAll('.indicator'));
+    }
+
+    function ensureIndicators(slides) {
+        if (!indicatorsContainer) {
+            return [];
+        }
+
+        let indicators = getIndicators();
+        if (indicators.length !== slides.length) {
+            indicatorsContainer.innerHTML = '';
+
+            slides.forEach((_, index) => {
+                const indicator = document.createElement('span');
+                indicator.className = `indicator${index === 0 ? ' active' : ''}`;
+                indicator.dataset.slide = String(index);
+                indicatorsContainer.appendChild(indicator);
+            });
+
+            indicators = getIndicators();
+        }
+
+        return indicators;
+    }
+
+    function normalizeSlideIndex(index) {
+        const slides = getSlides();
+        if (!slides.length) return 0;
+        return (index + slides.length) % slides.length;
+    }
+
+    function preloadSlideImage(index) {
+        const slides = getSlides();
+        const targetSlide = slides[index];
+        if (!targetSlide) return;
+
+        const img = targetSlide.querySelector('img');
+        if (!img || img.complete) return;
+
+        img.decoding = 'async';
+        img.loading = 'eager';
+
+        const src = img.currentSrc || img.src;
+        if (src) {
+            const preloader = new Image();
+            preloader.src = src;
+        }
+    }
 
     function showSlide(index) {
+        const slides = getSlides();
+        if (!slides.length) return;
+
+        const safeIndex = normalizeSlideIndex(index);
+        const indicators = ensureIndicators(slides);
+
         // Remove active de todos
         slides.forEach(slide => slide.classList.remove('active'));
         indicators.forEach(indicator => indicator.classList.remove('active'));
         
         // Adiciona active ao slide atual
-        slides[index].classList.add('active');
-        indicators[index].classList.add('active');
+        const activeSlide = slides[safeIndex];
+        if (activeSlide) {
+            activeSlide.classList.add('active');
+        }
+
+        const activeIndicator = indicators[safeIndex];
+        if (activeIndicator) {
+            activeIndicator.classList.add('active');
+        }
+
+        currentSlide = safeIndex;
+        preloadSlideImage(normalizeSlideIndex(safeIndex + 1));
     }
 
-    function nextSlide() {
-        currentSlide = (currentSlide + 1) % slides.length;
-        showSlide(currentSlide);
+    function stopSlideshow() {
+        if (slideTimer) {
+            clearTimeout(slideTimer);
+            slideTimer = null;
+        }
     }
 
     function startSlideshow() {
-        slideInterval = setInterval(nextSlide, 10000); // 10 segundos
+        const slides = getSlides();
+        if (slides.length <= 1) return;
+
+        stopSlideshow();
+        slideTimer = setTimeout(() => {
+            showSlide(currentSlide + 1);
+            startSlideshow();
+        }, HERO_SLIDE_INTERVAL_MS);
     }
 
-    function resetSlideshow() {
-        clearInterval(slideInterval);
+    function bindIndicatorEvents() {
+        const indicators = getIndicators();
+        indicators.forEach((indicator, index) => {
+            if (indicator.dataset.heroBound === '1') {
+                return;
+            }
+
+            indicator.dataset.heroBound = '1';
+            indicator.addEventListener('click', () => {
+                showSlide(index);
+                startSlideshow();
+            });
+        });
+    }
+
+    function refreshHeroSlider(options = {}) {
+        const slides = getSlides();
+        if (!slides.length) {
+            stopSlideshow();
+            return;
+        }
+
+        if (options.resetIndex || currentSlide >= slides.length) {
+            currentSlide = 0;
+        }
+
+        ensureIndicators(slides);
+        bindIndicatorEvents();
+        showSlide(currentSlide);
         startSlideshow();
     }
 
-    // Clique nos indicadores
-    indicators.forEach((indicator, index) => {
-        indicator.addEventListener('click', () => {
-            currentSlide = index;
-            showSlide(currentSlide);
-            resetSlideshow();
-        });
-    });
+    window.refreshHeroSlider = refreshHeroSlider;
+
+    ensureIndicators(getSlides());
+    bindIndicatorEvents();
 
     // Função para mudar slide (usada pelos botões de navegação)
     window.changeSlide = function(direction) {
-        currentSlide = (currentSlide + direction + slides.length) % slides.length;
-        showSlide(currentSlide);
-        resetSlideshow();
+        if (!getSlides().length) return;
+        showSlide(currentSlide + direction);
+        startSlideshow();
     };
 
     // Navegação por teclado (setas)
     document.addEventListener('keydown', (e) => {
+        const activeTag = document.activeElement && document.activeElement.tagName;
+        if (activeTag === 'INPUT' || activeTag === 'TEXTAREA' || activeTag === 'SELECT') {
+            return;
+        }
+
         if (e.key === 'ArrowLeft') {
-            changeSlide(-1);
+            window.changeSlide(-1);
         } else if (e.key === 'ArrowRight') {
-            changeSlide(1);
+            window.changeSlide(1);
         }
     });
 
-    // Iniciar slideshow
-    startSlideshow();
+    // Evita drift/travas quando a aba fica em segundo plano
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            stopSlideshow();
+            return;
+        }
+        startSlideshow();
+    });
+
+    refreshHeroSlider();
 
     // Ocultar header ao rolar para baixo
     let lastScrollTop = 0;

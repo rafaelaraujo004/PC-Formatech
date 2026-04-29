@@ -1,0 +1,2132 @@
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PCFORMATECH — Sistema de Tema Claro / Escuro
+   Versão centralizada: TODAS as adaptações de dark mode
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+
+/* ═══════════════════════════════════════════════════════
+   1. TOKENS DE TEMA  (light = padrão, dark via atributo)
+   ═══════════════════════════════════════════════════════ */
+
+:root {
+    /* Camadas de superfície */
+    --theme-bg:             #f4f7fb;
+    --theme-text:           #12263a;
+    --theme-surface:        #ffffff;
+    --theme-surface-2:      #eef3f8;
+    --theme-surface-3:      #e2ecf5;
+
+    /* Bordas */
+    --theme-border:         #d0dcea;
+    --theme-border-2:       #b8cce0;
+
+    /* Sombras */
+    --theme-shadow:         0 8px 24px rgba(15, 23, 42, .12);
+    --theme-shadow-lg:      0 16px 40px rgba(15, 23, 42, .16);
+
+    /* Tipografia auxiliar */
+    --theme-muted:          #5f6c7b;
+    --theme-faint:          #8fa0b3;
+
+    /* Acento */
+    --theme-accent:         #40998F;
+    --theme-accent-2:       #2D7A7A;
+    --theme-accent-glow:    rgba(64, 153, 143, .25);
+}
+
+html[data-theme='dark'] {
+    /* Camadas de superfície (sistema de elevação) */
+    --theme-bg:             #090f1b;
+    --theme-text:           #dce8f5;
+    --theme-surface:        #111c2e;   /* base: cards */
+    --theme-surface-2:      #172437;   /* elevado: inputs, zebra */
+    --theme-surface-3:      #1f2f47;   /* mais elevado: hover/focus */
+
+    /* Bordas */
+    --theme-border:         #263d58;
+    --theme-border-2:       #344f6e;
+
+    /* Sombras */
+    --theme-shadow:         0 10px 32px rgba(0, 0, 0, .55);
+    --theme-shadow-lg:      0 20px 56px rgba(0, 0, 0, .65);
+
+    /* Tipografia auxiliar */
+    --theme-muted:          #8fadc8;
+    --theme-faint:          #5d7896;
+
+    /* Acento */
+    --theme-accent:         #5fc9be;
+    --theme-accent-2:       #41a89d;
+    --theme-accent-glow:    rgba(95, 201, 190, .2);
+
+    color-scheme: dark;
+
+    /* ── Remapeia variáveis de styles.css / styles2.css ── */
+    --primary-color:     #dce8f5;
+    --secondary-color:   #5fc9be;
+    --accent-color:      #5fc9be;
+    --success-color:     #5fc9be;
+    --warning-color:     #87d9d3;
+    --text-color:        #c8daf0;
+    --text-light:        #8fadc8;
+    --light-bg:          #1f2f47;
+    --white:             #111c2e;
+    --gradient:          linear-gradient(135deg, #0f1c2d 0%, #172437 100%);
+    --gradient-accent:   linear-gradient(135deg, #41a89d 0%, #5fc9be 100%);
+    --gradient-subtle:   linear-gradient(135deg, #172437 0%, #1f2f47 100%);
+    --shadow-sm:         0 2px 8px  rgba(0, 0, 0, .35);
+    --shadow-md:         0 6px 16px rgba(0, 0, 0, .40);
+    --shadow-lg:         0 10px 26px rgba(0, 0, 0, .50);
+    --shadow-xl:         0 18px 48px rgba(0, 0, 0, .60);
+}
+
+
+/* ═══════════════════════════════════════════════════════
+   2. TRANSIÇÃO BASE
+   ═══════════════════════════════════════════════════════ */
+
+body {
+    background: var(--theme-bg);
+    color: var(--theme-text);
+    transition: background-color .25s ease, color .25s ease;
+}
+
+/* Superfícies que transitam suavemente */
+.header, .footer,
+.hero-overlay,
+.services, .testimonials, .faq, .scheduling, .about, .contact,
+.services-summary,
+.service-card, .feature-card,
+.testimonial-card, .testimonial-bubble, .client-info,
+.faq-item, .booking-btn, .info-card, .stat-item,
+.schedule-form, .quick-booking,
+.form-group input, .form-group select, .form-group textarea,
+.services-checkbox-group, .service-checkbox,
+.modal, .modal-content,
+.login-container, .admin-header, .admin-tabs,
+.stat-card, .chart-container, .rt-kpi, .rt-card,
+.clients-container,
+.whatsapp-chat, .whatsapp-body, .whatsapp-footer, .whatsapp-message,
+.announcement-content,
+.anydesk-download, .remote-service-highlight,
+.total-price-display, .form-page-header,
+.alert, .close-modal,
+.search-box input {
+    transition:
+        background-color .25s ease,
+        background      .25s ease,
+        color           .25s ease,
+        border-color    .25s ease,
+        box-shadow      .25s ease;
+}
+
+
+/* ═══════════════════════════════════════════════════════
+   3. DARK MODE — REGRAS POR COMPONENTE
+   ═══════════════════════════════════════════════════════ */
+
+/* ── 3.1  Body / fundo global ── */
+html[data-theme='dark'] body {
+    background: radial-gradient(
+        ellipse at 20% 0%,
+        #13243a 0%,
+        #090f1b 55%,
+        #060c14 100%
+    ) !important;
+}
+
+/* ── 3.2  Header ── */
+html[data-theme='dark'] .header {
+    background: linear-gradient(135deg, #0d1e30 0%, #091629 100%) !important;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, .5) !important;
+    border-bottom: 1px solid var(--theme-border) !important;
+}
+
+html[data-theme='dark'] .nav-links a,
+html[data-theme='dark'] .brand-name,
+html[data-theme='dark'] .tagline {
+    color: inherit !important;
+}
+
+/* ── 3.3  Hero / Carrossel ── */
+html[data-theme='dark'] .hero-overlay {
+    background: linear-gradient(
+        135deg,
+        rgba(0, 0, 0, .68) 0%,
+        rgba(5, 15, 30, .58) 50%,
+        rgba(0, 0, 0, .68) 100%
+    ) !important;
+}
+
+/* ── 3.4  Seções de fundo alternado ── */
+html[data-theme='dark'] .services,
+html[data-theme='dark'] .faq,
+html[data-theme='dark'] .scheduling,
+html[data-theme='dark'] .social-proof,
+html[data-theme='dark'] .about,
+html[data-theme='dark'] .contact {
+    background: linear-gradient(180deg, #0e1929 0%, #0b1520 100%) !important;
+}
+
+html[data-theme='dark'] .testimonials {
+    background: linear-gradient(135deg, #0d1e30 0%, #0a1826 100%) !important;
+}
+
+/* ── 3.5  Footer ── */
+html[data-theme='dark'] .footer {
+    background: linear-gradient(135deg, #0d1e30 0%, #07111e 100%) !important;
+    border-top: 1px solid var(--theme-border) !important;
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] .footer * {
+    color: inherit;
+}
+
+html[data-theme='dark'] .footer-links ul li a:hover {
+    color: var(--theme-accent) !important;
+}
+
+html[data-theme='dark'] .payment-highlight {
+    background: rgba(95, 201, 190, .07) !important;
+    border-color: rgba(95, 201, 190, .2) !important;
+}
+
+html[data-theme='dark'] .contact-item {
+    background: rgba(255, 255, 255, .04) !important;
+    border-color: var(--theme-border) !important;
+}
+
+html[data-theme='dark'] .contact-item:hover {
+    background: rgba(95, 201, 190, .08) !important;
+    border-color: var(--theme-accent) !important;
+}
+
+html[data-theme='dark'] .footer h3,
+html[data-theme='dark'] .footer h4,
+html[data-theme='dark'] .footer-links ul li a,
+html[data-theme='dark'] .contact-info p,
+html[data-theme='dark'] .payment-item,
+html[data-theme='dark'] .payment-item span,
+html[data-theme='dark'] .payment-methods-icons,
+html[data-theme='dark'] .payment-methods-icons i {
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] .slogan,
+html[data-theme='dark'] .footer-description,
+html[data-theme='dark'] .contact-info small,
+html[data-theme='dark'] .footer-info-bottom p,
+html[data-theme='dark'] .location-info small,
+html[data-theme='dark'] .social-link small {
+    color: var(--theme-muted) !important;
+}
+
+html[data-theme='dark'] .social-proof-header p,
+html[data-theme='dark'] .social-links-card p,
+html[data-theme='dark'] .social-proof-media figcaption {
+    color: var(--theme-muted) !important;
+}
+
+html[data-theme='dark'] .social-proof-kicker,
+html[data-theme='dark'] .social-proof-chip {
+    background: rgba(95, 201, 190, .12) !important;
+    color: #b9f5ee !important;
+}
+
+html[data-theme='dark'] .social-proof-featured,
+html[data-theme='dark'] .social-links-card,
+html[data-theme='dark'] .location-info,
+html[data-theme='dark'] .social-link {
+    background: var(--theme-surface) !important;
+    border-color: var(--theme-border) !important;
+    box-shadow: var(--theme-shadow) !important;
+}
+
+html[data-theme='dark'] .social-proof-featured::before {
+    background: radial-gradient(circle, rgba(95, 201, 190, .18) 0%, rgba(95, 201, 190, 0) 72%) !important;
+}
+
+html[data-theme='dark'] .social-proof-copy h3,
+html[data-theme='dark'] .social-links-card h3,
+html[data-theme='dark'] .social-proof-point span,
+html[data-theme='dark'] .location-info strong,
+html[data-theme='dark'] .social-link strong {
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] .social-proof-point {
+    background: rgba(95, 201, 190, .08) !important;
+    border-color: rgba(95, 201, 190, .16) !important;
+}
+
+html[data-theme='dark'] .social-proof-badge {
+    background: rgba(2, 6, 23, .72) !important;
+    color: #ecfffd !important;
+}
+
+html[data-theme='dark'] .social-proof-media img {
+    background: linear-gradient(135deg, #13243a 0%, #0c1726 100%) !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, .35) !important;
+}
+
+html[data-theme='dark'] .payment-item {
+    background: rgba(255, 255, 255, .05) !important;
+    border-color: var(--theme-border) !important;
+}
+
+html[data-theme='dark'] .payment-item:hover {
+    background: rgba(95, 201, 190, .10) !important;
+    border-color: var(--theme-accent) !important;
+}
+
+html[data-theme='dark'] .payment-item i,
+html[data-theme='dark'] .contact-item i,
+html[data-theme='dark'] .footer h3 i,
+html[data-theme='dark'] .footer h4 i {
+    color: var(--theme-accent) !important;
+}
+
+/* ── 3.6  Cards de serviço ── */
+html[data-theme='dark'] .service-card {
+    background: var(--theme-surface) !important;
+    border-color: var(--theme-border) !important;
+    box-shadow: var(--theme-shadow) !important;
+}
+
+html[data-theme='dark'] .service-card:hover,
+html[data-theme='dark'] .feature-card:hover,
+html[data-theme='dark'] .slide-card:hover {
+    border-color: var(--theme-accent) !important;
+    box-shadow: var(--theme-shadow-lg), 0 0 0 1px var(--theme-accent-glow) !important;
+}
+
+html[data-theme='dark'] .service-card:has(.service-checkbox:checked) {
+    background: linear-gradient(
+        135deg,
+        rgba(95, 201, 190, .06) 0%,
+        rgba(65, 168, 157, .09) 100%
+    ) !important;
+    border-color: var(--theme-accent) !important;
+}
+
+html[data-theme='dark'] .service-card .service-check-mark {
+    background: var(--theme-surface-2) !important;
+    border-color: var(--theme-border) !important;
+}
+
+html[data-theme='dark'] .service-card h3 {
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] .service-card p {
+    color: var(--theme-muted) !important;
+}
+
+html[data-theme='dark'] .price-tag {
+    background: linear-gradient(135deg, #1a4a3a 0%, #163d32 100%) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .45) !important;
+}
+
+html[data-theme='dark'] .service-badge {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, .5) !important;
+}
+
+/* ── 3.7  Barra flutuante de resumo ── */
+html[data-theme='dark'] .services-summary {
+    background: linear-gradient(135deg, #0f2237 0%, #0b1a2b 100%) !important;
+    border-top: 1px solid var(--theme-border) !important;
+    box-shadow: 0 -6px 24px rgba(0, 0, 0, .5) !important;
+}
+
+html[data-theme='dark'] .services-subtitle {
+    color: var(--theme-muted) !important;
+}
+
+/* ── 3.8  Modal ── */
+html[data-theme='dark'] .modal {
+    background-color: rgba(2, 6, 16, .85) !important;
+}
+
+html[data-theme='dark'] .modal-content {
+    background: var(--theme-surface) !important;
+    border: 1px solid var(--theme-border) !important;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, .7) !important;
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] .modal-content h3 {
+    color: var(--theme-text) !important;
+    background: none !important;
+    border-image: none !important;
+    border-bottom: 2px solid var(--theme-border) !important;
+}
+
+html[data-theme='dark'] .modal-header {
+    border-bottom-color: var(--theme-border) !important;
+}
+
+html[data-theme='dark'] .modal-header h2 {
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] .close-modal {
+    background: var(--theme-surface-2) !important;
+    color: var(--theme-muted) !important;
+}
+
+html[data-theme='dark'] .close-modal:hover {
+    background: var(--theme-surface-3) !important;
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] .close,
+html[data-theme='dark'] .close:hover {
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] .price-details {
+    border-top-color: var(--theme-border) !important;
+}
+
+html[data-theme='dark'] .anydesk-download {
+    background: var(--theme-surface-2) !important;
+    border: 1px solid var(--theme-border) !important;
+}
+
+html[data-theme='dark'] .anydesk-download h4,
+html[data-theme='dark'] .anydesk-download ol li {
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] .remote-service-highlight {
+    background: linear-gradient(
+        135deg,
+        rgba(95, 201, 190, .07),
+        rgba(65, 168, 157, .04)
+    ) !important;
+    border: 1px solid var(--theme-border) !important;
+}
+
+html[data-theme='dark'] .service-features li {
+    color: var(--theme-text) !important;
+}
+
+/* ── 3.9  Depoimentos (estilo WhatsApp) ── */
+html[data-theme='dark'] .testimonial-card,
+html[data-theme='dark'] .testimonial-card.whatsapp-style {
+    background: var(--theme-surface) !important;
+    border: 1px solid var(--theme-border) !important;
+    box-shadow: var(--theme-shadow) !important;
+}
+
+/* Seletores de alta especificidade para garantir override sobre styles2.css */
+html[data-theme='dark'] .testimonials-grid .testimonial-card.whatsapp-style,
+html[data-theme='dark'] .testimonials .testimonial-card {
+    background: var(--theme-surface) !important;
+    border: 1px solid var(--theme-border) !important;
+}
+
+html[data-theme='dark'] .testimonial-bubble {
+    background: var(--theme-surface-2) !important;
+}
+
+html[data-theme='dark'] .testimonial-card.whatsapp-style .testimonial-bubble {
+    background: var(--theme-surface-2) !important;
+    border-radius: 12px 12px 0 0;
+}
+
+html[data-theme='dark'] .testimonial-bubble p,
+html[data-theme='dark'] .testimonial-content p {
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] .client-info,
+html[data-theme='dark'] .testimonial-card.whatsapp-style .client-info {
+    background: var(--theme-surface) !important;
+    border-top-color: var(--theme-border) !important;
+}
+
+html[data-theme='dark'] .client-details h4,
+html[data-theme='dark'] .testimonial-card.whatsapp-style .client-details h4 {
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] .testimonial-time {
+    color: var(--theme-faint) !important;
+}
+
+html[data-theme='dark'] .testimonials .section-title {
+    color: var(--theme-text) !important;
+}
+
+/* ── 3.10  FAQ ── */
+html[data-theme='dark'] .faq-item {
+    background: var(--theme-surface) !important;
+    border-color: var(--theme-border) !important;
+    box-shadow: var(--theme-shadow) !important;
+}
+
+html[data-theme='dark'] .faq-item:hover {
+    border-color: var(--theme-accent) !important;
+    box-shadow: 0 14px 32px rgba(0, 0, 0, .5) !important;
+}
+
+html[data-theme='dark'] .question-icon {
+    background: var(--theme-surface-3) !important;
+    border: 1px solid var(--theme-border) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .3) !important;
+}
+
+html[data-theme='dark'] .faq-item h3,
+html[data-theme='dark'] .faq-answer p {
+    color: var(--theme-text) !important;
+}
+
+/* ── 3.11  Agendamento / Formulário ── */
+html[data-theme='dark'] .schedule-form,
+html[data-theme='dark'] .quick-booking {
+    background: var(--theme-surface) !important;
+    border: 1px solid var(--theme-border) !important;
+    box-shadow: var(--theme-shadow) !important;
+}
+
+html[data-theme='dark'] .form-group label {
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] .form-group input,
+html[data-theme='dark'] .form-group select,
+html[data-theme='dark'] .form-group textarea,
+html[data-theme='dark'] input,
+html[data-theme='dark'] select,
+html[data-theme='dark'] textarea,
+html[data-theme='dark'] .search-box input,
+html[data-theme='dark'] .slide-info input {
+    background: var(--theme-surface-2) !important;
+    color: var(--theme-text) !important;
+    border-color: var(--theme-border) !important;
+}
+
+html[data-theme='dark'] .form-group input:focus,
+html[data-theme='dark'] .form-group select:focus,
+html[data-theme='dark'] .form-group textarea:focus {
+    border-color: var(--theme-accent) !important;
+    box-shadow: 0 0 0 3px var(--theme-accent-glow) !important;
+    background: var(--theme-surface-3) !important;
+}
+
+html[data-theme='dark'] input::placeholder,
+html[data-theme='dark'] textarea::placeholder {
+    color: var(--theme-faint) !important;
+    opacity: 1;
+}
+
+html[data-theme='dark'] .services-checkbox-group {
+    background: var(--theme-surface-2) !important;
+    border-color: var(--theme-border) !important;
+}
+
+html[data-theme='dark'] .service-checkbox {
+    background: var(--theme-surface) !important;
+    border-color: var(--theme-border) !important;
+}
+
+html[data-theme='dark'] .service-checkbox:hover {
+    background: var(--theme-surface-3) !important;
+    border-color: var(--theme-accent) !important;
+}
+
+html[data-theme='dark'] .service-checkbox span {
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] .schedule-info {
+    color: var(--theme-muted) !important;
+}
+
+/* ── 3.12  Booking buttons / Info cards ── */
+html[data-theme='dark'] .booking-btn,
+html[data-theme='dark'] .info-card {
+    background: var(--theme-surface) !important;
+    border-color: var(--theme-border) !important;
+    box-shadow: var(--theme-shadow) !important;
+}
+
+html[data-theme='dark'] .booking-btn:hover,
+html[data-theme='dark'] .info-card:hover {
+    background: var(--theme-surface-2) !important;
+    border-color: var(--theme-accent) !important;
+    box-shadow: 0 14px 32px rgba(0, 0, 0, .5) !important;
+}
+
+html[data-theme='dark'] .booking-btn span {
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] .booking-btn small {
+    background: var(--theme-surface-3) !important;
+    color: var(--theme-muted) !important;
+}
+
+html[data-theme='dark'] .info-card h4,
+html[data-theme='dark'] .info-card p,
+html[data-theme='dark'] .info-card strong {
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] .info-card small {
+    color: var(--theme-faint) !important;
+}
+
+html[data-theme='dark'] .info-card i {
+    color: var(--theme-accent) !important;
+}
+
+/* ── 3.13  Stats sociais ── */
+html[data-theme='dark'] .stat-item {
+    background: var(--theme-surface) !important;
+    border-color: var(--theme-border) !important;
+    box-shadow: var(--theme-shadow) !important;
+}
+
+html[data-theme='dark'] .stat-item:hover {
+    background: var(--theme-surface-2) !important;
+    border-color: var(--theme-accent) !important;
+}
+
+html[data-theme='dark'] .stat-number {
+    color: var(--theme-accent) !important;
+}
+
+html[data-theme='dark'] .stat-item i {
+    color: var(--theme-accent) !important;
+}
+
+html[data-theme='dark'] .stat-label {
+    color: var(--theme-muted) !important;
+}
+
+/* ── 3.14  WhatsApp widget ── */
+html[data-theme='dark'] .whatsapp-chat {
+    background: var(--theme-surface) !important;
+    border-color: var(--theme-border) !important;
+    box-shadow: var(--theme-shadow) !important;
+}
+
+html[data-theme='dark'] .whatsapp-body {
+    background: #0e1b2c !important;
+}
+
+html[data-theme='dark'] .whatsapp-message {
+    background: var(--theme-surface-2) !important;
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] .whatsapp-footer {
+    background: var(--theme-surface) !important;
+    border-top: 1px solid var(--theme-border) !important;
+}
+
+html[data-theme='dark'] .whatsapp-header,
+html[data-theme='dark'] .whatsapp-toggle {
+    filter: brightness(.9) saturate(.85);
+}
+
+/* ── 3.15  Admin — header, tabs ── */
+html[data-theme='dark'] .admin-header {
+    background: linear-gradient(135deg, #0d1e30 0%, #091629 100%) !important;
+}
+
+html[data-theme='dark'] .admin-tabs {
+    background: var(--theme-surface) !important;
+    border: 1px solid var(--theme-border) !important;
+    box-shadow: var(--theme-shadow) !important;
+}
+
+html[data-theme='dark'] .tab-button {
+    background: transparent !important;
+    color: var(--theme-muted) !important;
+    border-bottom-color: transparent !important;
+}
+
+html[data-theme='dark'] .tab-button:hover {
+    background: var(--theme-surface-2) !important;
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] .tab-button.active {
+    color: var(--theme-accent) !important;
+    background: var(--theme-surface-2) !important;
+    border-bottom-color: var(--theme-accent) !important;
+}
+
+html[data-theme='dark'] .admin-tabs .tab-button,
+html[data-theme='dark'] .admin-tabs .tab-button i {
+    color: var(--theme-muted) !important;
+}
+
+html[data-theme='dark'] .stat-card {
+    background: var(--theme-surface) !important;
+    border: 1px solid var(--theme-border) !important;
+    box-shadow: var(--theme-shadow) !important;
+}
+
+html[data-theme='dark'] .chart-container {
+    background: var(--theme-surface) !important;
+    border: 1px solid var(--theme-border) !important;
+}
+
+html[data-theme='dark'] .clients-container {
+    background: var(--theme-surface) !important;
+    border: 1px solid var(--theme-border) !important;
+}
+
+html[data-theme='dark'] .clients-table th {
+    background: var(--theme-surface-2) !important;
+    color: var(--theme-text) !important;
+    border-bottom-color: var(--theme-border) !important;
+}
+
+html[data-theme='dark'] .clients-table td {
+    color: var(--theme-text) !important;
+    border-bottom-color: var(--theme-border) !important;
+}
+
+html[data-theme='dark'] .clients-table tr:hover,
+html[data-theme='dark'] .rt-list li:hover {
+    background: var(--theme-surface-2) !important;
+}
+
+html[data-theme='dark'] .service-item {
+    background: var(--theme-surface-2) !important;
+    border-color: var(--theme-border) !important;
+}
+
+html[data-theme='dark'] .slides-grid .slide-card,
+html[data-theme='dark'] .slide-card {
+    background: var(--theme-surface) !important;
+    border: 1px solid var(--theme-border) !important;
+    box-shadow: var(--theme-shadow) !important;
+}
+
+html[data-theme='dark'] .slide-preview {
+    background: #0a1626 !important;
+}
+
+html[data-theme='dark'] .slide-info {
+    background: var(--theme-surface) !important;
+}
+
+html[data-theme='dark'] .slide-info p,
+html[data-theme='dark'] .slide-info span,
+html[data-theme='dark'] .slide-order span {
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] .discount-section {
+    background: var(--theme-surface-2) !important;
+    border: 1px solid var(--theme-border) !important;
+}
+
+html[data-theme='dark'] .discount-section h4,
+html[data-theme='dark'] .discount-section label {
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] .discount-section input {
+    background: var(--theme-surface) !important;
+    color: var(--theme-text) !important;
+    border-color: var(--theme-border) !important;
+}
+
+html[data-theme='dark'] .parcelas-section,
+html[data-theme='dark'] .parcela-preview,
+html[data-theme='dark'] .parc-summary-card,
+html[data-theme='dark'] .parc-servico-preview,
+html[data-theme='dark'] #notif-permission-bar,
+html[data-theme='dark'] #parcelarServicoInfo {
+    background: var(--theme-surface-2) !important;
+    color: var(--theme-text) !important;
+    border-color: var(--theme-border) !important;
+}
+
+html[data-theme='dark'] .parcelas-table th {
+    background: var(--theme-surface-3) !important;
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] .parcelas-table td {
+    color: var(--theme-text) !important;
+    border-bottom-color: var(--theme-border) !important;
+}
+
+html[data-theme='dark'] .parcelas-table tr:hover td,
+html[data-theme='dark'] .parcelas-table .pago-sim td {
+    background: var(--theme-surface-3) !important;
+}
+
+html[data-theme='dark'] .parcela-badge-pago,
+html[data-theme='dark'] .parcela-badge-pendente,
+html[data-theme='dark'] .parcela-badge-vencida,
+html[data-theme='dark'] .parcela-badge-entrada {
+    border: 1px solid var(--theme-border) !important;
+}
+
+html[data-theme='dark'] .parcela-badge-pago {
+    background: rgba(76, 175, 80, .18) !important;
+    color: #8fe4a1 !important;
+}
+
+html[data-theme='dark'] .parcela-badge-pendente {
+    background: rgba(255, 193, 7, .16) !important;
+    color: #ffd978 !important;
+}
+
+html[data-theme='dark'] .parcela-badge-vencida {
+    background: rgba(244, 67, 54, .18) !important;
+    color: #ff9a92 !important;
+}
+
+html[data-theme='dark'] .parcela-badge-entrada {
+    background: rgba(33, 150, 243, .18) !important;
+    color: #9ccdfc !important;
+}
+
+html[data-theme='dark'] .parc-group-title,
+html[data-theme='dark'] .parc-inline-info,
+html[data-theme='dark'] #notif-status-text {
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] .parc-summary-card .ps-val {
+    color: var(--theme-accent) !important;
+}
+
+html[data-theme='dark'] .parc-summary-card .ps-label {
+    color: var(--theme-muted) !important;
+}
+
+html[data-theme='dark'] #notif-permission-bar,
+html[data-theme='dark'] #notif-permission-bar * {
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] .parc-filter-bar select,
+html[data-theme='dark'] .parc-filter-bar input,
+html[data-theme='dark'] #parcelarServicoModal select,
+html[data-theme='dark'] #parcelarServicoModal input {
+    background: var(--theme-surface) !important;
+    color: var(--theme-text) !important;
+    border-color: var(--theme-border) !important;
+}
+
+html[data-theme='dark'] .btn-ativar-notif,
+html[data-theme='dark'] .btn-testar-notif,
+html[data-theme='dark'] .btn-fechar-bar,
+html[data-theme='dark'] .btn-pagar-parcela,
+html[data-theme='dark'] .btn-estornar-parcela,
+html[data-theme='dark'] .btn-parcelar-servico {
+    color: #effcff !important;
+}
+
+/* ── 3.16  Admin — overrides de estilos inline ── */
+html[data-theme='dark'] #adminPanel [style*='background: white'],
+html[data-theme='dark'] #adminPanel [style*='background:white'],
+html[data-theme='dark'] #adminPanel [style*='background-color: white'],
+html[data-theme='dark'] #adminPanel [style*='background-color:white'],
+html[data-theme='dark'] #adminPanel [style*='background: #f8f9fa'],
+html[data-theme='dark'] #adminPanel [style*='background:#f8f9fa'],
+html[data-theme='dark'] #adminPanel [style*='background: #f0f0f0'],
+html[data-theme='dark'] #adminPanel [style*='background:#f0f0f0'] {
+    background: var(--theme-surface) !important;
+    border-color: var(--theme-border) !important;
+}
+
+html[data-theme='dark'] #adminPanel [style*='color: #0B3D3D'],
+html[data-theme='dark'] #adminPanel [style*='color:#0B3D3D'],
+html[data-theme='dark'] #adminPanel [style*='color: #666'],
+html[data-theme='dark'] #adminPanel [style*='color:#666'],
+html[data-theme='dark'] #adminPanel [style*='color: #888'],
+html[data-theme='dark'] #adminPanel [style*='color:#888'],
+html[data-theme='dark'] #adminPanel [style*='color: #999'],
+html[data-theme='dark'] #adminPanel [style*='color:#999'] {
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] #adminPanel hr,
+html[data-theme='dark'] #adminPanel [style*='border-top:1px solid #f0f0f0'],
+html[data-theme='dark'] #adminPanel [style*='border-bottom: 2px solid #e0e0e0'],
+html[data-theme='dark'] #adminPanel [style*='border-bottom:2px solid #e0e0e0'] {
+    border-color: var(--theme-border) !important;
+}
+
+html[data-theme='dark'] #adminPanel .tab-btn,
+html[data-theme='dark'] #adminPanel .tab-btn.active {
+    color: var(--theme-text) !important;
+    background: transparent !important;
+    border-bottom-color: var(--theme-accent) !important;
+}
+
+/* ── 3.17  Real-time cards (rt-*) ── */
+html[data-theme='dark'] .rt-kpi {
+    background: var(--theme-surface) !important;
+    border: 1px solid var(--theme-border) !important;
+}
+
+html[data-theme='dark'] .rt-kpi::before {
+    background: var(--theme-accent-2) !important;
+}
+
+html[data-theme='dark'] .rt-kpi-icon {
+    background: var(--theme-surface-2) !important;
+    border: 1px solid var(--theme-border) !important;
+    color: var(--theme-accent-2) !important;
+}
+
+html[data-theme='dark'] .rt-kpi-icon i,
+html[data-theme='dark'] .rt-section-title i,
+html[data-theme='dark'] .rt-card h4 i,
+html[data-theme='dark'] .rt-online-device-icon {
+    color: var(--theme-accent-2) !important;
+}
+
+html[data-theme='dark'] .rt-kpi-icon > span {
+    border-color: var(--theme-surface) !important;
+}
+
+html[data-theme='dark'] .rt-card {
+    background: var(--theme-surface) !important;
+    border: 1px solid var(--theme-border) !important;
+}
+
+html[data-theme='dark'] .rt-kpi-value,
+html[data-theme='dark'] .rt-kpi-label,
+html[data-theme='dark'] .rt-section-title,
+html[data-theme='dark'] .rt-funnel-label,
+html[data-theme='dark'] .rt-alert-time,
+html[data-theme='dark'] .rt-last-update {
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] .rt-fat-item .rt-fat-val,
+html[data-theme='dark'] #rt-ticket-medio {
+    color: #b9f5ee !important;
+}
+
+html[data-theme='dark'] .rt-list .rt-val,
+html[data-theme='dark'] .rt-list .rt-rank {
+    color: #b9f5ee !important;
+}
+
+html[data-theme='dark'] .rt-list .rt-rank {
+    background: rgba(95, 201, 190, .18) !important;
+    border: 1px solid var(--theme-border) !important;
+}
+
+html[data-theme='dark'] .rt-funnel-bar-fill {
+    color: #ecfffd !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .45) !important;
+}
+
+html[data-theme='dark'] .rt-fat-item .rt-fat-label {
+    color: var(--theme-muted) !important;
+}
+
+html[data-theme='dark'] .rt-alert {
+    background: var(--theme-surface-2) !important;
+}
+
+html[data-theme='dark'] .rt-online-row {
+    border-bottom-color: var(--theme-border) !important;
+}
+
+html[data-theme='dark'] .rt-online-name {
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] .rt-online-page,
+html[data-theme='dark'] .rt-online-meta,
+html[data-theme='dark'] .rt-online-duration,
+html[data-theme='dark'] .rt-online-device-text {
+    color: var(--theme-muted) !important;
+}
+
+html[data-theme='dark'] .rt-online-dot {
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, .28) !important;
+}
+
+html[data-theme='dark'] .rt-kpi-badge.up {
+    background: rgba(67, 160, 71, .22) !important;
+    color: #9ef0b1 !important;
+}
+
+html[data-theme='dark'] .rt-kpi-badge.down {
+    background: rgba(229, 57, 53, .22) !important;
+    color: #ff9d9d !important;
+}
+
+html[data-theme='dark'] .rt-kpi-badge.neutral {
+    background: rgba(64, 153, 143, .24) !important;
+    color: #a4e7df !important;
+}
+
+html[data-theme='dark'] .rt-badge.pendente {
+    background: rgba(255, 167, 38, .2) !important;
+    color: #ffd399 !important;
+}
+
+html[data-theme='dark'] .rt-badge.andamento {
+    background: rgba(66, 165, 245, .2) !important;
+    color: #abd8ff !important;
+}
+
+html[data-theme='dark'] .rt-badge.concluido {
+    background: rgba(102, 187, 106, .2) !important;
+    color: #b8f1bc !important;
+}
+
+html[data-theme='dark'] .rt-badge.cancelado {
+    background: rgba(239, 83, 80, .2) !important;
+    color: #ffb3b1 !important;
+}
+
+html[data-theme='dark'] .rt-funnel-bar-bg,
+html[data-theme='dark'] .rt-bar-bg {
+    background: var(--theme-surface-2) !important;
+}
+
+html[data-theme='dark'] .rt-empty {
+    color: var(--theme-muted) !important;
+}
+
+/* ── 3.18  Alertas / Status ── */
+html[data-theme='dark'] .alert,
+html[data-theme='dark'] .alert-info,
+html[data-theme='dark'] .alert-warning,
+html[data-theme='dark'] .alert-success {
+    background: var(--theme-surface-2) !important;
+    border-left-color: var(--theme-accent) !important;
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] .status-pendente,
+html[data-theme='dark'] .status-andamento,
+html[data-theme='dark'] .status-concluido,
+html[data-theme='dark'] .status-cancelado {
+    background: var(--theme-surface-2) !important;
+}
+
+/* ── 3.19  Login ── */
+html[data-theme='dark'] .login-container {
+    background: var(--theme-surface) !important;
+    border: 1px solid var(--theme-border) !important;
+    box-shadow: var(--theme-shadow) !important;
+}
+
+/* ── 3.20  Announcement banner ── */
+html[data-theme='dark'] .announcement-content {
+    background: var(--theme-surface) !important;
+    border: 1px solid var(--theme-border) !important;
+    box-shadow: var(--theme-shadow) !important;
+}
+
+html[data-theme='dark'] .announcement-header h3,
+html[data-theme='dark'] .announcement-text {
+    color: var(--theme-text) !important;
+}
+
+/* ── 3.21  Form-page-header ── */
+html[data-theme='dark'] .form-page-header {
+    background: var(--theme-surface) !important;
+    border-bottom: 1px solid var(--theme-border) !important;
+}
+
+html[data-theme='dark'] .form-page-header p {
+    color: var(--theme-muted) !important;
+}
+
+/* ── 3.22  Hierarquia tipográfica ── */
+html[data-theme='dark'] h1,
+html[data-theme='dark'] h2,
+html[data-theme='dark'] h3,
+html[data-theme='dark'] h4,
+html[data-theme='dark'] h5,
+html[data-theme='dark'] h6 {
+    color: var(--theme-text);
+}
+
+html[data-theme='dark'] p,
+html[data-theme='dark'] span,
+html[data-theme='dark'] li,
+html[data-theme='dark'] label {
+    color: var(--theme-text);
+}
+
+/* Zonas com fundo escuro próprio — mantêm herança de cor */
+html[data-theme='dark'] .header *,
+html[data-theme='dark'] .hero *,
+html[data-theme='dark'] .services-summary *,
+html[data-theme='dark'] .footer * {
+    color: inherit;
+}
+
+html[data-theme='dark'] .wati-badge,
+html[data-theme='dark'] .services-subtitle {
+    color: var(--theme-muted) !important;
+}
+
+/* ── 3.23  Títulos de seção ── */
+html[data-theme='dark'] .section-title {
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] .section-title i {
+    color: var(--theme-accent) !important;
+}
+
+html[data-theme='dark'] .section-title::after {
+    background: var(--gradient-accent) !important;
+}
+
+html[data-theme='dark'] .scheduling h2,
+html[data-theme='dark'] .faq h2,
+html[data-theme='dark'] .social-proof h2 {
+    background: var(--gradient-accent) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+}
+
+html[data-theme='dark'] .services h2 {
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] .services h2::after {
+    background: var(--gradient-accent) !important;
+}
+
+/* ═══════════════════════════════════════════════════════
+   4. TEMA DINAMICO GLOBAL
+   ═══════════════════════════════════════════════════════ */
+
+:root {
+    --pcft-meta-color: #0B3D3D;
+    --pcft-page-background: radial-gradient(circle at top left, rgba(64, 153, 143, .14) 0%, #f4f7fb 46%, #ecf3fb 100%);
+    --pcft-header-background: linear-gradient(135deg, #0B3D3D 0%, #1A5C5C 100%);
+    --pcft-footer-background: linear-gradient(135deg, #0B3D3D 0%, #114B4B 100%);
+    --pcft-section-background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+    --pcft-section-alt-background: linear-gradient(180deg, #f4f7fb 0%, #eef3f8 100%);
+    --pcft-card-background: rgba(255, 255, 255, .92);
+    --pcft-card-border: rgba(64, 153, 143, .12);
+    --pcft-hero-overlay: linear-gradient(135deg, rgba(11, 61, 61, .52) 0%, rgba(26, 92, 92, .34) 100%);
+    --pcft-hero-frame: rgba(255, 255, 255, .22);
+    --pcft-button-background: linear-gradient(135deg, #40998F 0%, #2D7A7A 100%);
+    --pcft-button-text: #ffffff;
+    --pcft-button-shadow: 0 14px 36px rgba(64, 153, 143, .22);
+    --pcft-decoration-top: radial-gradient(circle at 12% 10%, rgba(255, 255, 255, .24) 0 22px, transparent 23px), radial-gradient(circle at 84% 12%, rgba(64, 153, 143, .18) 0 18px, transparent 19px);
+    --pcft-decoration-bottom: radial-gradient(circle at bottom left, rgba(64, 153, 143, .08) 0%, transparent 34%), radial-gradient(circle at bottom right, rgba(45, 122, 122, .08) 0%, transparent 40%);
+    --pcft-badge-background: rgba(64, 153, 143, .12);
+    --pcft-badge-text: #2D7A7A;
+    --pcft-indicator: rgba(64, 153, 143, .22);
+    --pcft-indicator-active: #40998F;
+    --pcft-chip-background: rgba(255, 255, 255, .72);
+    --pcft-chip-text: #12263a;
+    --pcft-font-heading: 'Inter', sans-serif;
+    --pcft-font-body: 'Inter', sans-serif;
+    --pcft-text-color: #12263a;
+    --pcft-muted-color: #5f6c7b;
+    --pcft-heading-color: #12263a;
+    --pcft-preview-cover: linear-gradient(135deg, #0B3D3D 0%, #1A5C5C 100%);
+}
+
+html {
+    background: var(--pcft-page-background);
+}
+
+body {
+    position: relative;
+    overflow-x: hidden;
+    background: var(--pcft-page-background) !important;
+    color: var(--pcft-text-color) !important;
+    font-family: var(--pcft-font-body);
+    isolation: isolate;
+}
+
+body::before,
+body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+
+body::before {
+    background: var(--pcft-decoration-top);
+    opacity: .9;
+}
+
+body::after {
+    background: var(--pcft-decoration-bottom);
+    opacity: .88;
+}
+
+header,
+main,
+section,
+footer,
+.hero,
+.whatsapp-widget,
+.scroll-to-top,
+.admin-panel,
+.login-container,
+.success-message,
+.modal {
+    position: relative;
+    z-index: 1;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.section-title,
+.brand-name {
+    font-family: var(--pcft-font-heading);
+    color: var(--pcft-heading-color);
+}
+
+p,
+span,
+li,
+small,
+label,
+.section-subtitle,
+.services-subtitle,
+.footer-description,
+.slogan {
+    color: var(--pcft-text-color);
+}
+
+.header {
+    background: var(--pcft-header-background) !important;
+    border-bottom: 1px solid var(--theme-border) !important;
+    box-shadow: var(--shadow-md) !important;
+}
+
+.header *,
+.footer * {
+    color: inherit;
+}
+
+.header .brand-name,
+.header .tagline,
+.nav-links a,
+.menu-toggle,
+.menu-toggle i,
+.footer,
+.footer h3,
+.footer h4,
+.footer p,
+.footer a,
+.footer span,
+.footer li,
+.footer small {
+    color: var(--theme-text) !important;
+}
+
+.hero-overlay {
+    background: var(--pcft-hero-overlay) !important;
+}
+
+.hero-slider,
+.hero-slide,
+.hero-slide img {
+    border-radius: 22px;
+}
+
+.hero-slider {
+    border: 1px solid var(--pcft-hero-frame);
+    box-shadow: var(--theme-shadow-lg);
+    overflow: hidden;
+}
+
+.indicator {
+    background: var(--pcft-indicator) !important;
+}
+
+.indicator.active {
+    background: var(--pcft-indicator-active) !important;
+}
+
+.services,
+.faq,
+.scheduling,
+.social-proof,
+.about,
+.contact {
+    background: var(--pcft-section-background) !important;
+}
+
+.testimonials,
+.services-summary {
+    background: var(--pcft-section-alt-background) !important;
+}
+
+.footer {
+    background: var(--pcft-footer-background) !important;
+    border-top: 1px solid var(--theme-border) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08);
+}
+
+.service-card,
+.feature-card,
+.testimonial-card,
+.testimonial-bubble,
+.faq-item,
+.schedule-form,
+.quick-booking,
+.stat-item,
+.info-card,
+.service-item,
+.announcement-content,
+.login-container,
+.admin-header,
+.admin-tabs,
+.stat-card,
+.chart-container,
+.rt-kpi,
+.rt-card,
+.clients-container,
+.slide-card,
+.modal-content,
+.whatsapp-chat,
+.whatsapp-body,
+.whatsapp-footer,
+.whatsapp-message,
+.search-box input,
+.search-box textarea,
+.search-box select {
+    background: var(--pcft-card-background) !important;
+    border-color: var(--pcft-card-border) !important;
+    color: var(--pcft-text-color) !important;
+    box-shadow: var(--theme-shadow) !important;
+}
+
+.service-card:hover,
+.feature-card:hover,
+.slide-card:hover,
+.faq-item:hover,
+.stat-item:hover,
+.info-card:hover,
+.rt-card:hover,
+.theme-card:hover {
+    border-color: var(--theme-accent) !important;
+    box-shadow: var(--theme-shadow-lg) !important;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea,
+.input-group input,
+.input-group select,
+.input-group textarea,
+.search-box input,
+.parcelas-table,
+.parc-filter-bar input,
+.parc-filter-bar select,
+.clients-table,
+.services-checkbox-group,
+.service-checkbox {
+    background: var(--theme-surface) !important;
+    color: var(--pcft-text-color) !important;
+    border-color: var(--theme-border) !important;
+}
+
+.clients-table th,
+.parcelas-table th,
+.slides-grid .slide-info,
+.slide-order span {
+    background: var(--theme-surface-2) !important;
+    color: var(--pcft-text-color) !important;
+}
+
+.clients-table td,
+.parcelas-table td,
+.slide-info p,
+.slide-info span,
+.services-summary p,
+.faq-answer,
+.rt-online-page,
+.rt-online-meta,
+.rt-online-duration {
+    color: var(--pcft-text-color) !important;
+}
+
+.clients-table tr:hover,
+.parcelas-table tr:hover td,
+.rt-list li:hover,
+.rt-online-row:hover {
+    background: var(--theme-surface-2) !important;
+}
+
+.section-title i,
+.stat-number,
+.service-card i,
+.feature-card i,
+.faq-question i,
+.footer h3 i,
+.footer h4 i,
+.info-card i,
+.payment-item i,
+.contact-item i {
+    color: var(--theme-accent) !important;
+}
+
+.section-title::after,
+.services h2::after {
+    background: var(--pcft-button-background) !important;
+}
+
+.btn-login,
+.btn-save,
+.booking-btn,
+.whatsapp-button,
+.btn-back-to-site,
+.btn-update,
+.btn-pagar-parcela,
+.btn-estornar-parcela,
+.btn-parcelar-servico,
+.btn-ativar-notif,
+.btn-testar-notif {
+    background: var(--pcft-button-background) !important;
+    color: var(--pcft-button-text) !important;
+    box-shadow: var(--pcft-button-shadow) !important;
+    border: none !important;
+}
+
+.btn-login:hover,
+.btn-save:hover,
+.booking-btn:hover,
+.whatsapp-button:hover,
+.btn-back-to-site:hover,
+.btn-update:hover,
+.btn-pagar-parcela:hover,
+.btn-estornar-parcela:hover,
+.btn-parcelar-servico:hover,
+.btn-ativar-notif:hover,
+.btn-testar-notif:hover {
+    filter: brightness(1.04) saturate(1.05);
+}
+
+body.pcft-effect-button-glow .btn-login,
+body.pcft-effect-button-glow .btn-save,
+body.pcft-effect-button-glow .booking-btn,
+body.pcft-effect-button-glow .whatsapp-button,
+body.pcft-effect-button-glow .btn-back-to-site,
+body.pcft-effect-button-glow .btn-update {
+    position: relative;
+    overflow: hidden;
+}
+
+body.pcft-effect-button-glow .btn-login::after,
+body.pcft-effect-button-glow .btn-save::after,
+body.pcft-effect-button-glow .booking-btn::after,
+body.pcft-effect-button-glow .whatsapp-button::after,
+body.pcft-effect-button-glow .btn-back-to-site::after,
+body.pcft-effect-button-glow .btn-update::after {
+    content: '';
+    position: absolute;
+    inset: -120% auto auto -25%;
+    width: 42%;
+    height: 300%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .42), transparent);
+    transform: rotate(24deg);
+    animation: pcftButtonGlow 5.6s linear infinite;
+}
+
+body.pcft-effect-snow::after {
+    background-image:
+        var(--pcft-decoration-bottom),
+        radial-gradient(circle, rgba(255, 255, 255, .78) 0 1.8px, transparent 2px),
+        radial-gradient(circle, rgba(255, 255, 255, .56) 0 2.4px, transparent 2.6px),
+        radial-gradient(circle, rgba(255, 255, 255, .42) 0 1.6px, transparent 1.8px);
+    background-size: auto, 180px 180px, 240px 240px, 320px 320px;
+    animation: pcftSnow 16s linear infinite;
+    opacity: .62;
+}
+
+body.pcft-effect-lights::before {
+    background-image:
+        var(--pcft-decoration-top),
+        radial-gradient(circle at 12% 10%, rgba(255, 214, 10, .48) 0 6px, transparent 7px),
+        radial-gradient(circle at 28% 13%, rgba(248, 113, 113, .42) 0 6px, transparent 7px),
+        radial-gradient(circle at 44% 11%, rgba(34, 197, 94, .42) 0 6px, transparent 7px),
+        radial-gradient(circle at 60% 14%, rgba(255, 214, 10, .42) 0 6px, transparent 7px),
+        radial-gradient(circle at 76% 10%, rgba(59, 130, 246, .42) 0 6px, transparent 7px);
+    animation: pcftSparkle 4.5s ease-in-out infinite;
+}
+
+body.pcft-effect-fireworks::after {
+    background-image:
+        var(--pcft-decoration-bottom),
+        radial-gradient(circle at 18% 16%, rgba(255, 255, 255, .22) 0 2px, transparent 3px),
+        radial-gradient(circle at 82% 18%, rgba(243, 217, 141, .32) 0 2px, transparent 3px),
+        radial-gradient(circle at 72% 10%, rgba(255, 255, 255, .2) 0 2px, transparent 3px);
+    animation: pcftFireworks 7s ease-in-out infinite;
+}
+
+body.pcft-effect-soft-bloom::before {
+    filter: blur(0px);
+    opacity: .82;
+}
+
+body.pcft-effect-grid-lines::before,
+body.pcft-effect-circuit::before {
+    background-image:
+        var(--pcft-decoration-top),
+        linear-gradient(90deg, rgba(255, 255, 255, .05) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(255, 255, 255, .05) 1px, transparent 1px);
+    background-size: auto, 52px 52px, 52px 52px;
+    opacity: .42;
+}
+
+body.pcft-effect-rgb-wave::after {
+    background-image:
+        var(--pcft-decoration-bottom),
+        linear-gradient(120deg, rgba(0, 229, 255, .18), transparent 36%),
+        linear-gradient(300deg, rgba(255, 43, 214, .18), transparent 42%);
+    filter: blur(12px);
+    animation: pcftRgbWave 8s ease-in-out infinite;
+}
+
+body.pcft-effect-sparkle::before {
+    animation: pcftSparkle 5.2s ease-in-out infinite;
+}
+
+.theme-manager-shell {
+    display: grid;
+    grid-template-columns: minmax(0, 1.7fr) minmax(320px, 1fr);
+    gap: 24px;
+}
+
+.theme-toolbar,
+.theme-preview-panel {
+    background: var(--pcft-card-background);
+    border: 1px solid var(--pcft-card-border);
+    border-radius: 20px;
+    box-shadow: var(--theme-shadow);
+    padding: 22px;
+}
+
+.theme-toolbar {
+    margin-bottom: 20px;
+}
+
+.theme-toolbar h3,
+.theme-preview-panel h3 {
+    margin-bottom: 10px;
+}
+
+.theme-toolbar p,
+.theme-preview-panel p,
+.theme-card__meta,
+.theme-card__description,
+.theme-current-status small {
+    color: var(--pcft-muted-color) !important;
+}
+
+.theme-toolbar__row {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.theme-toggle-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--theme-surface);
+    border: 1px solid var(--theme-border);
+    border-radius: 999px;
+    padding: 12px 16px;
+    font-weight: 600;
+}
+
+.theme-toggle-option input {
+    accent-color: var(--theme-accent);
+}
+
+.theme-fallback-select {
+    min-width: 240px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    border: 1px solid var(--theme-border);
+    background: var(--theme-surface);
+    color: var(--pcft-text-color);
+}
+
+.theme-catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 18px;
+}
+
+.theme-card {
+    background: var(--pcft-card-background);
+    border: 1px solid var(--pcft-card-border);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--theme-shadow);
+    transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+}
+
+.theme-card.is-active {
+    border-color: var(--theme-accent);
+    box-shadow: var(--theme-shadow-lg);
+}
+
+.theme-card.is-previewing {
+    outline: 2px solid var(--theme-accent);
+    outline-offset: 2px;
+}
+
+.theme-card__cover {
+    min-height: 128px;
+    padding: 16px;
+    display: flex;
+    align-items: flex-end;
+    background: var(--pcft-preview-cover);
+    color: #ffffff;
+}
+
+.theme-card__cover-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .18);
+    backdrop-filter: blur(10px);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.theme-card__body {
+    padding: 18px;
+}
+
+.theme-card__title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.theme-card__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: var(--pcft-badge-background);
+    color: var(--pcft-badge-text);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+}
+
+.theme-card__palette {
+    display: flex;
+    gap: 8px;
+    margin: 14px 0 16px;
+}
+
+.theme-card__swatch {
+    width: 100%;
+    height: 12px;
+    border-radius: 999px;
+}
+
+.theme-card__actions {
+    display: flex;
+    gap: 10px;
+}
+
+.theme-card__actions button {
+    flex: 1;
+    min-height: 44px;
+    border-radius: 14px;
+    font-weight: 700;
+}
+
+.theme-card__ghost {
+    background: transparent;
+    color: var(--pcft-text-color);
+    border: 1px solid var(--theme-border);
+}
+
+.theme-preview-banner {
+    position: relative;
+    overflow: hidden;
+    border-radius: 24px;
+    border: 1px solid var(--pcft-hero-frame);
+    background: var(--pcft-preview-cover);
+    box-shadow: var(--theme-shadow-lg);
+}
+
+.theme-preview-banner img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.theme-preview-banner__chip {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: var(--pcft-chip-background);
+    color: var(--pcft-chip-text);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+
+.theme-preview-banner__caption {
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    bottom: 18px;
+    padding: 16px 18px;
+    border-radius: 18px;
+    background: rgba(6, 10, 20, .46);
+    color: #f8fafc;
+    backdrop-filter: blur(12px);
+}
+
+.theme-preview-banner__caption h4,
+.theme-preview-banner__caption p {
+    color: inherit !important;
+    margin: 0;
+}
+
+.theme-preview-banner__caption p {
+    margin-top: 6px;
+    font-size: 14px;
+}
+
+.theme-preview-metrics {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.theme-preview-metric {
+    background: var(--theme-surface);
+    border: 1px solid var(--theme-border);
+    border-radius: 16px;
+    padding: 14px;
+}
+
+.theme-preview-metric strong {
+    display: block;
+    margin-bottom: 6px;
+}
+
+.theme-current-status {
+    margin-top: 18px;
+    padding: 16px 18px;
+    border-radius: 16px;
+    background: var(--theme-surface);
+    border: 1px solid var(--theme-border);
+}
+
+.theme-preview-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.theme-preview-actions button {
+    flex: 1;
+    min-height: 46px;
+    border-radius: 14px;
+    font-weight: 700;
+}
+
+.theme-preview-actions .theme-secondary {
+    background: transparent;
+    color: var(--pcft-text-color);
+    border: 1px solid var(--theme-border);
+}
+
+@keyframes pcftButtonGlow {
+    0% {
+        transform: translateX(-120%) rotate(24deg);
+    }
+    100% {
+        transform: translateX(360%) rotate(24deg);
+    }
+}
+
+@keyframes pcftSnow {
+    0% {
+        background-position: 0 0, 0 0, 0 0, 0 0;
+    }
+    100% {
+        background-position: 0 0, 0 180px, 0 240px, 0 320px;
+    }
+}
+
+@keyframes pcftSparkle {
+    0%,
+    100% {
+        opacity: .68;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+@keyframes pcftFireworks {
+    0%,
+    100% {
+        opacity: .46;
+        transform: scale(1);
+    }
+    50% {
+        opacity: .9;
+        transform: scale(1.04);
+    }
+}
+
+@keyframes pcftRgbWave {
+    0%,
+    100% {
+        opacity: .34;
+        transform: translate3d(0, 0, 0);
+    }
+    50% {
+        opacity: .54;
+        transform: translate3d(0, 10px, 0);
+    }
+}
+
+@media (max-width: 1080px) {
+    .theme-manager-shell {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .theme-toolbar__row,
+    .theme-card__actions,
+    .theme-preview-actions {
+        flex-direction: column;
+    }
+
+    .theme-preview-metrics {
+        grid-template-columns: 1fr;
+    }
+
+    .theme-catalog-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ── 3.24  Botões de ação ── */
+html[data-theme='dark'] .btn-login,
+html[data-theme='dark'] .btn-save,
+html[data-theme='dark'] .btn-back-to-site,
+html[data-theme='dark'] .btn-update,
+html[data-theme='dark'] .submit-schedule-btn,
+html[data-theme='dark'] .summary-btn,
+html[data-theme='dark'] .service-details-btn,
+html[data-theme='dark'] .whatsapp-button {
+    background: var(--gradient-accent) !important;
+}
+
+html[data-theme='dark'] .service-details-btn {
+    color: #effcff !important;
+    box-shadow: 0 4px 14px rgba(65, 168, 157, .35) !important;
+}
+
+/* ── 3.25  Links sociais (seção contato) ── */
+html[data-theme='dark'] .social-link {
+    background: var(--theme-surface) !important;
+    border-color: var(--theme-border) !important;
+    box-shadow: var(--theme-shadow) !important;
+}
+
+html[data-theme='dark'] .social-link:hover {
+    background: var(--theme-surface-2) !important;
+    border-color: var(--theme-accent) !important;
+}
+
+html[data-theme='dark'] .social-link strong {
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] .social-link small {
+    color: var(--theme-muted) !important;
+}
+
+/* ── 3.26  Localização ── */
+html[data-theme='dark'] .location-info {
+    background: var(--theme-surface) !important;
+    border-color: var(--theme-border) !important;
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] .location-info * {
+    color: var(--theme-text) !important;
+}
+
+/* ── 3.27  Formulário de cliente (client-form-container) ── */
+html[data-theme='dark'] .client-form-container {
+    background: var(--theme-surface) !important;
+    border: 1px solid var(--theme-border) !important;
+    box-shadow: var(--theme-shadow) !important;
+}
+
+/* ── 3.28  Slide de estatísticas ── */
+html[data-theme='dark'] .stat-slide {
+    background: var(--theme-surface) !important;
+    border: 1px solid var(--theme-border) !important;
+    box-shadow: var(--theme-shadow) !important;
+}
+
+html[data-theme='dark'] .stat-slide h3,
+html[data-theme='dark'] .stat-slide p {
+    color: var(--theme-text) !important;
+}
+
+/* ── 3.29  Service checkbox hover ── */
+html[data-theme='dark'] .service-checkbox:hover {
+    background: var(--theme-surface-3) !important;
+    border-color: var(--theme-accent) !important;
+}
+
+/* ── 3.30  Salvaguardas globais anti-branco ── */
+html[data-theme='dark'] .whatsapp-message::before {
+    border-color: transparent var(--theme-surface-2) transparent transparent !important;
+}
+
+html[data-theme='dark'] .testimonial-card::before {
+    border-color: transparent var(--theme-surface) transparent transparent !important;
+}
+
+html[data-theme='dark'] .whatsapp-avatar,
+html[data-theme='dark'] .cta-btn:not(.secondary),
+html[data-theme='dark'] .back-to-home,
+html[data-theme='dark'] .example-content,
+html[data-theme='dark'] .check-item,
+html[data-theme='dark'] .steps,
+html[data-theme='dark'] .result,
+html[data-theme='dark'] .container,
+html[data-theme='dark'] .card,
+html[data-theme='dark'] .comparison-card,
+html[data-theme='dark'] .feature,
+html[data-theme='dark'] .feature-card {
+    background: var(--theme-surface) !important;
+    border-color: var(--theme-border) !important;
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] [style*='background: white' i],
+html[data-theme='dark'] [style*='background:white' i],
+html[data-theme='dark'] [style*='background: #fff' i],
+html[data-theme='dark'] [style*='background:#fff' i],
+html[data-theme='dark'] [style*='background-color: white' i],
+html[data-theme='dark'] [style*='background-color:white' i],
+html[data-theme='dark'] [style*='background-color: #fff' i],
+html[data-theme='dark'] [style*='background-color:#fff' i],
+html[data-theme='dark'] [style*='background: #ffffff' i],
+html[data-theme='dark'] [style*='background:#ffffff' i],
+html[data-theme='dark'] [style*='background-color: #ffffff' i],
+html[data-theme='dark'] [style*='background-color:#ffffff' i],
+html[data-theme='dark'] [style*='background: #f8f9fa' i],
+html[data-theme='dark'] [style*='background:#f8f9fa' i],
+html[data-theme='dark'] [style*='background: #f5f5f5' i],
+html[data-theme='dark'] [style*='background:#f5f5f5' i],
+html[data-theme='dark'] [style*='background: #f8fffc' i],
+html[data-theme='dark'] [style*='background:#f8fffc' i],
+html[data-theme='dark'] [style*='background: #f0f0f0' i],
+html[data-theme='dark'] [style*='background:#f0f0f0' i],
+html[data-theme='dark'] [style*='background: #fff3cd' i],
+html[data-theme='dark'] [style*='background:#fff3cd' i],
+html[data-theme='dark'] [style*='background: #fff5f5' i],
+html[data-theme='dark'] [style*='background:#fff5f5' i],
+html[data-theme='dark'] [style*='background: #ffe8e8' i],
+html[data-theme='dark'] [style*='background:#ffe8e8' i],
+html[data-theme='dark'] [style*='background: #fff9db' i],
+html[data-theme='dark'] [style*='background:#fff9db' i],
+html[data-theme='dark'] [style*='background: #fff3bf' i],
+html[data-theme='dark'] [style*='background:#fff3bf' i] {
+    background: var(--theme-surface) !important;
+    border-color: var(--theme-border) !important;
+}
+
+html[data-theme='dark'] [style*='#fff5f5' i],
+html[data-theme='dark'] [style*='#ffe8e8' i],
+html[data-theme='dark'] [style*='#fff9db' i],
+html[data-theme='dark'] [style*='#fff3bf' i],
+html[data-theme='dark'] [style*='#fff3cd' i],
+html[data-theme='dark'] [style*='#fce4ec' i],
+html[data-theme='dark'] [style*='#e3f2fd' i],
+html[data-theme='dark'] [style*='#f1fff6' i],
+html[data-theme='dark'] [style*='#f0fff8' i],
+html[data-theme='dark'] [style*='#e8f5f3' i],
+html[data-theme='dark'] [style*='#e8f5e9' i],
+html[data-theme='dark'] [style*='#b2dfdb' i],
+html[data-theme='dark'] [style*='linear-gradient(135deg, #fff5f5' i],
+html[data-theme='dark'] [style*='linear-gradient(135deg, #fff9db' i] {
+    background: var(--theme-surface-2) !important;
+    border-color: var(--theme-border) !important;
+}
+
+html[data-theme='dark'] [style*='color: #0B3D3D' i],
+html[data-theme='dark'] [style*='color:#0B3D3D' i],
+html[data-theme='dark'] [style*='color: #666' i],
+html[data-theme='dark'] [style*='color:#666' i],
+html[data-theme='dark'] [style*='color: #444' i],
+html[data-theme='dark'] [style*='color:#444' i],
+html[data-theme='dark'] [style*='color: #555' i],
+html[data-theme='dark'] [style*='color:#555' i],
+html[data-theme='dark'] [style*='color: #333' i],
+html[data-theme='dark'] [style*='color:#333' i],
+html[data-theme='dark'] [style*='color: #777' i],
+html[data-theme='dark'] [style*='color:#777' i],
+html[data-theme='dark'] [style*='color: #888' i],
+html[data-theme='dark'] [style*='color:#888' i],
+html[data-theme='dark'] [style*='color: #212529' i],
+html[data-theme='dark'] [style*='color:#212529' i] {
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] .parc-inline-row {
+    border-bottom-color: var(--theme-border) !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════
+   4. BOTÃO DE ALTERNÂNCIA DE TEMA
+   ═══════════════════════════════════════════════════════ */
+
+#themeToggleBtn {
+    position: fixed;
+    left: 16px;
+    bottom: 16px;
+    z-index: 5000;
+    width: 48px;
+    height: 48px;
+    border: 0;
+    border-radius: 50%;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    line-height: 1;
+    color: #ffffff;
+    background: linear-gradient(135deg, #2D7A7A, #40998F);
+    box-shadow:
+        0 4px 14px rgba(45, 122, 122, .45),
+        0 2px 6px  rgba(0, 0, 0, .25);
+    transition:
+        transform  .22s cubic-bezier(.34, 1.56, .64, 1),
+        box-shadow .22s ease,
+        background .25s ease;
+    outline: none;
+    user-select: none;
+}
+
+#themeToggleBtn:hover {
+    transform: translateY(-3px) scale(1.09);
+    box-shadow:
+        0 8px 22px rgba(45, 122, 122, .55),
+        0 4px 10px rgba(0, 0, 0, .30);
+}
+
+#themeToggleBtn:active {
+    transform: translateY(0) scale(.94);
+    box-shadow:
+        0 2px 8px rgba(45, 122, 122, .35),
+        0 1px 4px rgba(0, 0, 0, .20);
+}
+
+#themeToggleBtn:focus-visible {
+    outline: 3px solid rgba(95, 201, 190, .7);
+    outline-offset: 3px;
+}
+
+html[data-theme='dark'] #themeToggleBtn {
+    background: linear-gradient(135deg, #1f3d52, #263f58);
+    box-shadow:
+        0 4px 14px rgba(0, 0, 0, .50),
+        0 0 0 1px var(--theme-border),
+        inset 0 1px 0 rgba(255, 255, 255, .07);
+}
+
+html[data-theme='dark'] #themeToggleBtn:hover {
+    background: linear-gradient(135deg, #26485e, #2d4d6e);
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, .60),
+        0 0 0 1px var(--theme-accent),
+        inset 0 1px 0 rgba(255, 255, 255, .10);
+}
+
+
+/* ═══════════════════════════════════════════════════════
+   5. SCROLLBAR PERSONALIZADA (dark)
+   ═══════════════════════════════════════════════════════ */
+
+html[data-theme='dark'] ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+html[data-theme='dark'] ::-webkit-scrollbar-track {
+    background: #07101c;
+}
+
+html[data-theme='dark'] ::-webkit-scrollbar-thumb {
+    background: var(--theme-border);
+    border-radius: 999px;
+    border: 2px solid #07101c;
+}
+
+html[data-theme='dark'] ::-webkit-scrollbar-thumb:hover {
+    background: var(--theme-accent-2);
+}
+
+
+/* ═══════════════════════════════════════════════════════
+   6. RESPONSIVIDADE DO TOGGLE
+   ═══════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+    #themeToggleBtn {
+        width: 44px;
+        height: 44px;
+        font-size: 18px;
+        left: 12px;
+        bottom: 12px;
+    }
+}
