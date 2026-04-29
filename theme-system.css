@@ -633,6 +633,30 @@ html[data-theme='dark'] .whatsapp-toggle {
     filter: brightness(.9) saturate(.85);
 }
 
+/* WhatsApp button mantém cor verde em todos os temas */
+html[data-theme='dark'] .whatsapp-button {
+    background: linear-gradient(135deg, #128C7E 0%, #25D366 100%) !important;
+    color: #ffffff !important;
+}
+
+/* Modo claro: preserva aparência do chat WhatsApp */
+.whatsapp-body {
+    background: #e5ddd5 !important;
+}
+
+.whatsapp-message {
+    background: #ffffff !important;
+    color: #303030 !important;
+}
+
+.whatsapp-message::before {
+    border-color: transparent #ffffff transparent transparent !important;
+}
+
+.whatsapp-toggle {
+    background: #25D366 !important;
+}
+
 /* ── 3.15  Admin — header, tabs ── */
 html[data-theme='dark'] .admin-header {
     background: linear-gradient(135deg, #0d1e30 0%, #091629 100%) !important;
@@ -1177,14 +1201,27 @@ main,
 section,
 footer,
 .hero,
-.whatsapp-widget,
-.scroll-to-top,
 .admin-panel,
 .login-container,
-.success-message,
-.modal {
+.success-message {
     position: relative;
     z-index: 1;
+}
+
+/* Elementos com position: fixed não devem ser sobrescritos */
+.whatsapp-widget {
+    position: fixed !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    z-index: 1000 !important;
+}
+
+.scroll-to-top {
+    position: fixed !important;
+}
+
+.modal {
+    position: fixed !important;
 }
 
 h1,
@@ -1304,7 +1341,6 @@ label,
 .slide-card,
 .modal-content,
 .whatsapp-chat,
-.whatsapp-body,
 .whatsapp-footer,
 .whatsapp-message,
 .search-box input,
@@ -1394,7 +1430,6 @@ label,
 .btn-login,
 .btn-save,
 .booking-btn,
-.whatsapp-button,
 .btn-back-to-site,
 .btn-update,
 .btn-pagar-parcela,
@@ -1411,7 +1446,6 @@ label,
 .btn-login:hover,
 .btn-save:hover,
 .booking-btn:hover,
-.whatsapp-button:hover,
 .btn-back-to-site:hover,
 .btn-update:hover,
 .btn-pagar-parcela:hover,
@@ -1425,7 +1459,6 @@ label,
 body.pcft-effect-button-glow .btn-login,
 body.pcft-effect-button-glow .btn-save,
 body.pcft-effect-button-glow .booking-btn,
-body.pcft-effect-button-glow .whatsapp-button,
 body.pcft-effect-button-glow .btn-back-to-site,
 body.pcft-effect-button-glow .btn-update {
     position: relative;
@@ -1435,7 +1468,6 @@ body.pcft-effect-button-glow .btn-update {
 body.pcft-effect-button-glow .btn-login::after,
 body.pcft-effect-button-glow .btn-save::after,
 body.pcft-effect-button-glow .booking-btn::after,
-body.pcft-effect-button-glow .whatsapp-button::after,
 body.pcft-effect-button-glow .btn-back-to-site::after,
 body.pcft-effect-button-glow .btn-update::after {
     content: '';
@@ -1857,8 +1889,7 @@ html[data-theme='dark'] .btn-back-to-site,
 html[data-theme='dark'] .btn-update,
 html[data-theme='dark'] .submit-schedule-btn,
 html[data-theme='dark'] .summary-btn,
-html[data-theme='dark'] .service-details-btn,
-html[data-theme='dark'] .whatsapp-button {
+html[data-theme='dark'] .service-details-btn {
     background: var(--gradient-accent) !important;
 }
 
