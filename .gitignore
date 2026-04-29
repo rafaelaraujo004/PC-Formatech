@@ -58,21 +58,3 @@ desktop.ini
 .next/
 .nuxt/
 
-# Proteção extra: nunca envie dados sensíveis ou exportações de dados
-# NOTA: *.json removido pois bloqueava manifest.json, vercel.json etc.
-clientes*.json
-produtos*.json
-orcamentos*.json
-budgets*.json
-firebase-export*
-*.bak
-*.backup
-*.sqlite
-*.db
-
-# ===== ARQUIVOS DO FIREBASE =====
-# firebase-config.js NÃO é mais bloqueado - chaves Firebase são públicas por design
-# A segurança é garantida pelas regras do Firestore, não pelo sigilo das chaves
-# Veja: https://firebase.google.com/docs/projects/api-keys
-firebase-config.example.js
-

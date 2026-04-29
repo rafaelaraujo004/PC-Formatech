@@ -881,7 +881,7 @@
                     <div class="parc-group-title">
                         <i class="fas fa-user-circle"></i>
                         ${grupo.clientName}
-                        <span style="font-weight:400;color:#666;font-size:12px;">(${grupo.clientPhone})</span>
+                        <span style="font-weight:400;color:#666;font-size:12px;">${grupo.clientPhone}</span>
                         <span style="margin-left:10px;font-size:12px;">Total: <strong>R$ ${totalCliente.toFixed(2).replace('.', ',')}</strong></span>
                         <span style="margin-left:auto;font-size:12px;color:#888;">${qtdPagas}/${qtdTotal} parcelas pagas</span>
                     </div>
@@ -1056,7 +1056,7 @@
                 const clientCard = document.createElement('div');
                 clientCard.className = 'service-card';
                 clientCard.innerHTML = `
-                    <h3>${client.name} <span style="font-size: 14px; color: #666;">(${client.phone})</span></h3>
+                    <h3>${client.name} <span style="font-size: 14px; color: #666;">${client.phone}</span></h3>
                     <p><strong>Total de Serviços:</strong> ${client.services.length}</p>
                     <p><strong>Serviços Pendentes:</strong> ${pendingServices}</p>
                     <p><strong>Valor Total:</strong> R$ ${totalValue.toFixed(2).replace('.', ',')}</p>

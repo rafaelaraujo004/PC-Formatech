@@ -1,176 +1,61 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Carrossel Hero
-    const indicatorsContainer = document.querySelector('.hero-indicators');
+    const slides = document.querySelectorAll('.hero-slide');
+    const indicators = document.querySelectorAll('.indicator');
     let currentSlide = 0;
-    let slideTimer = null;
-    const HERO_SLIDE_INTERVAL_MS = 10000;
-
-    function getSlides() {
-        return Array.from(document.querySelectorAll('.hero-slide'));
-    }
-
-    function getIndicators() {
-        return Array.from(document.querySelectorAll('.indicator'));
-    }
-
-    function ensureIndicators(slides) {
-        if (!indicatorsContainer) {
-            return [];
-        }
-
-        let indicators = getIndicators();
-        if (indicators.length !== slides.length) {
-            indicatorsContainer.innerHTML = '';
-
-            slides.forEach((_, index) => {
-                const indicator = document.createElement('span');
-                indicator.className = `indicator${index === 0 ? ' active' : ''}`;
-                indicator.dataset.slide = String(index);
-                indicatorsContainer.appendChild(indicator);
-            });
-
-            indicators = getIndicators();
-        }
-
-        return indicators;
-    }
-
-    function normalizeSlideIndex(index) {
-        const slides = getSlides();
-        if (!slides.length) return 0;
-        return (index + slides.length) % slides.length;
-    }
-
-    function preloadSlideImage(index) {
-        const slides = getSlides();
-        const targetSlide = slides[index];
-        if (!targetSlide) return;
-
-        const img = targetSlide.querySelector('img');
-        if (!img || img.complete) return;
-
-        img.decoding = 'async';
-        img.loading = 'eager';
-
-        const src = img.currentSrc || img.src;
-        if (src) {
-            const preloader = new Image();
-            preloader.src = src;
-        }
-    }
+    let slideInterval;
 
     function showSlide(index) {
-        const slides = getSlides();
-        if (!slides.length) return;
-
-        const safeIndex = normalizeSlideIndex(index);
-        const indicators = ensureIndicators(slides);
-
         // Remove active de todos
         slides.forEach(slide => slide.classList.remove('active'));
         indicators.forEach(indicator => indicator.classList.remove('active'));
         
         // Adiciona active ao slide atual
-        const activeSlide = slides[safeIndex];
-        if (activeSlide) {
-            activeSlide.classList.add('active');
-        }
-
-        const activeIndicator = indicators[safeIndex];
-        if (activeIndicator) {
-            activeIndicator.classList.add('active');
-        }
-
-        currentSlide = safeIndex;
-        preloadSlideImage(normalizeSlideIndex(safeIndex + 1));
+        slides[index].classList.add('active');
+        indicators[index].classList.add('active');
     }
 
-    function stopSlideshow() {
-        if (slideTimer) {
-            clearTimeout(slideTimer);
-            slideTimer = null;
-        }
+    function nextSlide() {
+        currentSlide = (currentSlide + 1) % slides.length;
+        showSlide(currentSlide);
     }
 
     function startSlideshow() {
-        const slides = getSlides();
-        if (slides.length <= 1) return;
-
-        stopSlideshow();
-        slideTimer = setTimeout(() => {
-            showSlide(currentSlide + 1);
-            startSlideshow();
-        }, HERO_SLIDE_INTERVAL_MS);
+        slideInterval = setInterval(nextSlide, 10000); // 10 segundos
     }
 
-    function bindIndicatorEvents() {
-        const indicators = getIndicators();
-        indicators.forEach((indicator, index) => {
-            if (indicator.dataset.heroBound === '1') {
-                return;
-            }
-
-            indicator.dataset.heroBound = '1';
-            indicator.addEventListener('click', () => {
-                showSlide(index);
-                startSlideshow();
-            });
-        });
-    }
-
-    function refreshHeroSlider(options = {}) {
-        const slides = getSlides();
-        if (!slides.length) {
-            stopSlideshow();
-            return;
-        }
-
-        if (options.resetIndex || currentSlide >= slides.length) {
-            currentSlide = 0;
-        }
-
-        ensureIndicators(slides);
-        bindIndicatorEvents();
-        showSlide(currentSlide);
+    function resetSlideshow() {
+        clearInterval(slideInterval);
         startSlideshow();
     }
 
-    window.refreshHeroSlider = refreshHeroSlider;
-
-    ensureIndicators(getSlides());
-    bindIndicatorEvents();
+    // Clique nos indicadores
+    indicators.forEach((indicator, index) => {
+        indicator.addEventListener('click', () => {
+            currentSlide = index;
+            showSlide(currentSlide);
+            resetSlideshow();
+        });
+    });
 
     // Função para mudar slide (usada pelos botões de navegação)
     window.changeSlide = function(direction) {
-        if (!getSlides().length) return;
-        showSlide(currentSlide + direction);
-        startSlideshow();
+        currentSlide = (currentSlide + direction + slides.length) % slides.length;
+        showSlide(currentSlide);
+        resetSlideshow();
     };
 
     // Navegação por teclado (setas)
     document.addEventListener('keydown', (e) => {
-        const activeTag = document.activeElement && document.activeElement.tagName;
-        if (activeTag === 'INPUT' || activeTag === 'TEXTAREA' || activeTag === 'SELECT') {
-            return;
-        }
-
         if (e.key === 'ArrowLeft') {
-            window.changeSlide(-1);
+            changeSlide(-1);
         } else if (e.key === 'ArrowRight') {
-            window.changeSlide(1);
+            changeSlide(1);
         }
     });
 
-    // Evita drift/travas quando a aba fica em segundo plano
-    document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
-            stopSlideshow();
-            return;
-        }
-        startSlideshow();
-    });
-
-    refreshHeroSlider();
+    // Iniciar slideshow
+    startSlideshow();
 
     // Ocultar header ao rolar para baixo
     let lastScrollTop = 0;
@@ -770,6 +655,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateServicesSummary() {
         const adminData = loadAdminData();
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
         
         selectedServices = Array.from(serviceCheckboxes)
             .filter(checkbox => checkbox.checked)
@@ -854,6 +740,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (scrollToTopBtn) {
                 scrollToTopBtn.style.display = 'none';
             }
+            // Esconder botão flutuante de dark mode enquanto a barra estiver aberta
+            if (themeToggleBtn) {
+                themeToggleBtn.style.display = 'none';
+            }
         } else {
             if (summaryDiscount) {
                 summaryDiscount.style.display = 'none';
@@ -868,6 +758,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const scrollToTopBtn = document.getElementById('scrollToTop');
             if (scrollToTopBtn) {
                 scrollToTopBtn.style.display = 'flex';
+            }
+            // Mostrar botão flutuante de dark mode ao fechar a barra
+            if (themeToggleBtn) {
+                themeToggleBtn.style.display = 'inline-flex';
             }
         }
     }
@@ -945,10 +839,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Função para abrir modal de serviço
     function openServiceModal(modalId) {
-        const modal = document.querySelector(`[data-modal-id="${modalId}"]`);
+        const modal = document.getElementById(`modal-${modalId}`);
         if (modal) {
             modal.style.display = 'block';
             document.body.style.overflow = 'hidden';
+
+            const whatsappWidget = document.querySelector('.whatsapp-widget');
+            if (whatsappWidget) {
+                whatsappWidget.style.display = 'none';
+            }
         }
     }
 

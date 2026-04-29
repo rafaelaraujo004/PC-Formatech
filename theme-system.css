@@ -78,6 +78,25 @@ html[data-theme='dark'] {
     --shadow-md:         0 6px 16px rgba(0, 0, 0, .40);
     --shadow-lg:         0 10px 26px rgba(0, 0, 0, .50);
     --shadow-xl:         0 18px 48px rgba(0, 0, 0, .60);
+
+    /* ── Remapeia variáveis pcft do tema dinâmico ── */
+    --pcft-page-background:       radial-gradient(ellipse at 20% 0%, #13243a 0%, #090f1b 55%, #060c14 100%);
+    --pcft-card-background:       #111c2e;
+    --pcft-card-border:           rgba(38, 61, 88, .8);
+    --pcft-text-color:            #dce8f5;
+    --pcft-muted-color:           #8fadc8;
+    --pcft-heading-color:         #dce8f5;
+    --pcft-section-background:    linear-gradient(180deg, #0e1929 0%, #0b1520 100%);
+    --pcft-section-alt-background:linear-gradient(180deg, #0b1520 0%, #091421 100%);
+    --pcft-header-background:     linear-gradient(135deg, #0d1e30 0%, #091629 100%);
+    --pcft-footer-background:     linear-gradient(135deg, #0d1e30 0%, #07111e 100%);
+    --pcft-badge-background:      rgba(95, 201, 190, .12);
+    --pcft-badge-text:            #5fc9be;
+    --pcft-chip-background:       rgba(23, 36, 55, .9);
+    --pcft-chip-text:             #dce8f5;
+    /* Remove decorative circles que aparecem no fundo escuro */
+    --pcft-decoration-top:        none;
+    --pcft-decoration-bottom:     none;
 }
 
 
@@ -139,7 +158,7 @@ html[data-theme='dark'] body {
 html[data-theme='dark'] .header {
     background: linear-gradient(135deg, #0d1e30 0%, #091629 100%) !important;
     box-shadow: 0 2px 20px rgba(0, 0, 0, .5) !important;
-    border-bottom: 1px solid var(--theme-border) !important;
+    border-bottom: none !important;
 }
 
 html[data-theme='dark'] .nav-links a,
@@ -1181,8 +1200,7 @@ footer,
 .scroll-to-top,
 .admin-panel,
 .login-container,
-.success-message,
-.modal {
+.success-message {
     position: relative;
     z-index: 1;
 }
@@ -1213,8 +1231,8 @@ label,
 
 .header {
     background: var(--pcft-header-background) !important;
-    border-bottom: 1px solid var(--theme-border) !important;
-    box-shadow: var(--shadow-md) !important;
+    border-bottom: none !important;
+    box-shadow: none !important;
 }
 
 .header *,
@@ -1238,6 +1256,15 @@ label,
     color: var(--theme-text) !important;
 }
 
+/* Header e hero com texto branco para manter legibilidade no modo claro */
+html:not([data-theme='dark']) .header .brand-name,
+html:not([data-theme='dark']) .header .tagline,
+html:not([data-theme='dark']) .header .nav-links a,
+html:not([data-theme='dark']) .hero-content h1,
+html:not([data-theme='dark']) .hero-content p {
+    color: #e9f4ff !important;
+}
+
 .hero-overlay {
     background: var(--pcft-hero-overlay) !important;
 }
@@ -1249,7 +1276,9 @@ label,
 }
 
 .hero-slider {
-    border: 1px solid var(--pcft-hero-frame);
+    top: -2px;
+    height: calc(100% + 2px);
+    border: none !important;
     box-shadow: var(--theme-shadow-lg);
     overflow: hidden;
 }
@@ -1314,6 +1343,10 @@ label,
     border-color: var(--pcft-card-border) !important;
     color: var(--pcft-text-color) !important;
     box-shadow: var(--theme-shadow) !important;
+}
+
+.modal-content {
+    background: #ffffff !important;
 }
 
 .service-card:hover,
@@ -2024,6 +2057,45 @@ html[data-theme='dark'] .parc-inline-row {
     border-bottom-color: var(--theme-border) !important;
 }
 
+/* ── 3.31  Admin — body background e painéis inline ── */
+html[data-theme='dark'] body {
+    background: radial-gradient(ellipse at 20% 0%, #13243a 0%, #090f1b 55%, #060c14 100%) !important;
+}
+
+html[data-theme='dark'] .admin-header h1,
+html[data-theme='dark'] .admin-header h1 * {
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] .input-group label,
+html[data-theme='dark'] .form-group label {
+    color: var(--theme-text) !important;
+}
+
+html[data-theme='dark'] .service-card {
+    background: var(--theme-surface) !important;
+    border: 1px solid var(--theme-border) !important;
+    box-shadow: var(--theme-shadow) !important;
+}
+
+html[data-theme='dark'] .service-card h3 {
+    color: var(--theme-text) !important;
+    border-bottom-color: var(--theme-accent) !important;
+}
+
+html[data-theme='dark'] .input-group input,
+html[data-theme='dark'] .input-group select,
+html[data-theme='dark'] .input-group textarea {
+    background: var(--theme-surface-2) !important;
+    color: var(--theme-text) !important;
+    border-color: var(--theme-border) !important;
+}
+
+html[data-theme='dark'] #adminDarkToggle:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(95, 201, 190, 0.4);
+}
+
 
 /* ═══════════════════════════════════════════════════════
    4. BOTÃO DE ALTERNÂNCIA DE TEMA
@@ -2129,4 +2201,205 @@ html[data-theme='dark'] ::-webkit-scrollbar-thumb:hover {
         left: 12px;
         bottom: 12px;
     }
+}
+
+
+/* ═══════════════════════════════════════════════════════
+   7. OVERRIDE GLOBAL DE TEXTO — dark mode
+   Garante que TODO texto seja claro, independente de
+   seletores hard-coded nos outros arquivos CSS.
+   ═══════════════════════════════════════════════════════ */
+
+html[data-theme='dark'],
+html[data-theme='dark'] body {
+    color: #dce8f5 !important;
+}
+
+html[data-theme='dark'] h1,
+html[data-theme='dark'] h2,
+html[data-theme='dark'] h3,
+html[data-theme='dark'] h4,
+html[data-theme='dark'] h5,
+html[data-theme='dark'] h6 {
+    color: #dce8f5 !important;
+}
+
+html[data-theme='dark'] p,
+html[data-theme='dark'] span:not(.badge):not(.tag):not(.status-):not([class*='badge']):not([class*='btn']),
+html[data-theme='dark'] li,
+html[data-theme='dark'] label,
+html[data-theme='dark'] small,
+html[data-theme='dark'] strong,
+html[data-theme='dark'] em,
+html[data-theme='dark'] td,
+html[data-theme='dark'] th,
+html[data-theme='dark'] dt,
+html[data-theme='dark'] dd,
+html[data-theme='dark'] caption,
+html[data-theme='dark'] figcaption,
+html[data-theme='dark'] blockquote,
+html[data-theme='dark'] .section-title,
+html[data-theme='dark'] .section-subtitle,
+html[data-theme='dark'] .brand-name,
+html[data-theme='dark'] .tagline,
+html[data-theme='dark'] .nav-links a,
+html[data-theme='dark'] .footer *,
+html[data-theme='dark'] .service-card *,
+html[data-theme='dark'] .feature-card *,
+html[data-theme='dark'] .info-card *,
+html[data-theme='dark'] .testimonial-card *,
+html[data-theme='dark'] .faq-item *,
+html[data-theme='dark'] .stat-card *,
+html[data-theme='dark'] .rt-card *,
+html[data-theme='dark'] .clients-container *,
+html[data-theme='dark'] .client-form-container *,
+html[data-theme='dark'] .admin-header h1,
+html[data-theme='dark'] .input-group label,
+html[data-theme='dark'] .form-group label,
+html[data-theme='dark'] .login-container *:not(button):not(input),
+html[data-theme='dark'] .schedule-form *:not(button):not(input):not(select):not(textarea),
+html[data-theme='dark'] .parc-group-title,
+html[data-theme='dark'] .parc-inline-info,
+html[data-theme='dark'] .slide-info *,
+html[data-theme='dark'] .announcement-content *:not(button),
+html[data-theme='dark'] .contact-item *,
+html[data-theme='dark'] .stat-item *,
+html[data-theme='dark'] .about *,
+html[data-theme='dark'] .services *:not(button):not(a),
+html[data-theme='dark'] .testimonials *,
+html[data-theme='dark'] .faq *,
+html[data-theme='dark'] .contact *:not(button):not(a) {
+    color: #dce8f5 !important;
+}
+
+/* Textos secundários / muteds permanecem mais suaves */
+html[data-theme='dark'] .text-muted,
+html[data-theme='dark'] .tagline,
+html[data-theme='dark'] small,
+html[data-theme='dark'] .section-subtitle,
+html[data-theme='dark'] .footer-description,
+html[data-theme='dark'] .services-subtitle {
+    color: #8fadc8 !important;
+}
+
+/* Links */
+html[data-theme='dark'] a:not(.btn):not([class*='btn']):not(.booking-btn) {
+    color: #5fc9be !important;
+}
+
+html[data-theme='dark'] a:not(.btn):not([class*='btn']):hover {
+    color: #87d9d3 !important;
+}
+
+/* Inputs e selects */
+html[data-theme='dark'] input,
+html[data-theme='dark'] select,
+html[data-theme='dark'] textarea {
+    color: #dce8f5 !important;
+    background: #172437 !important;
+    border-color: #263d58 !important;
+}
+
+html[data-theme='dark'] input::placeholder,
+html[data-theme='dark'] textarea::placeholder {
+    color: #5d7896 !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════
+   8. ALTO CONTRASTE NO MODO CLARO (texto branco)
+   Mantem o painel em tempo real legivel no tema claro.
+   ═══════════════════════════════════════════════════════ */
+
+html:not([data-theme='dark']) .rt-card,
+html:not([data-theme='dark']) .rt-kpi,
+html:not([data-theme='dark']) .chart-container,
+html:not([data-theme='dark']) .stat-card {
+    background: linear-gradient(135deg, #0f1f33 0%, #13263e 100%) !important;
+    border: 1px solid rgba(143, 173, 200, 0.26) !important;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.22) !important;
+}
+
+html:not([data-theme='dark']) .rt-section-title,
+html:not([data-theme='dark']) .rt-kpi-value,
+html:not([data-theme='dark']) .rt-kpi-label,
+html:not([data-theme='dark']) .rt-card h4,
+html:not([data-theme='dark']) .rt-funnel-label,
+html:not([data-theme='dark']) .rt-list li,
+html:not([data-theme='dark']) .rt-list .rt-val,
+html:not([data-theme='dark']) .rt-fat-item .rt-fat-val,
+html:not([data-theme='dark']) .rt-fat-item .rt-fat-label,
+html:not([data-theme='dark']) .rt-empty,
+html:not([data-theme='dark']) .rt-alert,
+html:not([data-theme='dark']) .rt-alert-time,
+html:not([data-theme='dark']) .rt-online-name,
+html:not([data-theme='dark']) .rt-online-page,
+html:not([data-theme='dark']) .rt-online-meta,
+html:not([data-theme='dark']) .rt-online-duration,
+html:not([data-theme='dark']) .stat-card p,
+html:not([data-theme='dark']) .chart-container h2,
+html:not([data-theme='dark']) .admin-header h1,
+html:not([data-theme='dark']) .admin-header h1 * {
+    color: #e9f4ff !important;
+}
+
+html:not([data-theme='dark']) .rt-list li,
+html:not([data-theme='dark']) .rt-online-row,
+html:not([data-theme='dark']) .rt-card [style*='border-top:1px solid'] {
+    border-color: rgba(143, 173, 200, 0.2) !important;
+}
+
+html:not([data-theme='dark']) .rt-funnel-bar-bg,
+html:not([data-theme='dark']) .rt-bar-bg {
+    background: rgba(255, 255, 255, 0.14) !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════
+   9. LEGIBILIDADE DE CARDS E SOMA DE VALORES
+   ═══════════════════════════════════════════════════════ */
+
+/* Card de servico (modo claro) com contraste alto */
+html:not([data-theme='dark']) .service-card h3 {
+    color: #103043 !important;
+}
+
+html:not([data-theme='dark']) .service-card p {
+    color: #2d4a5c !important;
+}
+
+/* Price tag deve permanecer clara e legivel */
+.price-tag,
+.price-tag span,
+html[data-theme='dark'] .price-tag,
+html[data-theme='dark'] .price-tag span,
+html:not([data-theme='dark']) .price-tag,
+html:not([data-theme='dark']) .price-tag span {
+    color: #f5fbff !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+/* Barra de soma de valores sempre legivel */
+.services-summary,
+html:not([data-theme='dark']) .services-summary,
+html[data-theme='dark'] .services-summary {
+    background: linear-gradient(135deg, #103043 0%, #0b2536 100%) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.14) !important;
+}
+
+.services-summary,
+.services-summary *,
+.summary-info,
+.summary-left,
+.summary-right,
+.summary-count,
+.summary-total,
+.summary-discount,
+.summary-btn,
+.summary-btn i {
+    color: #f0f8ff !important;
+}
+
+.summary-total strong {
+    color: #90e0d8 !important;
 }

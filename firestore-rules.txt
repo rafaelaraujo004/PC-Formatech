@@ -2,47 +2,45 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-
+    
+    // Função para verificar se o usuário está autenticado
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Função para verificar se é admin
     function isAdmin() {
-      return request.auth != null
-        && request.auth.token.email != null
-        && request.auth.token.email in ['admin@pcformatech.com'];
+      return isAuthenticated() && 
+             request.auth.token.email == 'admin@pcformatech.com';
     }
-
-    function isValidPresenceShape(sessionId) {
-      return request.resource.data.keys().hasOnly(['sessionId', 'page', 'pagina', 'entrou', 'lastSeen', 'dispositivo'])
-        && request.resource.data.sessionId == sessionId
-        && request.resource.data.page is string
-        && request.resource.data.page.size() <= 40
-        && request.resource.data.pagina is string
-        && request.resource.data.pagina.size() <= 120
-        && request.resource.data.dispositivo in ['mobile', 'desktop']
-        && request.resource.data.entrou is timestamp
-        && request.resource.data.lastSeen is timestamp;
-    }
-
-    // ===== DADOS DO PAINEL ADMIN =====
-    // clients, products, budgets, services ficam como documentos dentro de "data"
-    match /data/{document} {
+    
+    // Clientes - Apenas admin autenticado
+    match /clients/{clientId} {
       allow read, write: if isAdmin();
     }
-
-    // ===== IMAGENS DO CARROSSEL =====
-    // O app acessa slider/images
-    match /slider/{document} {
+    
+    // Orçamentos - Apenas admin autenticado
+    match /budgets/{budgetId} {
+      allow read, write: if isAdmin();
+    }
+    
+    // Produtos - Apenas admin autenticado
+    match /products/{productId} {
+      allow read, write: if isAdmin();
+    }
+    
+    // Serviços - Apenas admin autenticado
+    match /services/{serviceId} {
+      allow read, write: if isAdmin();
+    }
+    
+    // Slides da tela inicial - Admin para escrita, todos para leitura
+    match /hero_slides/{slideId} {
       allow read: if true;
       allow write: if isAdmin();
     }
-
-    // ===== PRESENÇA / VISITANTES ONLINE =====
-    // Cada visitante grava seu próprio documento de sessão
-    match /presence/{sessionId} {
-      allow read: if isAdmin();
-      allow create, update: if isValidPresenceShape(sessionId);
-      allow delete: if true;
-    }
-
-    // ===== BLOQUEIO PADRÃO =====
+    
+    // Bloquear tudo que não foi especificado
     match /{document=**} {
       allow read, write: if false;
     }
