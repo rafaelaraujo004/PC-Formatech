@@ -145,6 +145,7 @@ body {
     font-weight: 400;
     letter-spacing: -0.01em;
     padding-top: 4cm;
+    padding-bottom: 8rem;
     /* Better font rendering on mobile */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -436,6 +437,10 @@ textarea {
     opacity: 1;
 }
 
+.hero, .hero-slider, .hero-slide, .hero-slide img {
+    border-radius: 0 !important;
+}
+
 .hero-slide img {
     width: 100%;
     height: 100%;
@@ -687,6 +692,8 @@ textarea {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
     gap: 2rem;
+    grid-auto-rows: 1fr;
+    align-items: stretch;
     max-width: 1400px;
     margin: 0 auto;
 }
@@ -703,8 +710,10 @@ textarea {
     cursor: pointer;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     text-decoration: none;
     min-height: 320px;
+    height: 100%;
 }
 
 .service-card h3,
@@ -850,23 +859,27 @@ textarea {
 
 /* Barra de resumo flutuante */
 .services-summary {
-    position: fixed;
-    bottom: -100px;
+    position: fixed !important;
+    bottom: 0;
     left: 0;
     right: 0;
+    width: 100%;
+    box-sizing: border-box;
     background: linear-gradient(135deg, #1A5C5C 0%, #0B3D3D 100%);
     padding: 1.2rem 2rem;
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
-    transition: bottom 0.4s ease, opacity 0.4s ease, visibility 0.4s ease;
-    z-index: 999;
+    transition: transform 0.4s ease, opacity 0.4s ease, visibility 0.4s ease;
+    z-index: 2147483647 !important;
     opacity: 0;
     visibility: hidden;
+    transform: translateY(100%);
 }
 
 .services-summary.active {
-    bottom: 0;
     opacity: 1;
     visibility: visible;
+    transform: translateY(0);
+    z-index: 2147483647 !important;
 }
 
 .summary-content {
@@ -1771,11 +1784,12 @@ textarea {
 /* Botão Voltar ao Topo */
 .scroll-to-top {
     position: fixed;
+    /* fica logo acima do botão do WhatsApp: 20px (bottom whatsapp) + 50px (altura toggle) + 10px (gap) */
     bottom: 80px;
     right: 20px;
-    width: 44px;
-    height: 44px;
-    background: rgba(0, 128, 192, 0.75);
+    width: 50px;
+    height: 50px;
+    background: #096c60;
     color: white;
     border: none;
     border-radius: 50%;
@@ -1783,8 +1797,8 @@ textarea {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    font-size: 18px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     z-index: 999;
     opacity: 0;
     visibility: hidden;
@@ -1798,9 +1812,9 @@ textarea {
 
 .scroll-to-top:hover {
     opacity: 1;
-    background: rgba(0, 128, 192, 0.95);
+    background: #0a7a6d;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 128, 192, 0.35);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
 
 .scroll-to-top:active {
