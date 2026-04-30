@@ -1770,11 +1770,11 @@ textarea {
 /* Botão Voltar ao Topo */
 .scroll-to-top {
     position: fixed;
-    bottom: 90px;
+    bottom: 80px;
     right: 20px;
-    width: 40px;
-    height: 40px;
-    background: rgba(0, 128, 192, 0.3);
+    width: 44px;
+    height: 44px;
+    background: rgba(0, 128, 192, 0.75);
     color: white;
     border: none;
     border-radius: 50%;
@@ -1783,7 +1783,7 @@ textarea {
     align-items: center;
     justify-content: center;
     font-size: 16px;
-    box-shadow: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     z-index: 999;
     opacity: 0;
     visibility: hidden;
@@ -1791,17 +1791,20 @@ textarea {
 }
 
 .scroll-to-top.show {
-    opacity: 0.4;
+    opacity: 1;
     visibility: visible;
 }
 
 .scroll-to-top:hover {
-    opacity: 0.8;
-    background: rgba(0, 128, 192, 0.5);
+    opacity: 1;
+    background: rgba(0, 128, 192, 0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 128, 192, 0.35);
 }
 
 .scroll-to-top:active {
-    opacity: 0.6;
+    opacity: 0.8;
+    transform: translateY(0);
 }
 
 /* ==========================================

@@ -1133,7 +1133,7 @@ html[data-theme='dark'] .services h2::after {
     --pcft-meta-color: #0B3D3D;
     --pcft-page-background: radial-gradient(circle at top left, rgba(64, 153, 143, .14) 0%, #f4f7fb 46%, #ecf3fb 100%);
     --pcft-header-background: linear-gradient(135deg, #0B3D3D 0%, #1A5C5C 100%);
-    --pcft-footer-background: linear-gradient(135deg, #0B3D3D 0%, #114B4B 100%);
+    --pcft-footer-background: linear-gradient(135deg, #e8f5f5 0%, #ddeeed 100%);
     --pcft-section-background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
     --pcft-section-alt-background: linear-gradient(180deg, #f4f7fb 0%, #eef3f8 100%);
     --pcft-card-background: rgba(255, 255, 255, .92);
@@ -1209,15 +1209,16 @@ h1,
 h2,
 h3,
 h4,
-footer,
-.hero,
-.whatsapp-widget,
-.admin-panel,
-.login-container,
-.success-message {
-    position: relative;
-    z-index: 1;
+h5,
+h6,
+.section-title,
+.brand-name {
+    font-family: var(--pcft-font-heading);
+    color: var(--pcft-heading-color);
 }
+
+p,
+span,
 li,
 small,
 label,

@@ -595,20 +595,10 @@
 .faq, .scheduling, .social-proof {
     background: linear-gradient(to bottom, #ffffff 0%, #f8fafc 50%, #ffffff 100%);
     padding: 1rem 0.5rem;
-    margin: 0 auto;
-    max-width: 1400px;
     border-radius: 0;
     box-shadow: none;
     text-align: center;
-}
-
-/* FAQ ocupa largura total — sem limitação lateral */
-.faq {
-    max-width: none;
     width: 100%;
-    margin: 0;
-    padding-left: 0;
-    padding-right: 0;
 }
 
 .faq-container, .scheduling-container, .social-container {
@@ -1140,7 +1130,7 @@
     color: var(--text-color);
     text-decoration: none;
     padding: 1.2rem 1.5rem;
-    background: var(--white);
+    background: #ffffff;
     border-radius: 12px;
     transition: all 0.3s ease;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -1148,7 +1138,7 @@
 }
 
 .social-link:hover {
-    background: var(--white);
+    background: #ffffff;
     transform: translateY(-3px);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
@@ -1206,9 +1196,9 @@
     align-items: center;
     gap: 1rem;
     padding: 1rem 1.2rem;
-    background: var(--white);
+    background: #ffffff;
     border-radius: 12px;
-    color: var(--text-color);
+    color: #000000;
     border: 1px solid rgba(255, 255, 255, 0.15);
     margin-top: 1rem;
 }
@@ -1219,12 +1209,12 @@
 }
 
 .location-info strong {
-    color: var(--text-color);
+    color: #000000;
     font-weight: 600;
 }
 
 .location-info small {
-    color: var(--text-light);
+    color: #000000;
     display: block;
     margin-top: 0.2rem;
 }
