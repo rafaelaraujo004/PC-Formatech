@@ -1102,26 +1102,54 @@
             updateStatsChart();
         }
 
-        // ===== GRÁFICO DE ESTATÍSTICAS =====
-        let statsChart = null;
+      // ===== GRÁFICO DE ESTATÍSTICAS =====
+let statsChart = null;
 
-        function isDarkThemeEnabled() {
-            return document.documentElement.getAttribute('data-theme') === 'dark';
-        }
+// Detecta corretamente o tema (data-theme OU classe .dark)
+function isDarkThemeEnabled() {
+    const html = document.documentElement;
+    return html.getAttribute('data-theme') === 'dark' || html.classList.contains('dark');
+}
 
-        function getChartThemePalette() {
-            const dark = isDarkThemeEnabled();
-            return {
-                legendColor: dark ? '#dce7f3' : '#2e3f54',
-                tickColor: dark ? '#b9c9db' : '#5d6a7c',
-                gridColor: dark ? 'rgba(156, 178, 203, 0.2)' : 'rgba(0, 0, 0, 0.06)',
-                tooltipBg: dark ? 'rgba(15, 28, 45, 0.96)' : 'rgba(11, 61, 61, 0.92)',
-                tooltipText: '#ffffff',
-                doughnutBorder: dark ? '#17263b' : '#ffffff',
-                revenueBar: dark ? 'rgba(98, 200, 189, 0.72)' : 'rgba(64,153,143,0.7)',
-                revenueBorder: dark ? '#62c8bd' : '#40998F'
-            };
+// Paleta de cores baseada no tema
+function getChartThemePalette() {
+    const dark = isDarkThemeEnabled();
+
+    return {
+        legendColor: dark ? '#dce7f3' : '#2e3f54',
+        tickColor: dark ? '#b9c9db' : '#5d6a7c',
+        gridColor: dark ? 'rgba(156, 178, 203, 0.2)' : 'rgba(0, 0, 0, 0.06)',
+        tooltipBg: dark ? 'rgba(15, 28, 45, 0.96)' : 'rgba(255, 255, 255, 0.95)', // 👈 corrigido
+        tooltipText: dark ? '#ffffff' : '#1a1a1a', // 👈 corrigido
+        doughnutBorder: dark ? '#17263b' : '#ffffff',
+        revenueBar: dark ? 'rgba(98, 200, 189, 0.72)' : 'rgba(64,153,143,0.7)',
+        revenueBorder: dark ? '#62c8bd' : '#40998F'
+    };
+}
+
+// Atualiza o gráfico quando o tema muda
+function updateChartTheme() {
+    if (!statsChart) return;
+
+    const palette = getChartThemePalette();
+
+    // legenda
+    statsChart.options.plugins.legend.labels.color = palette.legendColor;
+
+    // eixos
+    if (statsChart.options.scales) {
+        if (statsChart.options.scales.x) {
+            statsChart.options.scales.x.ticks.color = palette.tickColor;
+            statsChart.options.scales.x.grid.color = palette.gridColor;
         }
+        if (statsChart.options.scales.y) {
+            statsChart.options.scales.y.ticks.color = palette.tickColor;
+            statsChart.options.scales.y.grid.color = palette.gridColor;
+        }
+    }
+
+    statsChart.update();
+}
 
         function getMonthlyData() {
             const months = [];
@@ -2311,18 +2339,12 @@
             { url: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&q=90&w=2400', alt: 'Setup Clean com Teclado Retroiluminado' },
             { url: 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&q=90&w=2400', alt: 'Mesa com Múltiplos Monitores' },
             { url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=90&w=2400', alt: 'Setup de Programação com Luzes LED' },
-            { url: 'https://images.unsplash.com/photo-1494173853739-4b02d74f76cd?auto=format&fit=crop&q=90&w=2400', alt: 'Teclado e Laptop em Mesa de Trabalho' },
             { url: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&q=90&w=2400', alt: 'Estação de Trabalho Minimalista' },
-            { url: 'https://images.unsplash.com/photo-1517430816045-df4b7de1ff02?auto=format&fit=crop&q=90&w=2400', alt: 'Setup Gamer com Iluminação Azul' },
-            { url: 'https://images.unsplash.com/photo-1481277542470-605612bd2d61?auto=format&fit=crop&q=90&w=2400', alt: 'Mesa de Trabalho com Computadores Modernos' },
-            { url: 'https://images.unsplash.com/photo-1505685296765-3a2736de412f?auto=format&fit=crop&q=90&w=2400', alt: 'Ambiente de Desenvolvimento com Laptop e Notebook' },
             { url: 'https://images.unsplash.com/photo-1545239351-1141bd82e8a6?auto=format&fit=crop&q=90&w=2400', alt: 'Espaço de Trabalho com Luz e Monitores' },
             { url: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&q=90&w=2400', alt: 'Interior de PC com Componentes Visíveis' },
             { url: 'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?auto=format&fit=crop&q=90&w=2400', alt: 'Setup Gamer RGB Aesthetic' },
             { url: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=90&w=2400', alt: 'Setup Gamer com Iluminação RGB' },
             { url: 'https://images.unsplash.com/photo-1612198188060-c7c2a3b66eae?auto=format&fit=crop&q=90&w=2400', alt: 'Setup Aesthetic com Monitor Ultrawide' },
-            { url: 'https://images.unsplash.com/photo-1616763355603-9755a912b050?auto=format&fit=crop&q=90&w=2400', alt: 'Workstation com Setup Clean e RGB' },
-            { url: 'https://images.unsplash.com/photo-1600861194942-f883de0dfe96?auto=format&fit=crop&q=90&w=2400', alt: 'Setup Gamer Aesthetic Dark Mode' }
         ];
 
         function loadHeroSlides() {
