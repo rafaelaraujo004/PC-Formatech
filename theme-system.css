@@ -1209,16 +1209,15 @@ h1,
 h2,
 h3,
 h4,
-h5,
-h6,
-.section-title,
-.brand-name {
-    font-family: var(--pcft-font-heading);
-    color: var(--pcft-heading-color);
+footer,
+.hero,
+.whatsapp-widget,
+.admin-panel,
+.login-container,
+.success-message {
+    position: relative;
+    z-index: 1;
 }
-
-p,
-span,
 li,
 small,
 label,
