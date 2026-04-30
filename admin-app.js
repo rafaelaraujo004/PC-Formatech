@@ -2307,7 +2307,22 @@
             { url: 'https://images.unsplash.com/photo-1547658719-da2b51169166?auto=format&fit=crop&q=90&w=2400', alt: 'Hardware e Componentes' },
             { url: 'https://images.unsplash.com/photo-1484788984921-03950022c9ef?auto=format&fit=crop&q=90&w=2400', alt: 'MacBook Pro Workspace' },
             { url: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=90&w=2400', alt: 'Tech Workspace Minimalista' },
-            { url: 'https://images.unsplash.com/photo-1537498425277-c283d32ef9db?auto=format&fit=crop&q=90&w=2400', alt: 'Gaming PC Setup' }
+            { url: 'https://images.unsplash.com/photo-1537498425277-c283d32ef9db?auto=format&fit=crop&q=90&w=2400', alt: 'Gaming PC Setup' },
+            { url: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&q=90&w=2400', alt: 'Setup Clean com Teclado Retroiluminado' },
+            { url: 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&q=90&w=2400', alt: 'Mesa com Múltiplos Monitores' },
+            { url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=90&w=2400', alt: 'Setup de Programação com Luzes LED' },
+            { url: 'https://images.unsplash.com/photo-1494173853739-4b02d74f76cd?auto=format&fit=crop&q=90&w=2400', alt: 'Teclado e Laptop em Mesa de Trabalho' },
+            { url: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&q=90&w=2400', alt: 'Estação de Trabalho Minimalista' },
+            { url: 'https://images.unsplash.com/photo-1517430816045-df4b7de1ff02?auto=format&fit=crop&q=90&w=2400', alt: 'Setup Gamer com Iluminação Azul' },
+            { url: 'https://images.unsplash.com/photo-1481277542470-605612bd2d61?auto=format&fit=crop&q=90&w=2400', alt: 'Mesa de Trabalho com Computadores Modernos' },
+            { url: 'https://images.unsplash.com/photo-1505685296765-3a2736de412f?auto=format&fit=crop&q=90&w=2400', alt: 'Ambiente de Desenvolvimento com Laptop e Notebook' },
+            { url: 'https://images.unsplash.com/photo-1545239351-1141bd82e8a6?auto=format&fit=crop&q=90&w=2400', alt: 'Espaço de Trabalho com Luz e Monitores' },
+            { url: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&q=90&w=2400', alt: 'Interior de PC com Componentes Visíveis' },
+            { url: 'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?auto=format&fit=crop&q=90&w=2400', alt: 'Setup Gamer RGB Aesthetic' },
+            { url: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=90&w=2400', alt: 'Setup Gamer com Iluminação RGB' },
+            { url: 'https://images.unsplash.com/photo-1612198188060-c7c2a3b66eae?auto=format&fit=crop&q=90&w=2400', alt: 'Setup Aesthetic com Monitor Ultrawide' },
+            { url: 'https://images.unsplash.com/photo-1616763355603-9755a912b050?auto=format&fit=crop&q=90&w=2400', alt: 'Workstation com Setup Clean e RGB' },
+            { url: 'https://images.unsplash.com/photo-1600861194942-f883de0dfe96?auto=format&fit=crop&q=90&w=2400', alt: 'Setup Gamer Aesthetic Dark Mode' }
         ];
 
         function loadHeroSlides() {
@@ -2328,6 +2343,11 @@
                     .onSnapshot((doc) => {
                         if (doc.exists) {
                             heroSlides = doc.data().slides || defaultSlides;
+                            // Migração automática: se Firebase tem menos slides que o padrão, atualiza
+                            if (heroSlides.length < defaultSlides.length) {
+                                heroSlides = defaultSlides;
+                                saveHeroSlides();
+                            }
                         } else {
                             heroSlides = defaultSlides;
                         }
@@ -3263,6 +3283,38 @@
         let _swRegistration = null;
         let _notifEnviadas = new Set();
 
+        // Chave pública VAPID (apenas a pública fica no frontend)
+        const VAPID_PUBLIC_KEY = 'BOsP5fvAxVrJrzfLuJUvjQdKhmegU1Pvf9O_oY9B0FlTuDI35qeVKKHfuDUjxE8kLaigwAngE5Ye_tdWWs_O_0M';
+
+        function _urlBase64ToUint8Array(base64String) {
+            const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+            const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+            const raw = atob(base64);
+            return Uint8Array.from([...raw].map(c => c.charCodeAt(0)));
+        }
+
+        async function _registrarWebPush(registration) {
+            if (!('PushManager' in window)) return;
+            try {
+                let sub = await registration.pushManager.getSubscription();
+                if (!sub) {
+                    sub = await registration.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: _urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+                    });
+                }
+                // Enviar subscription ao backend para armazenar
+                await fetch('/api/subscribe', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ subscription: sub.toJSON() })
+                });
+                console.log('✅ Web Push subscription registrada');
+            } catch (err) {
+                console.warn('Web Push subscription falhou:', err);
+            }
+        }
+
         async function iniciarNotificacoes() {
             if (!('Notification' in window)) {
                 _atualizarStatusNotif('Notificações não suportadas neste navegador.');
@@ -3279,12 +3331,13 @@
             }
 
             if (Notification.permission === 'granted') {
-                _atualizarStatusNotif('✅ Notificações ativas. O sistema verifica vencimentos automaticamente.');
+                _atualizarStatusNotif('✅ Notificações ativas. Você receberá alertas mesmo com o app fechado.');
                 verificarNotificacoesParcelas();
-                // Verificar a cada 30 minutos enquanto a aba estiver aberta
                 setInterval(verificarNotificacoesParcelas, 30 * 60 * 1000);
+                // Registrar Web Push para notificações em background
+                const reg = _swRegistration || await navigator.serviceWorker.ready;
+                await _registrarWebPush(reg);
             } else if (Notification.permission === 'default') {
-                // Mostrar barra de ativação
                 const bar = document.getElementById('notif-permission-bar');
                 if (bar) bar.style.display = 'flex';
                 _atualizarStatusNotif('⚠️ Permissão não concedida. Clique em "Ativar Notificações" acima.');
@@ -3301,12 +3354,15 @@
             const perm = await Notification.requestPermission();
             if (perm === 'granted') {
                 document.getElementById('notif-permission-bar').style.display = 'none';
-                _atualizarStatusNotif('✅ Notificações ativas!');
+                _atualizarStatusNotif('✅ Notificações ativas! Você receberá alertas mesmo com o app fechado.');
                 if (!_swRegistration && 'serviceWorker' in navigator) {
                     try { _swRegistration = await navigator.serviceWorker.register('/sw-notifications.js'); } catch(e) {}
                 }
                 verificarNotificacoesParcelas();
                 setInterval(verificarNotificacoesParcelas, 30 * 60 * 1000);
+                // Registrar Web Push para notificações em background
+                const reg = _swRegistration || await navigator.serviceWorker.ready;
+                await _registrarWebPush(reg);
             } else {
                 alert('Permissão de notificação negada. Você pode ativar nas configurações do navegador.');
             }
@@ -3400,4 +3456,94 @@
         function _atualizarStatusNotif(msg) {
             const el = document.getElementById('notif-status-text');
             if (el) el.textContent = 'Status: ' + msg;
+        }
+
+        // ===== PAINEL VISUAL DE NOTIFICAÇÕES =====
+        function abrirPainelNotificacoes(event) {
+            if (event) event.stopPropagation();
+            const panel = document.getElementById('notif-panel');
+            if (!panel) return;
+            if (panel.style.display === 'block') {
+                panel.style.display = 'none';
+                return;
+            }
+            _renderizarPainelNotificacoes();
+            panel.style.display = 'block';
+            setTimeout(() => {
+                document.addEventListener('click', _fecharPainelFora, { once: true });
+            }, 0);
+        }
+
+        function fecharPainelNotificacoes() {
+            const panel = document.getElementById('notif-panel');
+            if (panel) panel.style.display = 'none';
+        }
+
+        function _fecharPainelFora(e) {
+            const panel = document.getElementById('notif-panel');
+            const btn = document.getElementById('btnNotifHeader');
+            if (!panel) return;
+            if (!panel.contains(e.target) && btn && !btn.contains(e.target)) {
+                panel.style.display = 'none';
+            } else if (panel.style.display === 'block') {
+                setTimeout(() => document.addEventListener('click', _fecharPainelFora, { once: true }), 0);
+            }
+        }
+
+        function _renderizarPainelNotificacoes() {
+            const body = document.getElementById('notif-panel-body');
+            const btnAtivar = document.getElementById('notif-panel-ativar-btn');
+            const btnTestar = document.getElementById('notif-panel-testar-btn');
+            if (!body) return;
+
+            const permGranted = (typeof Notification !== 'undefined') && Notification.permission === 'granted';
+            if (btnAtivar) btnAtivar.style.display = permGranted ? 'none' : 'inline-flex';
+            if (btnTestar) btnTestar.style.display = permGranted ? 'inline-flex' : 'none';
+
+            const hoje = new Date();
+            hoje.setHours(0, 0, 0, 0);
+            const amanha = new Date(hoje);
+            amanha.setDate(hoje.getDate() + 1);
+            const hojeStr = hoje.toISOString().split('T')[0];
+            const amanhaStr = amanha.toISOString().split('T')[0];
+
+            const itens = [];
+            clients.forEach(client => {
+                if (!client.services) return;
+                client.services.forEach((service) => {
+                    if (!service.parcelamento || !service.parcelamento.ativo) return;
+                    service.parcelamento.parcelas.forEach((parcela) => {
+                        if (parcela.pago) return;
+                        const venc = parcela.dataVencimento;
+                        if (venc === hojeStr || venc === amanhaStr) {
+                            const tipo = parcela.tipo === 'entrada' ? 'Entrada' : `${parcela.numero}ª parcela`;
+                            itens.push({ client, service, parcela, tipo, isHoje: venc === hojeStr });
+                        }
+                    });
+                });
+            });
+
+            itens.sort((a, b) => (a.isHoje ? 0 : 1) - (b.isHoje ? 0 : 1));
+
+            if (itens.length === 0) {
+                body.innerHTML = `<div class="notif-panel-empty">
+                    <i class="fas fa-check-circle" style="font-size:24px;color:#4CAF50;display:block;margin-bottom:8px;"></i>
+                    Nenhum vencimento para hoje ou amanhã.
+                </div>`;
+                return;
+            }
+
+            body.innerHTML = itens.map(({ client, service, parcela, tipo, isHoje }) => `
+                <div class="notif-item">
+                    <span class="notif-item-icon">${isHoje ? '⚠️' : '🔔'}</span>
+                    <div class="notif-item-info">
+                        <div class="notif-item-title">${client.name}</div>
+                        <div class="notif-item-sub">${service.type} · ${tipo}</div>
+                        <div class="notif-item-sub" style="margin-top:4px;">
+                            <strong>R$ ${parcela.valor.toFixed(2).replace('.', ',')}</strong>
+                            &nbsp;<span class="${isHoje ? 'notif-badge-hoje' : 'notif-badge-amanha'}">${isHoje ? 'HOJE' : 'AMANHÃ'}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
         }

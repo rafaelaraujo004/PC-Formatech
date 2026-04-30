@@ -59,8 +59,15 @@ function loadSlides(slides) {
                         .doc('images')
                         .onSnapshot((doc) => {
                             if (doc.exists && doc.data().slides) {
-                                loadSlides(doc.data().slides);
-                                console.log('✅ Slides carregados do Firebase (sincronizados)!');
+                                const firebaseSlides = doc.data().slides;
+                                const htmlSlides = document.querySelectorAll('.hero-slide');
+                                // Só usa Firebase se tiver pelo menos tantos slides quanto o HTML
+                                if (firebaseSlides.length >= htmlSlides.length) {
+                                    loadSlides(firebaseSlides);
+                                    console.log('✅ Slides carregados do Firebase (sincronizados)!');
+                                } else {
+                                    console.log('ℹ️ Firebase tem menos slides que o HTML, mantendo slides do HTML.');
+                                }
                             } else {
                                 // Se não houver dados no Firebase, carregar do localStorage
                                 const savedSlides = localStorage.getItem('pcformatech_hero_slides');
