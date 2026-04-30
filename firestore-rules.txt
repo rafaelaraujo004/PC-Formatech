@@ -40,6 +40,55 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
     
+    // Configurações do site (temas, etc.) - Admin para escrita, todos para leitura
+    match /siteSettings/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Dados (clientes, etc.) - Admin pode tudo
+    match /data/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    // Presença em tempo real - leitura apenas admin, escrita pública validada
+    function isValidPresenceShape() {
+      let d = request.resource.data;
+      return d.keys().hasAll(['sessionId', 'lastSeenClient'])
+        && d.sessionId is string && d.sessionId.size() <= 64
+        && d.lastSeenClient is number
+        && (!('dispositivo' in d) || d.dispositivo in ['desktop', 'mobile', 'tablet'])
+        && (!('page' in d) || (d.page is string && d.page.size() <= 80))
+        && (!('pagina' in d) || (d.pagina is string && d.pagina.size() <= 200));
+    }
+
+    match /presence/{sessionId} {
+      allow read: if isAdmin();
+      allow create: if isValidPresenceShape();
+      allow update: if isValidPresenceShape();
+      allow delete: if true;
+    }
+
+    // Histórico diário de presença - leitura admin, escrita pública validada
+    function isValidPresenceDailyShape() {
+      let d = request.resource.data;
+      let docId = sessionId;
+      return d.keys().hasAll(['sessionId', 'dayKey', 'lastSeenClient'])
+        && d.sessionId is string && d.sessionId.size() <= 64
+        && d.dayKey is string && d.dayKey.matches('^[0-9]{8}$')
+        && d.lastSeenClient is number
+        && (!('dispositivo' in d) || d.dispositivo in ['desktop', 'mobile', 'tablet'])
+        && (!('page' in d) || (d.page is string && d.page.size() <= 80))
+        && (!('pagina' in d) || (d.pagina is string && d.pagina.size() <= 200));
+    }
+
+    match /presenceDaily/{sessionId} {
+      allow read: if isAdmin();
+      allow create: if isValidPresenceDailyShape();
+      allow update: if isValidPresenceDailyShape();
+      allow delete: if true;
+    }
+
     // Bloquear tudo que não foi especificado
     match /{document=**} {
       allow read, write: if false;

@@ -795,6 +795,18 @@
             white-space: nowrap;
             flex-shrink: 0;
         }
+        /* Device breakdown */
+        .rt-device-grid { display: flex; gap: 12px; flex-wrap: wrap; padding: 4px 0; }
+        .rt-device-item { display: flex; align-items: center; gap: 8px; padding: 8px 14px; background: #f5f5f5; border-radius: 8px; flex: 1; min-width: 90px; }
+        .rt-device-label { font-size: 12px; color: #666; }
+        .rt-device-value { font-size: 20px; font-weight: 700; color: #0B3D3D; margin-left: auto; }
+        /* Presença histórica */
+        .rt-history-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 1px solid #f0f0f0; }
+        .rt-history-row:last-child { border-bottom: none; }
+        .rt-history-day { font-size: 12px; color: #555; width: 100px; flex-shrink: 0; }
+        .rt-history-val { font-size: 13px; font-weight: 600; color: #0B3D3D; }
+        .rt-history-bar-wrap { flex: 1; background: #eee; border-radius: 4px; height: 6px; overflow: hidden; }
+        .rt-history-bar { height: 6px; background: linear-gradient(90deg, #00BCD4, #4CAF50); border-radius: 4px; transition: width 0.4s; }
         .rt-chart-wrap { position: relative; height: 200px; }
         .rt-full { grid-column: 1 / -1; }
         @media (max-width: 768px) {
@@ -2141,7 +2153,36 @@
                 </div>
             </div>
 
-            <!-- Faturamento -->
+            <!-- Device Breakdown -->
+            <div class="rt-section-title"><i class="fas fa-tablet-alt" style="color:#9C27B0;"></i> Online por Dispositivo</div>
+            <div class="rt-card" style="margin-bottom:14px;">
+                <div class="rt-device-grid">
+                    <div class="rt-device-item">
+                        <i class="fas fa-desktop" style="color:#2196F3;font-size:18px;"></i>
+                        <span class="rt-device-label">Desktop</span>
+                        <span class="rt-device-value" id="rt-online-desktop">0</span>
+                    </div>
+                    <div class="rt-device-item">
+                        <i class="fas fa-mobile-alt" style="color:#4CAF50;font-size:18px;"></i>
+                        <span class="rt-device-label">Mobile</span>
+                        <span class="rt-device-value" id="rt-online-mobile">0</span>
+                    </div>
+                    <div class="rt-device-item">
+                        <i class="fas fa-tablet-alt" style="color:#FF9800;font-size:18px;"></i>
+                        <span class="rt-device-label">Tablet</span>
+                        <span class="rt-device-value" id="rt-online-tablet">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Histórico 7 Dias -->
+            <div class="rt-section-title"><i class="fas fa-history" style="color:#607D8B;"></i> Presença nos Últimos 7 Dias</div>
+            <div class="rt-card" style="margin-bottom:14px;">
+                <div class="rt-chart-wrap" style="height:160px;">
+                    <canvas id="rt-presence-history-chart"></canvas>
+                </div>
+                <div id="rt-presence-history-list" style="margin-top:12px;"></div>
+            </div>
             <div class="rt-section-title"><i class="fas fa-money-bill-wave" style="color:#4CAF50;"></i> Faturamento (Serviços Concluídos)</div>
             <div class="rt-card" style="margin-bottom:14px;">
                 <div class="rt-fat-row">

@@ -2654,8 +2654,10 @@
         let _rtInterval = null;
         let _rtFirebaseUnsub = null;
         let _rtPresenceUnsub = null;
+        let _rtPresenceHistoryUnsub = null;
         let _rtRevenueChart = null;
         let _rtStatusChart = null;
+        let _rtPresenceHistoryChart = null;
 
         function _rtFmt(val) {
             return 'R$ ' + (val || 0).toFixed(2).replace('.', ',');
@@ -2699,6 +2701,91 @@
             return `${secs}s no site`;
         }
 
+        function _rtGetDayKey(date) {
+            const d = date || new Date();
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${y}${m}${day}`;
+        }
+
+        function _rtBuildLast7DayEntries() {
+            const entries = [];
+            for (let i = 6; i >= 0; i--) {
+                const d = new Date();
+                d.setDate(d.getDate() - i);
+                const key = _rtGetDayKey(d);
+                const label = i === 0 ? 'Hoje' : i === 1 ? 'Ontem' : d.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit' });
+                entries.push({ key, label, total: 0, desktop: 0, mobile: 0, tablet: 0 });
+            }
+            return entries;
+        }
+
+        function _rtRenderPresenceHistory(docs) {
+            const entries = _rtBuildLast7DayEntries();
+            const seen = new Set();
+            docs.forEach((doc) => {
+                const d = doc.data() || {};
+                const dayKey = d.dayKey;
+                if (!dayKey) return;
+                const uniqueKey = `${d.sessionId || doc.id}_${dayKey}`;
+                if (seen.has(uniqueKey)) return;
+                seen.add(uniqueKey);
+                const entry = entries.find((e) => e.key === dayKey);
+                if (!entry) return;
+                entry.total++;
+                const disp = String(d.dispositivo || 'desktop').toLowerCase();
+                if (disp === 'mobile') entry.mobile++;
+                else if (disp === 'tablet') entry.tablet++;
+                else entry.desktop++;
+            });
+
+            const labels = entries.map((e) => e.label);
+            const totalData = entries.map((e) => e.total);
+            const desktopData = entries.map((e) => e.desktop);
+            const mobileData = entries.map((e) => e.mobile);
+            const tabletData = entries.map((e) => e.tablet);
+
+            _rtRenderPresenceHistoryChart(labels, totalData, desktopData, mobileData, tabletData);
+
+            const listEl = document.getElementById('rt-presence-history-list');
+            if (!listEl) return;
+            const maxVal = Math.max(...totalData, 1);
+            listEl.innerHTML = entries.map((e) => {
+                const pct = Math.round((e.total / maxVal) * 100);
+                return `<div class="rt-history-row">
+                    <span class="rt-history-day">${_rtEsc(e.label)}</span>
+                    <div class="rt-history-bar-wrap"><div class="rt-history-bar" style="width:${pct}%"></div></div>
+                    <span class="rt-history-val">${e.total}</span>
+                </div>`;
+            }).join('');
+        }
+
+        function _rtRenderPresenceHistoryChart(labels, totalData, desktopData, mobileData, tabletData) {
+            const canvas = document.getElementById('rt-presence-history-chart');
+            if (!canvas || typeof Chart === 'undefined') return;
+            if (_rtPresenceHistoryChart) {
+                _rtPresenceHistoryChart.destroy();
+                _rtPresenceHistoryChart = null;
+            }
+            _rtPresenceHistoryChart = new Chart(canvas.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels,
+                    datasets: [
+                        { label: 'Desktop', data: desktopData, backgroundColor: 'rgba(33,150,243,0.7)', borderRadius: 4, stack: 'a' },
+                        { label: 'Mobile', data: mobileData, backgroundColor: 'rgba(76,175,80,0.7)', borderRadius: 4, stack: 'a' },
+                        { label: 'Tablet', data: tabletData, backgroundColor: 'rgba(255,152,0,0.7)', borderRadius: 4, stack: 'a' }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } }, tooltip: { mode: 'index' } },
+                    scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, beginAtZero: true, ticks: { precision: 0 } } }
+                }
+            });
+        }
+
         function initRealtimeDashboard() {
             updateRealtimeDashboard();
 
@@ -2715,6 +2802,13 @@
                 _rtPresenceUnsub = fdb.collection('presence').onSnapshot((snap) => {
                     _rtUpdatePresence(snap.docs);
                 });
+
+                // Listener de histórico diário (últimos 7 dias)
+                const minDayKey = _rtGetDayKey(new Date(Date.now() - 6 * 24 * 60 * 60 * 1000));
+                if (_rtPresenceHistoryUnsub) _rtPresenceHistoryUnsub();
+                _rtPresenceHistoryUnsub = fdb.collection('presenceDaily')
+                    .where('dayKey', '>=', minDayKey)
+                    .onSnapshot((snap) => { _rtRenderPresenceHistory(snap.docs); });
             }
 
             // Polling 30s
@@ -2747,6 +2841,18 @@
                 badge.className = 'rt-kpi-badge ' + (ativos.length > 0 ? 'up' : 'neutral');
             }
 
+            // Contagem por dispositivo
+            const byDevice = { desktop: 0, mobile: 0, tablet: 0 };
+            ativos.forEach((item) => {
+                const disp = String(item.d.dispositivo || 'desktop').toLowerCase();
+                if (disp === 'mobile') byDevice.mobile++;
+                else if (disp === 'tablet') byDevice.tablet++;
+                else byDevice.desktop++;
+            });
+            _rtSet('rt-online-desktop', byDevice.desktop);
+            _rtSet('rt-online-mobile', byDevice.mobile);
+            _rtSet('rt-online-tablet', byDevice.tablet);
+
             const listaEl = document.getElementById('rt-online-lista');
             if (!listaEl) return;
 
@@ -2758,8 +2864,8 @@
             listaEl.innerHTML = ativos.map((item) => {
                 const d = item.d;
                 const dispRaw = String(d.dispositivo || 'desktop').toLowerCase();
-                const disp = dispRaw.includes('mobile') || dispRaw.includes('tablet') ? dispRaw : 'desktop';
-                const icon = disp === 'desktop' ? 'fa-desktop' : 'fa-mobile-alt';
+                const disp = dispRaw === 'mobile' ? 'mobile' : dispRaw === 'tablet' ? 'tablet' : 'desktop';
+                const icon = disp === 'desktop' ? 'fa-desktop' : disp === 'tablet' ? 'fa-tablet-alt' : 'fa-mobile-alt';
                 const pagina = d.pagina || d.pageTitle || d.page || 'Site';
                 const visitante = d.visitorLabel || ('Visitante ' + String(d.visitorId || item.id || '').slice(-4).toUpperCase());
                 const sessao = String(d.sessionId || item.id || '').slice(-6).toUpperCase() || '------';
@@ -2775,7 +2881,7 @@
                     <div class="rt-online-main">
                         <div class="rt-online-name">${_rtEsc(visitante)} <span class="rt-online-device-text">${_rtEsc(disp)}</span></div>
                         <div class="rt-online-page">${_rtEsc(pagina)}</div>
-                        <div class="rt-online-meta">Iniciou as ${inicioTxt} · Sessao ${_rtEsc(sessao)}</div>
+                        <div class="rt-online-meta">Iniciou às ${inicioTxt} · Sessão ${_rtEsc(sessao)}</div>
                     </div>
                     <span class="rt-online-duration">${tempoTxt}</span>
                 </div>`;

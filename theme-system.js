@@ -16,6 +16,7 @@
     const PRESENCE_HEARTBEAT_MS = 15000;
     const PRESENCE_FIREBASE_WAIT_MS = 500;
     const PRESENCE_FIREBASE_MAX_RETRIES = 40;
+    const PRESENCE_HISTORY_MIN_WRITE_MS = 60000;
 
     const EMBEDDED_MANIFEST = {
         defaultThemeId: 'classico-neutro',
@@ -860,6 +861,14 @@
         }
     }
 
+    function getLocalDayKey(date) {
+        const d = date || new Date();
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}${m}${day}`;
+    }
+
     function createPresenceTracker() {
         const sessionId = getOrCreateSessionId();
         const sessionStart = getOrCreateSessionStart();
@@ -867,6 +876,8 @@
         const visitorLabel = 'Visitante ' + visitorId;
 
         let presenceRef = null;
+        let presenceHistoryRef = null;
+        let lastHistoryWrite = 0;
         let heartbeatTimer = null;
         let retryTimer = null;
         let retryCount = 0;
@@ -880,6 +891,39 @@
                 presenceRef = ctx.db.collection('presence').doc(sessionId);
             }
             return { db: ctx.db, firebase: ctx.firebase, ref: presenceRef };
+        }
+
+        function ensurePresenceHistoryRef(ctx) {
+            if (!presenceHistoryRef) {
+                const dayKey = getLocalDayKey();
+                const docId = sessionId + '_' + dayKey;
+                presenceHistoryRef = ctx.db.collection('presenceDaily').doc(docId);
+            }
+            return presenceHistoryRef;
+        }
+
+        function buildHistoryPayload(ctx) {
+            return {
+                sessionId: sessionId,
+                dayKey: getLocalDayKey(),
+                visitorId: visitorId,
+                page: getPagePath().slice(0, 40),
+                pagina: getPageLabel().slice(0, 120),
+                dispositivo: getDeviceType(),
+                lastSeen: ctx.firebase.firestore.FieldValue.serverTimestamp(),
+                lastSeenClient: Date.now()
+            };
+        }
+
+        function writePresenceHistory(forceWrite) {
+            const now = Date.now();
+            if (!forceWrite && (now - lastHistoryWrite) < PRESENCE_HISTORY_MIN_WRITE_MS) return;
+            const ctx = getFirebaseContext();
+            if (!ctx) return;
+            const ref = ensurePresenceHistoryRef(ctx);
+            const payload = buildHistoryPayload(ctx);
+            lastHistoryWrite = now;
+            ref.set(payload, { merge: true }).catch(() => {});
         }
 
         function buildPayload(ctx, explicitStatus) {
@@ -923,6 +967,7 @@
                 }, { merge: true }).catch(() => {});
             });
 
+            writePresenceHistory(true);
             return true;
         }
 
@@ -947,6 +992,7 @@
                 ctx.ref.set(payload, { merge: true }).catch(() => {});
             });
 
+            writePresenceHistory(false);
             return true;
         }
 
