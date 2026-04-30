@@ -1118,9 +1118,9 @@ function getChartThemePalette() {
     return {
         legendColor: dark ? '#dce7f3' : '#2e3f54',
         tickColor: dark ? '#b9c9db' : '#5d6a7c',
-        gridColor: dark ? 'rgba(156, 178, 203, 0.2)' : 'rgba(0, 0, 0, 0.06)',
-        tooltipBg: dark ? 'rgba(15, 28, 45, 0.96)' : 'rgba(255, 255, 255, 0.95)', // 👈 corrigido
-        tooltipText: dark ? '#ffffff' : '#1a1a1a', // 👈 corrigido
+        gridColor: dark ? 'rgba(211, 217, 224, 0.2)' : 'rgba(0, 0, 0, 0.06)',
+        tooltipBg: dark ? 'rgba(93, 110, 133, 0.96)' : 'rgba(255, 255, 255, 0.95)', // 👈 corrigido
+        tooltipText: dark ? '#ffffff' : '#e7e0e0', // 👈 corrigido
         doughnutBorder: dark ? '#17263b' : '#ffffff',
         revenueBar: dark ? 'rgba(98, 200, 189, 0.72)' : 'rgba(64,153,143,0.7)',
         revenueBorder: dark ? '#62c8bd' : '#40998F'
