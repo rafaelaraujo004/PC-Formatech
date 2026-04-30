@@ -5,6 +5,15 @@
 .env.production
 .env.development
 .env.*.local
+.env.*.production
+
+# Chaves de serviço Firebase Admin SDK (NUNCA commitar)
+*adminsdk*.json
+*service-account*.json
+*serviceAccount*.json
+*firebase-admin*.json
+*credentials*.json
+*secret*.json
 
 # Configuração do Firebase - NOTA: firebase-config.js PODE ser commitado
 # As API Keys do Firebase são públicas e seguras quando protegidas por regras do Firestore
