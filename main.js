@@ -1,61 +1,96 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Carrossel Hero
-    const slides = document.querySelectorAll('.hero-slide');
-    const indicators = document.querySelectorAll('.indicator');
+    let slides = [];
+    let indicators = [];
     let currentSlide = 0;
     let slideInterval;
+    let heroIndicatorsBound = false;
+    let heroKeydownBound = false;
 
     function showSlide(index) {
-        // Remove active de todos
+        if (!slides.length || !indicators.length) return;
+
         slides.forEach(slide => slide.classList.remove('active'));
         indicators.forEach(indicator => indicator.classList.remove('active'));
-        
-        // Adiciona active ao slide atual
-        slides[index].classList.add('active');
-        indicators[index].classList.add('active');
+
+        const normalizedIndex = ((index % slides.length) + slides.length) % slides.length;
+        currentSlide = normalizedIndex;
+
+        slides[currentSlide]?.classList.add('active');
+        indicators[currentSlide]?.classList.add('active');
     }
 
     function nextSlide() {
+        if (!slides.length) return;
         currentSlide = (currentSlide + 1) % slides.length;
         showSlide(currentSlide);
     }
 
     function startSlideshow() {
+        if (slideInterval) clearInterval(slideInterval);
         slideInterval = setInterval(nextSlide, 10000); // 10 segundos
     }
 
     function resetSlideshow() {
-        clearInterval(slideInterval);
+        if (slideInterval) clearInterval(slideInterval);
         startSlideshow();
     }
 
-    // Clique nos indicadores
-    indicators.forEach((indicator, index) => {
-        indicator.addEventListener('click', () => {
-            currentSlide = index;
-            showSlide(currentSlide);
-            resetSlideshow();
-        });
-    });
+    function bindHeroInteractions() {
+        if (!heroIndicatorsBound) {
+            const heroIndicatorsContainer = document.querySelector('.hero-indicators');
+            if (heroIndicatorsContainer) {
+                heroIndicatorsContainer.addEventListener('click', (event) => {
+                    const indicator = event.target.closest('.indicator');
+                    if (!indicator) return;
+                    const index = Number(indicator.getAttribute('data-slide'));
+                    if (Number.isFinite(index)) {
+                        currentSlide = index;
+                        showSlide(currentSlide);
+                        resetSlideshow();
+                    }
+                });
+                heroIndicatorsBound = true;
+            }
+        }
+
+        if (!heroKeydownBound) {
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') {
+                    changeSlide(-1);
+                } else if (e.key === 'ArrowRight') {
+                    changeSlide(1);
+                }
+            });
+            heroKeydownBound = true;
+        }
+    }
+
+    function initHeroCarousel() {
+        slides = Array.from(document.querySelectorAll('.hero-slide'));
+        indicators = Array.from(document.querySelectorAll('.indicator'));
+
+        if (!slides.length || !indicators.length) return;
+
+        currentSlide = 0;
+        showSlide(currentSlide);
+        bindHeroInteractions();
+        startSlideshow();
+    }
+
+    // Expor função pública para reinicializar o carrossel quando os slides mudarem dinamicamente
+    window.initHeroCarousel = initHeroCarousel;
+
+    // Iniciar slideshow
+    initHeroCarousel();
 
     // Função para mudar slide (usada pelos botões de navegação)
     window.changeSlide = function(direction) {
+        if (!slides.length) return;
         currentSlide = (currentSlide + direction + slides.length) % slides.length;
         showSlide(currentSlide);
         resetSlideshow();
     };
-
-    // Navegação por teclado (setas)
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowLeft') {
-            changeSlide(-1);
-        } else if (e.key === 'ArrowRight') {
-            changeSlide(1);
-        }
-    });
-
-    // Iniciar slideshow
-    startSlideshow();
 
     // Ocultar header ao rolar para baixo
     let lastScrollTop = 0;
@@ -674,9 +709,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
             });
 
-        // Contar apenas serviços com preço (excluir remoto que tem preço 0)
-        const servicesWithPrice = selectedServices.filter(s => s.price > 0);
-        const count = servicesWithPrice.length;
+        const selectedCount = selectedServices.length;
         let total = selectedServices.reduce((sum, service) => sum + service.price, 0);
         
         // Verificar se o atendimento remoto está selecionado
@@ -697,7 +730,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Atualizar contador sempre
-        summaryCount.textContent = `${count} serviço${count !== 1 ? 's' : ''} selecionado${count !== 1 ? 's' : ''}`;
+        summaryCount.textContent = `${selectedCount} serviço${selectedCount !== 1 ? 's' : ''} selecionado${selectedCount !== 1 ? 's' : ''}`;
         
         // Elemento de desconto
         const summaryDiscount = document.querySelector('.summary-discount');
@@ -705,14 +738,14 @@ document.addEventListener('DOMContentLoaded', () => {
         // Mostrar/ocultar botão X
         const clearBtn = document.querySelector('.clear-selection-btn');
         if (clearBtn) {
-            if (count > 0) {
+            if (selectedCount > 0) {
                 clearBtn.style.display = 'flex';
             } else {
                 clearBtn.style.display = 'none';
             }
         }
 
-        if (count > 0) {
+        if (selectedCount > 0) {
             if (remoteSelected && discount > 0) {
                 // Mostrar desconto
                 if (summaryDiscount) {

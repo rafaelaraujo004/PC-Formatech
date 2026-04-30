@@ -51,6 +51,17 @@ service cloud.firestore {
       allow read, write: if isAdmin();
     }
 
+    // Subscriptions de Web Push — qualquer um pode criar (salvo via API server-side),
+    // somente admin lê/escreve diretamente pelo cliente.
+    match /pushSubscriptions/{subId} {
+      allow read, write: if isAdmin();
+    }
+
+    // Subscriptions de Web Push — apenas admin acessa diretamente (API server-side usa Admin SDK)
+    match /pushSubscriptions/{subId} {
+      allow read, write: if isAdmin();
+    }
+
     // Presença em tempo real - leitura apenas admin, escrita pública validada
     function isValidPresenceShape() {
       let d = request.resource.data;

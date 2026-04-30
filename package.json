@@ -13,5 +13,9 @@
   "devDependencies": {
     "javascript-obfuscator": "^4.1.1",
     "sharp": "^0.34.5"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.8.0",
+    "web-push": "^3.6.7"
   }
 }
