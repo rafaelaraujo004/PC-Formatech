@@ -1545,6 +1545,87 @@
             border-color: #1e3a5f !important;
             color: #7ab0d4 !important;
         }
+
+        /* ===== LIGHT MODE — correções de elementos que ainda permaneciam escuros ===== */
+        html:not([data-theme='dark']) .admin-header {
+            background: var(--theme-surface) !important;
+            color: var(--theme-text) !important;
+            box-shadow: var(--theme-shadow-lg) !important;
+        }
+        html:not([data-theme='dark']) .admin-header h1 {
+            color: var(--theme-text) !important;
+            text-shadow: none !important;
+        }
+        html:not([data-theme='dark']) .header-buttons .btn-notif,
+        html:not([data-theme='dark']) .header-buttons .btn-back-to-site,
+        html:not([data-theme='dark']) .header-buttons .btn-logout {
+            background: rgba(255, 255, 255, 0.92) !important;
+            color: var(--theme-text) !important;
+            border-color: rgba(0, 0, 0, 0.08) !important;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, .08) !important;
+        }
+        html:not([data-theme='dark']) .btn-back-to-site:hover,
+        html:not([data-theme='dark']) .btn-logout:hover,
+        html:not([data-theme='dark']) .btn-notif:hover {
+            background: rgba(255, 255, 255, 1) !important;
+        }
+        html:not([data-theme='dark']) .admin-panel,
+        html:not([data-theme='dark']) .admin-tabs,
+        html:not([data-theme='dark']) .clients-container,
+        html:not([data-theme='dark']) .service-card,
+        html:not([data-theme='dark']) .stat-card,
+        html:not([data-theme='dark']) .chart-container,
+        html:not([data-theme='dark']) .modal-content,
+        html:not([data-theme='dark']) .rt-card,
+        html:not([data-theme='dark']) .rt-kpi,
+        html:not([data-theme='dark']) .theme-catalog-grid .theme-card,
+        html:not([data-theme='dark']) .theme-preview-panel,
+        html:not([data-theme='dark']) .parc-servico-preview,
+        html:not([data-theme='dark']) .notif-panel,
+        html:not([data-theme='dark']) .notif-panel-body,
+        html:not([data-theme='dark']) .notif-panel-footer,
+        html:not([data-theme='dark']) .input-group input,
+        html:not([data-theme='dark']) .input-group textarea,
+        html:not([data-theme='dark']) .input-group select,
+        html:not([data-theme='dark']) .form-group input,
+        html:not([data-theme='dark']) .form-group textarea,
+        html:not([data-theme='dark']) .search-box input,
+        html:not([data-theme='dark']) .service-item,
+        html:not([data-theme='dark']) .discount-section,
+        html:not([data-theme='dark']) .client-form {
+            background: var(--theme-surface) !important;
+            color: var(--theme-text) !important;
+            border-color: var(--theme-border) !important;
+            box-shadow: var(--theme-shadow) !important;
+        }
+        html:not([data-theme='dark']) .admin-tabs,
+        html:not([data-theme='dark']) .tab-button,
+        html:not([data-theme='dark']) .tab-button.active,
+        html:not([data-theme='dark']) .tab-button:hover,
+        html:not([data-theme='dark']) .clients-table th,
+        html:not([data-theme='dark']) .clients-table td,
+        html:not([data-theme='dark']) .clients-table tr:hover,
+        html:not([data-theme='dark']) .service-card h3,
+        html:not([data-theme='dark']) .admin-header h1,
+        html:not([data-theme='dark']) .modal-header h2,
+        html:not([data-theme='dark']) .chart-container h2,
+        html:not([data-theme='dark']) .stat-card h3,
+        html:not([data-theme='dark']) .stat-card p,
+        html:not([data-theme='dark']) .input-group label,
+        html:not([data-theme='dark']) .form-group label,
+        html:not([data-theme='dark']) .theme-preview-panel,
+        html:not([data-theme='dark']) .parc-servico-preview {
+            color: var(--theme-text) !important;
+        }
+        html:not([data-theme='dark']) .tabs,
+        html:not([data-theme='dark']) .theme-preview-panel,
+        html:not([data-theme='dark']) .parc-servico-preview {
+            background: var(--theme-surface) !important;
+        }
+        html:not([data-theme='dark']) .notif-panel-header {
+            background: linear-gradient(135deg, #FF9800, #e65100) !important;
+            color: #fff !important;
+        }
     </style>
     
     <!-- Firebase Scripts (compat API - expõe objeto global firebase) -->

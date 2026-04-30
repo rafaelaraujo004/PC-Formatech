@@ -18,6 +18,8 @@
         html.setAttribute('data-theme', mode);
         save(mode);
         updateAllButtons(mode === 'dark');
+        // Notifica os listeners de mudança de tema (ex: gráficos em admin-app.js)
+        try { window.dispatchEvent(new CustomEvent('pcformatech:themechange')); } catch (e) {}
     }
 
     /* ── 2. Toggle ── */
