@@ -100,25 +100,26 @@ input:focus, select:focus, textarea:focus {
 
 /* Variáveis CSS */
 :root {
-    /* Paleta Verde-Azulada - Profissional e Moderna */
-    --primary-color: #2e2e2e; /* Verde-azulado mais escuro */
-    --secondary-color: #1A5C5C; /* Verde-azulado escuro */
-    --accent-color: #2D7A7A; /* Verde-azulado médio */
-    --success-color: #40998F; /* Verde-azulado vibrante */
-    --warning-color: #6FBFB3; /* Verde-azulado claro */
-    --text-color: #0B3D3D; /* Texto principal */
-    --text-light: #1A5C5C; /* Texto secundário */
-    --light-bg: #A8D5D5; /* Verde-azulado claro suave */
+    /* Paleta Verde-Azulada - Profissional e Moderna
+       Referência: brand.css define os tokens --brand-* com a mesma paleta */
+    --primary-color:   var(--brand-900);  /* #0B3D3D */
+    --secondary-color: var(--brand-700);  /* #1A5C5C */
+    --accent-color:    var(--brand-500);  /* #2D7A7A */
+    --success-color:   var(--brand-400);  /* #40998F */
+    --warning-color:   var(--brand-300);  /* #6FBFB3 */
+    --text-color:      var(--brand-900);  /* #0B3D3D */
+    --text-light:      var(--brand-700);  /* #1A5C5C */
+    --light-bg:        var(--brand-200);  /* #A8D5D5 */
     --white: #ffffff;
-    --gradient: linear-gradient(135deg, #1A5C5C 0%, #0B3D3D 100%);
-    --gradient-accent: linear-gradient(135deg, #2D7A7A 0%, #40998F 100%);
-    --gradient-subtle: linear-gradient(135deg, #A8D5D5 0%, #ffffff 100%);
-    --shadow-sm: 0 1px 3px rgba(11, 61, 61, 0.08);
-    --shadow-md: 0 4px 12px rgba(11, 61, 61, 0.12);
-    --shadow-lg: 0 10px 40px rgba(11, 61, 61, 0.15);
-    --shadow-xl: 0 20px 60px rgba(11, 61, 61, 0.18);
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --border-radius: 12px;
+    --gradient:         var(--brand-gradient);
+    --gradient-accent:  var(--brand-gradient-accent);
+    --gradient-subtle:  var(--brand-gradient-light);
+    --shadow-sm: var(--brand-shadow-xs);
+    --shadow-md: var(--brand-shadow-sm);
+    --shadow-lg: var(--brand-shadow-md);
+    --shadow-xl: var(--brand-shadow-lg);
+    --transition:    var(--brand-transition);
+    --border-radius: var(--brand-radius-lg);
 }
 
 /* Reset e estilos base */

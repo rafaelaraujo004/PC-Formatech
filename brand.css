@@ -1,0 +1,140 @@
+/* ═══════════════════════════════════════════════════════════
+   PC FORMATECH — Design Tokens Oficiais da Marca
+   Paleta baseada no header/menu da página inicial
+   Carregado em TODAS as páginas como base do sistema de design
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+
+    /* ─────────────────────────────────────────────────────
+       ESCALA TEAL — Cor principal da marca
+       Do mais escuro (#0B3D3D) ao mais claro (#f0fafa)
+    ───────────────────────────────────────────────────── */
+    --brand-900: #0B3D3D;   /* header bg, textos de alto contraste */
+    --brand-800: #114B4B;   /* variação escura */
+    --brand-700: #1A5C5C;   /* header gradient end, labels */
+    --brand-600: #236F6F;   /* intermediário */
+    --brand-500: #2D7A7A;   /* accent hover, text médio */
+    --brand-400: #40998F;   /* botões primários, highlights, ícones */
+    --brand-300: #6FBFB3;   /* ícones secundários, badges */
+    --brand-200: #A8D5D5;   /* backgrounds suaves */
+    --brand-100: #d4eded;   /* tint de cards */
+    --brand-50:  #e8f5f4;   /* superfícies hover, background leve */
+    --brand-20:  #f0fafa;   /* quase branco com tom teal */
+
+    /* ─────────────────────────────────────────────────────
+       GRADIENTES OFICIAIS
+    ───────────────────────────────────────────────────── */
+    --brand-gradient:           linear-gradient(135deg, #0B3D3D 0%, #1A5C5C 100%);
+    --brand-gradient-reverse:   linear-gradient(135deg, #1A5C5C 0%, #0B3D3D 100%);
+    --brand-gradient-btn:       linear-gradient(135deg, #40998F 0%, #2D7A7A 100%);
+    --brand-gradient-accent:    linear-gradient(135deg, #2D7A7A 0%, #40998F 100%);
+    --brand-gradient-light:     linear-gradient(135deg, #A8D5D5 0%, #ffffff 100%);
+    --brand-gradient-section:   linear-gradient(to bottom, #ffffff 0%, #f8fafc 100%);
+
+    /* ─────────────────────────────────────────────────────
+       SOMBRAS DA MARCA
+    ───────────────────────────────────────────────────── */
+    --brand-shadow-xs: 0 1px 3px  rgba(11, 61, 61, 0.06);
+    --brand-shadow-sm: 0 2px 6px  rgba(11, 61, 61, 0.10);
+    --brand-shadow-md: 0 4px 12px rgba(11, 61, 61, 0.14);
+    --brand-shadow-lg: 0 8px 28px rgba(11, 61, 61, 0.18);
+    --brand-shadow-xl: 0 16px 48px rgba(11, 61, 61, 0.22);
+    --brand-glow:      0 6px 20px rgba(64, 153, 143, 0.40);
+    --brand-glow-lg:   0 10px 32px rgba(64, 153, 143, 0.45);
+
+    /* ─────────────────────────────────────────────────────
+       TOKENS SEMÂNTICOS — Aplicação na interface
+    ───────────────────────────────────────────────────── */
+
+    /* Header / Nav */
+    --brand-header-bg:          var(--brand-gradient);
+    --brand-header-text:        #ffffff;
+    --brand-header-text-muted:  rgba(255, 255, 255, 0.85);
+    --brand-header-link-hover:  rgba(255, 255, 255, 0.12);
+
+    /* Botões primários */
+    --brand-btn-primary-bg:     var(--brand-gradient-btn);
+    --brand-btn-primary-text:   #ffffff;
+    --brand-btn-primary-shadow: rgba(64, 153, 143, 0.40);
+    --brand-btn-primary-hover:  0 6px 20px rgba(64, 153, 143, 0.40);
+
+    /* Texto */
+    --brand-text-heading:       var(--brand-900);
+    --brand-text-body:          #1a1a1a;
+    --brand-text-muted:         #5f6c7b;
+    --brand-text-on-primary:    #ffffff;
+    --brand-text-accent:        var(--brand-500);
+    --brand-text-highlight:     var(--brand-400);
+
+    /* Bordas e separadores */
+    --brand-border:             rgba(11, 61, 61, 0.12);
+    --brand-border-accent:      var(--brand-400);
+    --brand-border-strong:      var(--brand-700);
+    --brand-border-input:       #dde2e8;
+    --brand-border-input-focus: var(--brand-500);
+
+    /* Superfícies */
+    --brand-surface-white:      #ffffff;
+    --brand-surface-tint:       var(--brand-50);
+    --brand-surface-hover:      var(--brand-20);
+    --brand-surface-section:    #f8fafc;
+
+    /* Tabs ativas */
+    --brand-tab-active-text:    var(--brand-400);
+    --brand-tab-active-bar:     var(--brand-400);
+    --brand-tab-active-bg:      var(--brand-50);
+
+    /* Badges de status */
+    --brand-badge-success-bg:   #d4edda;
+    --brand-badge-success-text: #155724;
+    --brand-badge-warning-bg:   #fff3cd;
+    --brand-badge-warning-text: #856404;
+    --brand-badge-info-bg:      #d1ecf1;
+    --brand-badge-info-text:    #0c5460;
+    --brand-badge-danger-bg:    #f8d7da;
+    --brand-badge-danger-text:  #721c24;
+
+    /* Cards / KPI */
+    --brand-kpi-primary:        var(--brand-400);
+    --brand-kpi-primary-bg:     var(--brand-50);
+    --brand-kpi-value-color:    var(--brand-900);
+
+    /* Barras de progresso */
+    --brand-bar-fill:           linear-gradient(90deg, var(--brand-400), var(--brand-500));
+
+    /* Radius padrão */
+    --brand-radius-sm:  6px;
+    --brand-radius-md:  10px;
+    --brand-radius-lg:  14px;
+    --brand-radius-xl:  20px;
+    --brand-radius-full: 9999px;
+
+    /* Transição padrão */
+    --brand-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ─────────────────────────────────────────────────────
+   DARK MODE — Ajustes dos tokens semânticos
+───────────────────────────────────────────────────── */
+html[data-theme='dark'] {
+    --brand-text-heading:   #dce8f5;
+    --brand-text-body:      #c8daf0;
+    --brand-text-muted:     #8fadc8;
+    --brand-text-accent:    #5fc9be;
+    --brand-text-highlight: #5fc9be;
+    --brand-border:         rgba(38, 61, 88, 0.7);
+    --brand-border-accent:  #40c9c0;
+    --brand-border-input:   #263d58;
+    --brand-border-input-focus: #40c9c0;
+    --brand-surface-white:  #111c2e;
+    --brand-surface-tint:   #0e1c2e;
+    --brand-surface-hover:  #172437;
+    --brand-surface-section:#0b1520;
+    --brand-kpi-value-color:#dce8f5;
+    --brand-kpi-primary:    #40c9c0;
+    --brand-kpi-primary-bg: #0e1c2e;
+    --brand-tab-active-text:#40c9c0;
+    --brand-tab-active-bar: #40c9c0;
+    --brand-tab-active-bg:  #0e1c2e;
+}
