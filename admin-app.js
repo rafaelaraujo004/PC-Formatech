@@ -1119,12 +1119,29 @@ function getChartThemePalette() {
         legendColor: dark ? '#dce7f3' : '#2e3f54',
         tickColor: dark ? '#b9c9db' : '#5d6a7c',
         gridColor: dark ? 'rgba(211, 217, 224, 0.2)' : 'rgba(0, 0, 0, 0.06)',
-        tooltipBg: dark ? 'rgba(93, 110, 133, 0.96)' : 'rgba(255, 255, 255, 0.95)', // 👈 corrigido
-        tooltipText: dark ? '#ffffff' : '#e7e0e0', // 👈 corrigido
+        tooltipBg: dark ? 'rgba(18, 31, 48, 0.96)' : 'rgba(255, 255, 255, 0.95)',
+        tooltipText: dark ? '#f2f7ff' : '#243548',
         doughnutBorder: dark ? '#17263b' : '#ffffff',
         revenueBar: dark ? 'rgba(98, 200, 189, 0.72)' : 'rgba(64,153,143,0.7)',
-        revenueBorder: dark ? '#62c8bd' : '#40998F'
+        revenueBorder: dark ? '#62c8bd' : '#40998F',
+        projBtnBg: dark ? '#1a2f4a' : '#f0f7ff',
+        projBtnBorder: dark ? '#355b85' : '#c9deef',
+        projBtnText: dark ? '#dce8f5' : '#0B3D3D',
+        projBtnBgMuted: dark ? '#1f3a2b' : '#e8f5e9',
+        projBtnBorderMuted: dark ? '#2f6248' : '#4CAF50'
     };
+}
+
+function updateProjectionToggleButton() {
+    const btn = document.getElementById('btnToggleProjecao');
+    if (!btn) return;
+
+    const palette = getChartThemePalette();
+    const hiddenMode = !_projecaoVisivel;
+
+    btn.style.background = hiddenMode ? palette.projBtnBgMuted : palette.projBtnBg;
+    btn.style.borderColor = hiddenMode ? palette.projBtnBorderMuted : palette.projBtnBorder;
+    btn.style.color = palette.projBtnText;
 }
 
 // Atualiza o gráfico quando o tema muda
@@ -1234,9 +1251,8 @@ function updateChartTheme() {
                 btn.innerHTML = _projecaoVisivel
                     ? '<i class="fas fa-eye-slash"></i> Ocultar Projeção'
                     : '<i class="fas fa-eye"></i> Mostrar Projeção';
-                btn.style.background = _projecaoVisivel ? '#f0f7ff' : '#e8f5e9';
-                btn.style.borderColor = _projecaoVisivel ? '#40998F' : '#4CAF50';
             }
+            updateProjectionToggleButton();
             updateStatsChart();
         }
 
@@ -1244,6 +1260,7 @@ function updateChartTheme() {
             const data = getMonthlyData();
             const ctx = document.getElementById('statsChart');
             if (!ctx) return;
+            updateProjectionToggleButton();
             if (statsChart) statsChart.destroy();
 
             const isMobile = window.innerWidth <= 768;
@@ -2426,7 +2443,7 @@ function updateChartTheme() {
                 const card = document.createElement('div');
                 card.className = 'slide-card';
                 card.innerHTML = `
-                    <img src="${slide.url}" alt="${slide.alt}" class="slide-preview" onerror="this.src='https://via.placeholder.com/800x400?text=Imagem+Indispon%C3%ADvel'">
+                    <img src="${slide.url}" alt="${slide.alt}" class="slide-preview" onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 width%3D%22800%22 height%3D%22400%22%3E%3Crect width%3D%22100%25%22 height%3D%22100%25%22 fill%3D%22%23333%22%2F%3E%3Ctext x%3D%2250%25%22 y%3D%2250%25%22 dominant-baseline%3D%22middle%22 text-anchor%3D%22middle%22 fill%3D%22%23aaa%22 font-size%3D%2220%22 font-family%3D%22sans-serif%22%3EImagem+Indispon%C3%ADvel%3C%2Ftext%3E%3C%2Fsvg%3E'">
                     <div class="slide-info">
                         <div class="slide-order">
                             <span>Imagem ${index + 1}</span>
@@ -2496,7 +2513,7 @@ function updateChartTheme() {
                 preview.src = url;
                 preview.style.display = 'block';
                 preview.onerror = function() {
-                    this.src = 'https://via.placeholder.com/800x400?text=URL+Inválida';
+                    this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 width%3D%22800%22 height%3D%22400%22%3E%3Crect width%3D%22100%25%22 height%3D%22100%25%22 fill%3D%22%23333%22%2F%3E%3Ctext x%3D%2250%25%22 y%3D%2250%25%22 dominant-baseline%3D%22middle%22 text-anchor%3D%22middle%22 fill%3D%22%23aaa%22 font-size%3D%2220%22 font-family%3D%22sans-serif%22%3EURL+Inv%C3%A1lida%3C%2Ftext%3E%3C%2Fsvg%3E';
                 };
             } else {
                 preview.style.display = 'none';
@@ -3325,12 +3342,25 @@ function updateChartTheme() {
                         applicationServerKey: _urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
                     });
                 }
+
+                const isLocalEnv = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+                if (isLocalEnv) {
+                    console.log('ℹ️ Ambiente local detectado: registro de subscription no backend foi ignorado.');
+                    return;
+                }
+
                 // Enviar subscription ao backend para armazenar
-                await fetch('/api/subscribe', {
+                const response = await fetch('/api/subscribe', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ subscription: sub.toJSON() })
                 });
+
+                if (!response.ok) {
+                    console.warn(`Web Push subscription não salva no backend (HTTP ${response.status}).`);
+                    return;
+                }
+
                 console.log('✅ Web Push subscription registrada');
             } catch (err) {
                 console.warn('Web Push subscription falhou:', err);

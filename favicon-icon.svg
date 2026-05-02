@@ -1,49 +1,55 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
-    <linearGradient id="bgGrad" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#0D4A4A"/>
-      <stop offset="100%" stop-color="#0B3D3D"/>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#06111e"/>
+      <stop offset="100%" stop-color="#020a12"/>
     </linearGradient>
-    <clipPath id="roundedClip">
-      <rect width="512" height="512" rx="88"/>
-    </clipPath>
+    <linearGradient id="monitorGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a7a72"/>
+      <stop offset="100%" stop-color="#3de8c0"/>
+    </linearGradient>
+    <linearGradient id="screenGlow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0d2a3a"/>
+      <stop offset="100%" stop-color="#061820"/>
+    </linearGradient>
+    <linearGradient id="tealLine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#37c8b9"/>
+      <stop offset="100%" stop-color="#68f0de"/>
+    </linearGradient>
+    <linearGradient id="baseGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#1a9e8a"/>
+      <stop offset="100%" stop-color="#3de8c0"/>
+    </linearGradient>
   </defs>
 
-  <!-- Background rounded square -->
-  <rect width="512" height="512" rx="88" fill="url(#bgGrad)"/>
+  <!-- Fundo escuro -->
+  <rect width="512" height="512" fill="url(#bg)"/>
 
-  <!-- Decorative grid lines (very subtle) -->
-  <g clip-path="url(#roundedClip)" opacity="0.07">
-    <line x1="0" y1="170" x2="512" y2="170" stroke="#40998F" stroke-width="1"/>
-    <line x1="0" y1="340" x2="512" y2="340" stroke="#40998F" stroke-width="1"/>
-    <line x1="170" y1="0" x2="170" y2="512" stroke="#40998F" stroke-width="1"/>
-    <line x1="340" y1="0" x2="340" y2="512" stroke="#40998F" stroke-width="1"/>
-  </g>
+  <!-- Corpo do monitor (borda com gradiente) -->
+  <rect x="52" y="36" width="408" height="298" rx="22" fill="url(#monitorGrad)"/>
+  <!-- Tela interior -->
+  <rect x="68" y="52" width="376" height="266" rx="14" fill="url(#screenGlow)"/>
 
-  <!-- Monitor frame -->
-  <rect x="72" y="112" width="368" height="236" rx="18" fill="#132E2E" stroke="#40998F" stroke-width="13"/>
+  <!-- Linha do gráfico -->
+  <polyline
+    points="98,270 160,210 210,238 256,172 308,208 376,186"
+    fill="none"
+    stroke="url(#tealLine)"
+    stroke-width="9"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
 
-  <!-- Monitor screen -->
-  <rect x="90" y="130" width="332" height="200" rx="8" fill="#081C1C"/>
+  <!-- Pontos do gráfico -->
+  <circle cx="160" cy="210" r="11" fill="#68f0de"/>
+  <circle cx="210" cy="238" r="9"  fill="#56ddcf"/>
+  <circle cx="256" cy="172" r="13" fill="#68f0de"/>
+  <circle cx="308" cy="208" r="9"  fill="#56ddcf"/>
+  <circle cx="376" cy="186" r="11" fill="#68f0de"/>
 
-  <!-- Screen chart line (back layer - shadow) -->
-  <polyline points="110,282 164,228 214,252 274,196 332,230 388,210 412,220"
-    fill="none" stroke="#1A5C5C" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Haste -->
+  <rect x="216" y="334" width="80" height="30" rx="4" fill="url(#baseGrad)"/>
 
-  <!-- Screen chart line (front layer) -->
-  <polyline points="110,282 164,228 214,252 274,196 332,230 388,210 412,220"
-    fill="none" stroke="#40998F" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-
-  <!-- Chart dots -->
-  <circle cx="164" cy="228" r="10" fill="#5CBEAF"/>
-  <circle cx="214" cy="252" r="8" fill="#40998F"/>
-  <circle cx="274" cy="196" r="11" fill="#5CBEAF"/>
-  <circle cx="332" cy="230" r="8" fill="#40998F"/>
-  <circle cx="388" cy="210" r="10" fill="#5CBEAF"/>
-
-  <!-- Monitor stand neck -->
-  <rect x="222" y="348" width="68" height="28" rx="5" fill="#2D7A7A"/>
-
-  <!-- Monitor stand base -->
-  <rect x="178" y="374" width="156" height="16" rx="8" fill="#2D7A7A"/>
+  <!-- Base -->
+  <path d="M148 364h216a16 16 0 0 1 16 16v10a16 16 0 0 1-16 16H148a16 16 0 0 1-16-16v-10a16 16 0 0 1 16-16z" fill="url(#baseGrad)"/>
 </svg>

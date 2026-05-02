@@ -26,7 +26,7 @@ function loadSlides(slides) {
                     // Criar slide
                     const slideDiv = document.createElement('div');
                     slideDiv.className = 'hero-slide' + (index === 0 ? ' active' : '');
-                    slideDiv.innerHTML = `<img src="${slide.url}" alt="${slide.alt}" ${index === 0 ? 'fetchpriority="high" loading="eager"' : 'loading="lazy"'} decoding="async" onerror="this.src='https://via.placeholder.com/2400x400?text=Imagem+Indispon%C3%ADvel'">`;
+                    slideDiv.innerHTML = `<img src="${slide.url}" alt="${slide.alt}" ${index === 0 ? 'fetchpriority="high" loading="eager"' : 'loading="lazy"'} decoding="async" onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 width%3D%222400%22 height%3D%22400%22%3E%3Crect width%3D%22100%25%22 height%3D%22100%25%22 fill%3D%22%23222%22%2F%3E%3Ctext x%3D%2250%25%22 y%3D%2250%25%22 dominant-baseline%3D%22middle%22 text-anchor%3D%22middle%22 fill%3D%22%23aaa%22 font-size%3D%2224%22 font-family%3D%22sans-serif%22%3EImagem+Indispon%C3%ADvel%3C%2Ftext%3E%3C%2Fsvg%3E'">`;
                     heroSlider.appendChild(slideDiv);
                     
                     // Criar indicador

@@ -2306,27 +2306,32 @@ html[data-theme='dark'] textarea::placeholder {
 
 
 /* ═══════════════════════════════════════════════════════
-   8. ALTO CONTRASTE NO MODO CLARO (texto branco)
-   Mantem o painel em tempo real legivel no tema claro.
+   8. DASHBOARD/REALTIME NO TEMA CLARO
+   Mantem a mesma base visual clara usada na aba Produtos.
    ═══════════════════════════════════════════════════════ */
 
 html:not([data-theme='dark']) .rt-card,
 html:not([data-theme='dark']) .rt-kpi,
 html:not([data-theme='dark']) .chart-container,
 html:not([data-theme='dark']) .stat-card {
-    background: linear-gradient(135deg, #0f1f33 0%, #13263e 100%) !important;
-    border: 1px solid rgba(143, 173, 200, 0.26) !important;
-    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.22) !important;
+    background: var(--brand-surface-white) !important;
+    border: 1px solid var(--brand-border) !important;
+    box-shadow: var(--brand-shadow-sm) !important;
 }
 
 html:not([data-theme='dark']) .rt-section-title,
 html:not([data-theme='dark']) .rt-kpi-value,
-html:not([data-theme='dark']) .rt-kpi-label,
 html:not([data-theme='dark']) .rt-card h4,
-html:not([data-theme='dark']) .rt-funnel-label,
-html:not([data-theme='dark']) .rt-list li,
 html:not([data-theme='dark']) .rt-list .rt-val,
 html:not([data-theme='dark']) .rt-fat-item .rt-fat-val,
+html:not([data-theme='dark']) .chart-container h2,
+html:not([data-theme='dark']) .stat-card h3 {
+    color: var(--brand-text-heading) !important;
+}
+
+html:not([data-theme='dark']) .rt-kpi-label,
+html:not([data-theme='dark']) .rt-funnel-label,
+html:not([data-theme='dark']) .rt-list li,
 html:not([data-theme='dark']) .rt-fat-item .rt-fat-label,
 html:not([data-theme='dark']) .rt-empty,
 html:not([data-theme='dark']) .rt-alert,
@@ -2335,22 +2340,19 @@ html:not([data-theme='dark']) .rt-online-name,
 html:not([data-theme='dark']) .rt-online-page,
 html:not([data-theme='dark']) .rt-online-meta,
 html:not([data-theme='dark']) .rt-online-duration,
-html:not([data-theme='dark']) .stat-card p,
-html:not([data-theme='dark']) .chart-container h2,
-html:not([data-theme='dark']) .admin-header h1,
-html:not([data-theme='dark']) .admin-header h1 * {
-    color: #e9f4ff !important;
+html:not([data-theme='dark']) .stat-card p {
+    color: var(--brand-text-muted) !important;
 }
 
 html:not([data-theme='dark']) .rt-list li,
 html:not([data-theme='dark']) .rt-online-row,
 html:not([data-theme='dark']) .rt-card [style*='border-top:1px solid'] {
-    border-color: rgba(143, 173, 200, 0.2) !important;
+    border-color: var(--brand-border) !important;
 }
 
 html:not([data-theme='dark']) .rt-funnel-bar-bg,
 html:not([data-theme='dark']) .rt-bar-bg {
-    background: rgba(255, 255, 255, 0.14) !important;
+    background: #f0f4f8 !important;
 }
 
 
