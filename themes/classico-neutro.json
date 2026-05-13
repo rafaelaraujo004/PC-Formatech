@@ -1,0 +1,67 @@
+{
+  "id": "classico-neutro",
+  "name": "Clássico Neutro",
+  "category": "standard",
+  "mode": "light",
+  "description": "Tema padrão elegante em tons neutros de cinza e azul-ardósia, transmitindo confiança e profissionalismo.",
+  "sortOrder": 10,
+  "fonts": {
+    "heading": { "family": "'Inter', sans-serif" },
+    "body":    { "family": "'Inter', sans-serif" }
+  },
+  "preview": {
+    "cover":   "linear-gradient(135deg, #f8fafc 0%, #dbe4ef 55%, #93a6c0 100%)",
+    "accent":  "#46637f",
+    "surface": "#ffffff"
+  },
+  "effects": ["soft-bloom"],
+  "tokens": {
+    "metaColor":            "#46637f",
+    "themeBg":              "#f7fafc",
+    "themeText":            "#243548",
+    "themeSurface":         "#ffffff",
+    "themeSurface2":        "#eff4f8",
+    "themeSurface3":        "#e3ebf3",
+    "themeBorder":          "#d4deea",
+    "themeBorderStrong":    "#bfcedf",
+    "themeMuted":           "#61768c",
+    "themeFaint":           "#8ea0b2",
+    "accent":               "#46637f",
+    "accentStrong":         "#324a62",
+    "accentSoft":           "rgba(70,99,127,0.12)",
+    "pageBackground":       "radial-gradient(circle at top left, rgba(219,228,239,0.62) 0%, rgba(247,250,252,0.98) 44%, #eef4f8 100%)",
+    "headerBackground":     "linear-gradient(135deg, rgba(241,245,249,0.96) 0%, rgba(219,228,239,0.94) 100%)",
+    "footerBackground":     "linear-gradient(135deg, rgba(232,239,246,0.98) 0%, rgba(219,228,239,0.98) 100%)",
+    "sectionBackground":    "linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(247,250,252,0.98) 100%)",
+    "sectionAltBackground": "linear-gradient(180deg, rgba(239,244,248,0.96) 0%, rgba(227,235,243,0.98) 100%)",
+    "cardBackground":       "rgba(255,255,255,0.94)",
+    "cardBorder":           "rgba(70,99,127,0.10)",
+    "heroOverlay":          "linear-gradient(135deg, rgba(255,255,255,0.34) 0%, rgba(239,244,248,0.42) 55%, rgba(147,166,192,0.22) 100%)",
+    "heroFrame":            "rgba(70,99,127,0.14)",
+    "buttonBackground":     "linear-gradient(135deg, #46637f 0%, #6b89a6 100%)",
+    "buttonText":           "#f7fafc",
+    "buttonShadow":         "0 16px 32px rgba(70,99,127,0.18)",
+    "decorationTop":        "radial-gradient(circle at 14% 12%, rgba(255,255,255,0.82) 0 28px, transparent 29px), radial-gradient(circle at 82% 10%, rgba(147,166,192,0.22) 0 22px, transparent 23px)",
+    "decorationBottom":     "radial-gradient(circle at bottom left, rgba(70,99,127,0.06) 0%, transparent 34%), radial-gradient(circle at bottom right, rgba(148,163,184,0.08) 0%, transparent 40%)",
+    "badgeBackground":      "rgba(70,99,127,0.10)",
+    "badgeText":            "#324a62",
+    "indicator":            "rgba(70,99,127,0.16)",
+    "indicatorActive":      "#46637f",
+    "chipBackground":       "rgba(255,255,255,0.74)",
+    "chipText":             "#324a62"
+  },
+  "banner": {
+    "slides": [
+      {
+        "title":        "PC Formatech",
+        "subtitle":     "Assistência técnica de qualidade com atendimento personalizado.",
+        "tag":          "Clássico",
+        "scene":        "Ambiente organizado e profissional",
+        "alt":          "Banner clássico neutro do PC Formatech",
+        "illustration": "steady-workflow",
+        "palette":      ["#f8fafc","#dbe4ef","#93a6c0","#46637f"],
+        "accent":       "#46637f"
+      }
+    ]
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "id": "roxo-tech",
+  "name": "Roxo Tech",
+  "category": "standard",
+  "mode": "dark",
+  "description": "Tema escuro em violeta e roxo intenso com destaques brilhantes. Para quem gosta de inovação e personalidade.",
+  "sortOrder": 70,
+  "fonts": {
+    "heading": { "family": "'Inter', sans-serif" },
+    "body":    { "family": "'Inter', sans-serif" }
+  },
+  "preview": {
+    "cover":   "linear-gradient(135deg, #0a0616 0%, #1a0a38 50%, #2e1065 100%)",
+    "accent":  "#c084fc",
+    "surface": "#12082a"
+  },
+  "effects": ["glow"],
+  "tokens": {
+    "metaColor":            "#1a0a38",
+    "themeBg":              "#0a0616",
+    "themeText":            "#e9d5ff",
+    "themeSurface":         "#12082a",
+    "themeSurface2":        "#1a0e38",
+    "themeSurface3":        "#23144a",
+    "themeBorder":          "#2e1c5c",
+    "themeBorderStrong":    "#4a2c82",
+    "themeMuted":           "#a78bfa",
+    "themeFaint":           "#6d3fb5",
+    "accent":               "#c084fc",
+    "accentStrong":         "#a855f7",
+    "accentSoft":           "rgba(192,132,252,0.18)",
+    "pageBackground":       "radial-gradient(ellipse at 30% 0%, #1a0a38 0%, #0a0616 55%, #060310 100%)",
+    "headerBackground":     "linear-gradient(135deg, #0e0720 0%, #0a0616 100%)",
+    "footerBackground":     "linear-gradient(135deg, #0e0720 0%, #08041a 100%)",
+    "sectionBackground":    "linear-gradient(180deg, #100820 0%, #0a0616 100%)",
+    "sectionAltBackground": "linear-gradient(180deg, #0e0620 0%, #0a0616 100%)",
+    "cardBackground":       "#12082a",
+    "cardBorder":           "rgba(192,132,252,0.20)",
+    "heroOverlay":          "linear-gradient(135deg, rgba(10,6,22,0.80) 0%, rgba(26,10,56,0.58) 50%, rgba(46,16,101,0.38) 100%)",
+    "heroFrame":            "rgba(192,132,252,0.28)",
+    "buttonBackground":     "linear-gradient(135deg, #a855f7 0%, #c084fc 100%)",
+    "buttonText":           "#0a0616",
+    "buttonShadow":         "0 0 28px rgba(192,132,252,0.40), 0 16px 32px rgba(0,0,0,0.45)",
+    "decorationTop":        "radial-gradient(ellipse at 50% 0%, rgba(192,132,252,0.14) 0 90px, transparent 91px)",
+    "decorationBottom":     "radial-gradient(circle at bottom right, rgba(192,132,252,0.06) 0%, transparent 45%)",
+    "badgeBackground":      "rgba(192,132,252,0.15)",
+    "badgeText":            "#c084fc",
+    "indicator":            "rgba(192,132,252,0.20)",
+    "indicatorActive":      "#c084fc",
+    "chipBackground":       "rgba(18,8,42,0.90)",
+    "chipText":             "#e9d5ff"
+  },
+  "banner": {
+    "slides": [
+      {
+        "title":        "PC Formatech",
+        "subtitle":     "Soluções em TI com visão inovadora e execução de excelência.",
+        "tag":          "Tech",
+        "scene":        "Circuitos roxos brilhantes no espaço digital",
+        "alt":          "Banner Roxo Tech do PC Formatech",
+        "illustration": "purple-circuits",
+        "palette":      ["#0a0616","#1a0a38","#2e1065","#c084fc"],
+        "accent":       "#c084fc"
+      }
+    ]
+  }
+}

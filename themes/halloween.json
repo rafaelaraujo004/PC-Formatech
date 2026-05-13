@@ -1,0 +1,74 @@
+{
+  "id": "halloween",
+  "name": "Halloween",
+  "category": "seasonal",
+  "mode": "dark",
+  "description": "Tema sazonal de Halloween com laranja neon, preto profundo e roxo assustador. Para quem ama o lado sombrio.",
+  "sortOrder": 160,
+  "schedule": { "start": "10-20", "end": "11-02", "priority": 10 },
+  "fonts": {
+    "heading": { "family": "'Inter', sans-serif" },
+    "body":    { "family": "'Inter', sans-serif" }
+  },
+  "preview": {
+    "cover":   "linear-gradient(135deg, #0a0008 0%, #1a0a00 50%, #f97316 100%)",
+    "accent":  "#f97316",
+    "surface": "#120606"
+  },
+  "effects": ["glow"],
+  "tokens": {
+    "metaColor":            "#1a0a00",
+    "themeBg":              "#0a0008",
+    "themeText":            "#f5d0a0",
+    "themeSurface":         "#120606",
+    "themeSurface2":        "#1a0a00",
+    "themeSurface3":        "#240e00",
+    "themeBorder":          "#3a1800",
+    "themeBorderStrong":    "#5a2800",
+    "themeMuted":           "#d97706",
+    "themeFaint":           "#7c3200",
+    "accent":               "#f97316",
+    "accentStrong":         "#ea580c",
+    "accentSoft":           "rgba(249,115,22,0.20)",
+    "pageBackground":       "radial-gradient(ellipse at 30% 0%, #1a0800 0%, #0a0008 55%, #050002 100%)",
+    "headerBackground":     "linear-gradient(135deg, #0e0400 0%, #0a0008 100%)",
+    "footerBackground":     "linear-gradient(135deg, #0e0400 0%, #080004 100%)",
+    "sectionBackground":    "linear-gradient(180deg, #100600 0%, #0a0008 100%)",
+    "sectionAltBackground": "linear-gradient(180deg, #0e0400 0%, #0a0008 100%)",
+    "cardBackground":       "#120606",
+    "cardBorder":           "rgba(249,115,22,0.22)",
+    "heroOverlay":          "linear-gradient(135deg, rgba(10,0,8,0.82) 0%, rgba(26,8,0,0.60) 50%, rgba(36,14,0,0.40) 100%)",
+    "heroFrame":            "rgba(249,115,22,0.30)",
+    "buttonBackground":     "linear-gradient(135deg, #ea580c 0%, #f97316 100%)",
+    "buttonText":           "#0a0008",
+    "buttonShadow":         "0 0 28px rgba(249,115,22,0.50), 0 16px 32px rgba(0,0,0,0.55)",
+    "decorationTop":        "radial-gradient(circle at 15% 5%, rgba(124,49,63,0.30) 0 60px, transparent 61px), radial-gradient(circle at 85% 5%, rgba(249,115,22,0.18) 0 40px, transparent 41px)",
+    "decorationBottom":     "radial-gradient(circle at bottom center, rgba(249,115,22,0.06) 0%, transparent 50%)",
+    "badgeBackground":      "rgba(249,115,22,0.16)",
+    "badgeText":            "#f97316",
+    "indicator":            "rgba(249,115,22,0.22)",
+    "indicatorActive":      "#f97316",
+    "chipBackground":       "rgba(18,6,6,0.92)",
+    "chipText":             "#f5d0a0"
+  },
+  "decorations": [
+    { "icon": "🦇", "count": 8,  "animation": "pcft-sway",     "size": "1.4rem", "opacity": 0.70, "duration": 5  },
+    { "icon": "👻", "count": 5,  "animation": "pcft-float-up", "size": "1.6rem", "opacity": 0.60, "duration": 10 },
+    { "icon": "🎃", "count": 4,  "animation": "pcft-bounce",   "size": "1.5rem", "opacity": 0.70, "duration": 2.5 },
+    { "icon": "🕸️", "count": 5,  "animation": "pcft-sway",     "size": "1.2rem", "opacity": 0.50, "duration": 7  }
+  ],
+  "banner": {
+    "slides": [
+      {
+        "title":        "Happy Halloween!",
+        "subtitle":     "PC Formatech traz soluções que assustam pela eficiência e rapidez.",
+        "tag":          "🎃 Halloween",
+        "scene":        "Abóbora esculpida brilhando na noite de Halloween",
+        "alt":          "Banner de Halloween do PC Formatech",
+        "illustration": "halloween-pumpkin",
+        "palette":      ["#0a0008","#1a0a00","#f97316","#7c3aed"],
+        "accent":       "#f97316"
+      }
+    ]
+  }
+}

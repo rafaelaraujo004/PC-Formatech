@@ -1,0 +1,74 @@
+{
+  "id": "dia-das-criancas",
+  "name": "Dia das Crianças",
+  "category": "seasonal",
+  "mode": "light",
+  "description": "Tema sazonal do Dia das Crianças com cores vibrantes e alegres. Para celebrar a diversão e a criatividade.",
+  "sortOrder": 170,
+  "schedule": { "start": "10-06", "end": "10-14", "priority": 10 },
+  "fonts": {
+    "heading": { "family": "'Inter', sans-serif" },
+    "body":    { "family": "'Inter', sans-serif" }
+  },
+  "preview": {
+    "cover":   "linear-gradient(135deg, #fff7ed 0%, #a5f3fc 50%, #fbbf24 100%)",
+    "accent":  "#0891b2",
+    "surface": "#ffffff"
+  },
+  "effects": ["soft-bloom"],
+  "tokens": {
+    "metaColor":            "#0891b2",
+    "themeBg":              "#f0feff",
+    "themeText":            "#0c1a2a",
+    "themeSurface":         "#ffffff",
+    "themeSurface2":        "#e0f9ff",
+    "themeSurface3":        "#baf5ff",
+    "themeBorder":          "#a5f3fc",
+    "themeBorderStrong":    "#67e8f9",
+    "themeMuted":           "#0e7490",
+    "themeFaint":           "#22d3ee",
+    "accent":               "#0891b2",
+    "accentStrong":         "#0e7490",
+    "accentSoft":           "rgba(8,145,178,0.12)",
+    "pageBackground":       "linear-gradient(160deg, #f0feff 0%, #e0f9ff 50%, #fff7ed 100%)",
+    "headerBackground":     "linear-gradient(135deg, rgba(8,145,178,0.88) 0%, rgba(14,116,144,0.92) 100%)",
+    "footerBackground":     "linear-gradient(135deg, rgba(8,145,178,0.88) 0%, rgba(14,116,144,0.92) 100%)",
+    "sectionBackground":    "linear-gradient(180deg, rgba(255,255,255,0.97) 0%, rgba(240,254,255,0.98) 100%)",
+    "sectionAltBackground": "linear-gradient(180deg, rgba(224,249,255,0.96) 0%, rgba(186,245,255,0.92) 100%)",
+    "cardBackground":       "rgba(255,255,255,0.96)",
+    "cardBorder":           "rgba(8,145,178,0.12)",
+    "heroOverlay":          "linear-gradient(135deg, rgba(8,145,178,0.18) 0%, rgba(165,243,252,0.30) 55%, rgba(255,247,237,0.25) 100%)",
+    "heroFrame":            "rgba(251,191,36,0.30)",
+    "buttonBackground":     "linear-gradient(135deg, #0891b2 0%, #22d3ee 100%)",
+    "buttonText":           "#ffffff",
+    "buttonShadow":         "0 14px 28px rgba(8,145,178,0.28)",
+    "decorationTop":        "radial-gradient(circle at 8% 5%, rgba(251,191,36,0.35) 0 48px, transparent 49px), radial-gradient(circle at 90% 5%, rgba(165,243,252,0.45) 0 36px, transparent 37px)",
+    "decorationBottom":     "radial-gradient(circle at bottom left, rgba(8,145,178,0.06) 0%, transparent 42%)",
+    "badgeBackground":      "rgba(8,145,178,0.10)",
+    "badgeText":            "#0e7490",
+    "indicator":            "rgba(8,145,178,0.15)",
+    "indicatorActive":      "#0891b2",
+    "chipBackground":       "rgba(255,255,255,0.82)",
+    "chipText":             "#0e7490"
+  },
+  "decorations": [
+    { "icon": "🎈", "count": 8,  "animation": "pcft-float-up", "size": "1.5rem", "opacity": 0.80, "duration": 10 },
+    { "icon": "⭐", "count": 6,  "animation": "pcft-twinkle",  "size": "1.1rem", "opacity": 0.80, "duration": 3  },
+    { "icon": "🎊", "count": 7,  "animation": "pcft-fall",      "size": "1.1rem", "opacity": 0.70, "duration": 8  },
+    { "icon": "🎡", "count": 3,  "animation": "pcft-bounce",    "size": "1.6rem", "opacity": 0.55, "duration": 3  }
+  ],
+  "banner": {
+    "slides": [
+      {
+        "title":        "Feliz Dia das Crianças!",
+        "subtitle":     "PC Formatech celebra a alegria das crianças e o carinho das famílias.",
+        "tag":          "🎈 Crianças",
+        "scene":        "Balões coloridos e brinquedos em dia de sol",
+        "alt":          "Banner do Dia das Crianças do PC Formatech",
+        "illustration": "colorful-balloons",
+        "palette":      ["#f0feff","#a5f3fc","#fbbf24","#0891b2"],
+        "accent":       "#0891b2"
+      }
+    ]
+  }
+}

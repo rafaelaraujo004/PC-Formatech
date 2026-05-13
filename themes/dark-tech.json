@@ -1,0 +1,67 @@
+{
+  "id": "dark-tech",
+  "name": "Dark Tech",
+  "category": "standard",
+  "mode": "dark",
+  "description": "Tema escuro tecnológico em azul-noite com detalhes em teal/ciano. Ideal para ambientes de baixa luminosidade.",
+  "sortOrder": 40,
+  "fonts": {
+    "heading": { "family": "'Inter', sans-serif" },
+    "body":    { "family": "'Inter', sans-serif" }
+  },
+  "preview": {
+    "cover":   "linear-gradient(135deg, #090f1b 0%, #13243a 55%, #203a56 100%)",
+    "accent":  "#5fc9be",
+    "surface": "#111c2e"
+  },
+  "effects": [],
+  "tokens": {
+    "metaColor":            "#13243a",
+    "themeBg":              "#090f1b",
+    "themeText":            "#dce8f5",
+    "themeSurface":         "#111c2e",
+    "themeSurface2":        "#172437",
+    "themeSurface3":        "#1f2f47",
+    "themeBorder":          "#263d58",
+    "themeBorderStrong":    "#344f6e",
+    "themeMuted":           "#8fadc8",
+    "themeFaint":           "#5d7896",
+    "accent":               "#5fc9be",
+    "accentStrong":         "#41a89d",
+    "accentSoft":           "rgba(95,201,190,0.20)",
+    "pageBackground":       "radial-gradient(ellipse at 20% 0%, #13243a 0%, #090f1b 55%, #060c14 100%)",
+    "headerBackground":     "linear-gradient(135deg, #0d1e30 0%, #091629 100%)",
+    "footerBackground":     "linear-gradient(135deg, #0d1e30 0%, #07111e 100%)",
+    "sectionBackground":    "linear-gradient(180deg, #0e1929 0%, #0b1520 100%)",
+    "sectionAltBackground": "linear-gradient(180deg, #0b1520 0%, #091421 100%)",
+    "cardBackground":       "#111c2e",
+    "cardBorder":           "rgba(38,61,88,0.80)",
+    "heroOverlay":          "linear-gradient(135deg, rgba(0,0,0,0.68) 0%, rgba(5,15,30,0.58) 50%, rgba(0,0,0,0.68) 100%)",
+    "heroFrame":            "rgba(95,201,190,0.20)",
+    "buttonBackground":     "linear-gradient(135deg, #41a89d 0%, #5fc9be 100%)",
+    "buttonText":           "#091629",
+    "buttonShadow":         "0 16px 32px rgba(0,0,0,0.35)",
+    "decorationTop":        "none",
+    "decorationBottom":     "none",
+    "badgeBackground":      "rgba(95,201,190,0.12)",
+    "badgeText":            "#5fc9be",
+    "indicator":            "rgba(95,201,190,0.16)",
+    "indicatorActive":      "#5fc9be",
+    "chipBackground":       "rgba(23,36,55,0.90)",
+    "chipText":             "#dce8f5"
+  },
+  "banner": {
+    "slides": [
+      {
+        "title":        "PC Formatech",
+        "subtitle":     "Tecnologia de ponta para manutenção e suporte informático.",
+        "tag":          "Dark",
+        "scene":        "Operação noturna de suporte técnico",
+        "alt":          "Banner dark tech do PC Formatech",
+        "illustration": "cyber",
+        "palette":      ["#090f1b","#13243a","#203a56","#5fc9be"],
+        "accent":       "#5fc9be"
+      }
+    ]
+  }
+}

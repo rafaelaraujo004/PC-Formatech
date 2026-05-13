@@ -181,17 +181,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Controle do anúncio Alelo
-    const announcement = document.querySelector('.alelo-announcement');
-    if (announcement) {
-        setTimeout(() => {
-            announcement.addEventListener('animationend', (e) => {
-                if (e.animationName === 'slideOut') {
-                    announcement.remove();
-                }
-            });
-        }, 3000);
-    }
 
     // Menu Mobile DESABILITADO - Layout desktop sempre visível
     // O menu hamburguer não será utilizado

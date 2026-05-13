@@ -1,0 +1,67 @@
+{
+  "id": "sunset-quente",
+  "name": "Sunset Quente",
+  "category": "standard",
+  "mode": "light",
+  "description": "Tema claro inspirado nos pôr do sol com laranja vibrante, dourado e tons quentes de âmbar. Energia e acolhimento.",
+  "sortOrder": 60,
+  "fonts": {
+    "heading": { "family": "'Inter', sans-serif" },
+    "body":    { "family": "'Inter', sans-serif" }
+  },
+  "preview": {
+    "cover":   "linear-gradient(135deg, #fff9f4 0%, #fed7aa 55%, #fb923c 100%)",
+    "accent":  "#ea580c",
+    "surface": "#ffffff"
+  },
+  "effects": ["soft-bloom"],
+  "tokens": {
+    "metaColor":            "#ea580c",
+    "themeBg":              "#fff9f4",
+    "themeText":            "#2c1010",
+    "themeSurface":         "#ffffff",
+    "themeSurface2":        "#fff4ea",
+    "themeSurface3":        "#ffe8d4",
+    "themeBorder":          "#fed7aa",
+    "themeBorderStrong":    "#fdba74",
+    "themeMuted":           "#c2410c",
+    "themeFaint":           "#fb923c",
+    "accent":               "#ea580c",
+    "accentStrong":         "#c2410c",
+    "accentSoft":           "rgba(234,88,12,0.12)",
+    "pageBackground":       "linear-gradient(160deg, #fff9f4 0%, #fff4ea 50%, #fff0e0 100%)",
+    "headerBackground":     "linear-gradient(135deg, rgba(255,249,244,0.98) 0%, rgba(254,215,170,0.92) 100%)",
+    "footerBackground":     "linear-gradient(135deg, rgba(234,88,12,0.92) 0%, rgba(194,65,12,0.96) 100%)",
+    "sectionBackground":    "linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(255,249,244,0.98) 100%)",
+    "sectionAltBackground": "linear-gradient(180deg, rgba(255,244,234,0.96) 0%, rgba(255,232,212,0.96) 100%)",
+    "cardBackground":       "rgba(255,255,255,0.96)",
+    "cardBorder":           "rgba(234,88,12,0.12)",
+    "heroOverlay":          "linear-gradient(135deg, rgba(234,88,12,0.18) 0%, rgba(254,215,170,0.32) 55%, rgba(255,249,244,0.28) 100%)",
+    "heroFrame":            "rgba(234,88,12,0.20)",
+    "buttonBackground":     "linear-gradient(135deg, #ea580c 0%, #f97316 100%)",
+    "buttonText":           "#ffffff",
+    "buttonShadow":         "0 14px 28px rgba(234,88,12,0.28)",
+    "decorationTop":        "radial-gradient(circle at 8% 5%, rgba(251,146,60,0.35) 0 48px, transparent 49px), radial-gradient(circle at 90% 6%, rgba(254,215,170,0.50) 0 36px, transparent 37px)",
+    "decorationBottom":     "radial-gradient(circle at bottom center, rgba(234,88,12,0.06) 0%, transparent 45%)",
+    "badgeBackground":      "rgba(234,88,12,0.10)",
+    "badgeText":            "#c2410c",
+    "indicator":            "rgba(234,88,12,0.15)",
+    "indicatorActive":      "#ea580c",
+    "chipBackground":       "rgba(255,255,255,0.80)",
+    "chipText":             "#c2410c"
+  },
+  "banner": {
+    "slides": [
+      {
+        "title":        "PC Formatech",
+        "subtitle":     "Atendimento caloroso e serviços que iluminam o seu dia.",
+        "tag":          "Sunset",
+        "scene":        "Pôr do sol dourado sobre a cidade",
+        "alt":          "Banner Sunset Quente do PC Formatech",
+        "illustration": "sunset-city",
+        "palette":      ["#fff9f4","#fed7aa","#fb923c","#ea580c"],
+        "accent":       "#ea580c"
+      }
+    ]
+  }
+}

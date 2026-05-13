@@ -1,0 +1,74 @@
+{
+  "id": "dia-dos-pais",
+  "name": "Dia dos Pais",
+  "category": "seasonal",
+  "mode": "light",
+  "description": "Tema especial para o Dia dos Pais em azul-marinho e dourado. Uma homenagem forte e elegante.",
+  "sortOrder": 140,
+  "schedule": { "start": "07-28", "end": "08-15", "priority": 10 },
+  "fonts": {
+    "heading": { "family": "'Inter', sans-serif" },
+    "body":    { "family": "'Inter', sans-serif" }
+  },
+  "preview": {
+    "cover":   "linear-gradient(135deg, #eff6ff 0%, #1e3a8a 50%, #f59e0b 100%)",
+    "accent":  "#1e40af",
+    "surface": "#f0f4ff"
+  },
+  "effects": ["soft-bloom"],
+  "tokens": {
+    "metaColor":            "#1e40af",
+    "themeBg":              "#f0f6ff",
+    "themeText":            "#0c1a3a",
+    "themeSurface":         "#ffffff",
+    "themeSurface2":        "#dbeafe",
+    "themeSurface3":        "#bfdbfe",
+    "themeBorder":          "#bfdbfe",
+    "themeBorderStrong":    "#93c5fd",
+    "themeMuted":           "#1d4ed8",
+    "themeFaint":           "#3b82f6",
+    "accent":               "#1e40af",
+    "accentStrong":         "#1e3a8a",
+    "accentSoft":           "rgba(30,64,175,0.12)",
+    "pageBackground":       "linear-gradient(160deg, #f0f6ff 0%, #dbeafe 50%, #eff6ff 100%)",
+    "headerBackground":     "linear-gradient(135deg, rgba(30,58,138,0.96) 0%, rgba(30,64,175,0.98) 100%)",
+    "footerBackground":     "linear-gradient(135deg, rgba(30,58,138,0.96) 0%, rgba(15,32,80,0.98) 100%)",
+    "sectionBackground":    "linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(240,246,255,0.98) 100%)",
+    "sectionAltBackground": "linear-gradient(180deg, rgba(219,234,254,0.96) 0%, rgba(191,219,254,0.94) 100%)",
+    "cardBackground":       "rgba(255,255,255,0.96)",
+    "cardBorder":           "rgba(30,64,175,0.12)",
+    "heroOverlay":          "linear-gradient(135deg, rgba(30,58,138,0.80) 0%, rgba(30,64,175,0.55) 55%, rgba(245,158,11,0.18) 100%)",
+    "heroFrame":            "rgba(245,158,11,0.28)",
+    "buttonBackground":     "linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)",
+    "buttonText":           "#ffffff",
+    "buttonShadow":         "0 14px 28px rgba(30,64,175,0.28)",
+    "decorationTop":        "radial-gradient(circle at 8% 6%, rgba(245,158,11,0.22) 0 40px, transparent 41px), radial-gradient(circle at 92% 5%, rgba(191,219,254,0.50) 0 36px, transparent 37px)",
+    "decorationBottom":     "linear-gradient(to top, rgba(30,64,175,0.05) 0%, transparent 30%)",
+    "badgeBackground":      "rgba(30,64,175,0.10)",
+    "badgeText":            "#1e3a8a",
+    "indicator":            "rgba(30,64,175,0.15)",
+    "indicatorActive":      "#1e40af",
+    "chipBackground":       "rgba(255,255,255,0.80)",
+    "chipText":             "#1e3a8a"
+  },
+  "decorations": [
+    { "icon": "⭐", "count": 9,  "animation": "pcft-twinkle", "size": "1.1rem", "opacity": 0.75, "duration": 3   },
+    { "icon": "🏆", "count": 4,  "animation": "pcft-bounce",  "size": "1.5rem", "opacity": 0.60, "duration": 3   },
+    { "icon": "👔", "count": 5,  "animation": "pcft-fall",    "size": "1.3rem", "opacity": 0.50, "duration": 13  },
+    { "icon": "🎩", "count": 3,  "animation": "pcft-fall",    "size": "1.4rem", "opacity": 0.45, "duration": 11  }
+  ],
+  "banner": {
+    "slides": [
+      {
+        "title":        "Feliz Dia dos Pais!",
+        "subtitle":     "PC Formatech homenageia todos os pais com respeito e admiração.",
+        "tag":          "👔 Pais",
+        "scene":        "Aperto de mãos forte e confiante",
+        "alt":          "Banner do Dia dos Pais do PC Formatech",
+        "illustration": "fathers-day",
+        "palette":      ["#eff6ff","#1e3a8a","#1e40af","#f59e0b"],
+        "accent":       "#1e40af"
+      }
+    ]
+  }
+}

@@ -1,5 +1,6 @@
 (function () {
     const LEGACY_THEME_STORAGE_KEY = 'pcformatech-theme';
+    const LEGACY_DARKMODE_STORAGE_KEY = 'pcft-theme';
     const DEFAULT_SETTINGS_STORAGE_KEY = 'pcformatech_theme_settings';
     const THEME_MANIFEST_PATH = 'themes/manifest.json';
     const THEME_REMOTE_COLLECTION = 'siteSettings';
@@ -23,16 +24,28 @@
         fallbackThemeId: 'classico-neutro',
         storageKey: DEFAULT_SETTINGS_STORAGE_KEY,
         themes: [
-            { id: 'natal', path: 'themes/natal.json' },
-            { id: 'ano-novo', path: 'themes/ano-novo.json' },
-            { id: 'pascoa', path: 'themes/pascoa.json' },
-            { id: 'dia-dos-pais', path: 'themes/dia-dos-pais.json' },
-            { id: 'dia-das-maes', path: 'themes/dia-das-maes.json' },
-            { id: 'dark-tech', path: 'themes/dark-tech.json' },
-            { id: 'light-clean', path: 'themes/light-clean.json' },
+            // Temas padrão — claro
+            { id: 'classico-neutro',          path: 'themes/classico-neutro.json' },
+            { id: 'light-clean',              path: 'themes/light-clean.json' },
             { id: 'profissional-corporativo', path: 'themes/profissional-corporativo.json' },
-            { id: 'gamer-rgb', path: 'themes/gamer-rgb.json' },
-            { id: 'classico-neutro', path: 'themes/classico-neutro.json' }
+            { id: 'sunset-quente',            path: 'themes/sunset-quente.json' },
+            { id: 'cobre-premium',            path: 'themes/cobre-premium.json' },
+            { id: 'rosa-moderno',             path: 'themes/rosa-moderno.json' },
+            // Temas padrão — escuro
+            { id: 'dark-tech',                path: 'themes/dark-tech.json' },
+            { id: 'gamer-rgb',                path: 'themes/gamer-rgb.json' },
+            { id: 'oceano-azul',              path: 'themes/oceano-azul.json' },
+            { id: 'floresta-verde',           path: 'themes/floresta-verde.json' },
+            { id: 'roxo-tech',                path: 'themes/roxo-tech.json' },
+            // Temas sazonais
+            { id: 'natal',                    path: 'themes/natal.json' },
+            { id: 'ano-novo',                 path: 'themes/ano-novo.json' },
+            { id: 'pascoa',                   path: 'themes/pascoa.json' },
+            { id: 'dia-das-maes',             path: 'themes/dia-das-maes.json' },
+            { id: 'dia-dos-pais',             path: 'themes/dia-dos-pais.json' },
+            { id: 'festa-junina',             path: 'themes/festa-junina.json' },
+            { id: 'dia-das-criancas',         path: 'themes/dia-das-criancas.json' },
+            { id: 'halloween',                path: 'themes/halloween.json' }
         ]
     };
 
@@ -98,6 +111,73 @@
                     illustration: 'steady-workflow',
                     palette: ['#f8fafc', '#dbe4ef', '#93a6c0', '#46637f'],
                     accent: '#46637f'
+                }
+            ]
+        }
+    });
+
+    const EMBEDDED_DARK_THEME = normalizeTheme({
+        id: 'dark-tech',
+        name: 'Dark Tech',
+        category: 'standard',
+        mode: 'dark',
+        description: 'Tema escuro embutido para fallback local.',
+        fonts: {
+            heading: { family: "'Inter', sans-serif" },
+            body: { family: "'Inter', sans-serif" }
+        },
+        preview: {
+            cover: 'linear-gradient(135deg, #090f1b 0%, #13243a 55%, #203a56 100%)',
+            accent: '#5fc9be',
+            surface: '#111c2e'
+        },
+        effects: [],
+        tokens: {
+            metaColor: '#13243a',
+            themeBg: '#090f1b',
+            themeText: '#dce8f5',
+            themeSurface: '#111c2e',
+            themeSurface2: '#172437',
+            themeSurface3: '#1f2f47',
+            themeBorder: '#263d58',
+            themeBorderStrong: '#344f6e',
+            themeMuted: '#8fadc8',
+            themeFaint: '#5d7896',
+            accent: '#5fc9be',
+            accentStrong: '#41a89d',
+            accentSoft: 'rgba(95, 201, 190, 0.2)',
+            pageBackground: 'radial-gradient(ellipse at 20% 0%, #13243a 0%, #090f1b 55%, #060c14 100%)',
+            headerBackground: 'linear-gradient(135deg, #0d1e30 0%, #091629 100%)',
+            footerBackground: 'linear-gradient(135deg, #0d1e30 0%, #07111e 100%)',
+            sectionBackground: 'linear-gradient(180deg, #0e1929 0%, #0b1520 100%)',
+            sectionAltBackground: 'linear-gradient(180deg, #0b1520 0%, #091421 100%)',
+            cardBackground: '#111c2e',
+            cardBorder: 'rgba(38, 61, 88, 0.8)',
+            heroOverlay: 'linear-gradient(135deg, rgba(0, 0, 0, .68) 0%, rgba(5, 15, 30, .58) 50%, rgba(0, 0, 0, .68) 100%)',
+            heroFrame: 'rgba(95, 201, 190, 0.2)',
+            buttonBackground: 'linear-gradient(135deg, #41a89d 0%, #5fc9be 100%)',
+            buttonText: '#091629',
+            buttonShadow: '0 16px 32px rgba(0, 0, 0, 0.35)',
+            decorationTop: 'none',
+            decorationBottom: 'none',
+            badgeBackground: 'rgba(95, 201, 190, .12)',
+            badgeText: '#5fc9be',
+            indicator: 'rgba(95, 201, 190, .16)',
+            indicatorActive: '#5fc9be',
+            chipBackground: 'rgba(23, 36, 55, .9)',
+            chipText: '#dce8f5'
+        },
+        banner: {
+            slides: [
+                {
+                    title: 'PC Formatech',
+                    subtitle: 'Tema escuro fallback carregado automaticamente.',
+                    tag: 'Dark',
+                    scene: 'Operacao noturna',
+                    alt: 'Banner escuro fallback do sistema de temas',
+                    illustration: 'cyber',
+                    palette: ['#090f1b', '#13243a', '#203a56', '#5fc9be'],
+                    accent: '#5fc9be'
                 }
             ]
         }
@@ -174,6 +254,7 @@
             },
             preview: source.preview || {},
             effects: Array.isArray(source.effects) ? source.effects.slice() : [],
+            decorations: Array.isArray(source.decorations) ? source.decorations.slice() : [],
             tokens: source.tokens || {},
             banner: {
                 title: source.banner && source.banner.title ? source.banner.title : source.name || 'Tema',
@@ -382,9 +463,47 @@
         };
     }
 
+    // Detecta luminosidade a partir do primeiro rgba/rgb/hex de um gradiente CSS
+    function bgLuminance(css) {
+        var s = css || '';
+        // rgba() ou rgb()
+        var m = s.match(/rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)/);
+        if (m) return (0.299 * +m[1] + 0.587 * +m[2] + 0.114 * +m[3]) / 255;
+        // hex 6 dígitos
+        var h = s.match(/#([0-9a-fA-F]{6})/);
+        if (h) {
+            var r = parseInt(h[1].slice(0,2), 16), g = parseInt(h[1].slice(2,4), 16), b = parseInt(h[1].slice(4,6), 16);
+            return (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+        }
+        // hex 3 dígitos
+        var h3 = s.match(/#([0-9a-fA-F]{3})\b/);
+        if (h3) {
+            var r = parseInt(h3[1][0]+h3[1][0], 16), g = parseInt(h3[1][1]+h3[1][1], 16), b = parseInt(h3[1][2]+h3[1][2], 16);
+            return (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+        }
+        return 0.2; // assume escuro
+    }
+
     function buildThemeVariables(theme) {
         const tokens = theme.tokens || {};
         const isDark = theme.mode === 'dark';
+
+        // Cores adaptativas para header e footer calculadas por luminosidade
+        const THRESHOLD = 0.55;
+        const headerLum  = bgLuminance(tokens.headerBackground);
+        const footerLum  = bgLuminance(tokens.footerBackground);
+        const headerText = isDark
+            ? 'rgba(255,255,255,0.95)'
+            : (headerLum > THRESHOLD
+                ? (tokens.accentStrong || tokens.themeText || '#1a1a1a')
+                : 'rgba(255,255,255,0.95)');
+        const footerText = footerLum > THRESHOLD
+            ? (tokens.themeText || '#1a1a1a')
+            : 'rgba(255,255,255,0.95)';
+        const footerIcon = footerLum > THRESHOLD
+            ? (tokens.accent || '#2D7A7A')
+            : 'rgba(255,255,255,0.88)';
+
         return {
             '--theme-bg': tokens.themeBg,
             '--theme-text': tokens.themeText,
@@ -428,8 +547,8 @@
             '--pcft-button-background': tokens.buttonBackground,
             '--pcft-button-text': tokens.buttonText,
             '--pcft-button-shadow': tokens.buttonShadow,
-            '--pcft-decoration-top': tokens.decorationTop,
-            '--pcft-decoration-bottom': tokens.decorationBottom,
+            '--pcft-decoration-top': theme.category === 'seasonal' ? 'none' : tokens.decorationTop,
+            '--pcft-decoration-bottom': theme.category === 'seasonal' ? 'none' : tokens.decorationBottom,
             '--pcft-badge-background': tokens.badgeBackground,
             '--pcft-badge-text': tokens.badgeText,
             '--pcft-indicator': tokens.indicator,
@@ -441,7 +560,10 @@
             '--pcft-text-color': tokens.themeText,
             '--pcft-muted-color': tokens.themeMuted,
             '--pcft-heading-color': tokens.themeText,
-            '--pcft-preview-cover': (theme.preview && theme.preview.cover) || tokens.pageBackground || tokens.headerBackground
+            '--pcft-preview-cover': (theme.preview && theme.preview.cover) || tokens.pageBackground || tokens.headerBackground,
+            '--pcft-header-text': headerText,
+            '--pcft-footer-text': footerText,
+            '--pcft-footer-icon': footerIcon
         };
     }
 
@@ -487,11 +609,81 @@
         maybeInjectFont(theme.fonts.body && theme.fonts.body.url, THEME_FONT_PREFIX + theme.id + '-body');
     }
 
+    const DECO_CONTAINER_ID = 'pcft-decorations';
+
+    function applyDecorations(theme) {
+        function render() {
+            var existing = document.getElementById(DECO_CONTAINER_ID);
+            if (existing && existing.parentNode) {
+                existing.parentNode.removeChild(existing);
+            }
+            var items = theme && Array.isArray(theme.decorations) ? theme.decorations : [];
+            if (!items.length || !document.body) return;
+
+            var container = document.createElement('div');
+            container.id = DECO_CONTAINER_ID;
+            container.setAttribute('aria-hidden', 'true');
+
+            items.forEach(function (item) {
+                var icon    = String(item.icon || '');
+                var count   = Math.min(Math.max(Number(item.count) || 5, 1), 15);
+                var anim    = item.animation || 'pcft-fall';
+                var size    = item.size || '1.4rem';
+                var opacity = Number.isFinite(Number(item.opacity)) ? Number(item.opacity) : 0.75;
+                var baseDur = Number(item.duration) || 9;
+                var timing  = (anim === 'pcft-fall' || anim === 'pcft-float-up') ? 'linear' : 'ease-in-out';
+
+                for (var i = 0; i < count; i++) {
+                    var span = document.createElement('span');
+                    span.className   = 'pcft-deco-icon';
+                    span.textContent = icon;
+                    span.setAttribute('aria-hidden', 'true');
+                    span.style.fontSize = size;
+                    span.style.opacity  = String(opacity);
+
+                    var dur   = (baseDur * 0.7 + Math.random() * baseDur * 0.6).toFixed(2) + 's';
+                    var delay = '-' + (Math.random() * baseDur).toFixed(2) + 's';
+
+                    span.style.animationName           = anim;
+                    span.style.animationDuration       = dur;
+                    span.style.animationDelay          = delay;
+                    span.style.animationIterationCount = 'infinite';
+                    span.style.animationTimingFunction = timing;
+                    span.style.animationFillMode       = 'both';
+
+                    if (anim === 'pcft-fall') {
+                        span.style.left = (Math.random() * 94).toFixed(1) + '%';
+                        span.style.top  = '-60px';
+                    } else if (anim === 'pcft-float-up') {
+                        span.style.left   = (Math.random() * 94).toFixed(1) + '%';
+                        span.style.bottom = '-60px';
+                    } else {
+                        span.style.left = (Math.random() * 90).toFixed(1) + '%';
+                        span.style.top  = (10 + Math.random() * 75).toFixed(1) + '%';
+                    }
+
+                    container.appendChild(span);
+                }
+            });
+
+            document.body.appendChild(container);
+        }
+
+        if (document.body) {
+            render();
+        } else {
+            document.addEventListener('DOMContentLoaded', render, { once: true });
+        }
+    }
+
     function createThemeManager() {
         let manifest = null;
         let settingsStorageKey = DEFAULT_SETTINGS_STORAGE_KEY;
-        let themeList = [EMBEDDED_FALLBACK_THEME];
-        let themeMap = new Map([[EMBEDDED_FALLBACK_THEME.id, EMBEDDED_FALLBACK_THEME]]);
+        let themeList = [EMBEDDED_FALLBACK_THEME, EMBEDDED_DARK_THEME];
+        let themeMap = new Map([
+            [EMBEDDED_FALLBACK_THEME.id, EMBEDDED_FALLBACK_THEME],
+            [EMBEDDED_DARK_THEME.id, EMBEDDED_DARK_THEME]
+        ]);
         let currentSettings = null;
         let currentTheme = EMBEDDED_FALLBACK_THEME;
         let currentBannerSlides = currentTheme.banner.slides.map((slide, index) => createBannerSlide(currentTheme, slide, index));
@@ -506,6 +698,10 @@
         }
 
         function getLegacyThemeId() {
+            const darkmodeLegacy = safeGet(localStorage, LEGACY_DARKMODE_STORAGE_KEY);
+            if (darkmodeLegacy === 'dark') return 'dark-tech';
+            if (darkmodeLegacy === 'light') return 'light-clean';
+
             const legacy = safeGet(localStorage, LEGACY_THEME_STORAGE_KEY);
             if (legacy === 'dark') return 'dark-tech';
             if (legacy === 'light') return 'light-clean';
@@ -547,7 +743,9 @@
 
         function cacheSettings(settings) {
             safeSet(localStorage, settingsStorageKey, JSON.stringify(settings));
-            safeSet(localStorage, LEGACY_THEME_STORAGE_KEY, settings.activeThemeId === 'dark-tech' ? 'dark' : currentTheme.mode);
+            const mode = settings.activeThemeId === 'dark-tech' ? 'dark' : currentTheme.mode;
+            safeSet(localStorage, LEGACY_THEME_STORAGE_KEY, mode);
+            safeSet(localStorage, LEGACY_DARKMODE_STORAGE_KEY, mode);
         }
 
         function findSeasonalTheme(date) {
@@ -613,6 +811,7 @@
             injectThemeFonts(currentTheme);
             applyThemeVariables(currentTheme);
             syncThemeEffects(currentTheme);
+            applyDecorations(currentTheme);
             currentBannerSlides = buildBannerSlidesForTheme(currentTheme);
             emitChange(reason || 'apply');
             return currentTheme;
@@ -687,6 +886,9 @@
                                 if (entry.id === EMBEDDED_FALLBACK_THEME.id) {
                                     return EMBEDDED_FALLBACK_THEME;
                                 }
+                                if (entry.id === EMBEDDED_DARK_THEME.id) {
+                                    return EMBEDDED_DARK_THEME;
+                                }
                                 return null;
                             });
                     }));
@@ -694,15 +896,22 @@
                 .then((loadedThemes) => {
                     const validThemes = loadedThemes.filter(Boolean);
                     const hasFallback = validThemes.some((theme) => theme.id === EMBEDDED_FALLBACK_THEME.id);
+                    const hasDarkFallback = validThemes.some((theme) => theme.id === EMBEDDED_DARK_THEME.id);
                     themeList = hasFallback ? validThemes : validThemes.concat([EMBEDDED_FALLBACK_THEME]);
+                    if (!hasDarkFallback) {
+                        themeList = themeList.concat([EMBEDDED_DARK_THEME]);
+                    }
                     themeList.sort((themeA, themeB) => themeA.sortOrder - themeB.sortOrder);
                     themeMap = new Map(themeList.map((theme) => [theme.id, theme]));
                 })
                 .catch(() => {
                     manifest = EMBEDDED_MANIFEST;
                     settingsStorageKey = DEFAULT_SETTINGS_STORAGE_KEY;
-                    themeList = [EMBEDDED_FALLBACK_THEME];
-                    themeMap = new Map([[EMBEDDED_FALLBACK_THEME.id, EMBEDDED_FALLBACK_THEME]]);
+                    themeList = [EMBEDDED_FALLBACK_THEME, EMBEDDED_DARK_THEME];
+                    themeMap = new Map([
+                        [EMBEDDED_FALLBACK_THEME.id, EMBEDDED_FALLBACK_THEME],
+                        [EMBEDDED_DARK_THEME.id, EMBEDDED_DARK_THEME]
+                    ]);
                 });
         }
 
@@ -1132,9 +1341,11 @@
                 const currentTheme = manager.getCurrentTheme();
                 const nextMode = currentTheme && currentTheme.mode === 'dark' ? 'light' : 'dark';
                 const nextThemeId = getPreferredThemeIdForMode(manager, nextMode);
+                // Ao voltar para claro, restaura autoSeasonal para que o tema sazonal
+                // configurado seja reaplicado automaticamente, sem intervenção do usuário.
                 manager.saveSettings({
                     activeThemeId: nextThemeId,
-                    autoSeasonal: false
+                    autoSeasonal: nextMode === 'light'
                 });
             });
 

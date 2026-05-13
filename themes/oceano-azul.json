@@ -1,0 +1,67 @@
+{
+  "id": "oceano-azul",
+  "name": "Oceano Azul",
+  "category": "standard",
+  "mode": "dark",
+  "description": "Tema escuro inspirado nas profundezas do oceano, com azuis intensos e destaques em ciano luminoso.",
+  "sortOrder": 55,
+  "fonts": {
+    "heading": { "family": "'Inter', sans-serif" },
+    "body":    { "family": "'Inter', sans-serif" }
+  },
+  "preview": {
+    "cover":   "linear-gradient(135deg, #030f1a 0%, #052844 50%, #064e68 100%)",
+    "accent":  "#06b6d4",
+    "surface": "#061626"
+  },
+  "effects": [],
+  "tokens": {
+    "metaColor":            "#052844",
+    "themeBg":              "#030f1a",
+    "themeText":            "#cee9f5",
+    "themeSurface":         "#061626",
+    "themeSurface2":        "#082035",
+    "themeSurface3":        "#0b2b48",
+    "themeBorder":          "#0e3860",
+    "themeBorderStrong":    "#154e80",
+    "themeMuted":           "#67b8d8",
+    "themeFaint":           "#2e6e8e",
+    "accent":               "#06b6d4",
+    "accentStrong":         "#0891b2",
+    "accentSoft":           "rgba(6,182,212,0.18)",
+    "pageBackground":       "radial-gradient(ellipse at 25% 0%, #052844 0%, #030f1a 55%, #010810 100%)",
+    "headerBackground":     "linear-gradient(135deg, #041220 0%, #030f1a 100%)",
+    "footerBackground":     "linear-gradient(135deg, #041220 0%, #020b14 100%)",
+    "sectionBackground":    "linear-gradient(180deg, #051828 0%, #030f1a 100%)",
+    "sectionAltBackground": "linear-gradient(180deg, #040e1c 0%, #030f1a 100%)",
+    "cardBackground":       "#061626",
+    "cardBorder":           "rgba(6,182,212,0.18)",
+    "heroOverlay":          "linear-gradient(135deg, rgba(3,15,26,0.78) 0%, rgba(5,40,68,0.55) 50%, rgba(6,78,104,0.38) 100%)",
+    "heroFrame":            "rgba(6,182,212,0.25)",
+    "buttonBackground":     "linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)",
+    "buttonText":           "#030f1a",
+    "buttonShadow":         "0 0 24px rgba(6,182,212,0.35), 0 16px 32px rgba(0,0,0,0.40)",
+    "decorationTop":        "radial-gradient(ellipse at 50% 0%, rgba(6,182,212,0.12) 0 100px, transparent 101px)",
+    "decorationBottom":     "radial-gradient(circle at bottom center, rgba(6,182,212,0.06) 0%, transparent 50%)",
+    "badgeBackground":      "rgba(6,182,212,0.14)",
+    "badgeText":            "#06b6d4",
+    "indicator":            "rgba(6,182,212,0.18)",
+    "indicatorActive":      "#06b6d4",
+    "chipBackground":       "rgba(8,32,53,0.90)",
+    "chipText":             "#cee9f5"
+  },
+  "banner": {
+    "slides": [
+      {
+        "title":        "PC Formatech",
+        "subtitle":     "Soluções em tecnologia com a profundidade e clareza do oceano.",
+        "tag":          "Oceano",
+        "scene":        "Profundezas do oceano com luz azul ciano",
+        "alt":          "Banner Oceano Azul do PC Formatech",
+        "illustration": "deep-ocean",
+        "palette":      ["#030f1a","#052844","#064e68","#06b6d4"],
+        "accent":       "#06b6d4"
+      }
+    ]
+  }
+}

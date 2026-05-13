@@ -1,0 +1,67 @@
+{
+  "id": "floresta-verde",
+  "name": "Floresta Verde",
+  "category": "standard",
+  "mode": "dark",
+  "description": "Tema escuro inspirado nas florestas tropicais com verdes profundos e destaques em esmeralda vibrante.",
+  "sortOrder": 65,
+  "fonts": {
+    "heading": { "family": "'Inter', sans-serif" },
+    "body":    { "family": "'Inter', sans-serif" }
+  },
+  "preview": {
+    "cover":   "linear-gradient(135deg, #071009 0%, #0d2310 50%, #134e21 100%)",
+    "accent":  "#22c55e",
+    "surface": "#0d1a0e"
+  },
+  "effects": [],
+  "tokens": {
+    "metaColor":            "#0d2310",
+    "themeBg":              "#071009",
+    "themeText":            "#c8f0d4",
+    "themeSurface":         "#0d1a0e",
+    "themeSurface2":        "#112414",
+    "themeSurface3":        "#163018",
+    "themeBorder":          "#1c3e1f",
+    "themeBorderStrong":    "#265228",
+    "themeMuted":           "#6ab87d",
+    "themeFaint":           "#3a7548",
+    "accent":               "#22c55e",
+    "accentStrong":         "#16a34a",
+    "accentSoft":           "rgba(34,197,94,0.18)",
+    "pageBackground":       "radial-gradient(ellipse at 15% 0%, #0d2310 0%, #071009 55%, #040a05 100%)",
+    "headerBackground":     "linear-gradient(135deg, #081209 0%, #071009 100%)",
+    "footerBackground":     "linear-gradient(135deg, #081209 0%, #050c06 100%)",
+    "sectionBackground":    "linear-gradient(180deg, #0c1a0d 0%, #071009 100%)",
+    "sectionAltBackground": "linear-gradient(180deg, #091409 0%, #071009 100%)",
+    "cardBackground":       "#0d1a0e",
+    "cardBorder":           "rgba(34,197,94,0.18)",
+    "heroOverlay":          "linear-gradient(135deg, rgba(7,16,9,0.80) 0%, rgba(13,35,16,0.58) 50%, rgba(19,78,33,0.38) 100%)",
+    "heroFrame":            "rgba(34,197,94,0.22)",
+    "buttonBackground":     "linear-gradient(135deg, #16a34a 0%, #22c55e 100%)",
+    "buttonText":           "#071009",
+    "buttonShadow":         "0 0 24px rgba(34,197,94,0.32), 0 16px 32px rgba(0,0,0,0.40)",
+    "decorationTop":        "radial-gradient(ellipse at 50% 0%, rgba(34,197,94,0.10) 0 80px, transparent 81px)",
+    "decorationBottom":     "radial-gradient(circle at bottom left, rgba(34,197,94,0.06) 0%, transparent 45%)",
+    "badgeBackground":      "rgba(34,197,94,0.14)",
+    "badgeText":            "#22c55e",
+    "indicator":            "rgba(34,197,94,0.18)",
+    "indicatorActive":      "#22c55e",
+    "chipBackground":       "rgba(13,26,14,0.90)",
+    "chipText":             "#c8f0d4"
+  },
+  "banner": {
+    "slides": [
+      {
+        "title":        "PC Formatech",
+        "subtitle":     "Tecnologia sustentável e eficiente, tão poderosa quanto a natureza.",
+        "tag":          "Floresta",
+        "scene":        "Floresta tropical densa com luz esmeralda",
+        "alt":          "Banner Floresta Verde do PC Formatech",
+        "illustration": "green-forest",
+        "palette":      ["#071009","#0d2310","#134e21","#22c55e"],
+        "accent":       "#22c55e"
+      }
+    ]
+  }
+}

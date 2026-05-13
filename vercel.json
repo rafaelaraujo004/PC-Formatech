@@ -1,11 +1,5 @@
 {
   "version": 2,
-  "crons": [
-    {
-      "path": "/api/send-notifications",
-      "schedule": "0 7,13,19 * * *"
-    }
-  ],
   "headers": [
     {
       "source": "/(.*)",

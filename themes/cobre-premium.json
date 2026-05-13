@@ -1,0 +1,67 @@
+{
+  "id": "cobre-premium",
+  "name": "Cobre Premium",
+  "category": "standard",
+  "mode": "light",
+  "description": "Tema claro e luxuoso em tons de cobre, bronze e âmbar envelhecido. Sofisticação e elegância artesanal.",
+  "sortOrder": 75,
+  "fonts": {
+    "heading": { "family": "'Inter', sans-serif" },
+    "body":    { "family": "'Inter', sans-serif" }
+  },
+  "preview": {
+    "cover":   "linear-gradient(135deg, #fdf8f0 0%, #fde68a 50%, #b45309 100%)",
+    "accent":  "#b45309",
+    "surface": "#fff9ee"
+  },
+  "effects": ["soft-bloom"],
+  "tokens": {
+    "metaColor":            "#b45309",
+    "themeBg":              "#fdf8f0",
+    "themeText":            "#1c0e00",
+    "themeSurface":         "#fff9ee",
+    "themeSurface2":        "#fef3c7",
+    "themeSurface3":        "#fde68a",
+    "themeBorder":          "#fcd34d",
+    "themeBorderStrong":    "#f59e0b",
+    "themeMuted":           "#92400e",
+    "themeFaint":           "#b45309",
+    "accent":               "#b45309",
+    "accentStrong":         "#78350f",
+    "accentSoft":           "rgba(180,83,9,0.12)",
+    "pageBackground":       "linear-gradient(160deg, #fdf8f0 0%, #fef3c7 50%, #fef9ee 100%)",
+    "headerBackground":     "linear-gradient(135deg, rgba(253,248,240,0.98) 0%, rgba(254,243,199,0.94) 100%)",
+    "footerBackground":     "linear-gradient(135deg, rgba(120,53,15,0.94) 0%, rgba(92,40,10,0.96) 100%)",
+    "sectionBackground":    "linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(253,248,240,0.98) 100%)",
+    "sectionAltBackground": "linear-gradient(180deg, rgba(254,243,199,0.94) 0%, rgba(253,230,138,0.88) 100%)",
+    "cardBackground":       "rgba(255,253,245,0.96)",
+    "cardBorder":           "rgba(180,83,9,0.12)",
+    "heroOverlay":          "linear-gradient(135deg, rgba(120,53,15,0.20) 0%, rgba(254,243,199,0.32) 55%, rgba(253,248,240,0.28) 100%)",
+    "heroFrame":            "rgba(180,83,9,0.22)",
+    "buttonBackground":     "linear-gradient(135deg, #b45309 0%, #d97706 100%)",
+    "buttonText":           "#fff9ee",
+    "buttonShadow":         "0 14px 28px rgba(180,83,9,0.28)",
+    "decorationTop":        "radial-gradient(circle at 10% 6%, rgba(245,158,11,0.30) 0 50px, transparent 51px), radial-gradient(circle at 90% 5%, rgba(253,230,138,0.45) 0 36px, transparent 37px)",
+    "decorationBottom":     "radial-gradient(circle at bottom right, rgba(180,83,9,0.06) 0%, transparent 42%)",
+    "badgeBackground":      "rgba(180,83,9,0.10)",
+    "badgeText":            "#78350f",
+    "indicator":            "rgba(180,83,9,0.15)",
+    "indicatorActive":      "#b45309",
+    "chipBackground":       "rgba(255,253,245,0.82)",
+    "chipText":             "#78350f"
+  },
+  "banner": {
+    "slides": [
+      {
+        "title":        "PC Formatech",
+        "subtitle":     "Excelência artesanal em cada serviço prestado aos nossos clientes.",
+        "tag":          "Premium",
+        "scene":        "Textura de cobre polido com detalhes dourados",
+        "alt":          "Banner Cobre Premium do PC Formatech",
+        "illustration": "copper-luxury",
+        "palette":      ["#fdf8f0","#fde68a","#f59e0b","#b45309"],
+        "accent":       "#b45309"
+      }
+    ]
+  }
+}

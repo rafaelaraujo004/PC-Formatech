@@ -1,0 +1,67 @@
+{
+  "id": "profissional-corporativo",
+  "name": "Profissional Corporativo",
+  "category": "standard",
+  "mode": "light",
+  "description": "Tema corporativo em azul-marinho e branco. Transmite seriedade, credibilidade e excelência nos serviços.",
+  "sortOrder": 30,
+  "fonts": {
+    "heading": { "family": "'Inter', sans-serif" },
+    "body":    { "family": "'Inter', sans-serif" }
+  },
+  "preview": {
+    "cover":   "linear-gradient(135deg, #eff6ff 0%, #bfdbfe 50%, #3b82f6 100%)",
+    "accent":  "#1d4ed8",
+    "surface": "#ffffff"
+  },
+  "effects": ["soft-bloom"],
+  "tokens": {
+    "metaColor":            "#1d4ed8",
+    "themeBg":              "#f8faff",
+    "themeText":            "#0f172a",
+    "themeSurface":         "#ffffff",
+    "themeSurface2":        "#eff6ff",
+    "themeSurface3":        "#dbeafe",
+    "themeBorder":          "#dbeafe",
+    "themeBorderStrong":    "#bfdbfe",
+    "themeMuted":           "#1e40af",
+    "themeFaint":           "#3b82f6",
+    "accent":               "#1d4ed8",
+    "accentStrong":         "#1e3a8a",
+    "accentSoft":           "rgba(29,78,216,0.10)",
+    "pageBackground":       "linear-gradient(160deg, #f8faff 0%, #eff6ff 50%, #dbeafe 100%)",
+    "headerBackground":     "linear-gradient(135deg, rgba(255,255,255,0.97) 0%, rgba(239,246,255,0.95) 100%)",
+    "footerBackground":     "linear-gradient(135deg, rgba(30,58,138,0.94) 0%, rgba(29,78,216,0.96) 100%)",
+    "sectionBackground":    "linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(248,250,255,0.98) 100%)",
+    "sectionAltBackground": "linear-gradient(180deg, rgba(239,246,255,0.98) 0%, rgba(219,234,254,0.96) 100%)",
+    "cardBackground":       "#ffffff",
+    "cardBorder":           "rgba(29,78,216,0.10)",
+    "heroOverlay":          "linear-gradient(135deg, rgba(30,58,138,0.72) 0%, rgba(29,78,216,0.52) 50%, rgba(59,130,246,0.30) 100%)",
+    "heroFrame":            "rgba(255,255,255,0.20)",
+    "buttonBackground":     "linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%)",
+    "buttonText":           "#ffffff",
+    "buttonShadow":         "0 14px 32px rgba(29,78,216,0.28)",
+    "decorationTop":        "radial-gradient(circle at 8% 6%, rgba(191,219,254,0.50) 0 50px, transparent 51px), radial-gradient(circle at 90% 8%, rgba(219,234,254,0.35) 0 32px, transparent 33px)",
+    "decorationBottom":     "linear-gradient(to top, rgba(29,78,216,0.05) 0%, transparent 30%)",
+    "badgeBackground":      "rgba(29,78,216,0.10)",
+    "badgeText":            "#1e3a8a",
+    "indicator":            "rgba(29,78,216,0.15)",
+    "indicatorActive":      "#1d4ed8",
+    "chipBackground":       "rgba(255,255,255,0.80)",
+    "chipText":             "#1e3a8a"
+  },
+  "banner": {
+    "slides": [
+      {
+        "title":        "PC Formatech",
+        "subtitle":     "Soluções profissionais em TI com excelência e compromisso.",
+        "tag":          "Corporativo",
+        "scene":        "Ambiente empresarial moderno",
+        "alt":          "Banner profissional corporativo do PC Formatech",
+        "illustration": "corporate-office",
+        "palette":      ["#eff6ff","#bfdbfe","#3b82f6","#1d4ed8"],
+        "accent":       "#1d4ed8"
+      }
+    ]
+  }
+}

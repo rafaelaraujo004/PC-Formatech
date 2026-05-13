@@ -6,7 +6,17 @@
     <script>
     (function(){
         try {
-            if (localStorage.getItem('pcft-theme') === 'dark') {
+            const legacy = localStorage.getItem('pcft-theme');
+            const legacyManager = localStorage.getItem('pcformatech-theme');
+            const settingsRaw = localStorage.getItem('pcformatech_theme_settings');
+            const settings = settingsRaw ? JSON.parse(settingsRaw) : null;
+            const activeThemeId = settings && settings.activeThemeId ? String(settings.activeThemeId) : '';
+
+            if (
+                legacy === 'dark' ||
+                legacyManager === 'dark' ||
+                /dark/i.test(activeThemeId)
+            ) {
                 document.documentElement.setAttribute('data-theme', 'dark');
             }
         } catch(e) {}
@@ -24,7 +34,7 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://seusite.com/">
     <meta property="og:title" content="PC Formatech - Formatação e Instalação de Programas">
-    <meta property="og:description" content="Serviços profissionais de formatação, manutenção e instalação de programas. Atendimento presencial e remoto com qualidade garantida. Aceitamos Alelo!">
+    <meta property="og:description" content="Serviços profissionais de formatação, manutenção e instalação de programas. Atendimento presencial e remoto com qualidade garantida.">
     <meta property="og:image" content="https://seusite.com/preview-image.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -441,6 +451,12 @@
             </div>
             <div class="hero-overlay"></div>
             <div class="hero-content">
+                <div id="pcft-seasonal-badge" hidden>
+                    <span class="pcft-seasonal-icon pcft-seasonal-icon-left"></span>
+                    <span class="pcft-seasonal-greeting">Feliz</span>
+                    <span class="pcft-seasonal-name"></span>
+                    <span class="pcft-seasonal-icon pcft-seasonal-icon-right"></span>
+                </div>
                 <h1>Soluções Profissionais em Formatação e Instalação de Software</h1>
                 <p>Serviço profissional e confiável para seu computador</p>
             </div>
@@ -1184,9 +1200,63 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
-    <script src="darkmode.js"></script>
+    <script src="theme-system.js"></script>
     <script src="main.js"></script>
     <script src="formatacao-form.js"></script>
+    <script>
+    /* ── Badge sazonal ───────────────────────────────────────────────────── */
+    (function () {
+        var EXTRA = 5;
+        var SEASONAL = [
+            { name: 'Natal',                greeting: 'Feliz',  icon: '🎄', start: '12-01', end: '01-06' },
+            { name: 'Ano Novo',             greeting: 'Feliz',  icon: '✨', start: '12-27', end: '01-05' },
+            { name: 'Páscoa',               greeting: 'Feliz',  icon: '🐣', start: '03-20', end: '04-25' },
+            { name: 'Dia das Mães',         greeting: 'Feliz',  icon: '💐', start: '04-28', end: '05-15' },
+            { name: 'Festa Junina',         greeting: 'Feliz',  icon: '🌽', start: '06-01', end: '06-30' },
+            { name: 'Dia dos Pais',         greeting: 'Feliz',  icon: '🏆', start: '07-28', end: '08-15' },
+            { name: 'Dia das Crianças',     greeting: 'Feliz',  icon: '🎈', start: '10-06', end: '10-14' },
+            { name: 'Halloween',            greeting: 'Happy',  icon: '🎃', start: '10-20', end: '11-02' }
+        ];
+        function doy(m, d) {
+            var acc = [0,31,28,31,30,31,30,31,31,30,31,30,31], n = d;
+            for (var i = 1; i < m; i++) n += acc[i];
+            return n;
+        }
+        function isActive(start, end) {
+            var now = new Date(), tDOY = doy(now.getMonth() + 1, now.getDate());
+            var sp = start.split('-').map(Number), ep = end.split('-').map(Number);
+            var sN = doy(sp[0], sp[1]), eN = doy(ep[0], ep[1]);
+            var wraps = eN < sN;
+            if (wraps) eN += 365;
+            return (tDOY >= sN - EXTRA && tDOY <= eN + EXTRA) ||
+                   (wraps && (tDOY + 365 >= sN - EXTRA && tDOY + 365 <= eN + EXTRA));
+        }
+        function showBadge() {
+            var badge = document.getElementById('pcft-seasonal-badge');
+            if (!badge) return;
+            var active = null;
+            for (var i = 0; i < SEASONAL.length; i++) {
+                if (isActive(SEASONAL[i].start, SEASONAL[i].end)) { active = SEASONAL[i]; break; }
+            }
+            if (!active) return;
+            var iconLeft  = badge.querySelector('.pcft-seasonal-icon-left');
+            var iconRight = badge.querySelector('.pcft-seasonal-icon-right');
+            var greetEl   = badge.querySelector('.pcft-seasonal-greeting');
+            var nameEl    = badge.querySelector('.pcft-seasonal-name');
+            if (iconLeft)  iconLeft.textContent  = active.icon;
+            if (iconRight) iconRight.textContent = active.icon;
+            if (greetEl)   greetEl.textContent   = active.greeting;
+            if (nameEl)    nameEl.textContent     = active.name + '!';
+            badge.hidden = false;
+        }
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', showBadge);
+        } else {
+            showBadge();
+        }
+    })();
+    /* ───────────────────────────────────────────────────────────────────── */
+    </script>
     <script>
         // Carregar slides do localStorage se existirem
         document.addEventListener('DOMContentLoaded', () => {
@@ -1198,19 +1268,47 @@
                 const heroIndicators = document.querySelector('.hero-indicators');
                 
                 if (heroSlider && slides.length > 0) {
-                    // Limpar slides existentes
                     heroSlider.innerHTML = '';
                     heroIndicators.innerHTML = '';
                     
-                    // Adicionar novos slides
                     slides.forEach((slide, index) => {
-                        // Criar slide
                         const slideDiv = document.createElement('div');
                         slideDiv.className = 'hero-slide' + (index === 0 ? ' active' : '');
-                        slideDiv.innerHTML = `<img src="${slide.url}" alt="${slide.alt}">`;
+
+                        const img = document.createElement('img');
+                        img.alt = slide.alt;
+                        img.setAttribute('decoding', 'async');
+                        if (index === 0) {
+                            img.setAttribute('fetchpriority', 'high');
+                            img.setAttribute('loading', 'eager');
+                        } else {
+                            img.setAttribute('loading', 'lazy');
+                        }
+                        img.addEventListener('error', function onImgError() {
+                            img.removeEventListener('error', onImgError);
+                            slideDiv.remove();
+                            // Rebuild indicators
+                            const remaining = heroSlider.querySelectorAll('.hero-slide');
+                            heroIndicators.innerHTML = '';
+                            remaining.forEach(function(_, i) {
+                                const ind = document.createElement('span');
+                                ind.className = 'indicator' + (i === 0 ? ' active' : '');
+                                ind.setAttribute('data-slide', i);
+                                heroIndicators.appendChild(ind);
+                            });
+                            if (remaining.length > 0) {
+                                remaining.forEach(function(s) { s.classList.remove('active'); });
+                                remaining[0].classList.add('active');
+                            }
+                            if (typeof window.initHeroCarousel === 'function') {
+                                window.initHeroCarousel();
+                            }
+                        });
+                        img.src = slide.url;
+
+                        slideDiv.appendChild(img);
                         heroSlider.appendChild(slideDiv);
                         
-                        // Criar indicador
                         const indicator = document.createElement('span');
                         indicator.className = 'indicator' + (index === 0 ? ' active' : '');
                         indicator.setAttribute('data-slide', index);

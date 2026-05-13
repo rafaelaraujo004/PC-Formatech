@@ -1,0 +1,74 @@
+{
+  "id": "dia-das-maes",
+  "name": "Dia das Mães",
+  "category": "seasonal",
+  "mode": "light",
+  "description": "Tema especial para o Dia das Mães em rosa e dourado suave. Homenagem carinhosa às mães de todos os clientes.",
+  "sortOrder": 130,
+  "schedule": { "start": "04-28", "end": "05-15", "priority": 10 },
+  "fonts": {
+    "heading": { "family": "'Inter', sans-serif" },
+    "body":    { "family": "'Inter', sans-serif" }
+  },
+  "preview": {
+    "cover":   "linear-gradient(135deg, #fff1f8 0%, #fce7f3 50%, #f9a8d4 100%)",
+    "accent":  "#db2777",
+    "surface": "#fff5fb"
+  },
+  "effects": ["soft-bloom"],
+  "tokens": {
+    "metaColor":            "#db2777",
+    "themeBg":              "#fff1f8",
+    "themeText":            "#3b0a1a",
+    "themeSurface":         "#ffffff",
+    "themeSurface2":        "#fce7f3",
+    "themeSurface3":        "#fbd0e8",
+    "themeBorder":          "#fbcfe8",
+    "themeBorderStrong":    "#f9a8d4",
+    "themeMuted":           "#be185d",
+    "themeFaint":           "#ec4899",
+    "accent":               "#db2777",
+    "accentStrong":         "#9d174d",
+    "accentSoft":           "rgba(219,39,119,0.12)",
+    "pageBackground":       "linear-gradient(160deg, #fff1f8 0%, #fce7f3 50%, #fde8f4 100%)",
+    "headerBackground":     "linear-gradient(135deg, rgba(255,241,248,0.98) 0%, rgba(252,231,243,0.96) 100%)",
+    "footerBackground":     "linear-gradient(135deg, rgba(219,39,119,0.88) 0%, rgba(157,23,77,0.92) 100%)",
+    "sectionBackground":    "linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(255,241,248,0.98) 100%)",
+    "sectionAltBackground": "linear-gradient(180deg, rgba(252,231,243,0.96) 0%, rgba(251,208,232,0.94) 100%)",
+    "cardBackground":       "rgba(255,255,255,0.96)",
+    "cardBorder":           "rgba(219,39,119,0.12)",
+    "heroOverlay":          "linear-gradient(135deg, rgba(219,39,119,0.18) 0%, rgba(252,231,243,0.38) 55%, rgba(255,241,248,0.30) 100%)",
+    "heroFrame":            "rgba(219,39,119,0.20)",
+    "buttonBackground":     "linear-gradient(135deg, #db2777 0%, #ec4899 100%)",
+    "buttonText":           "#ffffff",
+    "buttonShadow":         "0 14px 28px rgba(219,39,119,0.28)",
+    "decorationTop":        "radial-gradient(circle at 10% 6%, rgba(249,168,212,0.45) 0 50px, transparent 51px), radial-gradient(circle at 90% 6%, rgba(252,231,243,0.55) 0 36px, transparent 37px)",
+    "decorationBottom":     "radial-gradient(circle at bottom right, rgba(219,39,119,0.06) 0%, transparent 40%)",
+    "badgeBackground":      "rgba(219,39,119,0.10)",
+    "badgeText":            "#9d174d",
+    "indicator":            "rgba(219,39,119,0.15)",
+    "indicatorActive":      "#db2777",
+    "chipBackground":       "rgba(255,255,255,0.80)",
+    "chipText":             "#9d174d"
+  },
+  "decorations": [
+    { "icon": "🌸", "count": 10, "animation": "pcft-fall",      "size": "1.2rem", "opacity": 0.70, "duration": 12 },
+    { "icon": "💐", "count": 5,  "animation": "pcft-fall",      "size": "1.5rem", "opacity": 0.60, "duration": 15 },
+    { "icon": "💕", "count": 7,  "animation": "pcft-float-up",  "size": "1.0rem", "opacity": 0.55, "duration": 9  },
+    { "icon": "🌺", "count": 4,  "animation": "pcft-sway",      "size": "1.4rem", "opacity": 0.65, "duration": 6  }
+  ],
+  "banner": {
+    "slides": [
+      {
+        "title":        "Feliz Dia das Mães!",
+        "subtitle":     "PC Formatech homenageia todas as mães com carinho e gratidão.",
+        "tag":          "💐 Mães",
+        "scene":        "Flores rosas e corações dourados",
+        "alt":          "Banner do Dia das Mães do PC Formatech",
+        "illustration": "flowers-pink",
+        "palette":      ["#fff1f8","#fce7f3","#f9a8d4","#db2777"],
+        "accent":       "#db2777"
+      }
+    ]
+  }
+}

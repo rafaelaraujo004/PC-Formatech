@@ -2,6 +2,25 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <script>
+    (function(){
+        try {
+            const legacy = localStorage.getItem('pcft-theme');
+            const legacyManager = localStorage.getItem('pcformatech-theme');
+            const settingsRaw = localStorage.getItem('pcformatech_theme_settings');
+            const settings = settingsRaw ? JSON.parse(settingsRaw) : null;
+            const activeThemeId = settings && settings.activeThemeId ? String(settings.activeThemeId) : '';
+
+            if (
+                legacy === 'dark' ||
+                legacyManager === 'dark' ||
+                /dark/i.test(activeThemeId)
+            ) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        } catch(e) {}
+    })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Formulário de Formatação - PC Formatech</title>
     
@@ -36,6 +55,7 @@
     
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="styles2.css">
+    <link rel="stylesheet" href="theme-system.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
@@ -534,6 +554,7 @@
         </div>
     </section>
 
+    <script src="theme-system.js"></script>
     <script src="formatacao-form.js"></script>
 </body>
 </html>

@@ -1,0 +1,67 @@
+{
+  "id": "gamer-rgb",
+  "name": "Gamer RGB",
+  "category": "standard",
+  "mode": "dark",
+  "description": "Tema gamer escuro com destaques em neon RGB. Energia, velocidade e estilo para os apaixonados por games.",
+  "sortOrder": 50,
+  "fonts": {
+    "heading": { "family": "'Inter', sans-serif" },
+    "body":    { "family": "'Inter', sans-serif" }
+  },
+  "preview": {
+    "cover":   "linear-gradient(135deg, #0d0d0d 0%, #1a0030 50%, #0d1a00 100%)",
+    "accent":  "#a855f7",
+    "surface": "#141414"
+  },
+  "effects": ["glow"],
+  "tokens": {
+    "metaColor":            "#1a0030",
+    "themeBg":              "#0d0d0d",
+    "themeText":            "#f0f0f0",
+    "themeSurface":         "#141414",
+    "themeSurface2":        "#1a1a1a",
+    "themeSurface3":        "#222222",
+    "themeBorder":          "#2a1040",
+    "themeBorderStrong":    "#4a1a70",
+    "themeMuted":           "#b388ff",
+    "themeFaint":           "#7c4dff",
+    "accent":               "#a855f7",
+    "accentStrong":         "#7c3aed",
+    "accentSoft":           "rgba(168,85,247,0.18)",
+    "pageBackground":       "radial-gradient(ellipse at 10% 0%, #1a0030 0%, #0d0d0d 50%, #000a00 100%)",
+    "headerBackground":     "linear-gradient(135deg, #0f0020 0%, #0d0d0d 100%)",
+    "footerBackground":     "linear-gradient(135deg, #0d0d0d 0%, #0f0020 100%)",
+    "sectionBackground":    "linear-gradient(180deg, #121212 0%, #0f0f0f 100%)",
+    "sectionAltBackground": "linear-gradient(180deg, #0f0015 0%, #0d0d0d 100%)",
+    "cardBackground":       "#141414",
+    "cardBorder":           "rgba(168,85,247,0.20)",
+    "heroOverlay":          "linear-gradient(135deg, rgba(26,0,48,0.80) 0%, rgba(13,13,13,0.65) 50%, rgba(0,10,0,0.80) 100%)",
+    "heroFrame":            "rgba(168,85,247,0.30)",
+    "buttonBackground":     "linear-gradient(135deg, #7c3aed 0%, #a855f7 50%, #10b981 100%)",
+    "buttonText":           "#ffffff",
+    "buttonShadow":         "0 0 28px rgba(168,85,247,0.50), 0 16px 32px rgba(0,0,0,0.50)",
+    "decorationTop":        "radial-gradient(circle at 5% 5%, rgba(168,85,247,0.25) 0 60px, transparent 61px), radial-gradient(circle at 95% 5%, rgba(16,185,129,0.20) 0 40px, transparent 41px)",
+    "decorationBottom":     "radial-gradient(circle at 50% 100%, rgba(168,85,247,0.10) 0%, transparent 50%)",
+    "badgeBackground":      "rgba(168,85,247,0.15)",
+    "badgeText":            "#d8b4fe",
+    "indicator":            "rgba(168,85,247,0.20)",
+    "indicatorActive":      "#a855f7",
+    "chipBackground":       "rgba(22,22,22,0.90)",
+    "chipText":             "#d8b4fe"
+  },
+  "banner": {
+    "slides": [
+      {
+        "title":        "PC Formatech",
+        "subtitle":     "Manutenção e upgrade de PCs gamers com expertise e agilidade.",
+        "tag":          "Gamer",
+        "scene":        "Setup gamer com iluminação RGB",
+        "alt":          "Banner gamer RGB do PC Formatech",
+        "illustration": "gamer-setup",
+        "palette":      ["#0d0d0d","#1a0030","#a855f7","#10b981"],
+        "accent":       "#a855f7"
+      }
+    ]
+  }
+}

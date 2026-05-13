@@ -1,0 +1,67 @@
+{
+  "id": "rosa-moderno",
+  "name": "Rosa Moderno",
+  "category": "standard",
+  "mode": "light",
+  "description": "Tema claro em rose gold e nude suave. Moderno, sofisticado e agradável para todos os públicos.",
+  "sortOrder": 80,
+  "fonts": {
+    "heading": { "family": "'Inter', sans-serif" },
+    "body":    { "family": "'Inter', sans-serif" }
+  },
+  "preview": {
+    "cover":   "linear-gradient(135deg, #fff1f5 0%, #fecdd3 55%, #fb7185 100%)",
+    "accent":  "#e11d48",
+    "surface": "#fff5f7"
+  },
+  "effects": ["soft-bloom"],
+  "tokens": {
+    "metaColor":            "#e11d48",
+    "themeBg":              "#fff1f5",
+    "themeText":            "#1c0010",
+    "themeSurface":         "#ffffff",
+    "themeSurface2":        "#ffe4ea",
+    "themeSurface3":        "#fecdd3",
+    "themeBorder":          "#fecdd3",
+    "themeBorderStrong":    "#fda4af",
+    "themeMuted":           "#be123c",
+    "themeFaint":           "#fb7185",
+    "accent":               "#e11d48",
+    "accentStrong":         "#9f1239",
+    "accentSoft":           "rgba(225,29,72,0.11)",
+    "pageBackground":       "linear-gradient(160deg, #fff1f5 0%, #ffe4ea 50%, #fff5f7 100%)",
+    "headerBackground":     "linear-gradient(135deg, rgba(255,241,245,0.98) 0%, rgba(254,205,211,0.93) 100%)",
+    "footerBackground":     "linear-gradient(135deg, rgba(225,29,72,0.90) 0%, rgba(159,18,57,0.94) 100%)",
+    "sectionBackground":    "linear-gradient(180deg, rgba(255,255,255,0.97) 0%, rgba(255,241,245,0.98) 100%)",
+    "sectionAltBackground": "linear-gradient(180deg, rgba(255,228,234,0.96) 0%, rgba(254,205,211,0.93) 100%)",
+    "cardBackground":       "rgba(255,255,255,0.96)",
+    "cardBorder":           "rgba(225,29,72,0.10)",
+    "heroOverlay":          "linear-gradient(135deg, rgba(225,29,72,0.16) 0%, rgba(254,205,211,0.30) 55%, rgba(255,241,245,0.26) 100%)",
+    "heroFrame":            "rgba(225,29,72,0.18)",
+    "buttonBackground":     "linear-gradient(135deg, #e11d48 0%, #fb7185 100%)",
+    "buttonText":           "#ffffff",
+    "buttonShadow":         "0 14px 28px rgba(225,29,72,0.25)",
+    "decorationTop":        "radial-gradient(circle at 10% 6%, rgba(253,164,175,0.42) 0 48px, transparent 49px), radial-gradient(circle at 92% 5%, rgba(254,205,211,0.52) 0 34px, transparent 35px)",
+    "decorationBottom":     "radial-gradient(circle at bottom center, rgba(225,29,72,0.05) 0%, transparent 44%)",
+    "badgeBackground":      "rgba(225,29,72,0.10)",
+    "badgeText":            "#9f1239",
+    "indicator":            "rgba(225,29,72,0.14)",
+    "indicatorActive":      "#e11d48",
+    "chipBackground":       "rgba(255,255,255,0.82)",
+    "chipText":             "#9f1239"
+  },
+  "banner": {
+    "slides": [
+      {
+        "title":        "PC Formatech",
+        "subtitle":     "Atendimento moderno e sofisticado que cuida de você e do seu equipamento.",
+        "tag":          "Rosa",
+        "scene":        "Design minimalista em rose gold e branco",
+        "alt":          "Banner Rosa Moderno do PC Formatech",
+        "illustration": "rose-minimal",
+        "palette":      ["#fff1f5","#fecdd3","#fb7185","#e11d48"],
+        "accent":       "#e11d48"
+      }
+    ]
+  }
+}

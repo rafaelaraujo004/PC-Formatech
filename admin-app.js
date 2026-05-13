@@ -176,12 +176,216 @@
                 loadServices();
             } else if (tabName === 'slider') {
                 renderSlides();
+            } else if (tabName === 'themes') {
+                loadThemeManagerTab();
             } else if (tabName === 'realtime') {
                 initRealtimeDashboard();
             } else if (tabName === 'parcelamentos') {
                 renderParcelamentosTab();
             }
         }
+
+        // ===== GERENCIADOR DE TEMAS =====
+        let themePreviewThemeId = null;
+        let themeSubscriptionBound = false;
+
+        function getThemeManager() {
+            if (!window.PCFormatechThemeManager || typeof window.PCFormatechThemeManager.ready !== 'function') {
+                return null;
+            }
+            return window.PCFormatechThemeManager;
+        }
+
+        function formatThemeMode(mode) {
+            return mode === 'dark' ? 'Escuro' : 'Claro';
+        }
+
+        function updateThemePreviewPanel(theme) {
+            const summary = document.getElementById('themePreviewSummary');
+            const banner = document.getElementById('themePreviewBanner');
+            const metrics = document.getElementById('themePreviewMetrics');
+            const status = document.getElementById('themeCurrentStatus');
+            if (!summary || !banner || !metrics || !status) return;
+
+            if (!theme) {
+                summary.textContent = 'Selecione um tema para ver o preview.';
+                banner.innerHTML = '';
+                metrics.innerHTML = '';
+                status.innerHTML = '';
+                return;
+            }
+
+            const cover = (theme.preview && theme.preview.cover) || (theme.tokens && theme.tokens.pageBackground) || 'linear-gradient(135deg, #f5f5f5, #d8e1ea)';
+            const accent = (theme.preview && theme.preview.accent) || (theme.tokens && theme.tokens.accent) || '#40998F';
+            const surface = (theme.preview && theme.preview.surface) || (theme.tokens && theme.tokens.themeSurface) || '#ffffff';
+
+            summary.textContent = `${theme.name} · ${formatThemeMode(theme.mode)} · ${theme.category === 'seasonal' ? 'Sazonal' : 'Padrão'}`;
+
+            banner.innerHTML = `
+                <div style="height: 140px; border-radius: 12px; border: 1px solid rgba(0,0,0,.08); background: ${cover}; position: relative; overflow: hidden;">
+                    <div style="position:absolute;inset:auto 12px 12px 12px;padding:10px 12px;border-radius:10px;background:rgba(0,0,0,.35);color:#fff;font-weight:600;">${theme.name}</div>
+                </div>
+            `;
+
+            metrics.innerHTML = `
+                <div class="theme-metric-chip"><span>Modo</span><strong>${formatThemeMode(theme.mode)}</strong></div>
+                <div class="theme-metric-chip"><span>Categoria</span><strong>${theme.category === 'seasonal' ? 'Sazonal' : 'Padrão'}</strong></div>
+                <div class="theme-metric-chip"><span>Acento</span><strong style="color:${accent}">${accent}</strong></div>
+                <div class="theme-metric-chip"><span>Superfície</span><strong style="color:${surface}">${surface}</strong></div>
+            `;
+        }
+
+        function renderThemeCatalog(themes, currentThemeId) {
+            const catalog = document.getElementById('themeCatalog');
+            if (!catalog) return;
+
+            catalog.innerHTML = themes.map(theme => {
+                const isCurrent = theme.id === currentThemeId;
+                const isPreview = theme.id === themePreviewThemeId;
+                const cover = (theme.preview && theme.preview.cover) || (theme.tokens && theme.tokens.pageBackground) || 'linear-gradient(135deg, #f5f5f5, #d8e1ea)';
+                const accent = (theme.preview && theme.preview.accent) || (theme.tokens && theme.tokens.accent) || '#40998F';
+                return `
+                    <article class="theme-card ${isCurrent ? 'is-active' : ''} ${isPreview ? 'is-preview' : ''}" style="border:1px solid var(--theme-border);border-radius:12px;padding:12px;background:var(--theme-surface);">
+                        <div style="height:86px;border-radius:10px;background:${cover};border:1px solid rgba(0,0,0,.08);"></div>
+                        <div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center;gap:8px;">
+                            <div>
+                                <h4 style="margin:0 0 4px 0;font-size:14px;">${theme.name}</h4>
+                                <p style="margin:0;color:var(--theme-muted);font-size:12px;">${formatThemeMode(theme.mode)} · ${theme.category === 'seasonal' ? 'Sazonal' : 'Padrão'}</p>
+                            </div>
+                            <span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:${accent};"></span>
+                        </div>
+                        <div style="margin-top:10px;display:flex;gap:8px;">
+                            <button type="button" class="theme-secondary" style="flex:1;" onclick="previewThemeById('${theme.id}')">
+                                <i class="fas fa-eye"></i> Preview
+                            </button>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        async function loadThemeManagerTab() {
+            const manager = getThemeManager();
+            if (!manager) return;
+
+            await manager.ready();
+
+            if (!themeSubscriptionBound) {
+                themeSubscriptionBound = true;
+                manager.subscribe(() => {
+                    renderThemeManagerState();
+                });
+            }
+
+            renderThemeManagerState();
+        }
+
+        function renderThemeManagerState() {
+            const manager = getThemeManager();
+            if (!manager) return;
+
+            const themes = manager.getThemes();
+            const settings = manager.getSettings();
+            const currentTheme = manager.getCurrentTheme();
+
+            const autoSeasonal = document.getElementById('themeAutoSeasonal');
+            const fallbackSelect = document.getElementById('themeFallbackSelect');
+            const status = document.getElementById('themeCurrentStatus');
+            const applyBtn = document.getElementById('themeApplyPreviewBtn');
+            const resetBtn = document.getElementById('themeResetPreviewBtn');
+
+            if (autoSeasonal) {
+                autoSeasonal.checked = settings.autoSeasonal !== false;
+            }
+
+            if (fallbackSelect) {
+                const fallbackOptions = themes
+                    .filter(theme => theme.category !== 'seasonal')
+                    .map(theme => `<option value="${theme.id}">${theme.name} (${formatThemeMode(theme.mode)})</option>`)
+                    .join('');
+                fallbackSelect.innerHTML = fallbackOptions;
+                fallbackSelect.value = settings.fallbackThemeId || settings.activeThemeId || (currentTheme && currentTheme.id) || '';
+            }
+
+            renderThemeCatalog(themes, currentTheme && currentTheme.id);
+
+            const previewTheme = themePreviewThemeId ? manager.getThemeById(themePreviewThemeId) : currentTheme;
+            updateThemePreviewPanel(previewTheme);
+
+            if (status && currentTheme) {
+                status.innerHTML = `
+                    <strong>Tema publicado:</strong> ${currentTheme.name}<br>
+                    <small>Modo ${formatThemeMode(currentTheme.mode)} · ${settings.autoSeasonal ? 'Automação sazonal ativada' : 'Automação sazonal desativada'}</small>
+                `;
+            }
+
+            if (applyBtn) {
+                applyBtn.disabled = !themePreviewThemeId;
+            }
+
+            if (resetBtn) {
+                resetBtn.disabled = !themePreviewThemeId;
+            }
+        }
+
+        async function previewThemeById(themeId) {
+            const manager = getThemeManager();
+            if (!manager || !themeId) return;
+
+            await manager.previewTheme(themeId);
+            themePreviewThemeId = themeId;
+            renderThemeManagerState();
+        }
+
+        async function saveThemeAutomation() {
+            const manager = getThemeManager();
+            if (!manager) return;
+
+            const autoSeasonal = document.getElementById('themeAutoSeasonal')?.checked !== false;
+            const fallbackThemeId = document.getElementById('themeFallbackSelect')?.value || manager.getSettings().fallbackThemeId;
+            const currentActive = manager.getSettings().activeThemeId || (manager.getCurrentTheme() && manager.getCurrentTheme().id);
+
+            await manager.saveSettings({
+                autoSeasonal,
+                fallbackThemeId,
+                activeThemeId: currentActive
+            });
+
+            showSuccess();
+            renderThemeManagerState();
+        }
+
+        async function applyPreviewedTheme() {
+            const manager = getThemeManager();
+            if (!manager || !themePreviewThemeId) return;
+
+            const autoSeasonal = document.getElementById('themeAutoSeasonal')?.checked !== false;
+            const fallbackThemeId = document.getElementById('themeFallbackSelect')?.value || manager.getSettings().fallbackThemeId;
+
+            await manager.saveSettings({
+                activeThemeId: themePreviewThemeId,
+                autoSeasonal,
+                fallbackThemeId
+            });
+
+            themePreviewThemeId = null;
+            showSuccess();
+            renderThemeManagerState();
+        }
+
+        async function resetThemePreview() {
+            const manager = getThemeManager();
+            if (!manager) return;
+
+            await manager.clearPreview();
+            themePreviewThemeId = null;
+            renderThemeManagerState();
+        }
+
+        window.previewThemeById = previewThemeById;
+        window.saveThemeAutomation = saveThemeAutomation;
+        window.applyPreviewedTheme = applyPreviewedTheme;
+        window.resetThemePreview = resetThemePreview;
 
         // ===== LOGIN/LOGOUT =====
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
@@ -1703,6 +1907,9 @@ function updateChartTheme() {
                 warranty: `3 Meses (válido até ${dataGarantiaFormatada})`
             };
 
+            document.getElementById('budgetModalTitle').innerHTML = '<i class="fas fa-file-invoice"></i> Novo Orçamento / Laudo Técnico';
+            document.getElementById('budgetSaveButton').innerHTML = '<i class="fas fa-save"></i> Salvar Orçamento/Laudo';
+
             populateClientSelect();
             document.getElementById('budgetDate').value = currentBudget.date;
             document.getElementById('budgetType').value = currentBudget.type;
@@ -1731,11 +1938,20 @@ function updateChartTheme() {
         }
 
         function addServiceToBudget() {
-            const container = document.getElementById('budgetServices');
-            const index = currentBudget.services.length;
-            
             const saved = localStorage.getItem('pcformatech_services');
             const services = saved ? JSON.parse(saved) : defaultServices;
+
+            const serviceData = {name: '', quantity: 1, unit: 'un', price: 0};
+            currentBudget.services.push(serviceData);
+            renderServiceRow(serviceData, services);
+            updateBudgetTotal();
+        }
+
+        function renderServiceRow(serviceData = {name: '', quantity: 1, unit: 'un', price: 0}, servicesMap = null) {
+            const container = document.getElementById('budgetServices');
+            const services = servicesMap || (localStorage.getItem('pcformatech_services') ? JSON.parse(localStorage.getItem('pcformatech_services')) : defaultServices);
+
+            const selectedKey = Object.keys(services).find(key => services[key].name === serviceData.name) || '';
 
             const serviceDiv = document.createElement('div');
             serviceDiv.className = 'service-card';
@@ -1743,27 +1959,27 @@ function updateChartTheme() {
                 <div class="client-form">
                     <div class="input-group">
                         <label>Serviço:</label>
-                        <select onchange="updateServicePrice(${index}, this.value)">
+                        <select onchange="updateServicePrice(this, this.value)">
                             <option value="">Selecione...</option>
                             ${Object.keys(services).filter(k => k !== 'remoto').map(key => 
-                                `<option value="${key}" data-price="${services[key].price}">${services[key].name}</option>`
+                                `<option value="${key}" data-price="${services[key].price}" ${selectedKey === key ? 'selected' : ''}>${services[key].name}</option>`
                             ).join('')}
                         </select>
                     </div>
                     <div class="input-group">
                         <label>Quantidade:</label>
-                        <input type="number" value="1" min="1" onchange="updateBudgetTotal()">
+                        <input type="number" value="${serviceData.quantity || 1}" min="1" onchange="updateBudgetTotal()">
                     </div>
                     <div class="input-group">
                         <label>Unidade:</label>
-                        <input type="text" value="un" readonly>
+                        <input type="text" value="${serviceData.unit || 'un'}" readonly>
                     </div>
                     <div class="input-group">
                         <label>Valor Unitário (R$):</label>
-                        <input type="number" step="0.01" value="0" onchange="updateBudgetTotal()">
+                        <input type="number" step="0.01" value="${serviceData.price || 0}" onchange="updateBudgetTotal()">
                     </div>
                     <div class="input-group">
-                        <button type="button" class="btn-action btn-delete" onclick="removeServiceFromBudget(${index})">
+                        <button type="button" class="btn-action btn-delete" onclick="removeServiceFromBudget(this)">
                             <i class="fas fa-trash"></i> Remover
                         </button>
                     </div>
@@ -1771,36 +1987,41 @@ function updateChartTheme() {
             `;
             
             container.appendChild(serviceDiv);
-            currentBudget.services.push({name: '', quantity: 1, unit: 'un', price: 0});
         }
 
-        function updateServicePrice(index, serviceKey) {
+        function updateServicePrice(selectElement, serviceKey) {
             if (!serviceKey) return;
             
             const saved = localStorage.getItem('pcformatech_services');
             const services = saved ? JSON.parse(saved) : defaultServices;
+
+            const serviceDiv = selectElement.closest('.service-card');
+            if (!serviceDiv) return;
             
-            const container = document.getElementById('budgetServices');
-            const serviceDiv = container.children[index];
             const inputs = serviceDiv.querySelectorAll('input[type="number"]');
-            
-            currentBudget.services[index].name = services[serviceKey].name;
-            currentBudget.services[index].price = services[serviceKey].price;
             
             inputs[1].value = services[serviceKey].price;
             updateBudgetTotal();
         }
 
-        function removeServiceFromBudget(index) {
-            const container = document.getElementById('budgetServices');
-            container.children[index].remove();
-            currentBudget.services.splice(index, 1);
+        function removeServiceFromBudget(buttonElement) {
+            const serviceDiv = buttonElement.closest('.service-card');
+            if (serviceDiv) {
+                serviceDiv.remove();
+            }
             updateBudgetTotal();
         }
 
         function addProductToBudget() {
+            const productData = {name: '', quantity: 1, unit: 'un', price: 0};
+            currentBudget.products.push(productData);
+            renderProductRow(productData);
+            updateBudgetTotal();
+        }
+
+        function renderProductRow(productData = {name: '', quantity: 1, unit: 'un', price: 0}) {
             const container = document.getElementById('budgetProducts');
-            const index = currentBudget.products.length;
+            const selectedProduct = products.find(p => p.name === productData.name);
 
             const productDiv = document.createElement('div');
             productDiv.className = 'service-card';
@@ -1808,27 +2029,27 @@ function updateChartTheme() {
                 <div class="client-form">
                     <div class="input-group">
                         <label>Produto:</label>
-                        <select onchange="updateProductPrice(${index}, this.value)">
+                        <select onchange="updateProductPrice(this, this.value)">
                             <option value="">Selecione...</option>
                             ${products.map(p => 
-                                `<option value="${p.id}" data-price="${p.price}">${p.name}</option>`
+                                `<option value="${p.id}" data-price="${p.price}" ${selectedProduct && selectedProduct.id === p.id ? 'selected' : ''}>${p.name}</option>`
                             ).join('')}
                         </select>
                     </div>
                     <div class="input-group">
                         <label>Quantidade:</label>
-                        <input type="number" value="1" min="1" onchange="updateBudgetTotal()">
+                        <input type="number" value="${productData.quantity || 1}" min="1" onchange="updateBudgetTotal()">
                     </div>
                     <div class="input-group">
                         <label>Unidade:</label>
-                        <input type="text" value="un" readonly>
+                        <input type="text" value="${productData.unit || 'un'}" readonly>
                     </div>
                     <div class="input-group">
                         <label>Valor Unitário (R$):</label>
-                        <input type="number" step="0.01" value="0" onchange="updateBudgetTotal()">
+                        <input type="number" step="0.01" value="${productData.price || 0}" onchange="updateBudgetTotal()">
                     </div>
                     <div class="input-group">
-                        <button type="button" class="btn-action btn-delete" onclick="removeProductFromBudget(${index})">
+                        <button type="button" class="btn-action btn-delete" onclick="removeProductFromBudget(this)">
                             <i class="fas fa-trash"></i> Remover
                         </button>
                     </div>
@@ -1836,30 +2057,28 @@ function updateChartTheme() {
             `;
             
             container.appendChild(productDiv);
-            currentBudget.products.push({name: '', quantity: 1, unit: 'un', price: 0});
         }
 
-        function updateProductPrice(index, productId) {
+        function updateProductPrice(selectElement, productId) {
             if (!productId) return;
             
             const product = products.find(p => p.id == productId);
             if (!product) return;
+
+            const productDiv = selectElement.closest('.service-card');
+            if (!productDiv) return;
             
-            const container = document.getElementById('budgetProducts');
-            const productDiv = container.children[index];
             const inputs = productDiv.querySelectorAll('input[type="number"]');
-            
-            currentBudget.products[index].name = product.name;
-            currentBudget.products[index].price = product.price;
             
             inputs[1].value = product.price;
             updateBudgetTotal();
         }
 
-        function removeProductFromBudget(index) {
-            const container = document.getElementById('budgetProducts');
-            container.children[index].remove();
-            currentBudget.products.splice(index, 1);
+        function removeProductFromBudget(buttonElement) {
+            const productDiv = buttonElement.closest('.service-card');
+            if (productDiv) {
+                productDiv.remove();
+            }
             updateBudgetTotal();
         }
 
@@ -1974,6 +2193,42 @@ function updateChartTheme() {
             showSuccess();
         }
 
+        function editBudget(budgetId) {
+            const budget = budgets.find(b => b.id === budgetId);
+            if (!budget) {
+                alert('Orçamento/Laudo não encontrado!');
+                return;
+            }
+
+            currentBudget = {...budget};
+
+            document.getElementById('budgetModalTitle').innerHTML = `<i class="fas fa-edit"></i> Editar ${budget.type === 'laudo' ? 'Laudo Técnico' : 'Orçamento'}`;
+            document.getElementById('budgetSaveButton').innerHTML = '<i class="fas fa-save"></i> Atualizar Orçamento/Laudo';
+
+            populateClientSelect();
+            document.getElementById('budgetClientId').value = budget.clientId;
+            document.getElementById('budgetDate').value = budget.date;
+            document.getElementById('budgetType').value = budget.type;
+            document.getElementById('budgetDefect').value = budget.defect || '';
+            document.getElementById('budgetReport').value = budget.report || '';
+            document.getElementById('budgetSolution').value = budget.solution || '';
+            document.getElementById('budgetObservations').value = budget.observations || '';
+            document.getElementById('budgetWarranty').value = budget.warranty || '';
+
+            const servicesContainer = document.getElementById('budgetServices');
+            servicesContainer.innerHTML = '';
+            const serviceItems = Array.isArray(budget.services) ? budget.services : [];
+            serviceItems.forEach(service => renderServiceRow(service));
+
+            const productsContainer = document.getElementById('budgetProducts');
+            productsContainer.innerHTML = '';
+            const productItems = Array.isArray(budget.products) ? budget.products : [];
+            productItems.forEach(product => renderProductRow(product));
+
+            updateBudgetTotal();
+            document.getElementById('budgetModal').style.display = 'block';
+        }
+
         function loadBudgetsTable() {
             const tbody = document.getElementById('budgetsTableBody');
             tbody.innerHTML = '';
@@ -1994,12 +2249,15 @@ function updateChartTheme() {
                 row.innerHTML = `
                     <td><strong>${budget.number}</strong></td>
                     <td>${client ? client.name : 'Cliente não encontrado'}</td>
-                    <td>${new Date(budget.date).toLocaleDateString('pt-BR')}</td>
+                    <td>${formatDateBR(budget.date)}</td>
                     <td><strong>R$ ${total.toFixed(2).replace('.', ',')}</strong></td>
                     <td><span class="service-status ${budget.type === 'laudo' ? 'status-concluido' : 'status-andamento'}">${budget.type === 'laudo' ? 'Laudo' : 'Orçamento'}</span></td>
                     <td>
                         <button class="btn-action btn-view" onclick="viewBudget(${budget.id})">
                             <i class="fas fa-eye"></i> Ver
+                        </button>
+                        <button class="btn-action btn-edit" onclick="editBudget(${budget.id})">
+                            <i class="fas fa-edit"></i> Editar
                         </button>
                         <button class="btn-action btn-convert" onclick="convertBudgetToService(${budget.id})" title="Converter em Serviço">
                             <i class="fas fa-exchange-alt"></i> Converter
@@ -2039,26 +2297,7 @@ function updateChartTheme() {
         }
 
         function viewBudget(budgetId) {
-            const budget = budgets.find(b => b.id === budgetId);
-            if (!budget) return;
-
-            currentBudget = {...budget};
-            
-            document.getElementById('budgetClientId').value = budget.clientId;
-            document.getElementById('budgetDate').value = budget.date;
-            document.getElementById('budgetType').value = budget.type;
-            document.getElementById('budgetDefect').value = budget.defect || '';
-            document.getElementById('budgetReport').value = budget.report || '';
-            document.getElementById('budgetSolution').value = budget.solution || '';
-            document.getElementById('budgetObservations').value = budget.observations || '';
-            document.getElementById('budgetWarranty').value = budget.warranty || '';
-
-            // Recarregar serviços
-            const servicesContainer = document.getElementById('budgetServices');
-            servicesContainer.innerHTML = '';
-            // Implementar lógica de reload
-
-            document.getElementById('budgetModal').style.display = 'block';
+            editBudget(budgetId);
         }
 
         function deleteBudget(budgetId) {
@@ -2183,7 +2422,7 @@ function updateChartTheme() {
             doc.setTextColor(0, 0, 0);
             doc.text(client.name, 20, 58);
             
-            const budgetDate = new Date(budget.date).toLocaleDateString('pt-BR');
+            const budgetDate = formatDateBR(budget.date);
             doc.text(`Data: ${budgetDate}`, 190, 58, { align: 'right' });
 
             // Número do Laudo
@@ -2328,8 +2567,13 @@ function updateChartTheme() {
             doc.setFontSize(8);
             doc.text('instagram: @pcformatech', 20, 285);
 
-            // Salvar PDF
-            const fileName = `${budget.type}_${budget.number}_${client.name.replace(/\s/g, '_')}.pdf`;
+            // Salvar PDF no formato Cliente_Tipo
+            const tipoLabel = budget.type === 'laudo' ? 'Laudo' : 'Orcamento';
+            const nomeCliente = String(client.name || 'Cliente')
+                .trim()
+                .replace(/[\\/:*?"<>|]/g, '')
+                .replace(/\s+/g, ' ');
+            const fileName = `${nomeCliente}_${tipoLabel}.pdf`;
             doc.save(fileName);
         }
 
@@ -2705,6 +2949,39 @@ function updateChartTheme() {
                 renderSlides();
                 showSuccess('✓ Imagem removida');
             }
+        }
+
+        async function removeBrokenSlides() {
+            if (!heroSlides.length) return;
+
+            const brokenIndexes = await Promise.all(heroSlides.map((slide, i) =>
+                new Promise(resolve => {
+                    const img = new Image();
+                    img.onload  = () => resolve(null);
+                    img.onerror = () => resolve(i);
+                    img.src = slide.url;
+                })
+            ));
+
+            const toRemove = brokenIndexes.filter(i => i !== null);
+            if (!toRemove.length) {
+                alert('Nenhuma imagem quebrada encontrada.');
+                return;
+            }
+
+            if (!confirm(`Encontrei ${toRemove.length} imagem(ns) com erro de carregamento. Remover agora?`)) return;
+
+            // Remove de trás para frente para preservar índices
+            toRemove.sort((a, b) => b - a).forEach(i => heroSlides.splice(i, 1));
+
+            if (!heroSlides.length) {
+                alert('Não é possível remover todas as imagens. Pelo menos 1 deve permanecer.');
+                return;
+            }
+
+            await saveHeroSlides();
+            renderSlides();
+            showSuccess(`✓ ${toRemove.length} imagem(ns) quebrada(s) removida(s)`);
         }
 
 

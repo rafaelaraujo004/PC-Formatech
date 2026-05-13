@@ -1,0 +1,67 @@
+{
+  "id": "light-clean",
+  "name": "Light Clean",
+  "category": "standard",
+  "mode": "light",
+  "description": "Tema minimalista branco com detalhes em azul-celeste. Foco total em legibilidade e clareza visual.",
+  "sortOrder": 20,
+  "fonts": {
+    "heading": { "family": "'Inter', sans-serif" },
+    "body":    { "family": "'Inter', sans-serif" }
+  },
+  "preview": {
+    "cover":   "linear-gradient(135deg, #ffffff 0%, #e0f2fe 55%, #7dd3fc 100%)",
+    "accent":  "#0284c7",
+    "surface": "#ffffff"
+  },
+  "effects": [],
+  "tokens": {
+    "metaColor":            "#0284c7",
+    "themeBg":              "#f0f9ff",
+    "themeText":            "#0c2a3c",
+    "themeSurface":         "#ffffff",
+    "themeSurface2":        "#e0f2fe",
+    "themeSurface3":        "#bae6fd",
+    "themeBorder":          "#bae6fd",
+    "themeBorderStrong":    "#7dd3fc",
+    "themeMuted":           "#0369a1",
+    "themeFaint":           "#38bdf8",
+    "accent":               "#0284c7",
+    "accentStrong":         "#0369a1",
+    "accentSoft":           "rgba(2,132,199,0.10)",
+    "pageBackground":       "linear-gradient(180deg, #ffffff 0%, #f0f9ff 60%, #e0f2fe 100%)",
+    "headerBackground":     "linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(224,242,254,0.96) 100%)",
+    "footerBackground":     "linear-gradient(135deg, rgba(224,242,254,0.98) 0%, rgba(186,230,253,0.96) 100%)",
+    "sectionBackground":    "linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(240,249,255,0.98) 100%)",
+    "sectionAltBackground": "linear-gradient(180deg, rgba(240,249,255,0.98) 0%, rgba(224,242,254,0.98) 100%)",
+    "cardBackground":       "#ffffff",
+    "cardBorder":           "rgba(2,132,199,0.10)",
+    "heroOverlay":          "linear-gradient(135deg, rgba(255,255,255,0.40) 0%, rgba(224,242,254,0.45) 60%, rgba(125,211,252,0.18) 100%)",
+    "heroFrame":            "rgba(2,132,199,0.12)",
+    "buttonBackground":     "linear-gradient(135deg, #0284c7 0%, #38bdf8 100%)",
+    "buttonText":           "#ffffff",
+    "buttonShadow":         "0 14px 28px rgba(2,132,199,0.22)",
+    "decorationTop":        "radial-gradient(circle at 10% 8%, rgba(125,211,252,0.35) 0 40px, transparent 41px), radial-gradient(circle at 88% 6%, rgba(186,230,253,0.28) 0 28px, transparent 29px)",
+    "decorationBottom":     "radial-gradient(circle at bottom right, rgba(2,132,199,0.06) 0%, transparent 40%)",
+    "badgeBackground":      "rgba(2,132,199,0.10)",
+    "badgeText":            "#0369a1",
+    "indicator":            "rgba(2,132,199,0.15)",
+    "indicatorActive":      "#0284c7",
+    "chipBackground":       "rgba(255,255,255,0.80)",
+    "chipText":             "#0369a1"
+  },
+  "banner": {
+    "slides": [
+      {
+        "title":        "PC Formatech",
+        "subtitle":     "Serviços de informática com clareza, rapidez e total transparência.",
+        "tag":          "Minimalista",
+        "scene":        "Espaço limpo e organizado",
+        "alt":          "Banner light clean do PC Formatech",
+        "illustration": "clean-desk",
+        "palette":      ["#ffffff","#e0f2fe","#7dd3fc","#0284c7"],
+        "accent":       "#0284c7"
+      }
+    ]
+  }
+}

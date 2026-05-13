@@ -1,0 +1,74 @@
+{
+  "id": "natal",
+  "name": "Natal",
+  "category": "seasonal",
+  "mode": "light",
+  "description": "Tema especial de Natal com vermelho, verde e dourado. Celebre o espírito natalino com seus clientes.",
+  "sortOrder": 100,
+  "schedule": { "start": "12-01", "end": "01-06", "priority": 10 },
+  "fonts": {
+    "heading": { "family": "'Inter', sans-serif" },
+    "body":    { "family": "'Inter', sans-serif" }
+  },
+  "preview": {
+    "cover":   "linear-gradient(135deg, #1a4731 0%, #c41e3a 50%, #f59e0b 100%)",
+    "accent":  "#c41e3a",
+    "surface": "#fffbf5"
+  },
+  "effects": ["soft-bloom"],
+  "tokens": {
+    "metaColor":            "#1a4731",
+    "themeBg":              "#fffbf5",
+    "themeText":            "#1a1a1a",
+    "themeSurface":         "#ffffff",
+    "themeSurface2":        "#fff5e8",
+    "themeSurface3":        "#ffeedd",
+    "themeBorder":          "#e8d5c0",
+    "themeBorderStrong":    "#d4b896",
+    "themeMuted":           "#5a3e28",
+    "themeFaint":           "#8a6040",
+    "accent":               "#c41e3a",
+    "accentStrong":         "#9b1528",
+    "accentSoft":           "rgba(196,30,58,0.12)",
+    "pageBackground":       "linear-gradient(160deg, #fffbf5 0%, #fff5e8 55%, #ffeedd 100%)",
+    "headerBackground":     "linear-gradient(135deg, rgba(26,71,49,0.96) 0%, rgba(16,50,34,0.98) 100%)",
+    "footerBackground":     "linear-gradient(135deg, rgba(26,71,49,0.95) 0%, rgba(10,35,22,0.98) 100%)",
+    "sectionBackground":    "linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(255,251,245,0.98) 100%)",
+    "sectionAltBackground": "linear-gradient(180deg, rgba(255,245,232,0.96) 0%, rgba(255,238,221,0.96) 100%)",
+    "cardBackground":       "rgba(255,255,255,0.96)",
+    "cardBorder":           "rgba(196,30,58,0.12)",
+    "heroOverlay":          "linear-gradient(135deg, rgba(26,71,49,0.78) 0%, rgba(196,30,58,0.35) 55%, rgba(245,158,11,0.20) 100%)",
+    "heroFrame":            "rgba(245,158,11,0.30)",
+    "buttonBackground":     "linear-gradient(135deg, #c41e3a 0%, #e63950 100%)",
+    "buttonText":           "#ffffff",
+    "buttonShadow":         "0 14px 28px rgba(196,30,58,0.30)",
+    "decorationTop":        "radial-gradient(circle at 8% 6%, rgba(245,158,11,0.25) 0 40px, transparent 41px), radial-gradient(circle at 92% 5%, rgba(196,30,58,0.18) 0 30px, transparent 31px)",
+    "decorationBottom":     "radial-gradient(circle at bottom center, rgba(26,71,49,0.08) 0%, transparent 50%)",
+    "badgeBackground":      "rgba(196,30,58,0.10)",
+    "badgeText":            "#9b1528",
+    "indicator":            "rgba(196,30,58,0.15)",
+    "indicatorActive":      "#c41e3a",
+    "chipBackground":       "rgba(255,255,255,0.80)",
+    "chipText":             "#5a3e28"
+  },
+  "decorations": [
+    { "icon": "❄️", "count": 10, "animation": "pcft-fall",    "size": "1.2rem", "opacity": 0.80, "duration": 10 },
+    { "icon": "🎄", "count": 4,  "animation": "pcft-fall",    "size": "1.5rem", "opacity": 0.55, "duration": 14 },
+    { "icon": "⭐", "count": 6,  "animation": "pcft-twinkle", "size": "1.1rem", "opacity": 0.80, "duration": 3  },
+    { "icon": "🎁", "count": 3,  "animation": "pcft-bounce",  "size": "1.3rem", "opacity": 0.60, "duration": 2.5 }
+  ],
+  "banner": {
+    "slides": [
+      {
+        "title":        "Feliz Natal!",
+        "subtitle":     "O PC Formatech deseja um Natal cheio de alegria, paz e tecnologia.",
+        "tag":          "🎄 Natal",
+        "scene":        "Decoração natalina com pinheiro e presentes",
+        "alt":          "Banner de Natal do PC Formatech",
+        "illustration": "christmas-tree",
+        "palette":      ["#1a4731","#c41e3a","#f59e0b","#fffbf5"],
+        "accent":       "#c41e3a"
+      }
+    ]
+  }
+}

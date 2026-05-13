@@ -1,0 +1,74 @@
+{
+  "id": "festa-junina",
+  "name": "Festa Junina",
+  "category": "seasonal",
+  "mode": "light",
+  "description": "Tema sazonal das festas juninas com amarelo vibrante, vermelho e verde. Alegria, forró e celebração nordestina.",
+  "sortOrder": 150,
+  "schedule": { "start": "06-01", "end": "06-30", "priority": 10 },
+  "fonts": {
+    "heading": { "family": "'Inter', sans-serif" },
+    "body":    { "family": "'Inter', sans-serif" }
+  },
+  "preview": {
+    "cover":   "linear-gradient(135deg, #fffbeb 0%, #fef08a 50%, #dc2626 100%)",
+    "accent":  "#dc2626",
+    "surface": "#fffbf0"
+  },
+  "effects": ["soft-bloom"],
+  "tokens": {
+    "metaColor":            "#dc2626",
+    "themeBg":              "#fffbeb",
+    "themeText":            "#1a0a00",
+    "themeSurface":         "#ffffff",
+    "themeSurface2":        "#fef9c3",
+    "themeSurface3":        "#fef08a",
+    "themeBorder":          "#fde047",
+    "themeBorderStrong":    "#facc15",
+    "themeMuted":           "#854d0e",
+    "themeFaint":           "#ca8a04",
+    "accent":               "#dc2626",
+    "accentStrong":         "#991b1b",
+    "accentSoft":           "rgba(220,38,38,0.12)",
+    "pageBackground":       "linear-gradient(160deg, #fffbeb 0%, #fef9c3 50%, #fffaea 100%)",
+    "headerBackground":     "linear-gradient(135deg, rgba(220,38,38,0.92) 0%, rgba(153,27,27,0.96) 100%)",
+    "footerBackground":     "linear-gradient(135deg, rgba(21,128,61,0.90) 0%, rgba(15,90,43,0.94) 100%)",
+    "sectionBackground":    "linear-gradient(180deg, rgba(255,255,255,0.97) 0%, rgba(255,251,235,0.98) 100%)",
+    "sectionAltBackground": "linear-gradient(180deg, rgba(254,249,195,0.95) 0%, rgba(254,240,138,0.90) 100%)",
+    "cardBackground":       "rgba(255,255,255,0.96)",
+    "cardBorder":           "rgba(220,38,38,0.12)",
+    "heroOverlay":          "linear-gradient(135deg, rgba(220,38,38,0.20) 0%, rgba(254,240,138,0.30) 55%, rgba(255,251,235,0.26) 100%)",
+    "heroFrame":            "rgba(220,38,38,0.22)",
+    "buttonBackground":     "linear-gradient(135deg, #dc2626 0%, #ef4444 100%)",
+    "buttonText":           "#ffffff",
+    "buttonShadow":         "0 14px 28px rgba(220,38,38,0.28)",
+    "decorationTop":        "radial-gradient(circle at 8% 5%, rgba(250,204,21,0.45) 0 50px, transparent 51px), radial-gradient(circle at 90% 4%, rgba(220,38,38,0.22) 0 36px, transparent 37px)",
+    "decorationBottom":     "radial-gradient(circle at bottom center, rgba(21,128,61,0.08) 0%, transparent 45%)",
+    "badgeBackground":      "rgba(220,38,38,0.10)",
+    "badgeText":            "#991b1b",
+    "indicator":            "rgba(220,38,38,0.15)",
+    "indicatorActive":      "#dc2626",
+    "chipBackground":       "rgba(255,255,255,0.80)",
+    "chipText":             "#854d0e"
+  },
+  "decorations": [
+    { "icon": "⭐", "count": 8,  "animation": "pcft-twinkle", "size": "1.1rem", "opacity": 0.80, "duration": 3  },
+    { "icon": "🎆", "count": 5,  "animation": "pcft-float-up","size": "1.6rem", "opacity": 0.65, "duration": 7  },
+    { "icon": "🌽", "count": 4,  "animation": "pcft-sway",    "size": "1.4rem", "opacity": 0.55, "duration": 5  },
+    { "icon": "🎊", "count": 6,  "animation": "pcft-fall",    "size": "1.0rem", "opacity": 0.70, "duration": 8  }
+  ],
+  "banner": {
+    "slides": [
+      {
+        "title":        "Arraial do PC Formatech!",
+        "subtitle":     "Serviços de informática com a alegria e energia das festas juninas.",
+        "tag":          "🎪 Junina",
+        "scene":        "Bandeirinhas coloridas e fogos de artifício juninos",
+        "alt":          "Banner de Festa Junina do PC Formatech",
+        "illustration": "festa-junina-flags",
+        "palette":      ["#fffbeb","#fef08a","#dc2626","#15803d"],
+        "accent":       "#dc2626"
+      }
+    ]
+  }
+}

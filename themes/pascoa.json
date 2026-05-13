@@ -1,0 +1,74 @@
+{
+  "id": "pascoa",
+  "name": "Páscoa",
+  "category": "seasonal",
+  "mode": "light",
+  "description": "Tema pascalino com tons pastel suaves de lavanda, rosa e amarelo. Alegria e renovação na primavera.",
+  "sortOrder": 120,
+  "schedule": { "start": "03-20", "end": "04-25", "priority": 10 },
+  "fonts": {
+    "heading": { "family": "'Inter', sans-serif" },
+    "body":    { "family": "'Inter', sans-serif" }
+  },
+  "preview": {
+    "cover":   "linear-gradient(135deg, #fdf4ff 0%, #fce7f3 50%, #ddd6fe 100%)",
+    "accent":  "#a855f7",
+    "surface": "#fffbfe"
+  },
+  "effects": ["soft-bloom"],
+  "tokens": {
+    "metaColor":            "#a855f7",
+    "themeBg":              "#fdf4ff",
+    "themeText":            "#2d1b4e",
+    "themeSurface":         "#fffbfe",
+    "themeSurface2":        "#fce7f3",
+    "themeSurface3":        "#f5d0fe",
+    "themeBorder":          "#e9d5ff",
+    "themeBorderStrong":    "#d8b4fe",
+    "themeMuted":           "#7c3aed",
+    "themeFaint":           "#a78bfa",
+    "accent":               "#a855f7",
+    "accentStrong":         "#7c3aed",
+    "accentSoft":           "rgba(168,85,247,0.12)",
+    "pageBackground":       "linear-gradient(160deg, #fdf4ff 0%, #fce7f3 45%, #fffbf0 100%)",
+    "headerBackground":     "linear-gradient(135deg, rgba(253,244,255,0.97) 0%, rgba(232,210,255,0.94) 100%)",
+    "footerBackground":     "linear-gradient(135deg, rgba(221,214,254,0.97) 0%, rgba(196,181,253,0.96) 100%)",
+    "sectionBackground":    "linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(253,244,255,0.98) 100%)",
+    "sectionAltBackground": "linear-gradient(180deg, rgba(252,231,243,0.96) 0%, rgba(245,208,254,0.94) 100%)",
+    "cardBackground":       "rgba(255,255,254,0.96)",
+    "cardBorder":           "rgba(168,85,247,0.12)",
+    "heroOverlay":          "linear-gradient(135deg, rgba(168,85,247,0.20) 0%, rgba(252,231,243,0.35) 55%, rgba(255,251,240,0.30) 100%)",
+    "heroFrame":            "rgba(168,85,247,0.18)",
+    "buttonBackground":     "linear-gradient(135deg, #a855f7 0%, #c084fc 100%)",
+    "buttonText":           "#ffffff",
+    "buttonShadow":         "0 14px 28px rgba(168,85,247,0.25)",
+    "decorationTop":        "radial-gradient(circle at 12% 8%, rgba(252,231,243,0.60) 0 50px, transparent 51px), radial-gradient(circle at 88% 6%, rgba(245,208,254,0.45) 0 36px, transparent 37px)",
+    "decorationBottom":     "radial-gradient(circle at bottom left, rgba(168,85,247,0.06) 0%, transparent 40%)",
+    "badgeBackground":      "rgba(168,85,247,0.10)",
+    "badgeText":            "#7c3aed",
+    "indicator":            "rgba(168,85,247,0.15)",
+    "indicatorActive":      "#a855f7",
+    "chipBackground":       "rgba(255,255,255,0.80)",
+    "chipText":             "#7c3aed"
+  },
+  "decorations": [
+    { "icon": "🌸", "count": 9,  "animation": "pcft-fall",   "size": "1.3rem", "opacity": 0.70, "duration": 12 },
+    { "icon": "🐣", "count": 5,  "animation": "pcft-bounce", "size": "1.5rem", "opacity": 0.75, "duration": 2.5 },
+    { "icon": "🥚", "count": 5,  "animation": "pcft-fall",   "size": "1.1rem", "opacity": 0.55, "duration": 15 },
+    { "icon": "🐰", "count": 3,  "animation": "pcft-bounce", "size": "1.4rem", "opacity": 0.65, "duration": 3  }
+  ],
+  "banner": {
+    "slides": [
+      {
+        "title":        "Feliz Páscoa!",
+        "subtitle":     "PC Formatech deseja uma Páscoa doce e repleta de boas memórias.",
+        "tag":          "🐣 Páscoa",
+        "scene":        "Ovos de páscoa coloridos entre flores e folhas",
+        "alt":          "Banner de Páscoa do PC Formatech",
+        "illustration": "easter-eggs",
+        "palette":      ["#fdf4ff","#fce7f3","#ddd6fe","#a855f7"],
+        "accent":       "#a855f7"
+      }
+    ]
+  }
+}

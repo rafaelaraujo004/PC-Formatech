@@ -1,0 +1,26 @@
+{
+  "defaultThemeId": "classico-neutro",
+  "fallbackThemeId": "classico-neutro",
+  "storageKey": "pcformatech_theme_settings",
+  "themes": [
+    { "id": "classico-neutro",         "path": "themes/classico-neutro.json" },
+    { "id": "light-clean",             "path": "themes/light-clean.json" },
+    { "id": "profissional-corporativo","path": "themes/profissional-corporativo.json" },
+    { "id": "dark-tech",               "path": "themes/dark-tech.json" },
+    { "id": "gamer-rgb",               "path": "themes/gamer-rgb.json" },
+    { "id": "oceano-azul",             "path": "themes/oceano-azul.json" },
+    { "id": "sunset-quente",           "path": "themes/sunset-quente.json" },
+    { "id": "floresta-verde",          "path": "themes/floresta-verde.json" },
+    { "id": "roxo-tech",               "path": "themes/roxo-tech.json" },
+    { "id": "cobre-premium",           "path": "themes/cobre-premium.json" },
+    { "id": "rosa-moderno",            "path": "themes/rosa-moderno.json" },
+    { "id": "natal",                   "path": "themes/natal.json" },
+    { "id": "ano-novo",                "path": "themes/ano-novo.json" },
+    { "id": "pascoa",                  "path": "themes/pascoa.json" },
+    { "id": "dia-das-maes",            "path": "themes/dia-das-maes.json" },
+    { "id": "dia-dos-pais",            "path": "themes/dia-dos-pais.json" },
+    { "id": "festa-junina",            "path": "themes/festa-junina.json" },
+    { "id": "halloween",               "path": "themes/halloween.json" },
+    { "id": "dia-das-criancas",        "path": "themes/dia-das-criancas.json" }
+  ]
+}
