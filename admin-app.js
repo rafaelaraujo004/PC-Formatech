@@ -757,6 +757,7 @@
                 price,
                 status,
                 date: new Date().toISOString(),
+                conclusionDate: status === 'concluido' ? new Date().toISOString() : null,
                 parcelamento
             };
             
@@ -1160,7 +1161,10 @@
             parcela.pago = true;
             parcela.dataPagamento = new Date().toISOString();
             const todasPagas = service.parcelamento.parcelas.every(p => p.pago);
-            if (todasPagas) service.status = 'concluido';
+            if (todasPagas) {
+                service.status = 'concluido';
+                if (!service.conclusionDate) service.conclusionDate = new Date().toISOString();
+            }
             saveClientsToStorage();
             return true;
         }
@@ -1221,6 +1225,9 @@
             
             if (newStatus && statusMap[newStatus]) {
                 service.status = statusMap[newStatus];
+                if (statusMap[newStatus] === 'concluido' && !service.conclusionDate) {
+                    service.conclusionDate = new Date().toISOString();
+                }
                 saveClientsToStorage();
                 viewClient(clientId);
                 showSuccess();
@@ -1379,7 +1386,7 @@ function updateChartTheme() {
             // 6 meses atrás + mês atual + 6 meses futuros = 13 meses
             for (let i = -6; i <= 6; i++) {
                 const date = new Date(now.getFullYear(), now.getMonth() + i, 1);
-                const monthName = date.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric', timeZone: 'America/Belem' });
+                const monthName = date.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric', timeZone: 'America/Belem' });
                 months.push(monthName);
             }
 
@@ -1387,6 +1394,8 @@ function updateChartTheme() {
             const clientsReal = new Array(7).fill(0);
             const servicesCompletedReal = new Array(7).fill(0);
             const servicesPendingReal = new Array(7).fill(0);
+            // Datas exatas de conclusão por bucket mensal (índices 0-6)
+            const serviceDatesPerMonth = Array.from({ length: 7 }, () => []);
 
             clients.forEach(client => {
                 const clientDate = new Date(client.createdAt);
@@ -1401,7 +1410,11 @@ function updateChartTheme() {
 
                 if (client.services) {
                     client.services.forEach(service => {
-                        const serviceDate = new Date(service.date);
+                        // Para serviços concluídos, usar data de conclusão; demais usam data de criação
+                        const refDateStr = service.status === 'concluido'
+                            ? (service.conclusionDate || service.date)
+                            : service.date;
+                        const serviceDate = new Date(refDateStr);
                         if (isNaN(serviceDate.getTime())) return;
 
                         const serviceDiff = (now.getFullYear() - serviceDate.getFullYear()) * 12 + now.getMonth() - serviceDate.getMonth();
@@ -1410,6 +1423,8 @@ function updateChartTheme() {
                             const index = 6 - serviceDiff;
                             if (service.status === 'concluido') {
                                 servicesCompletedReal[index]++;
+                                // Guardar data ISO para ordenar depois
+                                serviceDatesPerMonth[index].push(refDateStr);
                             } else if (service.status === 'pendente' || service.status === 'andamento') {
                                 servicesPendingReal[index]++;
                             }
@@ -1417,6 +1432,13 @@ function updateChartTheme() {
                     });
                 }
             });
+
+            // Ordenar datas e converter para exibição dd/mm
+            const serviceDatesDisplay = serviceDatesPerMonth.map(dates =>
+                dates
+                    .sort()
+                    .map(d => new Date(d).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', timeZone: 'America/Belem' }))
+            );
 
             // Projeção fixa para próximos 6 meses (média dos dados reais — sem aleatoriedade)
             const avgClients = Math.round(clientsReal.reduce((a, b) => a + b, 0) / 7);
@@ -1441,7 +1463,8 @@ function updateChartTheme() {
                 servicesPendingData,
                 clientsProj,
                 servicesCompletedProj,
-                servicesPendingProj
+                servicesPendingProj,
+                serviceDatesPerMonth: serviceDatesDisplay
             };
         }
 
@@ -1581,6 +1604,17 @@ function updateChartTheme() {
                                     if (item.raw === null || item.raw === undefined) return null;
                                     const suffix = item.dataIndex > PIVOT ? ' ~' : '';
                                     return ` ${item.dataset.label}: ${item.raw}${suffix}`;
+                                },
+                                afterLabel: function(item) {
+                                    // Mostrar datas exatas de conclusão sob "Serviços Realizados"
+                                    if (item.datasetIndex !== 1 || item.dataIndex > PIVOT) return null;
+                                    const dates = data.serviceDatesPerMonth[item.dataIndex] || [];
+                                    if (dates.length === 0) return null;
+                                    const shown = dates.slice(0, 6);
+                                    const extra = dates.length - shown.length;
+                                    let str = '  ' + shown.join(' · ');
+                                    if (extra > 0) str += ` (+${extra})`;
+                                    return str;
                                 },
                                 // Remove entradas nulas do tooltip
                                 afterBody: function() { return []; }

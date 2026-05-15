@@ -230,6 +230,10 @@ textarea {
     width: 100%;
 }
 
+.question-icon i {
+    color: #ffffff;
+}
+
 /* Garante que cards mantenham proporções adequadas */
 .service-card,
 .testimonial-card,
@@ -529,6 +533,20 @@ textarea {
     animation: pcft-badge-appear 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) both;
     cursor: default;
     width: fit-content;
+}
+
+@media (max-width: 480px) {
+    #pcft-seasonal-badge {
+        font-size: 0.68rem;
+        padding: 0.4em 0.95em;
+        gap: 0.35em;
+        letter-spacing: 0.04em;
+        margin-bottom: 1rem;
+    }
+    .pcft-seasonal-icon-left,
+    .pcft-seasonal-icon-right {
+        font-size: 1em;
+    }
 }
 
 #pcft-seasonal-badge * {

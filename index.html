@@ -320,7 +320,7 @@
         <nav class="nav-bar">
             <div class="logo">
                 <a href="admin.html" title="Painel Administrativo">
-                    <img src="/icon-192.png" alt="PC Formatech" class="logo-img" style="width:72px;height:72px;border-radius:10px;">
+                    <img src="/icon-192.png" alt="PC Formatech" class="logo-img" style="width:40px;height:40px;border-radius:10px;">
                 </a>
                 <div class="brand-text">
                     <span class="brand-name">PCFORMATECH</span>
@@ -1200,22 +1200,27 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
+    <!-- Firebase SDK (compat) - necessário para rastreamento de presença -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script>initFirebase();</script>
     <script src="theme-system.js"></script>
     <script src="main.js"></script>
     <script src="formatacao-form.js"></script>
     <script>
     /* ── Badge sazonal ───────────────────────────────────────────────────── */
     (function () {
-        var EXTRA = 5;
+        var EXTRA = 3;
         var SEASONAL = [
-            { name: 'Natal',                greeting: 'Feliz',  icon: '🎄', start: '12-01', end: '01-06' },
-            { name: 'Ano Novo',             greeting: 'Feliz',  icon: '✨', start: '12-27', end: '01-05' },
-            { name: 'Páscoa',               greeting: 'Feliz',  icon: '🐣', start: '03-20', end: '04-25' },
-            { name: 'Dia das Mães',         greeting: 'Feliz',  icon: '💐', start: '04-28', end: '05-15' },
-            { name: 'Festa Junina',         greeting: 'Feliz',  icon: '🌽', start: '06-01', end: '06-30' },
-            { name: 'Dia dos Pais',         greeting: 'Feliz',  icon: '🏆', start: '07-28', end: '08-15' },
-            { name: 'Dia das Crianças',     greeting: 'Feliz',  icon: '🎈', start: '10-06', end: '10-14' },
-            { name: 'Halloween',            greeting: 'Happy',  icon: '🎃', start: '10-20', end: '11-02' }
+            { name: 'Natal',                greeting: 'Feliz',  icon: '🎄', start: '12-25', end: '12-25' },
+            { name: 'Ano Novo',             greeting: 'Feliz',  icon: '✨', start: '01-01', end: '01-01' },
+            { name: 'Páscoa',               greeting: 'Feliz',  icon: '🐣', start: '03-25', end: '04-22' },
+            { name: 'Dia das Mães',         greeting: 'Feliz',  icon: '💐', start: '05-08', end: '05-14' },
+            { name: 'Festa Junina',         greeting: 'Feliz',  icon: '🌽', start: '06-24', end: '06-24' },
+            { name: 'Dia dos Pais',         greeting: 'Feliz',  icon: '🏆', start: '08-08', end: '08-14' },
+            { name: 'Dia das Crianças',     greeting: 'Feliz',  icon: '🎈', start: '10-12', end: '10-12' },
+            { name: 'Halloween',            greeting: 'Happy',  icon: '🎃', start: '10-31', end: '10-31' }
         ];
         function doy(m, d) {
             var acc = [0,31,28,31,30,31,30,31,31,30,31,30,31], n = d;

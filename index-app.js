@@ -1,15 +1,15 @@
 /* ── Badge de data comemorativa ─────────────────────────────────────────── */
 (function () {
-    var EXTRA = 5; // dias de antecedência e prorrogação
+    var EXTRA = 3; // dias de antecedência e prorrogação
     var SEASONAL = [
-        { name: 'Natal',               greeting: 'Feliz',  icon: '\u{1F384}', start: '12-01', end: '01-06' },
-        { name: 'Ano Novo',            greeting: 'Feliz',  icon: '\u2728',     start: '12-27', end: '01-05' },
-        { name: 'P\u00e1scoa',         greeting: 'Feliz',  icon: '\u{1F423}', start: '03-20', end: '04-25' },
-        { name: 'Dia das M\u00e3es',   greeting: 'Feliz',  icon: '\u{1F490}', start: '04-28', end: '05-15' },
-        { name: 'Festa Junina',        greeting: 'Feliz',  icon: '\u{1F33D}', start: '06-01', end: '06-30' },
-        { name: 'Dia dos Pais',        greeting: 'Feliz',  icon: '\u{1F3C6}', start: '07-28', end: '08-15' },
-        { name: 'Dia das Crian\u00e7as', greeting: 'Feliz', icon: '\u{1F388}', start: '10-06', end: '10-14' },
-        { name: 'Halloween',           greeting: 'Happy',  icon: '\u{1F383}', start: '10-20', end: '11-02' }
+        { name: 'Natal',               greeting: 'Feliz',  icon: '\u{1F384}', start: '12-25', end: '12-25' },
+        { name: 'Ano Novo',            greeting: 'Feliz',  icon: '\u2728',     start: '01-01', end: '01-01' },
+        { name: 'P\u00e1scoa',         greeting: 'Feliz',  icon: '\u{1F423}', start: '03-25', end: '04-22' },
+        { name: 'Dia das M\u00e3es',   greeting: 'Feliz',  icon: '\u{1F490}', start: '05-08', end: '05-14' },
+        { name: 'Festa Junina',        greeting: 'Feliz',  icon: '\u{1F33D}', start: '06-24', end: '06-24' },
+        { name: 'Dia dos Pais',        greeting: 'Feliz',  icon: '\u{1F3C6}', start: '08-08', end: '08-14' },
+        { name: 'Dia das Crian\u00e7as', greeting: 'Feliz', icon: '\u{1F388}', start: '10-12', end: '10-12' },
+        { name: 'Halloween',           greeting: 'Happy',  icon: '\u{1F383}', start: '10-31', end: '10-31' }
     ];
 
     function doy(m, d) {

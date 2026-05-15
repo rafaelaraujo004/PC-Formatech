@@ -667,6 +667,15 @@
             });
 
             document.body.appendChild(container);
+
+            // Fade-out após 10s — some apenas as decorações, não o badge de texto
+            setTimeout(function () {
+                container.style.transition = 'opacity 1s ease-out';
+                container.style.opacity = '0';
+                setTimeout(function () {
+                    if (container.parentNode) container.parentNode.removeChild(container);
+                }, 1000);
+            }, 10000);
         }
 
         if (document.body) {

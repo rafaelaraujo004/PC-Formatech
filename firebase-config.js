@@ -14,14 +14,16 @@ const firebaseConfig = {
 };
 
 // Inicializar Firebase
-let db = null;
-let auth = null;
+var db = null;
+var auth = null;
 
 function initFirebase() {
     if (typeof firebase !== 'undefined') {
         firebase.initializeApp(firebaseConfig);
         db = firebase.firestore();
-        auth = firebase.auth();
+        if (typeof firebase.auth === 'function') {
+            auth = firebase.auth();
+        }
         console.log('✅ Firebase inicializado');
         return true;
     } else {
