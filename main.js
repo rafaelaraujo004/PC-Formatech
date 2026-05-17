@@ -92,13 +92,175 @@ document.addEventListener('DOMContentLoaded', () => {
         resetSlideshow();
     };
 
+    // Scroll reveal premium para seções estratégicas
+    const revealElements = document.querySelectorAll('[data-reveal]');
+    if (revealElements.length) {
+        const revealObserver = new IntersectionObserver((entries, obs) => {
+            entries.forEach((entry) => {
+                if (!entry.isIntersecting) return;
+                entry.target.classList.add('is-visible');
+                obs.unobserve(entry.target);
+            });
+        }, { threshold: 0.18 });
+
+        revealElements.forEach((el) => revealObserver.observe(el));
+    }
+
+    // Contadores da prova social
+    const counterEls = document.querySelectorAll('[data-counter]');
+    if (counterEls.length) {
+        const animateCounter = (el) => {
+            const target = Number(el.getAttribute('data-counter') || 0);
+            const prefix = el.getAttribute('data-prefix') || '';
+            const suffix = el.getAttribute('data-suffix') || '';
+            const duration = 1100;
+            const startTs = performance.now();
+
+            const tick = (ts) => {
+                const progress = Math.min((ts - startTs) / duration, 1);
+                const value = Math.floor(target * (1 - Math.pow(1 - progress, 3)));
+                el.textContent = `${prefix}${value}${suffix}`;
+                if (progress < 1) requestAnimationFrame(tick);
+            };
+            requestAnimationFrame(tick);
+        };
+
+        const countersObserver = new IntersectionObserver((entries, obs) => {
+            entries.forEach((entry) => {
+                if (!entry.isIntersecting) return;
+                animateCounter(entry.target);
+                obs.unobserve(entry.target);
+            });
+        }, { threshold: 0.4 });
+
+        counterEls.forEach((el) => countersObserver.observe(el));
+    }
+
+    // Barras de transformação antes/depois
+    const metricBars = document.querySelectorAll('[data-bar-target]');
+    if (metricBars.length) {
+        const barsObserver = new IntersectionObserver((entries, obs) => {
+            entries.forEach((entry) => {
+                if (!entry.isIntersecting) return;
+                const target = Number(entry.target.getAttribute('data-bar-target') || 0);
+                entry.target.style.width = `${Math.max(0, Math.min(100, target))}%`;
+                obs.unobserve(entry.target);
+            });
+        }, { threshold: 0.45 });
+
+        metricBars.forEach((bar) => barsObserver.observe(bar));
+    }
+
+    // Diagnóstico interativo rápido
+    const diagnosticChecks = document.getElementById('diagnosticChecks');
+    const runDiagnosticBtn = document.getElementById('runDiagnosticBtn');
+    const diagnosticResult = document.getElementById('diagnosticResult');
+    const diagnosticWhatsappCta = document.getElementById('diagnosticWhatsappCta');
+    const diagnosticLiveHint = document.getElementById('diagnosticLiveHint');
+
+    if (diagnosticChecks && runDiagnosticBtn && diagnosticResult && diagnosticWhatsappCta) {
+        const updateDiagnosticHint = () => {
+            if (!diagnosticLiveHint) return;
+            const checkedCount = diagnosticChecks.querySelectorAll('input[type="checkbox"]:checked').length;
+            if (checkedCount === 0) {
+                diagnosticLiveHint.textContent = 'Sem sintomas selecionados no momento.';
+                return;
+            }
+            if (checkedCount <= 2) {
+                diagnosticLiveHint.textContent = `Atenção moderada: ${checkedCount} sintoma(s) encontrado(s).`;
+                return;
+            }
+            diagnosticLiveHint.textContent = `Atenção alta: ${checkedCount} sintomas encontrados. Recomendado agir hoje.`;
+        };
+
+        diagnosticChecks.addEventListener('change', updateDiagnosticHint);
+        updateDiagnosticHint();
+
+        runDiagnosticBtn.addEventListener('click', () => {
+            const checked = Array.from(diagnosticChecks.querySelectorAll('input[type="checkbox"]:checked'));
+            const count = checked.length;
+            let resultText = 'Seu computador aparenta estar em bom estado geral no momento. Mesmo assim, um check preventivo ajuda a evitar travamentos futuros.';
+
+            if (count >= 3) {
+                resultText = 'Seu computador provavelmente precisa de otimização completa com prioridade. Há sinais claros de perda de desempenho e risco de instabilidade.';
+            } else if (count >= 1) {
+                resultText = 'Seu computador apresenta sinais de degradação de performance. Uma otimização técnica pode recuperar velocidade e estabilidade.';
+            }
+
+            diagnosticResult.hidden = false;
+            diagnosticResult.textContent = resultText;
+            diagnosticWhatsappCta.hidden = false;
+
+            const selected = checked.map((el) => el.value).join(', ') || 'sem sintomas marcados';
+            const message = `Olá, fiz o diagnóstico rápido no site. Sintomas: ${selected}. Quero análise técnica completa.`;
+            diagnosticWhatsappCta.href = `https://api.whatsapp.com/send?phone=5594984305772&text=${encodeURIComponent(message)}`;
+        });
+    }
+
+    // Diagnóstico guiado em modal
+    const openDiagnosticModalBtn = document.getElementById('openDiagnosticModal');
+    const diagnosticModal = document.getElementById('diagnosticModal');
+    const diagnosticQuizForm = document.getElementById('diagnosticQuizForm');
+    const diagnosticQuizResult = document.getElementById('diagnosticQuizResult');
+    const diagnosticQuizWhatsapp = document.getElementById('diagnosticQuizWhatsapp');
+
+    if (openDiagnosticModalBtn && diagnosticModal) {
+        openDiagnosticModalBtn.addEventListener('click', () => {
+            diagnosticModal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        });
+    }
+
+    if (diagnosticQuizForm && diagnosticQuizResult && diagnosticQuizWhatsapp) {
+        diagnosticQuizForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formData = new FormData(diagnosticQuizForm);
+            const score = ['q1', 'q2', 'q3'].reduce((sum, key) => sum + Number(formData.get(key) || 0), 0);
+
+            let feedback = 'Seu cenário atual indica baixa criticidade. Ainda assim, um ajuste preventivo pode manter o PC estável por mais tempo.';
+            if (score === 2) {
+                feedback = 'Seu cenário indica criticidade moderada. Já é recomendado otimizar o sistema para evitar piora de desempenho.';
+            }
+            if (score === 3) {
+                feedback = 'Seu cenário indica alta criticidade. O ideal é fazer diagnóstico técnico completo o quanto antes para evitar danos maiores.';
+            }
+
+            diagnosticQuizResult.hidden = false;
+            diagnosticQuizResult.textContent = feedback;
+            diagnosticQuizWhatsapp.hidden = false;
+            diagnosticQuizWhatsapp.href = `https://api.whatsapp.com/send?phone=5594984305772&text=${encodeURIComponent(`Olá, fiz o diagnóstico guiado e obtive pontuação ${score}/3. Quero receber o plano de otimização.`)}`;
+            diagnosticQuizWhatsapp.dataset.whatsMessage = `Olá, fiz o diagnóstico guiado e obtive pontuação ${score}/3. Quero receber o plano de otimização.`;
+        });
+    }
+
+    // Fallback robusto para abrir WhatsApp mesmo se href estiver vazio/inválido
+    [diagnosticWhatsappCta, diagnosticQuizWhatsapp].filter(Boolean).forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+            const href = String(btn.getAttribute('href') || '').trim();
+            const hasHttpLink = /^https?:\/\//i.test(href);
+            if (hasHttpLink) return;
+
+            e.preventDefault();
+            const msg = btn.dataset.whatsMessage || 'Olá, quero receber meu diagnóstico completo.';
+            const url = `https://api.whatsapp.com/send?phone=5594984305772&text=${encodeURIComponent(msg)}`;
+            btn.setAttribute('href', url);
+            window.open(url, '_blank', 'noopener');
+        });
+    });
+
     // Ocultar header ao rolar para baixo
     let lastScrollTop = 0;
     const header = document.querySelector('.header');
     const scrollToTopBtn = document.getElementById('scrollToTop');
+    const scrollProgress = document.getElementById('scrollProgress');
     
     window.addEventListener('scroll', () => {
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        if (scrollProgress) {
+            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+            scrollProgress.style.width = `${Math.max(0, Math.min(100, progress))}%`;
+        }
         
             if (scrollTop > lastScrollTop && scrollTop > 100) {
                 // Rolando para baixo
@@ -602,6 +764,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Animação suave ao rolar
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
+            if (this.classList.contains('diagnostic-whatsapp')) {
+                return;
+            }
             e.preventDefault();
             const targetId = this.getAttribute('href');
             const target = document.querySelector(targetId);

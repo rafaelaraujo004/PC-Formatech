@@ -200,6 +200,20 @@
             return mode === 'dark' ? 'Escuro' : 'Claro';
         }
 
+        function buildSeasonalPreviewHeadline(theme) {
+            const bannerSlideTitle = theme && theme.banner && Array.isArray(theme.banner.slides) && theme.banner.slides[0]
+                ? String(theme.banner.slides[0].title || '').trim()
+                : '';
+            if (bannerSlideTitle) {
+                return bannerSlideTitle;
+            }
+            const cleanName = String(theme && theme.name ? theme.name : 'Data Comemorativa').trim();
+            if (!cleanName) {
+                return 'Feliz Data Comemorativa!';
+            }
+            return /^feliz\b/i.test(cleanName) ? cleanName : `Feliz ${cleanName}!`;
+        }
+
         function updateThemePreviewPanel(theme) {
             const summary = document.getElementById('themePreviewSummary');
             const banner = document.getElementById('themePreviewBanner');
@@ -218,12 +232,24 @@
             const cover = (theme.preview && theme.preview.cover) || (theme.tokens && theme.tokens.pageBackground) || 'linear-gradient(135deg, #f5f5f5, #d8e1ea)';
             const accent = (theme.preview && theme.preview.accent) || (theme.tokens && theme.tokens.accent) || '#40998F';
             const surface = (theme.preview && theme.preview.surface) || (theme.tokens && theme.tokens.themeSurface) || '#ffffff';
+            const seasonalSubtitle = theme.banner && Array.isArray(theme.banner.slides) && theme.banner.slides[0]
+                ? theme.banner.slides[0].subtitle
+                : '';
+            const previewHeadline = theme.category === 'seasonal'
+                ? buildSeasonalPreviewHeadline(theme)
+                : theme.name;
+            const previewDescription = theme.category === 'seasonal'
+                ? (seasonalSubtitle || 'Tema sazonal em modo preview')
+                : 'Pré-visualização do tema selecionado';
 
             summary.textContent = `${theme.name} · ${formatThemeMode(theme.mode)} · ${theme.category === 'seasonal' ? 'Sazonal' : 'Padrão'}`;
 
             banner.innerHTML = `
                 <div style="height: 140px; border-radius: 12px; border: 1px solid rgba(0,0,0,.08); background: ${cover}; position: relative; overflow: hidden;">
-                    <div style="position:absolute;inset:auto 12px 12px 12px;padding:10px 12px;border-radius:10px;background:rgba(0,0,0,.35);color:#fff;font-weight:600;">${theme.name}</div>
+                    <div style="position:absolute;inset:auto 12px 12px 12px;padding:10px 12px;border-radius:10px;background:rgba(0,0,0,.45);color:#fff;">
+                        <div style="font-weight:700;line-height:1.2;">${previewHeadline}</div>
+                        <div style="font-size:12px;opacity:.9;line-height:1.25;margin-top:2px;">${previewDescription}</div>
+                    </div>
                 </div>
             `;
 

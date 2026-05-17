@@ -1143,8 +1143,8 @@ html[data-theme='dark'] .services h2::after {
     --pcft-button-background: linear-gradient(135deg, #40998F 0%, #2D7A7A 100%);
     --pcft-button-text: #ffffff;
     --pcft-button-shadow: 0 14px 36px rgba(64, 153, 143, .22);
-    --pcft-decoration-top: radial-gradient(circle at 12% 10%, rgba(255, 255, 255, .24) 0 22px, transparent 23px), radial-gradient(circle at 84% 12%, rgba(64, 153, 143, .18) 0 18px, transparent 19px);
-    --pcft-decoration-bottom: radial-gradient(circle at bottom left, rgba(64, 153, 143, .08) 0%, transparent 34%), radial-gradient(circle at bottom right, rgba(45, 122, 122, .08) 0%, transparent 40%);
+    --pcft-decoration-top: none;
+    --pcft-decoration-bottom: none;
     --pcft-badge-background: rgba(64, 153, 143, .12);
     --pcft-badge-text: #2D7A7A;
     --pcft-indicator: rgba(64, 153, 143, .22);
@@ -2308,12 +2308,28 @@ html[data-theme='dark'] .services-subtitle {
 }
 
 /* Links */
-html[data-theme='dark'] a:not(.btn):not([class*='btn']):not(.booking-btn) {
+html[data-theme='dark'] a:not(.btn):not([class*='btn']):not(.booking-btn):not(.hero-cta-primary):not(.hero-cta-secondary):not(.diagnostic-whatsapp):not(.about-personal-cta):not(.urgency-cta) {
     color: #5fc9be !important;
 }
 
-html[data-theme='dark'] a:not(.btn):not([class*='btn']):hover {
+html[data-theme='dark'] a:not(.btn):not([class*='btn']):not(.hero-cta-primary):not(.hero-cta-secondary):not(.diagnostic-whatsapp):not(.about-personal-cta):not(.urgency-cta):hover {
     color: #87d9d3 !important;
+}
+/* CTAs em <a> que funcionam como botao devem preservar contraste, nao herdar cor global de link */
+html[data-theme='dark'] .diagnostic-whatsapp,
+html[data-theme='dark'] .about-personal-cta,
+html[data-theme='dark'] .urgency-band a,
+html[data-theme='dark'] .hero-cta-primary,
+html[data-theme='dark'] .hero-cta-secondary {
+    color: var(--pcft-button-text) !important;
+}
+
+html[data-theme='dark'] .diagnostic-whatsapp:hover,
+html[data-theme='dark'] .about-personal-cta:hover,
+html[data-theme='dark'] .urgency-band a:hover,
+html[data-theme='dark'] .hero-cta-primary:hover,
+html[data-theme='dark'] .hero-cta-secondary:hover {
+    color: var(--pcft-button-text) !important;
 }
 
 /* Inputs e selects */

@@ -1,6 +1,7 @@
 /* ── Badge de data comemorativa ─────────────────────────────────────────── */
 (function () {
-    var EXTRA = 3; // dias de antecedência e prorrogação
+    var PRE_EXTRA = 3;  // dias de antecedência
+    var POST_EXTRA = 0; // sem prorrogação após o fim do período
     var SEASONAL = [
         { name: 'Natal',               greeting: 'Feliz',  icon: '\u{1F384}', start: '12-25', end: '12-25' },
         { name: 'Ano Novo',            greeting: 'Feliz',  icon: '\u2728',     start: '01-01', end: '01-01' },
@@ -28,15 +29,87 @@
         var eN   = doy(ep[0], ep[1]);
         var wraps = eN < sN;
         if (wraps) eN += 365;
-        var wS = sN - EXTRA;
-        var wE = eN + EXTRA;
+        var wS = sN - PRE_EXTRA;
+        var wE = eN + POST_EXTRA;
         return (tDOY >= wS && tDOY <= wE) ||
                (wraps && (tDOY + 365 >= wS && tDOY + 365 <= wE));
+    }
+
+    function iconByThemeId(themeId) {
+        var map = {
+            'natal': '\u{1F384}',
+            'ano-novo': '\u2728',
+            'pascoa': '\u{1F423}',
+            'dia-das-maes': '\u{1F490}',
+            'festa-junina': '\u{1F33D}',
+            'dia-dos-pais': '\u{1F3C6}',
+            'dia-das-criancas': '\u{1F388}',
+            'halloween': '\u{1F383}'
+        };
+        return map[themeId] || '\u{1F389}';
+    }
+
+    function splitSeasonalTitle(title) {
+        var raw = String(title || '').trim().replace(/[!]+$/, '');
+        if (!raw) {
+            return { greeting: 'Feliz', name: 'Data Comemorativa' };
+        }
+        var parts = raw.split(/\s+/);
+        if (parts.length > 1 && /^(feliz|happy)$/i.test(parts[0])) {
+            return { greeting: parts[0], name: parts.slice(1).join(' ') };
+        }
+        return { greeting: 'Feliz', name: raw };
+    }
+
+    function getThemeSeasonalBadge() {
+        var root = document.documentElement;
+        if (!root || root.getAttribute('data-theme-category') !== 'seasonal') {
+            return null;
+        }
+
+        var themeId = root.getAttribute('data-theme-id') || '';
+        var manager = window.PCFormatechThemeManager;
+        var theme = manager && typeof manager.getCurrentTheme === 'function'
+            ? manager.getCurrentTheme()
+            : null;
+
+        if (!theme || theme.category !== 'seasonal') {
+            return null;
+        }
+
+        var title = '';
+        if (theme.banner && Array.isArray(theme.banner.slides) && theme.banner.slides[0] && theme.banner.slides[0].title) {
+            title = theme.banner.slides[0].title;
+        } else if (theme.name) {
+            title = theme.name;
+        }
+
+        var parsed = splitSeasonalTitle(title);
+        return {
+            greeting: parsed.greeting,
+            name: parsed.name,
+            icon: iconByThemeId(themeId || theme.id || '')
+        };
     }
 
     function showBadge() {
         var badge = document.getElementById('pcft-seasonal-badge');
         if (!badge) return;
+        var iconLeft  = badge.querySelector('.pcft-seasonal-icon-left');
+        var iconRight = badge.querySelector('.pcft-seasonal-icon-right');
+        var greetEl   = badge.querySelector('.pcft-seasonal-greeting');
+        var nameEl    = badge.querySelector('.pcft-seasonal-name');
+
+        var forcedByTheme = getThemeSeasonalBadge();
+        if (forcedByTheme) {
+            if (iconLeft)  iconLeft.textContent  = forcedByTheme.icon;
+            if (iconRight) iconRight.textContent = forcedByTheme.icon;
+            if (greetEl)   greetEl.textContent   = forcedByTheme.greeting;
+            if (nameEl)    nameEl.textContent    = forcedByTheme.name + '!';
+            badge.hidden = false;
+            return;
+        }
+
         var active = null;
         for (var i = 0; i < SEASONAL.length; i++) {
             if (isActive(SEASONAL[i].start, SEASONAL[i].end)) {
@@ -44,11 +117,12 @@
                 break;
             }
         }
-        if (!active) return;
-        var iconLeft  = badge.querySelector('.pcft-seasonal-icon-left');
-        var iconRight = badge.querySelector('.pcft-seasonal-icon-right');
-        var greetEl   = badge.querySelector('.pcft-seasonal-greeting');
-        var nameEl    = badge.querySelector('.pcft-seasonal-name');
+        if (!active) {
+            badge.hidden = true;
+            if (greetEl) greetEl.textContent = '';
+            if (nameEl) nameEl.textContent = '';
+            return;
+        }
         if (iconLeft)  iconLeft.textContent  = active.icon;
         if (iconRight) iconRight.textContent = active.icon;
         if (greetEl)   greetEl.textContent   = active.greeting;
@@ -61,6 +135,8 @@
     } else {
         showBadge();
     }
+
+    window.addEventListener('pcformatech:themechange', showBadge);
 })();
 /* ─────────────────────────────────────────────────────────────────────────── */
 

@@ -54,51 +54,51 @@
         name: 'Clássico Neutro',
         category: 'standard',
         mode: 'light',
-        description: 'Tema padrão local do PC Formatech.',
+        description: 'Tema padrão local em verde institucional do PC Formatech.',
         fonts: {
             heading: { family: "'Inter', sans-serif" },
             body: { family: "'Inter', sans-serif" }
         },
         preview: {
-            cover: 'linear-gradient(135deg, #f8fafc 0%, #dbe4ef 55%, #93a6c0 100%)',
-            accent: '#46637f',
+            cover: 'linear-gradient(135deg, #eef8f6 0%, #cfe8e2 55%, #40998f 100%)',
+            accent: '#2d7a7a',
             surface: '#ffffff'
         },
         effects: ['soft-bloom'],
         tokens: {
-            metaColor: '#46637f',
-            themeBg: '#f7fafc',
-            themeText: '#243548',
+            metaColor: '#0b3d3d',
+            themeBg: '#f4fbf9',
+            themeText: '#153a3a',
             themeSurface: '#ffffff',
-            themeSurface2: '#eff4f8',
-            themeSurface3: '#e3ebf3',
-            themeBorder: '#d4deea',
-            themeBorderStrong: '#bfcedf',
-            themeMuted: '#61768c',
-            themeFaint: '#8ea0b2',
-            accent: '#46637f',
-            accentStrong: '#324a62',
-            accentSoft: 'rgba(70, 99, 127, 0.12)',
-            pageBackground: 'radial-gradient(circle at top left, rgba(219, 228, 239, 0.62) 0%, rgba(247, 250, 252, 0.98) 44%, #eef4f8 100%)',
-            headerBackground: 'linear-gradient(135deg, rgba(241, 245, 249, 0.96) 0%, rgba(219, 228, 239, 0.94) 100%)',
-            footerBackground: 'linear-gradient(135deg, rgba(232, 239, 246, 0.98) 0%, rgba(219, 228, 239, 0.98) 100%)',
-            sectionBackground: 'linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(247, 250, 252, 0.98) 100%)',
-            sectionAltBackground: 'linear-gradient(180deg, rgba(239, 244, 248, 0.96) 0%, rgba(227, 235, 243, 0.98) 100%)',
+            themeSurface2: '#e9f5f2',
+            themeSurface3: '#dceee9',
+            themeBorder: '#cfe4de',
+            themeBorderStrong: '#b9d8d0',
+            themeMuted: '#2d6666',
+            themeFaint: '#4b8e8e',
+            accent: '#2d7a7a',
+            accentStrong: '#0b3d3d',
+            accentSoft: 'rgba(45, 122, 122, 0.14)',
+            pageBackground: 'radial-gradient(circle at top left, rgba(207, 232, 226, 0.58) 0%, rgba(244, 251, 249, 0.98) 44%, #e9f5f2 100%)',
+            headerBackground: 'linear-gradient(135deg, rgba(8, 69, 69, 0.96) 0%, rgba(20, 94, 94, 0.95) 100%)',
+            footerBackground: 'linear-gradient(135deg, rgba(8, 69, 69, 0.98) 0%, rgba(11, 61, 61, 0.98) 100%)',
+            sectionBackground: 'linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(244, 251, 249, 0.98) 100%)',
+            sectionAltBackground: 'linear-gradient(180deg, rgba(233, 245, 242, 0.96) 0%, rgba(220, 238, 233, 0.98) 100%)',
             cardBackground: 'rgba(255, 255, 255, 0.94)',
-            cardBorder: 'rgba(70, 99, 127, 0.1)',
-            heroOverlay: 'linear-gradient(135deg, rgba(255, 255, 255, 0.34) 0%, rgba(239, 244, 248, 0.42) 55%, rgba(147, 166, 192, 0.22) 100%)',
-            heroFrame: 'rgba(70, 99, 127, 0.14)',
-            buttonBackground: 'linear-gradient(135deg, #46637f 0%, #6b89a6 100%)',
+            cardBorder: 'rgba(45, 122, 122, 0.1)',
+            heroOverlay: 'linear-gradient(135deg, rgba(8, 69, 69, 0.58) 0%, rgba(20, 94, 94, 0.42) 55%, rgba(64, 153, 143, 0.25) 100%)',
+            heroFrame: 'rgba(45, 122, 122, 0.16)',
+            buttonBackground: 'linear-gradient(135deg, #2d7a7a 0%, #40998f 100%)',
             buttonText: '#f7fafc',
-            buttonShadow: '0 16px 32px rgba(70, 99, 127, 0.18)',
-            decorationTop: 'radial-gradient(circle at 14% 12%, rgba(255,255,255,0.82) 0 28px, transparent 29px), radial-gradient(circle at 82% 10%, rgba(147,166,192,0.22) 0 22px, transparent 23px)',
-            decorationBottom: 'radial-gradient(circle at bottom left, rgba(70, 99, 127, 0.06) 0%, transparent 34%), radial-gradient(circle at bottom right, rgba(148, 163, 184, 0.08) 0%, transparent 40%)',
-            badgeBackground: 'rgba(70, 99, 127, 0.1)',
-            badgeText: '#324a62',
-            indicator: 'rgba(70, 99, 127, 0.16)',
-            indicatorActive: '#46637f',
+            buttonShadow: '0 16px 32px rgba(45, 122, 122, 0.24)',
+            decorationTop: 'radial-gradient(circle at 14% 12%, rgba(255,255,255,0.82) 0 28px, transparent 29px), radial-gradient(circle at 82% 10%, rgba(64,153,143,0.22) 0 22px, transparent 23px)',
+            decorationBottom: 'radial-gradient(circle at bottom left, rgba(45, 122, 122, 0.08) 0%, transparent 34%), radial-gradient(circle at bottom right, rgba(64, 153, 143, 0.10) 0%, transparent 40%)',
+            badgeBackground: 'rgba(45, 122, 122, 0.12)',
+            badgeText: '#0b3d3d',
+            indicator: 'rgba(45, 122, 122, 0.18)',
+            indicatorActive: '#2d7a7a',
             chipBackground: 'rgba(255, 255, 255, 0.74)',
-            chipText: '#324a62'
+            chipText: '#0b3d3d'
         },
         banner: {
             slides: [
@@ -109,8 +109,8 @@
                     scene: 'Banner padrão do sistema de temas',
                     alt: 'Banner padrão do sistema de temas do PC Formatech',
                     illustration: 'steady-workflow',
-                    palette: ['#f8fafc', '#dbe4ef', '#93a6c0', '#46637f'],
-                    accent: '#46637f'
+                    palette: ['#eef8f6', '#cfe8e2', '#40998f', '#0b3d3d'],
+                    accent: '#2d7a7a'
                 }
             ]
         }
@@ -547,8 +547,8 @@
             '--pcft-button-background': tokens.buttonBackground,
             '--pcft-button-text': tokens.buttonText,
             '--pcft-button-shadow': tokens.buttonShadow,
-            '--pcft-decoration-top': theme.category === 'seasonal' ? 'none' : tokens.decorationTop,
-            '--pcft-decoration-bottom': theme.category === 'seasonal' ? 'none' : tokens.decorationBottom,
+            '--pcft-decoration-top': 'none',
+            '--pcft-decoration-bottom': 'none',
             '--pcft-badge-background': tokens.badgeBackground,
             '--pcft-badge-text': tokens.badgeText,
             '--pcft-indicator': tokens.indicator,
@@ -725,10 +725,19 @@
                 updatedAt: 0
             };
             const source = raw || {};
+            const autoSeasonal = source.autoSeasonal !== false;
+            let fallbackThemeId = typeof source.fallbackThemeId === 'string' && source.fallbackThemeId
+                ? source.fallbackThemeId
+                : base.fallbackThemeId;
+
+            if (autoSeasonal && themeMap.has('classico-neutro')) {
+                fallbackThemeId = 'classico-neutro';
+            }
+
             return {
                 activeThemeId: typeof source.activeThemeId === 'string' && source.activeThemeId ? source.activeThemeId : base.activeThemeId,
-                fallbackThemeId: typeof source.fallbackThemeId === 'string' && source.fallbackThemeId ? source.fallbackThemeId : base.fallbackThemeId,
-                autoSeasonal: source.autoSeasonal !== false,
+                fallbackThemeId: fallbackThemeId,
+                autoSeasonal: autoSeasonal,
                 updatedAt: toTimestamp(source.updatedAt) || base.updatedAt
             };
         }
@@ -778,6 +787,18 @@
                 const seasonal = findSeasonalTheme(new Date());
                 if (seasonal) {
                     return seasonal;
+                }
+                if (themeMap.has('classico-neutro')) {
+                    return getThemeById('classico-neutro');
+                }
+                if (settings.fallbackThemeId) {
+                    return getThemeById(settings.fallbackThemeId);
+                }
+                if (settings.activeThemeId) {
+                    const activeTheme = getThemeById(settings.activeThemeId);
+                    if (activeTheme.category !== 'seasonal') {
+                        return activeTheme;
+                    }
                 }
             }
             if (settings && settings.activeThemeId) {

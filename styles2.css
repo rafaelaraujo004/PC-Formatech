@@ -72,9 +72,13 @@
     border: 2px solid #e0e0e0;
 }
 
-.service-checkbox {
-    display: flex;
+.services-checkbox-group .service-checkbox {
+    display: grid;
+    grid-template-columns: 18px 1fr;
     align-items: center;
+    column-gap: 0.8rem;
+    width: 100%;
+    text-align: left;
     padding: 0.6rem;
     background: white;
     border-radius: 6px;
@@ -83,26 +87,27 @@
     border: 1px solid #e0e0e0;
 }
 
-.service-checkbox:hover {
+.services-checkbox-group .service-checkbox:hover {
     background: #f0f7ff;
     border-color: var(--secondary-color);
 }
 
-.service-checkbox input[type="checkbox"] {
+.services-checkbox-group .service-checkbox input[type="checkbox"] {
     width: 18px;
     height: 18px;
-    margin-right: 0.8rem;
+    margin: 0;
     cursor: pointer;
     accent-color: var(--secondary-color);
+    justify-self: center;
 }
 
-.service-checkbox span {
+.services-checkbox-group .service-checkbox span {
     font-size: 0.9rem;
     color: var(--text-color);
     font-weight: 500;
 }
 
-.service-checkbox input[type="checkbox"]:checked + span {
+.services-checkbox-group .service-checkbox input[type="checkbox"]:checked + span {
     color: var(--secondary-color);
     font-weight: 600;
 }
@@ -200,6 +205,58 @@
     .submit-schedule-btn {
         font-size: 1rem;
         padding: 0.9rem 1.5rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .about-features {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.65rem;
+    }
+
+    .feature-card {
+        padding: 0.85rem 0.7rem;
+    }
+
+    .feature-icon {
+        width: 34px;
+        height: 34px;
+        margin: 0 auto 0.55rem;
+        border-radius: 8px;
+    }
+
+    .feature-icon i {
+        font-size: 0.95rem;
+    }
+
+    .feature-card h4 {
+        font-size: 0.82rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .feature-card p {
+        font-size: 0.72rem;
+        line-height: 1.3;
+    }
+
+    .about-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.6rem;
+        padding: 0.95rem 0.7rem;
+    }
+
+    .about-stats .stat-item {
+        padding: 0.65rem 0.35rem;
+    }
+
+    .about-stats .stat-number {
+        font-size: 1.1rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .about-stats .stat-label {
+        font-size: 0.7rem;
+        line-height: 1.28;
     }
 }
 
