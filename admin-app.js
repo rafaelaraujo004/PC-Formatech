@@ -149,17 +149,164 @@
             updateDashboard();
             loadClientsTable();
             iniciarNotificacoes();
+            restaurarAbaSalva();
+            ativarOrdenacaoDeTabelas();
+        }
+
+        /**
+         * Volta para a aba em que se estava trabalhando. Antes, qualquer
+         * recarregamento — inclusive o F5 depois de salvar algo — jogava de
+         * volta no Dashboard.
+         */
+        function restaurarAbaSalva() {
+            let aba;
+            try { aba = localStorage.getItem('pcformatech_admin_tab'); } catch (e) { return; }
+            if (!aba || aba === 'dashboard') return;
+            if (!document.getElementById(`tab-${aba}`)) return;
+            switchTab(aba);
+        }
+
+        /**
+         * Ordenação por clique no cabeçalho, em todas as tabelas do painel.
+         *
+         * Nenhuma das 16 colunas era ordenável: com a lista crescendo, achar o
+         * cliente mais recente ou o maior orçamento virava rolagem no olho.
+         * A ordenação é feita sobre as linhas já renderizadas, então funciona
+         * em qualquer tabela sem depender de como os dados foram carregados.
+         */
+        function ativarOrdenacaoDeTabelas() {
+            document.querySelectorAll('.admin-panel table').forEach((tabela) => {
+                const cabecalhos = tabela.querySelectorAll('thead th');
+                if (!cabecalhos.length || tabela.dataset.ordenacaoAtiva) return;
+                tabela.dataset.ordenacaoAtiva = '1';
+
+                cabecalhos.forEach((th, indice) => {
+                    // A última coluna costuma ser "Ações" (botões): não ordena.
+                    const rotulo = th.textContent.trim().toLowerCase();
+                    if (!rotulo || rotulo === 'ações' || rotulo === 'acoes') return;
+
+                    th.classList.add('admin-sortable');
+                    th.tabIndex = 0;
+                    th.setAttribute('role', 'button');
+                    th.setAttribute('aria-sort', 'none');
+                    th.title = 'Ordenar por ' + th.textContent.trim();
+
+                    const ordenar = () => {
+                        const corpo = tabela.querySelector('tbody');
+                        if (!corpo) return;
+                        const linhas = [...corpo.querySelectorAll('tr')]
+                            .filter((tr) => !tr.classList.contains('admin-empty-row'));
+                        if (linhas.length < 2) return;
+
+                        const crescente = th.getAttribute('aria-sort') !== 'ascending';
+
+                        cabecalhos.forEach((outro) => {
+                            outro.setAttribute('aria-sort', 'none');
+                            outro.classList.remove('sort-asc', 'sort-desc');
+                        });
+                        th.setAttribute('aria-sort', crescente ? 'ascending' : 'descending');
+                        th.classList.add(crescente ? 'sort-asc' : 'sort-desc');
+
+                        linhas.sort((a, b) => {
+                            const x = valorDaCelula(a, indice);
+                            const y = valorDaCelula(b, indice);
+                            const cmp = (typeof x === 'number' && typeof y === 'number')
+                                ? x - y
+                                : String(x).localeCompare(String(y), 'pt-BR', { numeric: true, sensitivity: 'base' });
+                            return crescente ? cmp : -cmp;
+                        });
+
+                        linhas.forEach((tr) => corpo.appendChild(tr));
+                    };
+
+                    th.addEventListener('click', ordenar);
+                    th.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); ordenar(); }
+                    });
+                });
+            });
+        }
+
+        /**
+         * Valor comparável de uma célula. Reconhece dinheiro (R$ 1.234,56),
+         * data brasileira (dd/mm/aaaa) e número puro; o resto vira texto.
+         */
+        function valorDaCelula(linha, indice) {
+            const celula = linha.children[indice];
+            if (!celula) return '';
+            const texto = celula.textContent.trim();
+
+            const data = texto.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+            if (data) return new Date(`${data[3]}-${data[2]}-${data[1]}`).getTime();
+
+            if (/^R\$/.test(texto) || /^[\d.,]+$/.test(texto)) {
+                const numero = Number(texto.replace(/[^\d,-]/g, '').replace(/\./g, '').replace(',', '.'));
+                if (Number.isFinite(numero)) return numero;
+            }
+
+            const soDigitos = texto.match(/^\D*?(\d+)/);
+            if (soDigitos && texto.length < 12) return Number(soDigitos[1]);
+
+            return texto.toLowerCase();
         }
 
         // ===== SISTEMA DE TABS =====
+        /**
+         * Traz o botão da aba ativa para dentro da faixa visível.
+         *
+         * A barra tem 10 abas e rola na horizontal; sem isto, trocar de aba por
+         * código (ou ao restaurar a aba salva) deixava a ativa fora de vista e
+         * nada indicava onde se estava. scrollIntoView não serve aqui porque
+         * rola também a página verticalmente — o cálculo é feito na mão sobre o
+         * scrollLeft da própria barra.
+         */
+        function revelarAbaNaBarra(botao) {
+            const barra = botao.closest('.admin-tabs');
+            if (!barra || barra.scrollWidth <= barra.clientWidth) return;
+
+            // Medido por getBoundingClientRect: offsetLeft é relativo ao offsetParent,
+            // que não é a barra quando ela não tem position própria — era por isso
+            // que o cálculo anterior nunca rolava nada.
+            const margem = 16;
+            const areaBarra = barra.getBoundingClientRect();
+            const areaBotao = botao.getBoundingClientRect();
+
+            const sobraEsquerda = areaBotao.left - areaBarra.left;
+            const sobraDireita = areaBotao.right - areaBarra.right;
+
+            let destino = null;
+            if (sobraEsquerda < margem) {
+                destino = barra.scrollLeft + sobraEsquerda - margem;
+            } else if (sobraDireita > -margem) {
+                destino = barra.scrollLeft + sobraDireita + margem;
+            }
+            if (destino === null) return;
+
+            // Sem animação: a rolagem suave era interrompida pelo relayout que o
+            // conteúdo da aba provoca logo em seguida, e a barra voltava ao lugar.
+            barra.scrollLeft = Math.max(0, destino);
+        }
+
         function switchTab(tabName) {
             // Remover active de todos os botões e conteúdos
             document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            
-            // Ativar tab selecionada
-            event.target.classList.add('active');
-            document.getElementById(`tab-${tabName}`).classList.add('active');
+            // Resíduo de versões anteriores, que marcavam o <i> em vez do botão
+            document.querySelectorAll('.tab-button i.active').forEach(i => i.classList.remove('active'));
+
+            // O botão é localizado pelo próprio tabName. Antes vinha de
+            // event.target, que costuma ser o <i> do ícone e não o <button> —
+            // clicar no ícone deixava NENHUMA aba destacada. Chamar a função
+            // por código também quebrava, porque `event` era undefined.
+            const botaoAtivo = document.querySelector(`.tab-button[onclick*="'${tabName}'"]`);
+            if (botaoAtivo) botaoAtivo.classList.add('active');
+
+            const conteudoAba = document.getElementById(`tab-${tabName}`);
+            if (!conteudoAba) return;
+            conteudoAba.classList.add('active');
+
+            // Recarregar volta para a aba em que se estava trabalhando.
+            try { localStorage.setItem('pcformatech_admin_tab', tabName); } catch (e) {}
             
             // Carregar dados conforme a tab
             if (tabName === 'dashboard') {
@@ -183,6 +330,10 @@
             } else if (tabName === 'parcelamentos') {
                 renderParcelamentosTab();
             }
+
+            // Por último e fora deste ciclo: renderizar o conteúdo da aba muda o
+            // layout, e a rolagem precisa ser calculada sobre a posição final.
+            if (botaoAtivo) setTimeout(() => revelarAbaNaBarra(botaoAtivo), 0);
         }
 
         // ===== GERENCIADOR DE TEMAS =====
@@ -533,6 +684,26 @@
             editingClientId = null;
         }
 
+        /**
+         * Desenha o estado vazio de uma tabela.
+         *
+         * Sem isto, a tabela sem registros mostrava só o cabeçalho e um branco
+         * mudo: não dava para distinguir "não há nada cadastrado" de "a busca
+         * não encontrou" ou "quebrou ao carregar". A mensagem muda conforme o
+         * caso, porque a ação que o operador precisa tomar é outra em cada um.
+         */
+        function renderTabelaVazia(tbody, { buscando, icone, tituloVazio, textoVazio, tituloBusca, textoBusca }) {
+            const colunas = tbody.closest('table')?.querySelectorAll('thead th').length || 5;
+            tbody.innerHTML = `
+                <tr class="admin-empty-row">
+                    <td colspan="${colunas}">
+                        <i class="fas fa-${buscando ? 'search' : icone}" aria-hidden="true"></i>
+                        <strong>${buscando ? tituloBusca : tituloVazio}</strong>
+                        <span>${buscando ? textoBusca : textoVazio}</span>
+                    </td>
+                </tr>`;
+        }
+
         function loadClientsTable() {
             const tbody = document.getElementById('clientsTableBody');
             if (!tbody) return; // Painel ainda não visível
@@ -540,11 +711,26 @@
 
             const searchTerm = document.getElementById('searchClient')?.value.toLowerCase() || '';
             
-            const filteredClients = clients.filter(client => 
-                client.name.toLowerCase().includes(searchTerm) ||
-                client.phone.toLowerCase().includes(searchTerm) ||
-                (client.cpf && client.cpf.toLowerCase().includes(searchTerm))
+            // String(...) protege contra registro sem nome ou sem telefone, que
+            // antes derrubava a listagem inteira com TypeError.
+            const contem = (valor) => String(valor || '').toLowerCase().includes(searchTerm);
+            const filteredClients = clients.filter(client =>
+                contem(client.name) || contem(client.phone) || contem(client.cpf)
             );
+
+            // Sem isto, a tabela vazia mostrava só o cabeçalho: nada distinguia
+            // "não há clientes" de "a busca não achou nada" ou "quebrou".
+            if (!filteredClients.length) {
+                renderTabelaVazia(tbody, {
+                    buscando: !!searchTerm,
+                    icone: 'user-plus',
+                    tituloVazio: 'Nenhum cliente cadastrado ainda',
+                    textoVazio: 'Use o formulário acima para cadastrar o primeiro cliente.',
+                    tituloBusca: 'Nenhum cliente encontrado',
+                    textoBusca: 'Nada corresponde à busca. Verifique a grafia ou limpe o campo.'
+                });
+                return;
+            }
 
             filteredClients.forEach(client => {
                 const row = document.createElement('tr');
@@ -574,8 +760,18 @@
             });
         }
 
+        /** Agrupa chamadas seguidas: só a última, depois de `espera`, executa. */
+        function debounce(fn, espera = 180) {
+            let id;
+            return function (...args) {
+                clearTimeout(id);
+                id = setTimeout(() => fn.apply(this, args), espera);
+            };
+        }
+
+        const _buscarClientes = debounce(() => loadClientsTable());
         function searchClients() {
-            loadClientsTable();
+            _buscarClientes();
         }
 
         function viewClient(clientId) {
@@ -679,7 +875,16 @@
         }
 
         function deleteClient(clientId) {
-            if (confirm('Tem certeza que deseja excluir este cliente e todo seu histórico?')) {
+            // Nomear o registro evita o clique errado numa lista longa, em que
+            // "este cliente" não diz qual linha foi acionada.
+            const alvo = clients.find(c => c.id === clientId);
+            const nome = alvo?.name ? `"${alvo.name}"` : 'este cliente';
+            const qtdServicos = alvo?.services?.length || 0;
+            const detalhe = qtdServicos
+                ? ` Isso apaga também os ${qtdServicos} serviço(s) registrados.`
+                : '';
+
+            if (confirm(`Excluir ${nome} e todo o histórico?${detalhe}\n\nEsta ação não pode ser desfeita.`)) {
                 clients = clients.filter(c => c.id !== clientId);
                 saveClientsToStorage();
                 loadClientsTable();
@@ -1525,7 +1730,12 @@ function updateChartTheme() {
             // Pontos reais: índice 0-6; pontos de projeção: 7-12
             // Projeção é visualmente diferenciada via `segment`
             const buildMerged = (real, proj) => {
-                return real.map((v, i) => (v !== null ? v : null)).concat(
+                // real.slice(0, PIVOT + 1) = só os 7 meses reais. Antes usava o
+                // array inteiro, que já traz 6 nulls futuros: 13 + 6 = 19 pontos
+                // para 13 rótulos, e o Chart.js descartava justamente os 6 da
+                // projeção. Resultado: a projeção nunca aparecia, e o botão
+                // "Ocultar Projeção" não tinha efeito visível.
+                return real.slice(0, PIVOT + 1).concat(
                     proj.slice(PIVOT + 1).map(v => (_projecaoVisivel ? v : null))
                 );
             };
@@ -1859,10 +2069,23 @@ function updateChartTheme() {
 
             const searchTerm = document.getElementById('searchProduct')?.value.toLowerCase() || '';
             
-            const filteredProducts = products.filter(product => 
-                product.name.toLowerCase().includes(searchTerm) ||
-                product.category.toLowerCase().includes(searchTerm)
+            // String(...) evita TypeError em produto sem nome ou sem categoria.
+            const filteredProducts = products.filter(product =>
+                String(product.name || '').toLowerCase().includes(searchTerm) ||
+                String(product.category || '').toLowerCase().includes(searchTerm)
             );
+
+            if (!filteredProducts.length) {
+                renderTabelaVazia(tbody, {
+                    buscando: !!searchTerm,
+                    icone: 'box-open',
+                    tituloVazio: 'Nenhum produto cadastrado',
+                    textoVazio: 'Cadastre peças e produtos para usá-los nos orçamentos.',
+                    tituloBusca: 'Nenhum produto encontrado',
+                    textoBusca: 'Busque pelo nome do produto ou pela categoria.'
+                });
+                return;
+            }
 
             filteredProducts.forEach(product => {
                 const row = document.createElement('tr');
@@ -1895,8 +2118,9 @@ function updateChartTheme() {
             return categories[category] || category;
         }
 
+        const _buscarProdutos = debounce(() => loadProductsTable());
         function searchProducts() {
-            loadProductsTable();
+            _buscarProdutos();
         }
 
         function editProduct(productId) {
@@ -2295,11 +2519,25 @@ function updateChartTheme() {
 
             const searchTerm = document.getElementById('searchBudget')?.value.toLowerCase() || '';
             
+            // String(...) evita quebrar quando o orçamento não tem número ou aponta
+            // para um cliente que já foi excluído.
             const filteredBudgets = budgets.filter(budget => {
                 const client = clients.find(c => c.id === budget.clientId);
-                const clientName = client ? client.name.toLowerCase() : '';
-                return clientName.includes(searchTerm) || budget.number.includes(searchTerm);
+                const clientName = String(client?.name || '').toLowerCase();
+                return clientName.includes(searchTerm) || String(budget.number || '').includes(searchTerm);
             });
+
+            if (!filteredBudgets.length) {
+                renderTabelaVazia(tbody, {
+                    buscando: !!searchTerm,
+                    icone: 'file-invoice',
+                    tituloVazio: 'Nenhum orçamento ou laudo emitido',
+                    textoVazio: 'Clique em "Novo Orçamento/Laudo" para criar o primeiro.',
+                    tituloBusca: 'Nenhum orçamento encontrado',
+                    textoBusca: 'Busque pelo nome do cliente ou pelo número do laudo.'
+                });
+                return;
+            }
 
             filteredBudgets.reverse().forEach(budget => {
                 const client = clients.find(c => c.id === budget.clientId);
@@ -2352,8 +2590,9 @@ function updateChartTheme() {
             return total;
         }
 
+        const _buscarOrcamentos = debounce(() => loadBudgetsTable());
         function searchBudgets() {
-            loadBudgetsTable();
+            _buscarOrcamentos();
         }
 
         function viewBudget(budgetId) {
@@ -3321,7 +3560,10 @@ function updateChartTheme() {
             // ── Orçamentos ────────────────────────────────────────────
             const orcAbertos   = budgets.filter(b => !b.finalizado).length;
             const orcFechados  = budgets.filter(b => b.finalizado).length;
-            const taxaConv     = budgets.length > 0 ? Math.round((svConcluido / budgets.length) * 100) : 0;
+            // Orçamentos que viraram serviço, sobre o total de orçamentos.
+            // Antes era svConcluido / budgets.length — serviços concluídos sobre
+            // orçamentos, duas populações sem relação, que dava 233%.
+            const taxaConv     = budgets.length > 0 ? Math.round((orcFechados / budgets.length) * 100) : 0;
 
             // ── Atualizar KPIs ────────────────────────────────────────
             _rtSet('rt-total-clientes', totalClientes);

@@ -6,8 +6,8 @@
   "description": "Tema escuro em violeta e roxo intenso com destaques brilhantes. Para quem gosta de inovação e personalidade.",
   "sortOrder": 70,
   "fonts": {
-    "heading": { "family": "'Inter', sans-serif" },
-    "body":    { "family": "'Inter', sans-serif" }
+    "heading": { "family": "'Sora', 'Segoe UI', system-ui, sans-serif" },
+    "body":    { "family": "'Manrope', 'Segoe UI', system-ui, sans-serif" }
   },
   "preview": {
     "cover":   "linear-gradient(135deg, #0a0616 0%, #1a0a38 50%, #2e1065 100%)",

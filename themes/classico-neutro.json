@@ -6,8 +6,8 @@
   "description": "Tema padrão da marca em verde institucional, transmitindo confiança e proximidade.",
   "sortOrder": 10,
   "fonts": {
-    "heading": { "family": "'Inter', sans-serif" },
-    "body":    { "family": "'Inter', sans-serif" }
+    "heading": { "family": "'Sora', 'Segoe UI', system-ui, sans-serif" },
+    "body":    { "family": "'Manrope', 'Segoe UI', system-ui, sans-serif" }
   },
   "preview": {
     "cover":   "linear-gradient(135deg, #eef8f6 0%, #cfe8e2 55%, #40998f 100%)",

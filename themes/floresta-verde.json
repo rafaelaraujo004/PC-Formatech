@@ -6,8 +6,8 @@
   "description": "Tema escuro inspirado nas florestas tropicais com verdes profundos e destaques em esmeralda vibrante.",
   "sortOrder": 65,
   "fonts": {
-    "heading": { "family": "'Inter', sans-serif" },
-    "body":    { "family": "'Inter', sans-serif" }
+    "heading": { "family": "'Sora', 'Segoe UI', system-ui, sans-serif" },
+    "body":    { "family": "'Manrope', 'Segoe UI', system-ui, sans-serif" }
   },
   "preview": {
     "cover":   "linear-gradient(135deg, #071009 0%, #0d2310 50%, #134e21 100%)",

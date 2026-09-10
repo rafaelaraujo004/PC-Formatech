@@ -3,24 +3,197 @@
   "fallbackThemeId": "classico-neutro",
   "storageKey": "pcformatech_theme_settings",
   "themes": [
-    { "id": "classico-neutro",         "path": "themes/classico-neutro.json" },
-    { "id": "light-clean",             "path": "themes/light-clean.json" },
-    { "id": "profissional-corporativo","path": "themes/profissional-corporativo.json" },
-    { "id": "dark-tech",               "path": "themes/dark-tech.json" },
-    { "id": "gamer-rgb",               "path": "themes/gamer-rgb.json" },
-    { "id": "oceano-azul",             "path": "themes/oceano-azul.json" },
-    { "id": "sunset-quente",           "path": "themes/sunset-quente.json" },
-    { "id": "floresta-verde",          "path": "themes/floresta-verde.json" },
-    { "id": "roxo-tech",               "path": "themes/roxo-tech.json" },
-    { "id": "cobre-premium",           "path": "themes/cobre-premium.json" },
-    { "id": "rosa-moderno",            "path": "themes/rosa-moderno.json" },
-    { "id": "natal",                   "path": "themes/natal.json" },
-    { "id": "ano-novo",                "path": "themes/ano-novo.json" },
-    { "id": "pascoa",                  "path": "themes/pascoa.json" },
-    { "id": "dia-das-maes",            "path": "themes/dia-das-maes.json" },
-    { "id": "dia-dos-pais",            "path": "themes/dia-dos-pais.json" },
-    { "id": "festa-junina",            "path": "themes/festa-junina.json" },
-    { "id": "halloween",               "path": "themes/halloween.json" },
-    { "id": "dia-das-criancas",        "path": "themes/dia-das-criancas.json" }
+    {
+      "id": "classico-neutro",
+      "path": "themes/classico-neutro.json",
+      "name": "Clássico Neutro",
+      "category": "standard",
+      "mode": "light",
+      "sortOrder": 10
+    },
+    {
+      "id": "light-clean",
+      "path": "themes/light-clean.json",
+      "name": "Light Clean",
+      "category": "standard",
+      "mode": "light",
+      "sortOrder": 20
+    },
+    {
+      "id": "profissional-corporativo",
+      "path": "themes/profissional-corporativo.json",
+      "name": "Profissional Corporativo",
+      "category": "standard",
+      "mode": "light",
+      "sortOrder": 30
+    },
+    {
+      "id": "dark-tech",
+      "path": "themes/dark-tech.json",
+      "name": "Dark Tech",
+      "category": "standard",
+      "mode": "dark",
+      "sortOrder": 40
+    },
+    {
+      "id": "gamer-rgb",
+      "path": "themes/gamer-rgb.json",
+      "name": "Gamer RGB",
+      "category": "standard",
+      "mode": "dark",
+      "sortOrder": 50
+    },
+    {
+      "id": "oceano-azul",
+      "path": "themes/oceano-azul.json",
+      "name": "Oceano Azul",
+      "category": "standard",
+      "mode": "dark",
+      "sortOrder": 55
+    },
+    {
+      "id": "sunset-quente",
+      "path": "themes/sunset-quente.json",
+      "name": "Sunset Quente",
+      "category": "standard",
+      "mode": "light",
+      "sortOrder": 60
+    },
+    {
+      "id": "floresta-verde",
+      "path": "themes/floresta-verde.json",
+      "name": "Floresta Verde",
+      "category": "standard",
+      "mode": "dark",
+      "sortOrder": 65
+    },
+    {
+      "id": "roxo-tech",
+      "path": "themes/roxo-tech.json",
+      "name": "Roxo Tech",
+      "category": "standard",
+      "mode": "dark",
+      "sortOrder": 70
+    },
+    {
+      "id": "cobre-premium",
+      "path": "themes/cobre-premium.json",
+      "name": "Cobre Premium",
+      "category": "standard",
+      "mode": "light",
+      "sortOrder": 75
+    },
+    {
+      "id": "rosa-moderno",
+      "path": "themes/rosa-moderno.json",
+      "name": "Rosa Moderno",
+      "category": "standard",
+      "mode": "light",
+      "sortOrder": 80
+    },
+    {
+      "id": "natal",
+      "path": "themes/natal.json",
+      "name": "Natal",
+      "category": "seasonal",
+      "mode": "light",
+      "sortOrder": 100,
+      "schedule": {
+        "start": "12-01",
+        "end": "01-06",
+        "priority": 10
+      }
+    },
+    {
+      "id": "ano-novo",
+      "path": "themes/ano-novo.json",
+      "name": "Ano Novo",
+      "category": "seasonal",
+      "mode": "dark",
+      "sortOrder": 110,
+      "schedule": {
+        "start": "12-27",
+        "end": "01-05",
+        "priority": 12
+      }
+    },
+    {
+      "id": "pascoa",
+      "path": "themes/pascoa.json",
+      "name": "Páscoa",
+      "category": "seasonal",
+      "mode": "light",
+      "sortOrder": 120,
+      "schedule": {
+        "start": "03-20",
+        "end": "04-25",
+        "priority": 10
+      }
+    },
+    {
+      "id": "dia-das-maes",
+      "path": "themes/dia-das-maes.json",
+      "name": "Dia das Mães",
+      "category": "seasonal",
+      "mode": "light",
+      "sortOrder": 130,
+      "schedule": {
+        "start": "04-28",
+        "end": "05-15",
+        "priority": 10
+      }
+    },
+    {
+      "id": "dia-dos-pais",
+      "path": "themes/dia-dos-pais.json",
+      "name": "Dia dos Pais",
+      "category": "seasonal",
+      "mode": "light",
+      "sortOrder": 140,
+      "schedule": {
+        "start": "07-28",
+        "end": "08-15",
+        "priority": 10
+      }
+    },
+    {
+      "id": "festa-junina",
+      "path": "themes/festa-junina.json",
+      "name": "Festa Junina",
+      "category": "seasonal",
+      "mode": "light",
+      "sortOrder": 150,
+      "schedule": {
+        "start": "06-01",
+        "end": "06-30",
+        "priority": 10
+      }
+    },
+    {
+      "id": "halloween",
+      "path": "themes/halloween.json",
+      "name": "Halloween",
+      "category": "seasonal",
+      "mode": "dark",
+      "sortOrder": 160,
+      "schedule": {
+        "start": "10-20",
+        "end": "11-02",
+        "priority": 10
+      }
+    },
+    {
+      "id": "dia-das-criancas",
+      "path": "themes/dia-das-criancas.json",
+      "name": "Dia das Crianças",
+      "category": "seasonal",
+      "mode": "light",
+      "sortOrder": 170,
+      "schedule": {
+        "start": "10-06",
+        "end": "10-14",
+        "priority": 10
+      }
+    }
   ]
 }

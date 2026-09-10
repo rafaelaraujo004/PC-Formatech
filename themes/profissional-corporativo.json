@@ -6,8 +6,8 @@
   "description": "Tema corporativo em azul-marinho e branco. Transmite seriedade, credibilidade e excelência nos serviços.",
   "sortOrder": 30,
   "fonts": {
-    "heading": { "family": "'Inter', sans-serif" },
-    "body":    { "family": "'Inter', sans-serif" }
+    "heading": { "family": "'Sora', 'Segoe UI', system-ui, sans-serif" },
+    "body":    { "family": "'Manrope', 'Segoe UI', system-ui, sans-serif" }
   },
   "preview": {
     "cover":   "linear-gradient(135deg, #eff6ff 0%, #bfdbfe 50%, #3b82f6 100%)",

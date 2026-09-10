@@ -1,0 +1,697 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   PC FORMATECH — Camada de refinamento do painel administrativo
+   Carregada por ÚLTIMA, depois do <style> embutido no admin.html.
+
+   Por que existe: o admin.html carrega 1.591 linhas de CSS embutido e tem 102
+   elementos com style inline. Reabrir aquilo para ajustar aparência significa
+   caçar regra por regra. Esta camada vence por ordem de carga.
+
+   O painel não é um documento que se lê de cima a baixo: é uma ferramenta que
+   se opera. Então o trabalho aqui é de informação, não de tipografia — o que
+   precisa de atenção tem que saltar sem que ninguém leia número por número.
+
+   A aba "Dashboard em Tempo Real" já fazia isso bem, com cards coloridos por
+   significado. O resto do painel era branco sobre branco. Esta camada leva
+   aquela linguagem para as outras nove abas.
+
+   Índice
+     01 · Tokens
+     02 · Cabeçalho
+     03 · Barra de abas
+     04 · Cards de KPI
+     05 · Tabelas
+     06 · Estado vazio
+     07 · Ordenação
+     08 · Formulários
+     09 · Botões de ação
+     10 · Status
+     11 · Modais
+     12 · Mobile
+     13 · prefers-reduced-motion
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+
+/* ── 01 · Tokens ────────────────────────────────────────────────────────── */
+
+:root {
+    --adm-fs-label: 0.6875rem;  /* 11px — rótulos em caixa alta */
+    --adm-fs-xs:    0.8125rem;  /* 13px */
+    --adm-fs-sm:    0.875rem;   /* 14px — piso das tabelas */
+    --adm-fs-base:  0.9375rem;  /* 15px */
+    --adm-fs-lg:    1.125rem;
+    --adm-fs-xl:    1.5rem;
+    --adm-fs-kpi:   2rem;
+
+    --adm-superficie: #ffffff;
+    --adm-superficie-2: #f6f9f8;
+    --adm-borda: rgba(11, 61, 61, 0.1);
+    --adm-borda-forte: rgba(11, 61, 61, 0.18);
+    --adm-texto: #12263a;
+    --adm-texto-suave: #5f6c7b;
+
+    /* Cor semântica, separada do teal da marca: é ela que diz o que precisa de
+       atenção. O acento da marca fica para ação, não para estado. */
+    --adm-ok: #1f7a5c;
+    --adm-ok-suave: rgba(31, 122, 92, 0.1);
+    --adm-alerta: #a5730f;
+    --adm-alerta-suave: rgba(165, 115, 15, 0.12);
+    --adm-critico: #b4302a;
+    --adm-critico-suave: rgba(180, 48, 42, 0.1);
+    --adm-info: #2f6d99;
+    --adm-info-suave: rgba(47, 109, 153, 0.1);
+
+    --adm-sombra: 0 1px 2px rgba(11, 61, 61, 0.05), 0 8px 24px -16px rgba(11, 61, 61, 0.3);
+    --adm-raio: 12px;
+}
+
+html[data-theme='dark'] {
+    --adm-superficie: #111c2e;
+    --adm-superficie-2: #0e1a29;
+    --adm-borda: rgba(95, 201, 190, 0.16);
+    --adm-borda-forte: rgba(95, 201, 190, 0.3);
+    --adm-texto: #dce8f5;
+    --adm-texto-suave: #8fadc8;
+
+    --adm-ok: #5fc79f;
+    --adm-ok-suave: rgba(95, 199, 159, 0.14);
+    --adm-alerta: #ddab52;
+    --adm-alerta-suave: rgba(221, 171, 82, 0.14);
+    --adm-critico: #e8837c;
+    --adm-critico-suave: rgba(232, 131, 124, 0.14);
+    --adm-info: #82aecf;
+    --adm-info-suave: rgba(130, 174, 207, 0.14);
+
+    --adm-sombra: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px -16px rgba(0, 0, 0, 0.8);
+}
+
+.admin-panel,
+.login-container {
+    font-family: var(--pcft-font-body, 'Manrope', system-ui, sans-serif);
+    font-size: var(--adm-fs-base);
+}
+
+.admin-panel h1,
+.admin-panel h2,
+.admin-panel h3,
+.admin-panel h4,
+.login-container h2 {
+    font-family: var(--pcft-font-heading, 'Sora', system-ui, sans-serif);
+    letter-spacing: -0.02em;
+}
+
+/* Todo número que se compara com outro em coluna precisa de largura fixa. */
+.stat-card h3,
+.rt-kpi-value,
+.clients-table td,
+.admin-panel table td,
+.rt-fat-val,
+.rt-device-value {
+    font-variant-numeric: tabular-nums;
+}
+
+
+/* ── 02 · Cabeçalho ─────────────────────────────────────────────────────── */
+
+.admin-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    border-radius: var(--adm-raio);
+}
+
+.admin-header h1 {
+    font-size: var(--adm-fs-xl);
+    margin: 0;
+}
+
+/* Os três botões (sino, início, sair) empilhavam em coluna no canto, cada um
+   numa linha. Agora são uma fileira, com o "Sair" separado por ser o único
+   destrutivo. */
+.header-buttons {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.header-buttons .btn-notif,
+.header-buttons .btn-back-to-site {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-content: center;
+    border-radius: 10px;
+    border: 1px solid var(--adm-borda);
+    background: var(--adm-superficie);
+    color: var(--adm-texto);
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.header-buttons .btn-notif:hover,
+.header-buttons .btn-back-to-site:hover {
+    border-color: var(--brand-400, #40998F);
+    background: var(--adm-superficie-2);
+}
+
+.header-buttons .btn-logout {
+    margin-left: 0.35rem;
+    border-radius: 10px;
+    font-size: var(--adm-fs-xs);
+}
+
+
+/* ── 03 · Barra de abas ─────────────────────────────────────────────────── */
+
+/* Dez abas não cabem numa linha: quebravam em duas fileiras desalinhadas, e a
+   segunda ficava sem a borda inferior que indica a aba ativa. Vira uma faixa
+   rolável de uma linha só, com a ativa sempre marcada do mesmo jeito. */
+/* Sem scroll-snap: ele puxa de volta qualquer rolagem programática, e a
+   barra precisa poder trazer a aba ativa para a área visível por código. */
+.admin-tabs {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+    gap: 0.15rem;
+    padding: 0.35rem 0.35rem 0;
+    border-radius: var(--adm-raio) var(--adm-raio) 0 0;
+}
+
+.admin-tabs::-webkit-scrollbar {
+    height: 4px;
+}
+
+.admin-tabs::-webkit-scrollbar-thumb {
+    background: var(--adm-borda-forte);
+    border-radius: 4px;
+}
+
+.admin-panel .tab-button {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    white-space: nowrap;
+    padding: 0.7rem 0.95rem;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    border-radius: 8px 8px 0 0;
+    background: transparent;
+    color: var(--adm-texto-suave);
+    font-family: inherit;
+    font-size: var(--adm-fs-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+}
+
+.admin-panel .tab-button:hover {
+    color: var(--adm-texto);
+    background: var(--adm-superficie-2);
+}
+
+.admin-panel .tab-button.active {
+    color: var(--brand-400, #40998F);
+    border-bottom-color: var(--brand-400, #40998F);
+    background: var(--adm-superficie-2);
+}
+
+/* O ícone nunca deve receber o clique como alvo próprio — era daí que vinha o
+   bug de nenhuma aba ficar destacada. */
+.admin-panel .tab-button i {
+    pointer-events: none;
+    font-size: 0.9em;
+    opacity: 0.85;
+}
+
+
+/* ── 04 · Cards de KPI ──────────────────────────────────────────────────── */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
+    gap: 0.9rem;
+}
+
+/* Faixa de cor à esquerda dizendo o que o número significa: neutro para
+   contagem, verde para concluído, âmbar para pendente, teal para dinheiro.
+   Antes os quatro cards eram idênticos e só o texto diferenciava. */
+.stat-card {
+    position: relative;
+    display: grid;
+    gap: 0.3rem;
+    padding: 1.15rem 1.25rem;
+    border: 1px solid var(--adm-borda);
+    border-radius: var(--adm-raio);
+    background: var(--adm-superficie);
+    box-shadow: var(--adm-sombra);
+    overflow: hidden;
+    text-align: left;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 3px;
+    background: var(--adm-info);
+}
+
+.stats-grid .stat-card:nth-child(2)::before { background: var(--adm-ok); }
+.stats-grid .stat-card:nth-child(3)::before { background: var(--adm-alerta); }
+.stats-grid .stat-card:nth-child(4)::before { background: var(--brand-400, #40998F); }
+
+.stat-card h3 {
+    font-size: var(--adm-fs-kpi);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin: 0;
+}
+
+.stats-grid .stat-card:nth-child(2) h3 { color: var(--adm-ok); }
+.stats-grid .stat-card:nth-child(3) h3 { color: var(--adm-alerta); }
+.stats-grid .stat-card:nth-child(4) h3 { color: var(--brand-400, #40998F); }
+
+.stat-card p {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0;
+    font-size: var(--adm-fs-label);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--adm-texto-suave);
+}
+
+
+/* ── 05 · Tabelas ───────────────────────────────────────────────────────── */
+
+.table-wrapper,
+.clients-container {
+    border: 1px solid var(--adm-borda);
+    border-radius: var(--adm-raio);
+    overflow: hidden;
+    overflow-x: auto;
+    background: var(--adm-superficie);
+}
+
+.admin-panel table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--adm-fs-sm);
+}
+
+.admin-panel thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    text-align: left;
+    padding: 0.75rem 1rem;
+    background: var(--adm-superficie-2);
+    border-bottom: 1px solid var(--adm-borda);
+    font-size: var(--adm-fs-label);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--adm-texto-suave);
+    white-space: nowrap;
+}
+
+.admin-panel tbody td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--adm-borda);
+    vertical-align: middle;
+}
+
+.admin-panel tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+/* Zebra discreta: com muitas colunas, ajuda o olho a não pular de linha. */
+.admin-panel tbody tr:nth-child(even) {
+    background: color-mix(in srgb, var(--adm-superficie-2) 55%, transparent);
+}
+
+.admin-panel tbody tr:hover {
+    background: var(--adm-superficie-2);
+}
+
+
+/* ── 06 · Estado vazio ──────────────────────────────────────────────────── */
+
+/* A tabela vazia mostrava só o cabeçalho e um branco mudo — não dava para
+   saber se não havia registro, se a busca não achou nada ou se quebrou. */
+.admin-empty-row td {
+    padding: 3rem 1.5rem !important;
+    text-align: center;
+    border-bottom: 0 !important;
+}
+
+.admin-empty-row i {
+    display: block;
+    font-size: 1.6rem;
+    color: var(--adm-texto-suave);
+    opacity: 0.5;
+    margin-bottom: 0.7rem;
+}
+
+.admin-empty-row strong {
+    display: block;
+    font-family: var(--pcft-font-heading, 'Sora', system-ui, sans-serif);
+    font-size: var(--adm-fs-base);
+    margin-bottom: 0.25rem;
+    color: var(--adm-texto);
+}
+
+.admin-empty-row span {
+    font-size: var(--adm-fs-xs);
+    color: var(--adm-texto-suave);
+}
+
+
+/* ── 07 · Ordenação ─────────────────────────────────────────────────────── */
+
+.admin-panel th.admin-sortable {
+    cursor: pointer;
+    user-select: none;
+    padding-right: 1.6rem;
+    position: relative;
+    transition: color 0.18s ease;
+}
+
+.admin-panel th.admin-sortable:hover {
+    color: var(--brand-400, #40998F);
+}
+
+/* Seta neutra sempre visível: sem ela, ninguém descobre que dá para ordenar. */
+.admin-panel th.admin-sortable::after {
+    content: '';
+    position: absolute;
+    right: 0.65rem;
+    top: 50%;
+    width: 0;
+    height: 0;
+    border-left: 3.5px solid transparent;
+    border-right: 3.5px solid transparent;
+    border-bottom: 5px solid currentColor;
+    opacity: 0.28;
+    transform: translateY(-50%);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.admin-panel th.admin-sortable:hover::after {
+    opacity: 0.6;
+}
+
+.admin-panel th.sort-asc,
+.admin-panel th.sort-desc {
+    color: var(--brand-400, #40998F);
+}
+
+.admin-panel th.sort-asc::after {
+    opacity: 1;
+}
+
+.admin-panel th.sort-desc::after {
+    opacity: 1;
+    transform: translateY(-50%) rotate(180deg);
+}
+
+.admin-panel th.admin-sortable:focus-visible {
+    outline: 2px solid var(--brand-400, #40998F);
+    outline-offset: -2px;
+}
+
+
+/* ── 08 · Formulários ───────────────────────────────────────────────────── */
+
+.client-form,
+.admin-panel .form-group {
+    text-align: left;
+}
+
+.admin-panel .form-group label,
+.admin-panel .input-group label {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-size: var(--adm-fs-xs);
+    font-weight: 600;
+    color: var(--adm-texto-suave);
+}
+
+.admin-panel input[type="text"],
+.admin-panel input[type="tel"],
+.admin-panel input[type="email"],
+.admin-panel input[type="number"],
+.admin-panel input[type="date"],
+.admin-panel input[type="password"],
+.admin-panel select,
+.admin-panel textarea {
+    width: 100%;
+    min-height: 42px;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--adm-borda);
+    border-radius: 9px;
+    background: var(--adm-superficie);
+    color: var(--adm-texto);
+    font-family: inherit;
+    font-size: var(--adm-fs-sm);
+    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.admin-panel input:hover,
+.admin-panel select:hover,
+.admin-panel textarea:hover {
+    border-color: var(--adm-borda-forte);
+}
+
+.admin-panel input:focus,
+.admin-panel select:focus,
+.admin-panel textarea:focus {
+    outline: none;
+    border-color: var(--brand-400, #40998F);
+    box-shadow: 0 0 0 3px rgba(64, 153, 143, 0.16);
+}
+
+/* Campo obrigatório ainda vazio depois de tocado: marca sem alarmar. */
+.admin-panel input:required:not(:placeholder-shown):invalid {
+    border-color: var(--adm-critico);
+}
+
+.search-box input,
+input[id^="search"] {
+    min-height: 42px;
+}
+
+
+/* ── 09 · Botões de ação ────────────────────────────────────────────────── */
+
+.admin-panel .btn-save,
+.admin-panel .btn-update,
+.admin-panel .btn-login {
+    min-height: 44px;
+    border-radius: 10px;
+    font-family: var(--pcft-font-heading, 'Sora', system-ui, sans-serif);
+    font-weight: 700;
+    font-size: var(--adm-fs-sm);
+    letter-spacing: 0.01em;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.admin-panel .btn-save:hover,
+.admin-panel .btn-update:hover,
+.admin-panel .btn-login:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px -8px rgba(64, 153, 143, 0.7);
+}
+
+/* Botões de linha: compactos, com o destrutivo em vermelho só na borda até o
+   hover — vermelho cheio em toda linha vira ruído. */
+.admin-panel .btn-action,
+.admin-panel .btn-edit,
+.admin-panel .btn-delete,
+.admin-panel .btn-view,
+.admin-panel .btn-convert,
+.admin-panel .btn-whatsapp,
+.admin-panel .btn-remove {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.4rem 0.7rem;
+    border-radius: 8px;
+    font-size: var(--adm-fs-xs);
+    font-weight: 600;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: filter 0.18s ease, transform 0.18s ease;
+}
+
+.admin-panel .btn-action:hover,
+.admin-panel .btn-edit:hover,
+.admin-panel .btn-view:hover,
+.admin-panel .btn-convert:hover,
+.admin-panel .btn-whatsapp:hover {
+    filter: brightness(1.06);
+    transform: translateY(-1px);
+}
+
+.admin-panel .btn-delete,
+.admin-panel .btn-remove {
+    background: transparent;
+    border: 1px solid var(--adm-critico);
+    color: var(--adm-critico);
+}
+
+.admin-panel .btn-delete:hover,
+.admin-panel .btn-remove:hover {
+    background: var(--adm-critico);
+    color: #fff;
+}
+
+.admin-panel button:focus-visible,
+.admin-panel a:focus-visible,
+.admin-panel input:focus-visible,
+.admin-panel select:focus-visible {
+    outline: 2px solid var(--brand-400, #40998F);
+    outline-offset: 2px;
+}
+
+
+/* ── 10 · Status ────────────────────────────────────────────────────────── */
+
+/* Pílula com cor semântica: o estado do serviço tem que ler de relance numa
+   lista longa, sem depender de ler a palavra. */
+.service-status,
+.status-pendente,
+.status-andamento,
+.status-concluido,
+.status-cancelado {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.22rem 0.6rem;
+    border-radius: 999px;
+    font-size: var(--adm-fs-label);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.service-status::before,
+.status-pendente::before,
+.status-andamento::before,
+.status-concluido::before,
+.status-cancelado::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.status-concluido { background: var(--adm-ok-suave);      color: var(--adm-ok); }
+.status-pendente  { background: var(--adm-alerta-suave);  color: var(--adm-alerta); }
+.status-andamento { background: var(--adm-info-suave);    color: var(--adm-info); }
+.status-cancelado { background: var(--adm-critico-suave); color: var(--adm-critico); }
+
+
+/* ── 11 · Modais ────────────────────────────────────────────────────────── */
+
+.admin-panel .modal-content,
+.modal .modal-content {
+    border-radius: 16px;
+    border: 1px solid var(--adm-borda);
+    box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.55);
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid var(--adm-borda);
+}
+
+.modal-header h2,
+.modal-header h3 {
+    font-size: var(--adm-fs-lg);
+    margin: 0;
+}
+
+.modal .close {
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-content: center;
+    border-radius: 9px;
+    cursor: pointer;
+    transition: background 0.18s ease;
+}
+
+.modal .close:hover {
+    background: var(--adm-critico-suave);
+    color: var(--adm-critico);
+}
+
+
+/* ── 12 · Mobile ────────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+    .admin-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .header-buttons {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+    }
+
+    .stat-card h3 {
+        font-size: 1.6rem;
+    }
+
+    /* A tabela rola na horizontal dentro do próprio container, para a página
+       nunca ganhar rolagem lateral. */
+    .table-wrapper,
+    .clients-container {
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .admin-panel thead th,
+    .admin-panel tbody td {
+        padding: 0.6rem 0.7rem;
+    }
+}
+
+
+/* ── 13 · prefers-reduced-motion ────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+    .admin-panel *,
+    .admin-panel *::before,
+    .admin-panel *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .admin-panel .btn-save:hover,
+    .admin-panel .btn-action:hover,
+    .admin-panel tbody tr:hover {
+        transform: none;
+    }
+}

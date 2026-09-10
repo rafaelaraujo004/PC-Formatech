@@ -146,23 +146,8 @@
     
     /* Testimonials */
     .testimonials-grid {
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         gap: 1.5rem;
-    }
-    
-    .testimonial-card {
-        padding: 1.5rem;
-    }
-    
-    /* FAQ com 2 colunas quando possível */
-    .faq-grid {
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 1.5rem;
-    }
-    
-    .faq-item {
-        padding: 1.5rem;
-    }
+    }/* removido: encoberto por regra posterior — .testimonial-card *//* removido: encoberto por regra posterior — .faq-grid *//* removido: encoberto por regra posterior — .faq-item */
     
     .faq-question h3 {
         font-size: 0.95rem;
@@ -246,7 +231,6 @@
     }
     
     .footer-content {
-        gap: 2rem;
         font-size: 1rem;
     }
     
@@ -394,11 +378,7 @@
     .features-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 0.75rem;
-    }
-    
-    .feature-card {
-        padding: 1rem 0.75rem;
-    }
+    }/* removido: encoberto por regra posterior — .feature-card */
     
     .feature-card i {
         font-size: 1.7rem;
@@ -407,12 +387,7 @@
     .feature-card h3 {
         font-size: 1rem;
         line-height: 1.25;
-    }
-
-    .feature-card p {
-        font-size: 0.82rem;
-        line-height: 1.35;
-    }
+    }/* removido: encoberto por regra posterior — .feature-card p */
 
     /* Serviços mais compactos e escaneáveis */
     .service-card {
@@ -498,48 +473,12 @@
 
     .proof-card strong {
         font-size: 1.5rem;
-    }
-
-    /* Sobre: cards curtos, ícones menores e melhor divisão */
-    .about-features {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 0.7rem;
-    }
+    }/* removido: encoberto por regra posterior — .about-features */
 
     .about .feature-card {
         text-align: left;
         padding: 0.85rem;
-    }
-
-    .feature-icon {
-        width: 36px;
-        height: 36px;
-        margin: 0 0 0.6rem;
-        border-radius: 8px;
-    }
-
-    .feature-icon i {
-        font-size: 1rem;
-    }
-
-    .about-stats {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 0.65rem;
-        padding: 1rem 0.75rem;
-    }
-
-    .about-stats .stat-item {
-        padding: 0.65rem 0.35rem;
-    }
-
-    .about-stats .stat-number {
-        font-size: 1.2rem;
-    }
-
-    .about-stats .stat-label {
-        font-size: 0.72rem;
-        line-height: 1.3;
-    }
+    }/* removido: encoberto por regra posterior — .feature-icon *//* removido: encoberto por regra posterior — .feature-icon i *//* removido: encoberto por regra posterior — .about-stats *//* removido: encoberto por regra posterior — .about-stats .stat-item *//* removido: encoberto por regra posterior — .about-stats .stat-number *//* removido: encoberto por regra posterior — .about-stats .stat-label */
     
     /* WhatsApp mantém tamanho bom */
     .float-whatsapp {

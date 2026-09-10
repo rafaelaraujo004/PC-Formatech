@@ -555,8 +555,8 @@
             '--pcft-indicator-active': tokens.indicatorActive,
             '--pcft-chip-background': tokens.chipBackground,
             '--pcft-chip-text': tokens.chipText,
-            '--pcft-font-heading': (theme.fonts.heading && theme.fonts.heading.family) || "'Inter', sans-serif",
-            '--pcft-font-body': (theme.fonts.body && theme.fonts.body.family) || "'Inter', sans-serif",
+            '--pcft-font-heading': (theme.fonts.heading && theme.fonts.heading.family) || "'Sora', 'Segoe UI', system-ui, sans-serif",
+            '--pcft-font-body': (theme.fonts.body && theme.fonts.body.family) || "'Manrope', 'Segoe UI', system-ui, sans-serif",
             '--pcft-text-color': tokens.themeText,
             '--pcft-muted-color': tokens.themeMuted,
             '--pcft-heading-color': tokens.themeText,
@@ -784,21 +784,33 @@
                 return getThemeById(previewId);
             }
             if (settings && settings.autoSeasonal) {
+                // Dentro de uma data comemorativa, o tema sazonal assume.
                 const seasonal = findSeasonalTheme(new Date());
                 if (seasonal) {
                     return seasonal;
                 }
-                if (themeMap.has('classico-neutro')) {
-                    return getThemeById('classico-neutro');
+
+                // Fora dela, vale o tema escolhido no painel.
+                //
+                // Antes, este ponto devolvia 'classico-neutro' direto sempre que
+                // ele existisse — e ele existe sempre. O efeito era que, com a
+                // automação sazonal ligada (o padrão), escolher qualquer tema no
+                // Gerenciador de Temas não mudava nada no site fora das datas
+                // comemorativas: o seletor salvava, mas a resolução ignorava.
+                // As linhas seguintes àquele return eram inalcançáveis.
+                if (settings.activeThemeId) {
+                    const escolhido = getThemeById(settings.activeThemeId);
+                    // Um tema sazonal escolhido à mão não vale fora da própria
+                    // data: nesse caso cai para o neutro.
+                    if (escolhido && escolhido.category !== 'seasonal') {
+                        return escolhido;
+                    }
                 }
                 if (settings.fallbackThemeId) {
                     return getThemeById(settings.fallbackThemeId);
                 }
-                if (settings.activeThemeId) {
-                    const activeTheme = getThemeById(settings.activeThemeId);
-                    if (activeTheme.category !== 'seasonal') {
-                        return activeTheme;
-                    }
+                if (themeMap.has('classico-neutro')) {
+                    return getThemeById('classico-neutro');
                 }
             }
             if (settings && settings.activeThemeId) {
@@ -879,6 +891,13 @@
 
         function persistSettings(settings) {
             cacheSettings(settings);
+
+            // A gravação remota do tema pertence ao painel administrativo. Fora
+            // dele, o visitante que troca claro/escuro só muda a própria máquina —
+            // tentar gravar no Firestore como anônimo produzia um permission-denied
+            // no console em toda visita, sem nunca poder dar certo.
+            if (!isAdminPage()) return Promise.resolve({ synced: false, localOnly: true });
+
             const ctx = getFirebaseContext();
             if (!ctx) return Promise.resolve({ synced: false, localOnly: true });
 
@@ -896,43 +915,118 @@
                 });
         }
 
+        // Ids que a página pública precisa ter em mãos mesmo sem o catálogo
+        // completo: o alvo claro e o alvo escuro do botão de tema.
+        const ESSENTIAL_THEME_IDS = ['dark-tech', 'light-clean', 'classico-neutro'];
+
+        let fullCatalogPromise = null;
+
+        function isAdminPage() {
+            const path = (window.location.pathname || '').toLowerCase();
+            return path.includes('/admin') || path.endsWith('admin.html');
+        }
+
+        function normalizeManifest(loadedManifest) {
+            manifest = {
+                ...EMBEDDED_MANIFEST,
+                ...loadedManifest,
+                themes: Array.isArray(loadedManifest && loadedManifest.themes) && loadedManifest.themes.length
+                    ? loadedManifest.themes
+                    : EMBEDDED_MANIFEST.themes
+            };
+            settingsStorageKey = manifest.storageKey || DEFAULT_SETTINGS_STORAGE_KEY;
+            return manifest;
+        }
+
+        function embeddedFallbackFor(id) {
+            if (id === EMBEDDED_FALLBACK_THEME.id) return EMBEDDED_FALLBACK_THEME;
+            if (id === EMBEDDED_DARK_THEME.id) return EMBEDDED_DARK_THEME;
+            return null;
+        }
+
+        function fetchThemeEntry(entry) {
+            return fetchJson(entry.path)
+                .then((theme) => normalizeTheme(theme))
+                .catch(() => embeddedFallbackFor(entry.id));
+        }
+
+        function commitThemes(loadedThemes) {
+            const merged = new Map(themeMap);
+            loadedThemes.filter(Boolean).forEach((theme) => merged.set(theme.id, theme));
+
+            if (!merged.has(EMBEDDED_FALLBACK_THEME.id)) {
+                merged.set(EMBEDDED_FALLBACK_THEME.id, EMBEDDED_FALLBACK_THEME);
+            }
+            if (!merged.has(EMBEDDED_DARK_THEME.id)) {
+                merged.set(EMBEDDED_DARK_THEME.id, EMBEDDED_DARK_THEME);
+            }
+
+            themeMap = merged;
+            themeList = Array.from(merged.values()).sort((themeA, themeB) => themeA.sortOrder - themeB.sortOrder);
+        }
+
+        /**
+         * Ids necessários para resolver e aplicar o tema desta visita.
+         *
+         * Antes o catálogo inteiro era baixado no load de qualquer página: 19
+         * arquivos de tema mais o manifest, em toda visita à landing pública,
+         * incluindo Natal, Halloween e Festa Junina. O manifest agora carrega
+         * category/mode/schedule, então dá para decidir qual tema aplicar sem
+         * abrir os arquivos.
+         */
+        function resolveNeededThemeIds(settings) {
+            const ids = new Set();
+            const entries = manifest.themes || [];
+            const today = new Date();
+
+            if (settings && settings.activeThemeId) ids.add(String(settings.activeThemeId));
+            if (manifest.defaultThemeId) ids.add(manifest.defaultThemeId);
+            if (manifest.fallbackThemeId) ids.add(manifest.fallbackThemeId);
+            ESSENTIAL_THEME_IDS.forEach((id) => ids.add(id));
+
+            // Modo automático: o sazonal do dia entra na lista.
+            const seasonalToday = entries
+                .filter((entry) => entry.category === 'seasonal' && isWithinSchedule(entry.schedule, today))
+                .sort((a, b) => {
+                    const pa = a.schedule && Number(a.schedule.priority) ? Number(a.schedule.priority) : 0;
+                    const pb = b.schedule && Number(b.schedule.priority) ? Number(b.schedule.priority) : 0;
+                    return pb - pa;
+                })[0];
+            if (seasonalToday) ids.add(seasonalToday.id);
+
+            return ids;
+        }
+
+        /** Baixa o catálogo completo. Usado pelo painel admin e sob demanda. */
+        function loadAllThemes() {
+            if (fullCatalogPromise) return fullCatalogPromise;
+
+            fullCatalogPromise = Promise.all((manifest.themes || []).map(fetchThemeEntry))
+                .then((loadedThemes) => {
+                    commitThemes(loadedThemes);
+                    return themeList.slice();
+                })
+                .catch(() => {
+                    fullCatalogPromise = null;
+                    return themeList.slice();
+                });
+
+            return fullCatalogPromise;
+        }
+
         function loadCatalog() {
             return fetchJson(THEME_MANIFEST_PATH)
                 .catch(() => EMBEDDED_MANIFEST)
                 .then((loadedManifest) => {
-                    manifest = {
-                        ...EMBEDDED_MANIFEST,
-                        ...loadedManifest,
-                        themes: Array.isArray(loadedManifest && loadedManifest.themes) && loadedManifest.themes.length
-                            ? loadedManifest.themes
-                            : EMBEDDED_MANIFEST.themes
-                    };
-                    settingsStorageKey = manifest.storageKey || DEFAULT_SETTINGS_STORAGE_KEY;
+                    normalizeManifest(loadedManifest);
 
-                    return Promise.all(manifest.themes.map((entry) => {
-                        return fetchJson(entry.path)
-                            .then((theme) => normalizeTheme(theme))
-                            .catch(() => {
-                                if (entry.id === EMBEDDED_FALLBACK_THEME.id) {
-                                    return EMBEDDED_FALLBACK_THEME;
-                                }
-                                if (entry.id === EMBEDDED_DARK_THEME.id) {
-                                    return EMBEDDED_DARK_THEME;
-                                }
-                                return null;
-                            });
-                    }));
-                })
-                .then((loadedThemes) => {
-                    const validThemes = loadedThemes.filter(Boolean);
-                    const hasFallback = validThemes.some((theme) => theme.id === EMBEDDED_FALLBACK_THEME.id);
-                    const hasDarkFallback = validThemes.some((theme) => theme.id === EMBEDDED_DARK_THEME.id);
-                    themeList = hasFallback ? validThemes : validThemes.concat([EMBEDDED_FALLBACK_THEME]);
-                    if (!hasDarkFallback) {
-                        themeList = themeList.concat([EMBEDDED_DARK_THEME]);
-                    }
-                    themeList.sort((themeA, themeB) => themeA.sortOrder - themeB.sortOrder);
-                    themeMap = new Map(themeList.map((theme) => [theme.id, theme]));
+                    // O admin precisa da lista inteira para montar o seletor.
+                    if (isAdminPage()) return loadAllThemes().then(() => null);
+
+                    const needed = resolveNeededThemeIds(getCachedSettings());
+                    const entries = (manifest.themes || []).filter((entry) => needed.has(entry.id));
+
+                    return Promise.all(entries.map(fetchThemeEntry)).then(commitThemes);
                 })
                 .catch(() => {
                     manifest = EMBEDDED_MANIFEST;
@@ -987,6 +1081,11 @@
             },
             getThemes: function () {
                 return themeList.slice();
+            },
+            // Fora do admin o catálogo é carregado sob demanda; quem precisar da
+            // lista completa (um seletor de temas, por exemplo) chama isto antes.
+            loadAllThemes: function () {
+                return loadAllThemes();
             },
             getThemeById: function (themeId) {
                 return getThemeById(themeId);

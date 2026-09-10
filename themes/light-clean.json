@@ -6,8 +6,8 @@
   "description": "Tema minimalista branco com detalhes em azul-celeste. Foco total em legibilidade e clareza visual.",
   "sortOrder": 20,
   "fonts": {
-    "heading": { "family": "'Inter', sans-serif" },
-    "body":    { "family": "'Inter', sans-serif" }
+    "heading": { "family": "'Sora', 'Segoe UI', system-ui, sans-serif" },
+    "body":    { "family": "'Manrope', 'Segoe UI', system-ui, sans-serif" }
   },
   "preview": {
     "cover":   "linear-gradient(135deg, #ffffff 0%, #e0f2fe 55%, #7dd3fc 100%)",
