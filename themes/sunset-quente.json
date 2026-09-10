@@ -6,8 +6,8 @@
   "description": "Tema claro inspirado nos pôr do sol com laranja vibrante, dourado e tons quentes de âmbar. Energia e acolhimento.",
   "sortOrder": 60,
   "fonts": {
-    "heading": { "family": "'Inter', sans-serif" },
-    "body":    { "family": "'Inter', sans-serif" }
+    "heading": { "family": "'Sora', 'Segoe UI', system-ui, sans-serif" },
+    "body":    { "family": "'Manrope', 'Segoe UI', system-ui, sans-serif" }
   },
   "preview": {
     "cover":   "linear-gradient(135deg, #fff9f4 0%, #fed7aa 55%, #fb923c 100%)",

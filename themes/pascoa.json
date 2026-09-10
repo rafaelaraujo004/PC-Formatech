@@ -7,8 +7,8 @@
   "sortOrder": 120,
   "schedule": { "start": "03-20", "end": "04-25", "priority": 10 },
   "fonts": {
-    "heading": { "family": "'Inter', sans-serif" },
-    "body":    { "family": "'Inter', sans-serif" }
+    "heading": { "family": "'Sora', 'Segoe UI', system-ui, sans-serif" },
+    "body":    { "family": "'Manrope', 'Segoe UI', system-ui, sans-serif" }
   },
   "preview": {
     "cover":   "linear-gradient(135deg, #fdf4ff 0%, #fce7f3 50%, #ddd6fe 100%)",

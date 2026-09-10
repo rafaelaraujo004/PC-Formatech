@@ -24,7 +24,6 @@ function initFirebase() {
         if (typeof firebase.auth === 'function') {
             auth = firebase.auth();
         }
-        console.log('✅ Firebase inicializado');
         return true;
     } else {
         console.error('❌ Firebase SDK não carregado');

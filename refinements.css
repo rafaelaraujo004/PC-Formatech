@@ -1,0 +1,1626 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   PC FORMATECH — Camada de refinamento visual
+   Carregada por ÚLTIMA, depois de theme-system.css.
+
+   Por que um arquivo separado: styles.css e styles2.css têm 61 e 26 seletores
+   repetidos e theme-system.css usa 396 !important. Reabrir aquelas regras para
+   ajustar aparência significa disputar especificidade a cada linha. Esta camada
+   vence por ordem de carga, então quase nada aqui precisa de !important.
+
+   Índice
+     01 · Escala tipográfica e tokens
+     02 · Atmosfera (grade técnica + brilho direcional)
+     03 · Hero
+     04 · Indicadores do carrossel
+     05 · Cards "Curiosidade"
+     06 · Antes vs Depois
+     07 · Diagnóstico — chips no lugar de checkbox nativo
+     08 · Serviços
+     09 · Formulário de agendamento
+     10 · Foco visível
+     11 · Mobile
+     12 · prefers-reduced-motion
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+
+/* ── 01 · Escala tipográfica ─────────────────────────────────────────────────
+   Antes o h1 tinha 45px e quase todo o resto vivia entre 11 e 13px, sem degraus
+   intermediários. Escala de razão 1.25, com piso de 15px para texto de leitura;
+   12px fica reservado a rótulos em caixa alta, onde o letter-spacing compensa. */
+
+:root {
+    --fs-label:  0.75rem;    /* 12px — só caixa alta com tracking */
+    --fs-xs:     0.8125rem;  /* 13px — metadados */
+    --fs-sm:     0.9375rem;  /* 15px — piso de leitura */
+    --fs-base:   1.0625rem;  /* 17px — corpo */
+    --fs-md:     1.25rem;    /* 20px */
+    --fs-lg:     1.5625rem;  /* 25px */
+    --fs-xl:     1.95rem;    /* 31px */
+    --fs-2xl:    2.4375rem;  /* 39px */
+    --fs-display: clamp(2.2rem, 4.6vw, 3.8rem);
+
+    --tracking-label: 0.14em;
+    --tracking-tight: -0.025em;
+
+    /* Brilho da marca, usado com parcimônia: só em elementos de ação. */
+    --glow-accent: 0 0 0 1px rgba(111, 191, 179, 0.28), 0 8px 30px -8px rgba(64, 153, 143, 0.55);
+    --glow-accent-strong: 0 0 0 1px rgba(111, 191, 179, 0.5), 0 12px 42px -10px rgba(64, 153, 143, 0.75);
+
+    --edge-line: rgba(64, 153, 143, 0.16);
+    --plate-bg: rgba(255, 255, 255, 0.72);
+    --plate-border: rgba(11, 61, 61, 0.1);
+}
+
+html[data-theme='dark'] {
+    --edge-line: rgba(95, 201, 190, 0.13);
+    --plate-bg: rgba(12, 24, 38, 0.66);
+    --plate-border: rgba(95, 201, 190, 0.18);
+}
+
+body {
+    font-size: var(--fs-base);
+    line-height: 1.62;
+    letter-spacing: -0.005em;
+}
+
+h1, h2, h3, h4,
+.brand-name, .hero-kicker, .section-title {
+    font-family: var(--pcft-font-heading);
+    letter-spacing: var(--tracking-tight);
+    text-wrap: balance;
+}
+
+h2 { font-size: var(--fs-2xl); line-height: 1.12; }
+h3 { font-size: var(--fs-md); line-height: 1.28; }
+h4 { font-size: var(--fs-sm); }
+
+/* Números e dados técnicos em mono: é o idioma visual da área e cria hierarquia
+   sem precisar de mais uma cor. */
+.proof-card strong,
+.transform-boot,
+.metric-item small,
+.price-tag span:last-child,
+.price,
+.summary-total,
+.hero-trust-strip span {
+    font-family: var(--pcft-font-mono);
+    font-variant-numeric: tabular-nums;
+}
+
+.services-subtitle,
+.pc-transform-head p,
+.proof-card span,
+.attention-card .teaser,
+.attention-card .reveal-copy,
+.service-card p {
+    font-size: var(--fs-sm);
+}
+
+.attention-label,
+.transform-chip,
+.hero-kicker {
+    font-size: var(--fs-label);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+
+/* ── 02 · Atmosfera ──────────────────────────────────────────────────────────
+   Um único gesto repetido, não cinco efeitos diferentes: uma grade técnica de
+   1px muito discreta no fundo das seções largas, que só se percebe de relance e
+   dá ao fundo a textura de instrumento em vez de gradiente liso. */
+
+.pc-transform,
+.diagnostic-section,
+.proof-section,
+.services,
+.scheduling {
+    position: relative;
+    isolation: isolate;
+}
+
+.pc-transform::before,
+.diagnostic-section::before,
+.proof-section::before,
+.services::before,
+.scheduling::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+        linear-gradient(90deg, var(--edge-line) 1px, transparent 1px),
+        linear-gradient(180deg, var(--edge-line) 1px, transparent 1px);
+    background-size: 64px 64px;
+    /* A grade some nas bordas para não virar padrão de fundo declarado. */
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 30%, transparent 78%);
+            mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 30%, transparent 78%);
+    opacity: 0.85;
+}
+
+/* Brilho direcional apenas onde há ação. */
+.hero-cta-primary,
+.diagnostic-btn:not(.ghost),
+.urgency-cta,
+.booking-btn,
+.whatsapp-btn {
+    box-shadow: var(--glow-accent);
+    transition: box-shadow 0.28s ease, transform 0.28s ease;
+}
+
+.hero-cta-primary:hover,
+.diagnostic-btn:not(.ghost):hover,
+.urgency-cta:hover,
+.booking-btn:hover,
+.whatsapp-btn:hover {
+    box-shadow: var(--glow-accent-strong);
+    transform: translateY(-2px);
+}
+
+
+/* ── 03 · Hero ───────────────────────────────────────────────────────────────
+   O overlay do tema (.hero-overlay, definido por token com !important) continua
+   dando o tom da marca. O trabalho de legibilidade passa para esta camada: um
+   scrim vertical concentrado onde o texto vive, mais uma vinheta.
+
+   Antes o overlay era um gradiente único sobre 17 fotos de luminância muito
+   diferente — funcionava nas escuras e deixava o parágrafo ilegível nos slides
+   de código colorido e de setup RGB. */
+
+.hero-overlay::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 120% 78% at 50% 42%, transparent 26%, rgba(2, 14, 13, 0.46) 100%),
+        linear-gradient(to bottom,
+            rgba(2, 14, 13, 0.16) 0%,
+            rgba(2, 14, 13, 0.34) 34%,
+            rgba(2, 14, 13, 0.58) 72%,
+            rgba(2, 14, 13, 0.74) 100%);
+}
+
+/* Placa de vidro atrás do texto: resolve a legibilidade de vez, seja qual for a
+   foto, e é o elemento que mais empurra o hero para a leitura "tech". */
+.hero-content {
+    position: relative;
+    padding: clamp(1.6rem, 3.4vw, 3rem) clamp(1.4rem, 3vw, 3.2rem);
+    border-radius: 20px;
+    background: linear-gradient(150deg, rgba(4, 26, 25, 0.52), rgba(3, 16, 15, 0.34));
+    border: 1px solid rgba(150, 226, 216, 0.18);
+    -webkit-backdrop-filter: blur(14px) saturate(1.15);
+            backdrop-filter: blur(14px) saturate(1.15);
+    box-shadow: 0 30px 80px -40px rgba(0, 0, 0, 0.9);
+}
+
+/* Fio de luz na aresta superior — o detalhe que dá acabamento à placa. */
+.hero-content::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 12%;
+    right: 12%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(146, 232, 220, 0.75), transparent);
+    pointer-events: none;
+}
+
+.hero-content h1 {
+    font-size: var(--fs-display);
+    line-height: 1.04;
+    letter-spacing: -0.035em;
+    font-weight: 800;
+    /* Com a placa de vidro, a pilha de 4 text-shadows deixa de ser necessária —
+       ela borrava as bordas das letras. */
+    text-shadow: 0 2px 18px rgba(0, 0, 0, 0.45);
+}
+
+.hero-content p {
+    font-size: clamp(1rem, 1.35vw, 1.15rem);
+    line-height: 1.58;
+    max-width: 62ch;
+    text-shadow: none;
+}
+
+.hero-kicker {
+    background: rgba(6, 32, 30, 0.72);
+    border: 1px solid rgba(146, 232, 220, 0.42);
+    color: #cdf3ec;
+    -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+}
+
+.hero-trust-strip span {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.01em;
+    background: rgba(6, 32, 30, 0.6);
+    border: 1px solid rgba(146, 232, 220, 0.24);
+    -webkit-backdrop-filter: blur(6px);
+            backdrop-filter: blur(6px);
+}
+
+
+/* ── 04 · Indicadores do carrossel ───────────────────────────────────────────
+   Agora são <button> gerados por main.js (um por slide). Reset de botão para
+   manterem a aparência de ponto. */
+
+.hero-indicators .indicator {
+    appearance: none;
+    -webkit-appearance: none;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    transition: width 0.3s ease, opacity 0.3s ease;
+}
+
+/* Com 17 slides a linha de pontos fica longa; o ativo vira um traço, que lê a
+   posição de relance melhor do que 17 círculos iguais. */
+.hero-indicators .indicator.active {
+    width: 26px;
+    border-radius: 999px;
+}
+
+
+/* ── 05 · Cards "Curiosidade" ────────────────────────────────────────────────
+   O parágrafo era truncado por um fade e a frase terminava no meio da palavra.
+   As quatro colunas também tinham alturas diferentes. */
+
+.attention-grid {
+    align-items: stretch;
+}
+
+.attention-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    height: 100%;
+}
+
+.attention-card .reveal-copy {
+    max-height: none;
+    overflow: visible;
+    -webkit-mask-image: none;
+            mask-image: none;
+    opacity: 1;
+    margin-top: auto;
+    padding-top: 0.7rem;
+    border-top: 1px solid var(--edge-line);
+}
+
+
+/* ── 06 · Antes vs Depois ────────────────────────────────────────────────────
+   Era a seção com maior potencial de impacto e os dois cards eram visualmente
+   idênticos — o contraste prometido existia só no texto. */
+
+.transform-card {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+/* Faixa de estado no topo do card: vermelha à esquerda, luminosa à direita. */
+.transform-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+}
+
+.transform-card.before::before {
+    background: linear-gradient(90deg, #c2453d, rgba(194, 69, 61, 0.15));
+}
+
+.transform-card.after::before {
+    background: linear-gradient(90deg, #40998F, #6FBFB3);
+    box-shadow: 0 0 22px rgba(64, 153, 143, 0.75);
+}
+
+/* O card "Antes" parece desgastado: dessaturado e sem brilho. */
+.transform-card.before {
+    filter: saturate(0.62);
+    border-color: rgba(194, 69, 61, 0.24);
+}
+
+/* O "Depois" parece o sistema otimizado. */
+.transform-card.after {
+    border-color: rgba(64, 153, 143, 0.42);
+    box-shadow: 0 0 0 1px rgba(111, 191, 179, 0.18), 0 22px 50px -28px rgba(64, 153, 143, 0.6);
+}
+
+.transform-chip {
+    align-self: flex-start;
+    padding: 0.32rem 0.7rem;
+    border-radius: 999px;
+    font-size: var(--fs-label);
+}
+
+.transform-chip.danger {
+    background: rgba(194, 69, 61, 0.14);
+    color: #c2453d;
+    border: 1px solid rgba(194, 69, 61, 0.32);
+}
+
+.transform-chip.success {
+    background: rgba(64, 153, 143, 0.14);
+    color: var(--brand-400, #40998F);
+    border: 1px solid rgba(64, 153, 143, 0.4);
+}
+
+/* O boot é o número que prova a seção — antes era uma linha de 13px no rodapé. */
+.transform-boot {
+    margin-top: auto;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--edge-line);
+    font-size: var(--fs-md);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+}
+
+.transform-card.after .transform-boot {
+    color: var(--brand-400, #40998F);
+    text-shadow: 0 0 26px rgba(64, 153, 143, 0.45);
+}
+
+.metric-bar {
+    overflow: hidden;
+    border-radius: 999px;
+}
+
+.metric-bar i {
+    box-shadow: 0 0 18px rgba(64, 153, 143, 0.5);
+}
+
+
+/* ── 07 · Diagnóstico ────────────────────────────────────────────────────────
+   Checkbox nativo do sistema operacional era o detalhe que mais destoava numa
+   página que se apresenta como premium. Vira chip com estado. */
+
+.diagnostic-checks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+}
+
+.diagnostic-checks label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.62rem 1rem 0.62rem 0.85rem;
+    border-radius: 999px;
+    border: 1px solid var(--plate-border);
+    background: var(--plate-bg);
+    font-size: var(--fs-sm);
+    cursor: pointer;
+    user-select: none;
+    transition: border-color 0.22s ease, background 0.22s ease, box-shadow 0.22s ease, transform 0.22s ease;
+}
+
+.diagnostic-checks label:hover {
+    border-color: rgba(64, 153, 143, 0.5);
+    transform: translateY(-1px);
+}
+
+.diagnostic-checks input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    flex: none;
+    border-radius: 6px;
+    border: 1.5px solid rgba(64, 153, 143, 0.55);
+    background: transparent;
+    display: grid;
+    place-content: center;
+    cursor: pointer;
+    transition: background 0.22s ease, border-color 0.22s ease;
+}
+
+.diagnostic-checks input[type="checkbox"]::after {
+    content: '';
+    width: 9px;
+    height: 5px;
+    border-left: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+    transform: rotate(-45deg) scale(0);
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.diagnostic-checks input[type="checkbox"]:checked {
+    background: var(--brand-400, #40998F);
+    border-color: var(--brand-400, #40998F);
+}
+
+.diagnostic-checks input[type="checkbox"]:checked::after {
+    transform: rotate(-45deg) scale(1);
+}
+
+.diagnostic-checks label:has(input:checked) {
+    border-color: var(--brand-400, #40998F);
+    box-shadow: var(--glow-accent);
+}
+
+.diagnostic-chipline {
+    font-family: var(--pcft-font-mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.01em;
+}
+
+
+/* ── 08 · Serviços ───────────────────────────────────────────────────────────
+   grid-auto-rows: 1fr igualava a altura dos cards, mas o conteúdo preenchia
+   menos da metade — sobrava um vazio de ~120px entre a descrição e o botão. */
+
+.service-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.service-card h3 {
+    font-size: var(--fs-md);
+    margin-bottom: 0;
+}
+
+.service-card p {
+    margin-bottom: 0;
+    color: var(--pcft-muted-color, var(--brand-text-muted));
+}
+
+/* Os três primeiros itens do modal, trazidos para o card. Antes sobrava um
+   vazio de ~120px entre a descrição e o botão porque grid-auto-rows: 1fr
+   igualava as alturas sem que houvesse conteúdo para preencher. */
+.service-card-points {
+    list-style: none;
+    margin: 0.2rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.42rem;
+    text-align: left;
+    font-size: var(--fs-xs);
+    color: var(--pcft-muted-color, var(--brand-text-muted));
+}
+
+.service-card-points li {
+    position: relative;
+    padding-left: 1.15rem;
+    line-height: 1.45;
+}
+
+.service-card-points li::before {
+    content: '';
+    position: absolute;
+    left: 0.15rem;
+    top: 0.52em;
+    width: 5px;
+    height: 5px;
+    border-radius: 1px;
+    background: var(--brand-400, #40998F);
+    box-shadow: 0 0 8px rgba(64, 153, 143, 0.8);
+}
+
+/* O botão fica colado no rodapé do card, alinhado entre as colunas. */
+.service-card .service-details-btn {
+    margin-top: auto;
+}
+
+.service-card .service-icon-wrapper {
+    margin-block: 0.4rem;
+}
+
+.service-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--glow-accent);
+    border-color: rgba(64, 153, 143, 0.42);
+}
+
+.service-card:has(.service-checkbox:checked) {
+    border-color: var(--brand-400, #40998F);
+    box-shadow: var(--glow-accent-strong);
+}
+
+.price-tag {
+    font-family: var(--pcft-font-mono);
+    font-variant-numeric: tabular-nums;
+}
+
+.price-tag span:first-child {
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.8;
+}
+
+.price-tag span:last-child {
+    font-size: var(--fs-sm);
+    font-weight: 700;
+}
+
+
+/* ── 09 · Formulário de agendamento ──────────────────────────────────────────
+   Mesmos checkboxes nativos do diagnóstico, agora em linhas selecionáveis. */
+
+.services-checkbox-group label.service-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.8rem 1rem;
+    border-radius: 12px;
+    border: 1px solid var(--plate-border);
+    background: var(--plate-bg);
+    cursor: pointer;
+    font-size: var(--fs-sm);
+    transition: border-color 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
+}
+
+.services-checkbox-group label.service-checkbox:hover {
+    border-color: rgba(64, 153, 143, 0.5);
+}
+
+.services-checkbox-group input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    flex: none;
+    border-radius: 6px;
+    border: 1.5px solid rgba(64, 153, 143, 0.55);
+    display: grid;
+    place-content: center;
+    cursor: pointer;
+    transition: background 0.22s ease, border-color 0.22s ease;
+}
+
+.services-checkbox-group input[type="checkbox"]::after {
+    content: '';
+    width: 10px;
+    height: 6px;
+    border-left: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+    transform: rotate(-45deg) scale(0);
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.services-checkbox-group input[type="checkbox"]:checked {
+    background: var(--brand-400, #40998F);
+    border-color: var(--brand-400, #40998F);
+}
+
+.services-checkbox-group input[type="checkbox"]:checked::after {
+    transform: rotate(-45deg) scale(1);
+}
+
+.services-checkbox-group label.service-checkbox:has(input:checked) {
+    border-color: var(--brand-400, #40998F);
+    box-shadow: var(--glow-accent);
+}
+
+/* O preço dentro da linha alinha em coluna com os demais. */
+.services-checkbox-group label.service-checkbox span {
+    font-variant-numeric: tabular-nums;
+}
+
+
+/* ── 10 · Foco visível ───────────────────────────────────────────────────────
+   Não havia estado de foco em lugar nenhum: navegar por teclado era às cegas. */
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+    outline: 2px solid var(--brand-400, #40998F);
+    outline-offset: 3px;
+    border-radius: 6px;
+}
+
+.hero-content a:focus-visible,
+.hero-indicators .indicator:focus-visible,
+.hero-nav-btn:focus-visible {
+    outline-color: #cdf3ec;
+}
+
+/* Link de salto para o conteúdo, visível só quando recebe foco. */
+.skip-link {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translate(-50%, -120%);
+    z-index: 4000;
+    padding: 0.75rem 1.4rem;
+    border-radius: 0 0 10px 10px;
+    background: var(--brand-900, #0B3D3D);
+    color: #fff;
+    font-weight: 600;
+    font-size: var(--fs-sm);
+    text-decoration: none;
+    transition: transform 0.2s ease;
+}
+
+.skip-link:focus {
+    transform: translate(-50%, 0);
+}
+
+
+/* ── 11 · Mobile ─────────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+    /* Os botões flutuantes (WhatsApp e tema) ficavam por cima do CTA do hero e
+       do rodapé das seções. Reserva o espaço que eles ocupam. */
+    .hero-actions {
+        padding-bottom: 4.5rem;
+    }
+
+    .footer {
+        padding-bottom: 5.5rem;
+    }
+
+    .hero-content {
+        border-radius: 16px;
+        padding: 1.4rem 1.1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Antes/Depois era forçado a 2 colunas mesmo em 375px, e "Queda de
+       desempenho em tarefas simples" quebrava em três linhas numa coluna de
+       ~150px. Abaixo desta largura, empilha. */
+    .pc-transform-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .diagnostic-checks label {
+        width: 100%;
+    }
+}
+
+
+/* ── 12 · prefers-reduced-motion ─────────────────────────────────────────────
+   Não havia nenhuma ocorrência em todo o projeto, num site com carrossel
+   automático, contadores animados, barras animadas e reveal em 15 blocos.
+   O autoplay e os contadores são desligados no main.js; aqui vai o resto. */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    [data-reveal] {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+
+    .hero-cta-primary:hover,
+    .service-card:hover,
+    .diagnostic-checks label:hover {
+        transform: none;
+    }
+}
+
+
+/* ── 13 · Navegação ──────────────────────────────────────────────────────────
+   A nav tinha 3 links para 9 seções e nenhum levava às duas ações que a página
+   existe para provocar. Agora tem 5, com "Agendar" tratado como ação. */
+
+.nav-links {
+    align-items: center;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+}
+
+.nav-links li a {
+    font-size: var(--fs-sm);
+    padding: 0.45rem 0.85rem;
+    border-radius: 8px;
+    transition: background 0.22s ease, color 0.22s ease;
+}
+
+/* O header muda de cor conforme o tema (escuro em uns, branco em outros), então
+   o botão se tinge a partir da própria cor do texto do header em vez de assumir
+   um fundo escuro — assim ele aparece nos dois casos. */
+.nav-links li .nav-cta {
+    background: color-mix(in srgb, currentColor 14%, transparent);
+    border: 1px solid color-mix(in srgb, currentColor 42%, transparent);
+    font-weight: 700;
+    margin-left: 0.35rem;
+}
+
+.nav-links li .nav-cta:hover {
+    background: color-mix(in srgb, currentColor 26%, transparent);
+    border-color: currentColor;
+}
+
+@media (max-width: 560px) {
+    /* Os 5 itens precisam caber em 375px sem cortar o CTA: tipografia e
+       espaçamento apertados o suficiente para somar menos que a largura útil. */
+    .nav-links li a {
+        padding: 0.4rem 0.38rem;
+        font-size: 0.8125rem;
+    }
+
+    .nav-links li .nav-cta {
+        margin-left: 0.15rem;
+        padding-inline: 0.6rem;
+    }
+}
+
+
+/* ── 14 · Cabeçalho no mobile ────────────────────────────────────────────────
+   O header tem altura fixa (4cm ≈ 151px). Com 5 itens de navegação, a lista
+   quebrava em duas linhas e o botão "Agendar" transbordava 26px para fora do
+   fundo do header. Em telas estreitas a lista vira uma faixa rolável de uma
+   linha só: a altura do header fica estável e os 5 itens continuam acessíveis. */
+
+@media (max-width: 560px) {
+    .nav-links {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        scrollbar-width: none;
+        max-width: 100%;
+        padding-inline: 0.25rem;
+        justify-content: flex-start;
+        scroll-snap-type: x proximity;
+        gap: 0.1rem;
+    }
+
+    .nav-links::-webkit-scrollbar {
+        display: none;
+    }
+
+    .nav-links li {
+        flex: 0 0 auto;
+        scroll-snap-align: start;
+    }
+
+    .nav-links li a {
+        white-space: nowrap;
+    }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   15 · METADE INFERIOR — agendamento, social, sobre e rodapé
+
+   O que estava errado, medido no navegador:
+     · .scheduling-options era um grid de UMA coluna, então o formulário e os
+       três cards de informação ficavam empilhados em 1103px de largura;
+     · os campos herdavam text-align:center, deixando os rótulos centralizados
+       sobre inputs de 1065px — ninguém lê um formulário assim;
+     · os inputs tinham 36px de altura com 4,8px de padding, abaixo do mínimo
+       confortável para toque (44px);
+     · os info-cards viravam três barras horizontais de 1103×149px;
+     · no rodapé escuro, os cards de contato e de redes eram brancos, o que os
+       fazia parecer colados de outra página.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+
+/* ── 15.1 · Cabeçalhos de seção ─────────────────────────────────────────── */
+
+.scheduling > h2,
+.social-proof > h2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    font-size: var(--fs-2xl);
+    margin-bottom: 0.5rem;
+}
+
+.scheduling > h2 i,
+.social-proof > h2 i {
+    font-size: 0.72em;
+    color: var(--brand-400, #40998F);
+}
+
+
+/* ── 15.2 · Agendamento: duas colunas ───────────────────────────────────── */
+
+.scheduling-container {
+    max-width: 1120px;
+    text-align: left;
+}
+
+/* O formulário fica com quase o dobro da coluna de apoio. Abaixo de 960px as
+   duas empilham, com a informação de contexto vindo primeiro. */
+.scheduling-options {
+    display: grid;
+    grid-template-columns: minmax(0, 1.7fr) minmax(260px, 1fr);
+    gap: 1.75rem;
+    align-items: start;
+    text-align: left;
+}
+
+.quick-booking {
+    border-radius: 18px;
+    border: 1px solid var(--plate-border);
+    padding: clamp(1.2rem, 2.4vw, 2rem);
+    overflow: hidden;
+}
+
+.quick-booking > h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    justify-content: flex-start;
+    text-align: left;
+    font-size: var(--fs-md);
+    margin: 0 0 1.4rem;
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid var(--edge-line);
+}
+
+.quick-booking > h3 i {
+    color: var(--brand-400, #40998F);
+    font-size: 0.85em;
+}
+
+.schedule-form {
+    background: none;
+    padding: 0;
+    text-align: left;
+    display: grid;
+    gap: 1.05rem;
+    max-width: none;
+}
+
+
+/* ── 15.3 · Campos ──────────────────────────────────────────────────────── */
+
+.schedule-form .form-group {
+    display: grid;
+    gap: 0.4rem;
+    text-align: left;
+}
+
+.schedule-form .form-group > label {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    text-align: left;
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--pcft-muted-color, var(--brand-text-muted));
+    margin: 0;
+}
+
+.schedule-form .form-group > label i {
+    color: var(--brand-400, #40998F);
+    width: 1em;
+    text-align: center;
+    font-size: 0.95em;
+}
+
+/* 48px de altura: confortável para toque e para leitura, contra os 36px de
+   antes. O padding generoso é o que dá a sensação de acabamento. */
+.schedule-form input[type="text"],
+.schedule-form input[type="tel"],
+.schedule-form input[type="email"],
+.schedule-form input[type="date"],
+.schedule-form select,
+.schedule-form textarea {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.75rem 0.95rem;
+    border-radius: 11px;
+    border: 1px solid var(--plate-border);
+    background: var(--pcft-card-background, #fff);
+    color: inherit;
+    font-family: inherit;
+    font-size: var(--fs-sm);
+    line-height: 1.4;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.schedule-form textarea {
+    min-height: 110px;
+    resize: vertical;
+}
+
+.schedule-form input::placeholder,
+.schedule-form textarea::placeholder {
+    color: var(--pcft-muted-color, var(--brand-text-muted));
+    opacity: 0.72;
+}
+
+.schedule-form input:hover,
+.schedule-form select:hover,
+.schedule-form textarea:hover {
+    border-color: rgba(64, 153, 143, 0.45);
+}
+
+.schedule-form input:focus,
+.schedule-form select:focus,
+.schedule-form textarea:focus {
+    outline: none;
+    border-color: var(--brand-400, #40998F);
+    box-shadow: 0 0 0 3px rgba(64, 153, 143, 0.18);
+}
+
+/* Seta própria no lugar da nativa, que muda de cara em cada sistema. */
+.schedule-form select {
+    appearance: none;
+    -webkit-appearance: none;
+    padding-right: 2.4rem;
+    background-image:
+        linear-gradient(45deg, transparent 50%, currentColor 50%),
+        linear-gradient(135deg, currentColor 50%, transparent 50%);
+    background-position:
+        calc(100% - 1.15rem) calc(50% + 1px),
+        calc(100% - 0.8rem) calc(50% + 1px);
+    background-size: 6px 6px, 6px 6px;
+    background-repeat: no-repeat;
+    cursor: pointer;
+}
+
+.schedule-form .form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+    gap: 1.05rem;
+}
+
+.schedule-info {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.75rem;
+    color: var(--pcft-muted-color, var(--brand-text-muted));
+    margin-top: 0.35rem;
+}
+
+
+/* ── 15.4 · Seleção de serviços e total ─────────────────────────────────── */
+
+.services-checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+    gap: 0.55rem;
+    margin-top: 0.15rem;
+}
+
+/* O total é o número que decide a conversa. Antes era uma linha de texto solta
+   logo abaixo da lista. */
+.total-price-display {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 0.9rem;
+    padding: 0.85rem 1.1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(64, 153, 143, 0.35);
+    background: linear-gradient(135deg, rgba(64, 153, 143, 0.12), rgba(64, 153, 143, 0.04));
+}
+
+.total-price-display .total-label {
+    font-size: var(--fs-label);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--pcft-muted-color, var(--brand-text-muted));
+}
+
+.total-price-display .total-value {
+    font-family: var(--pcft-font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: var(--fs-lg);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--brand-400, #40998F);
+}
+
+
+/* ── 15.5 · Botão de envio ──────────────────────────────────────────────── */
+
+.submit-schedule-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    width: 100%;
+    min-height: 54px;
+    margin-top: 0.35rem;
+    border: 0;
+    border-radius: 12px;
+    background: var(--pcft-button-background, var(--brand-gradient-btn));
+    color: var(--pcft-button-text, #fff);
+    font-family: var(--pcft-font-heading);
+    font-size: var(--fs-sm);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    box-shadow: var(--glow-accent);
+    transition: box-shadow 0.28s ease, transform 0.28s ease;
+}
+
+.submit-schedule-btn:hover {
+    box-shadow: var(--glow-accent-strong);
+    transform: translateY(-2px);
+}
+
+.submit-schedule-btn i {
+    font-size: 1.15em;
+}
+
+
+/* ── 15.6 · Coluna de apoio ─────────────────────────────────────────────── */
+
+.scheduling-info {
+    display: grid;
+    gap: 0.9rem;
+    align-content: start;
+    /* Acompanha a rolagem enquanto o formulário, que é longo, é preenchido. */
+    position: sticky;
+    top: 4.6cm;
+}
+
+.info-card {
+    display: grid;
+    gap: 0.3rem;
+    text-align: left;
+    padding: 1.15rem 1.25rem;
+    border-radius: 14px;
+    border: 1px solid var(--plate-border);
+    position: relative;
+    overflow: hidden;
+}
+
+.info-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(180deg, var(--brand-400, #40998F), transparent);
+}
+
+.info-card > i {
+    font-size: 1.1rem;
+    color: var(--brand-400, #40998F);
+    margin-bottom: 0.25rem;
+}
+
+.info-card h4 {
+    margin: 0;
+    font-size: var(--fs-sm);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.info-card p {
+    margin: 0;
+    font-size: var(--fs-xs);
+    line-height: 1.55;
+    color: var(--pcft-muted-color, var(--brand-text-muted));
+}
+
+.info-card p strong {
+    color: inherit;
+    font-weight: 600;
+}
+
+.info-card small {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.02em;
+    color: var(--pcft-muted-color, var(--brand-text-muted));
+    opacity: 0.85;
+}
+
+
+/* ── 15.7 · Conecte-se conosco ──────────────────────────────────────────── */
+
+.social-proof .social-container {
+    max-width: 1000px;
+    margin-inline: auto;
+}
+
+.social-proof .social-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: 1rem;
+    align-items: stretch;
+}
+
+.social-proof .social-link,
+.social-proof .location-info {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto;
+    align-items: center;
+    gap: 0.15rem 0.85rem;
+    text-align: left;
+    padding: 1.2rem 1.3rem;
+    border-radius: 14px;
+    border: 1px solid var(--plate-border);
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.social-proof .social-link > i,
+.social-proof .location-info > i {
+    grid-row: 1 / 3;
+    font-size: 1.5rem;
+    width: 2.6rem;
+    height: 2.6rem;
+    display: grid;
+    place-content: center;
+    border-radius: 11px;
+    background: rgba(64, 153, 143, 0.12);
+    color: var(--brand-400, #40998F);
+}
+
+.social-proof .social-link.instagram > i {
+    background: linear-gradient(135deg, rgba(225, 48, 108, 0.16), rgba(253, 175, 55, 0.16));
+    color: #d6336c;
+}
+
+.social-proof .social-link.whatsapp > i {
+    background: rgba(37, 211, 102, 0.14);
+    color: #1da851;
+}
+
+.social-proof .social-link span,
+.social-proof .location-info span {
+    font-size: var(--fs-sm);
+    line-height: 1.35;
+}
+
+.social-proof .social-link small,
+.social-proof .location-info small {
+    font-size: 0.72rem;
+    color: var(--pcft-muted-color, var(--brand-text-muted));
+    line-height: 1.4;
+}
+
+.social-proof .social-link:hover {
+    transform: translateY(-3px);
+    border-color: rgba(64, 153, 143, 0.45);
+    box-shadow: var(--glow-accent);
+}
+
+
+/* ── 15.8 · Sobre ───────────────────────────────────────────────────────── */
+
+.about-header {
+    max-width: 60ch;
+    margin-inline: auto;
+}
+
+.about-content {
+    max-width: 1120px;
+    margin-inline: auto;
+    display: grid;
+    gap: 2.5rem;
+}
+
+.about-main {
+    display: grid;
+    grid-template-columns: minmax(220px, 300px) minmax(0, 1fr);
+    gap: 2rem;
+    align-items: start;
+    text-align: left;
+}
+
+.about-profile-photo {
+    display: grid;
+    place-content: center;
+    gap: 0.5rem;
+    aspect-ratio: 3 / 4;
+    border-radius: 18px;
+    border: 1px solid rgba(64, 153, 143, 0.3);
+    background:
+        radial-gradient(circle at 50% 30%, rgba(64, 153, 143, 0.22), transparent 62%),
+        linear-gradient(160deg, rgba(11, 61, 61, 0.9), rgba(26, 92, 92, 0.75));
+    color: #cdf3ec;
+    box-shadow: var(--glow-accent);
+}
+
+.about-profile-photo span {
+    font-family: var(--pcft-font-heading);
+    font-size: var(--fs-lg);
+    font-weight: 800;
+    letter-spacing: 0.18em;
+}
+
+.about-profile-photo i {
+    font-size: 2rem;
+    justify-self: center;
+    opacity: 0.65;
+}
+
+.about-text h3 {
+    font-size: var(--fs-xl);
+    line-height: 1.2;
+    margin: 0 0 1rem;
+}
+
+.about-text p {
+    max-width: 62ch;
+    margin: 0 0 0.9rem;
+}
+
+.about-text .highlight-text {
+    padding-left: 1rem;
+    border-left: 2px solid var(--brand-400, #40998F);
+    font-weight: 600;
+}
+
+.about-personal-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin-top: 0.6rem;
+    padding: 0.8rem 1.4rem;
+    border-radius: 999px;
+    background: var(--pcft-button-background, var(--brand-gradient-btn));
+    color: var(--pcft-button-text, #fff);
+    font-weight: 700;
+    font-size: var(--fs-sm);
+    text-decoration: none;
+    box-shadow: var(--glow-accent);
+    transition: box-shadow 0.28s ease, transform 0.28s ease;
+}
+
+.about-personal-cta:hover {
+    box-shadow: var(--glow-accent-strong);
+    transform: translateY(-2px);
+}
+
+.about-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+    gap: 1rem;
+}
+
+.about-features .feature-card {
+    display: grid;
+    gap: 0.45rem;
+    text-align: left;
+    padding: 1.3rem;
+    border-radius: 14px;
+    border: 1px solid var(--plate-border);
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.about-features .feature-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(64, 153, 143, 0.45);
+    box-shadow: var(--glow-accent);
+}
+
+.about-features .feature-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    display: grid;
+    place-content: center;
+    border-radius: 11px;
+    background: rgba(64, 153, 143, 0.12);
+    color: var(--brand-400, #40998F);
+    font-size: 1.05rem;
+    margin-bottom: 0.2rem;
+}
+
+.about-features .feature-card h4 {
+    margin: 0;
+    font-size: var(--fs-sm);
+    font-weight: 700;
+}
+
+.about-features .feature-card p {
+    margin: 0;
+    font-size: var(--fs-xs);
+    line-height: 1.5;
+    color: var(--pcft-muted-color, var(--brand-text-muted));
+}
+
+/* Os números da marca em mono, alinhados como uma régua. */
+.about-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(50%, 150px), 1fr));
+    gap: 0;
+    border: 1px solid var(--plate-border);
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.about-stats .stat-item {
+    display: grid;
+    gap: 0.3rem;
+    padding: 1.3rem 1rem;
+    text-align: center;
+    border-right: 1px solid var(--edge-line);
+}
+
+.about-stats .stat-item:last-child {
+    border-right: 0;
+}
+
+.about-stats .stat-number {
+    font-family: var(--pcft-font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: var(--fs-xl);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--brand-400, #40998F);
+}
+
+.about-stats .stat-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--pcft-muted-color, var(--brand-text-muted));
+    line-height: 1.4;
+}
+
+
+/* ── 15.9 · Rodapé ──────────────────────────────────────────────────────── */
+
+/* O rodapé é escuro; os cards eram brancos e pareciam colados de outra página.
+   Agora são vidro sobre o próprio fundo, com a borda fazendo a separação. */
+.footer .contact-item,
+.footer .social-link,
+.footer .location-info,
+.footer .payment-highlight {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 12px;
+    -webkit-backdrop-filter: blur(6px);
+            backdrop-filter: blur(6px);
+}
+
+.footer-content {
+    max-width: 1120px;
+    margin-inline: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    gap: 2rem;
+    align-items: start;
+    text-align: left;
+}
+
+.footer-content h3 {
+    font-size: var(--fs-lg);
+    margin: 0 0 0.3rem;
+}
+
+.footer-content h4 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--fs-label);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    font-weight: 700;
+    margin: 0 0 0.9rem;
+    opacity: 0.85;
+}
+
+.footer .slogan {
+    font-style: italic;
+    font-size: var(--fs-sm);
+    opacity: 0.9;
+    margin: 0 0 0.6rem;
+}
+
+.footer .footer-description {
+    font-size: var(--fs-xs);
+    line-height: 1.6;
+    max-width: 40ch;
+    opacity: 0.82;
+    margin: 0 0 1.2rem;
+}
+
+.footer .payment-highlight {
+    padding: 1rem 1.15rem;
+}
+
+.footer .payment-methods {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.footer .payment-item {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: var(--fs-xs);
+}
+
+.footer-contact,
+.footer-social {
+    display: grid;
+    gap: 0.7rem;
+    align-content: start;
+}
+
+.footer .contact-item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.9rem 1.05rem;
+}
+
+.footer .contact-item > i {
+    width: 2.1rem;
+    height: 2.1rem;
+    display: grid;
+    place-content: center;
+    border-radius: 9px;
+    background: rgba(255, 255, 255, 0.1);
+    font-size: 0.85rem;
+}
+
+.footer .contact-info p {
+    margin: 0;
+    font-size: var(--fs-sm);
+    line-height: 1.35;
+}
+
+.footer .contact-info small {
+    font-size: 0.7rem;
+    opacity: 0.75;
+}
+
+.footer .social-links {
+    display: grid;
+    gap: 0.7rem;
+}
+
+.footer .social-link,
+.footer .location-info {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.9rem 1.05rem;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+}
+
+.footer .social-link:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateX(3px);
+}
+
+.footer .social-link > i,
+.footer .location-info > i {
+    width: 2.1rem;
+    height: 2.1rem;
+    display: grid;
+    place-content: center;
+    border-radius: 9px;
+    background: rgba(255, 255, 255, 0.1);
+    font-size: 0.95rem;
+}
+
+.footer .social-link span,
+.footer .location-info span {
+    display: grid;
+    gap: 0.12rem;
+    font-size: var(--fs-sm);
+    line-height: 1.3;
+}
+
+.footer .social-link small,
+.footer .location-info small {
+    font-size: 0.7rem;
+    opacity: 0.75;
+}
+
+.footer-bottom {
+    max-width: 1120px;
+    margin-inline: auto;
+    margin-top: 2.5rem;
+    padding-top: 1.4rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.footer-info-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    font-size: var(--fs-xs);
+    opacity: 0.8;
+}
+
+.footer-info-bottom p {
+    margin: 0;
+}
+
+.payment-methods-icons {
+    display: flex;
+    gap: 0.75rem;
+    font-size: 1.15rem;
+    opacity: 0.75;
+}
+
+
+/* ── 15.10 · Metade inferior no mobile ──────────────────────────────────── */
+
+@media (max-width: 960px) {
+    .scheduling-options {
+        grid-template-columns: 1fr;
+    }
+
+    /* No empilhamento, o contexto (horário, local, como funciona) vem antes do
+       formulário: ajuda a decidir se vale a pena preencher. */
+    .scheduling-info {
+        order: -1;
+        position: static;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
+    }
+
+    .about-main {
+        grid-template-columns: 1fr;
+    }
+
+    .about-profile-photo {
+        aspect-ratio: 16 / 9;
+        max-width: 320px;
+    }
+}
+
+@media (max-width: 560px) {
+    .about-stats .stat-item {
+        border-right: 0;
+        border-bottom: 1px solid var(--edge-line);
+    }
+
+    .about-stats .stat-item:last-child {
+        border-bottom: 0;
+    }
+
+    .footer-info-bottom {
+        justify-content: center;
+        text-align: center;
+    }
+}
+
+
+/* ── 15.11 · Texto dos cards do rodapé ──────────────────────────────────────
+   styles2.css define `.social-link strong { color: var(--primary-color) }`, um
+   teal quase preto. Isso funcionava enquanto os cards do rodapé eram brancos;
+   com o vidro escuro, "Instagram", "WhatsApp" e a cidade caíram para 1,19:1 e
+   2,08:1 de contraste — praticamente invisíveis.
+
+   A correção é escopada em .footer de propósito: na seção "Conecte-se Conosco",
+   que fica sobre fundo claro, a cor escura continua sendo a certa. */
+
+.footer .social-link strong,
+.footer .location-info strong,
+.footer .contact-info strong,
+.footer .payment-item span,
+.footer .social-link small,
+.footer .location-info small {
+    color: inherit;
+}

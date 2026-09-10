@@ -2,16 +2,12 @@
 // FORMULÁRIO DE FORMATAÇÃO DE COMPUTADOR
 // ==========================================
 
-console.log('Script formatacao-form.js carregado!');
-
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM carregado!');
-    
     const formatacaoForm = document.getElementById('formatacao-form');
-    console.log('Formulário encontrado:', formatacaoForm);
-    
+
+    // Este script também é carregado no index.html, onde o formulário não existe.
+    // Sem esta saída antecipada ele logava "Formulário encontrado: null" a cada visita.
     if (formatacaoForm) {
-        console.log('Iniciando configuração do formulário...');
         
         // Controles de visibilidade condicionais
         
@@ -92,14 +88,12 @@ document.addEventListener('DOMContentLoaded', () => {
         formatacaoForm.addEventListener('submit', (e) => {
             e.preventDefault();
             
-            console.log('Formulário submetido!');
             
             // Coletar dados básicos
             const nome = document.getElementById('cliente-nome')?.value || '';
             const telefone = document.getElementById('cliente-telefone')?.value || '';
             const cidade = document.getElementById('cliente-cidade')?.value || '';
             
-            console.log('Dados:', {nome, telefone, cidade});
             
             // Validar campos obrigatórios básicos
             if (!nome || !telefone || !cidade) {
@@ -159,7 +153,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             
-            console.log('Todos os dados coletados com sucesso!');
             
             // Montar mensagem para WhatsApp
             let message = `🖥️ *SOLICITAÇÃO DE FORMATAÇÃO - PC FORMATECH*\n`;
@@ -241,7 +234,6 @@ document.addEventListener('DOMContentLoaded', () => {
             // Montar URL do WhatsApp
             const whatsappURL = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodedMessage}`;
             
-            console.log('Abrindo WhatsApp:', whatsappURL.substring(0, 100) + '...');
             
             // Abrir WhatsApp IMEDIATAMENTE
             const whatsappWindow = window.open(whatsappURL, '_blank');
@@ -361,7 +353,6 @@ document.addEventListener('DOMContentLoaded', () => {
                       String.fromCodePoint(0x1F4DD) + ' Cliente cadastrado no sistema!\n' +
                       String.fromCodePoint(0x1F4CB) + ' Orçamento Nº ' + novoOrcamento.budgetNumber + ' criado!');
                       
-                console.log('Cliente e orçamento salvos com sucesso!');
             } catch (cadastroError) {
                 console.error('Erro ao cadastrar no sistema:', cadastroError);
                 // Não interrompe o fluxo - WhatsApp já foi aberto

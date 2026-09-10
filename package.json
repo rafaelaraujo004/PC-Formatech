@@ -6,7 +6,13 @@
   "scripts": {
     "security:build": "node scripts/build-secure-assets.js",
     "start": "npx http-server . -p 8080 -c-1 --cors -o",
-    "dev": "npx http-server . -p 8080 -c-1 --cors -o"
+    "dev": "npx http-server . -p 8080 -c-1 --cors -o",
+    "build:images": "node scripts/build-images.js",
+    "build:images:force": "node scripts/build-images.js --force",
+    "sync:config": "node scripts/sync-config.js",
+    "check:config": "node scripts/sync-config.js --check",
+    "check:deploy": "node scripts/check-deploy.js",
+    "check": "npm run check:config && npm run check:deploy"
   },
   "author": "",
   "license": "ISC",

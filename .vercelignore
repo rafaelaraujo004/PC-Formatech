@@ -1,16 +1,38 @@
 # Arquivos que não precisam ir para o Vercel
+
+# Desenvolvimento
 .git
 .github
+.claude
 node_modules
 .env.local
 .env.example
+
+# Documentação
 *.md
-DEPLOY-INSTRUCOES.md
-GUIA-SEGURANCA.md
-GESTOR-SERVICOS.md
-README-GESTOR.md
-ORCAMENTOS-LAUDOS.md
-MOBILE-OPTIMIZATION.md
-VERIFICACAO.md
-GUIA-SLIDER.md
+# Exceção: guia-orcamentos.html linka para este arquivo ("Documentação
+# Completa"). Sem a exceção, o botão dá 404 em produção.
+!ORCAMENTOS-LAUDOS.md
 firestore-rules.txt
+
+# Páginas de teste e demonstração — ficavam publicamente acessíveis no domínio
+teste-upload.html
+teste-recursos.html
+demo.html
+exemplo-dados.html
+preview-formulario.jpg
+test-image.svg
+
+# Saída ofuscada que NENHUM HTML carrega. Atenção: auth-system.secure.js e
+# firebase-config.secure.js NÃO entram nesta lista — o admin.html depende dos
+# dois, e excluí-los derruba o painel em produção.
+admin-app.secure.js
+formatacao-form.secure.js
+index-app.secure.js
+main.secure.js
+theme-system.secure.js
+
+# Scripts que rodam apenas no Node, nunca no navegador
+scripts/
+server.js
+generate-icons.js

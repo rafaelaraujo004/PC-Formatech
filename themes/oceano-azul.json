@@ -6,8 +6,8 @@
   "description": "Tema escuro inspirado nas profundezas do oceano, com azuis intensos e destaques em ciano luminoso.",
   "sortOrder": 55,
   "fonts": {
-    "heading": { "family": "'Inter', sans-serif" },
-    "body":    { "family": "'Inter', sans-serif" }
+    "heading": { "family": "'Sora', 'Segoe UI', system-ui, sans-serif" },
+    "body":    { "family": "'Manrope', 'Segoe UI', system-ui, sans-serif" }
   },
   "preview": {
     "cover":   "linear-gradient(135deg, #030f1a 0%, #052844 50%, #064e68 100%)",

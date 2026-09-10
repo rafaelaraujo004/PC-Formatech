@@ -1,5 +1,9 @@
+// Respeita a preferência de sistema por menos movimento: sem autoplay,
+// sem transições longas, sem contadores animados.
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
 document.addEventListener('DOMContentLoaded', () => {
-    // Carrossel Hero
+    // ── Carrossel Hero ──────────────────────────────────────────────────────
     let slides = [];
     let indicators = [];
     let currentSlide = 0;
@@ -7,27 +11,86 @@ document.addEventListener('DOMContentLoaded', () => {
     let heroIndicatorsBound = false;
     let heroKeydownBound = false;
 
-    function showSlide(index) {
-        if (!slides.length || !indicators.length) return;
+    /**
+     * Promove um slide preguiçoso: copia data-srcset/data-src para os atributos
+     * reais. Os slides do hero ficam todos dentro da área visível (empilhados em
+     * position:absolute), então loading="lazy" não adiantaria — quem decide o
+     * momento de carregar é o carrossel.
+     */
+    function loadSlide(index) {
+        const slide = slides[index];
+        if (!slide || !slide.hasAttribute('data-lazy-slide')) return;
 
-        slides.forEach(slide => slide.classList.remove('active'));
-        indicators.forEach(indicator => indicator.classList.remove('active'));
+        slide.querySelectorAll('source[data-srcset]').forEach((source) => {
+            source.srcset = source.dataset.srcset;
+            source.removeAttribute('data-srcset');
+        });
+
+        const img = slide.querySelector('img[data-src]');
+        if (img) {
+            img.src = img.dataset.src;
+            img.removeAttribute('data-src');
+        }
+
+        slide.removeAttribute('data-lazy-slide');
+    }
+
+    // Mantém carregados o slide atual e o próximo, para a transição nunca
+    // aparecer em branco.
+    function preloadAround(index) {
+        if (!slides.length) return;
+        loadSlide(index);
+        loadSlide((index + 1) % slides.length);
+        loadSlide((index - 1 + slides.length) % slides.length);
+    }
+
+    function showSlide(index) {
+        if (!slides.length) return;
 
         const normalizedIndex = ((index % slides.length) + slides.length) % slides.length;
         currentSlide = normalizedIndex;
 
-        slides[currentSlide]?.classList.add('active');
-        indicators[currentSlide]?.classList.add('active');
+        preloadAround(currentSlide);
+
+        slides.forEach((slide, i) => slide.classList.toggle('active', i === currentSlide));
+        indicators.forEach((indicator, i) => {
+            const isActive = i === currentSlide;
+            indicator.classList.toggle('active', isActive);
+            indicator.setAttribute('aria-selected', String(isActive));
+            indicator.tabIndex = isActive ? 0 : -1;
+        });
+    }
+
+    /**
+     * Cria um indicador por slide. Antes a lista vinha fixa do HTML com 10 itens
+     * para 17 slides, então nenhum indicador acendia nos 7 últimos.
+     */
+    function buildIndicators(container) {
+        container.innerHTML = '';
+
+        slides.forEach((_, index) => {
+            const dot = document.createElement('button');
+            dot.type = 'button';
+            dot.className = 'indicator';
+            dot.dataset.slide = String(index);
+            dot.setAttribute('role', 'tab');
+            dot.setAttribute('aria-label', `Imagem ${index + 1} de ${slides.length}`);
+            dot.setAttribute('aria-selected', 'false');
+            dot.tabIndex = -1;
+            container.appendChild(dot);
+        });
+
+        indicators = Array.from(container.querySelectorAll('.indicator'));
     }
 
     function nextSlide() {
         if (!slides.length) return;
-        currentSlide = (currentSlide + 1) % slides.length;
-        showSlide(currentSlide);
+        showSlide(currentSlide + 1);
     }
 
     function startSlideshow() {
         if (slideInterval) clearInterval(slideInterval);
+        if (prefersReducedMotion.matches) return;
         slideInterval = setInterval(nextSlide, 10000); // 10 segundos
     }
 
@@ -43,10 +106,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 heroIndicatorsContainer.addEventListener('click', (event) => {
                     const indicator = event.target.closest('.indicator');
                     if (!indicator) return;
-                    const index = Number(indicator.getAttribute('data-slide'));
+                    const index = Number(indicator.dataset.slide);
                     if (Number.isFinite(index)) {
-                        currentSlide = index;
-                        showSlide(currentSlide);
+                        showSlide(index);
                         resetSlideshow();
                     }
                 });
@@ -68,87 +130,125 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function initHeroCarousel() {
         slides = Array.from(document.querySelectorAll('.hero-slide'));
-        indicators = Array.from(document.querySelectorAll('.indicator'));
 
-        if (!slides.length || !indicators.length) return;
+        const container = document.querySelector('.hero-indicators');
+        if (!slides.length || !container) return;
+
+        buildIndicators(container);
 
         currentSlide = 0;
-        showSlide(currentSlide);
+        showSlide(0);
         bindHeroInteractions();
         startSlideshow();
+
+        // Se o visitante ligar "reduzir movimento" no meio da sessão, o autoplay para.
+        if (typeof prefersReducedMotion.addEventListener === 'function') {
+            prefersReducedMotion.addEventListener('change', resetSlideshow);
+        }
     }
 
-    // Expor função pública para reinicializar o carrossel quando os slides mudarem dinamicamente
+    // Exposto para o painel admin reinicializar o carrossel após trocar os slides.
     window.initHeroCarousel = initHeroCarousel;
 
-    // Iniciar slideshow
     initHeroCarousel();
 
     // Função para mudar slide (usada pelos botões de navegação)
     window.changeSlide = function(direction) {
         if (!slides.length) return;
-        currentSlide = (currentSlide + direction + slides.length) % slides.length;
-        showSlide(currentSlide);
+        showSlide(currentSlide + direction);
         resetSlideshow();
     };
 
-    // Scroll reveal premium para seções estratégicas
+    // ── Scroll reveal ───────────────────────────────────────────────────────
+    // A página nasce visível: só depois de o JS confirmar que há suporte é que
+    // os blocos recebem 'reveal-ready' e partem do estado animado. Assim quem
+    // chega sem JS, um crawler ou um print da página continuam vendo o conteúdo.
     const revealElements = document.querySelectorAll('[data-reveal]');
     if (revealElements.length) {
-        const revealObserver = new IntersectionObserver((entries, obs) => {
-            entries.forEach((entry) => {
-                if (!entry.isIntersecting) return;
-                entry.target.classList.add('is-visible');
-                obs.unobserve(entry.target);
-            });
-        }, { threshold: 0.18 });
+        if (prefersReducedMotion.matches || !('IntersectionObserver' in window)) {
+            revealElements.forEach((el) => el.classList.add('is-visible'));
+        } else {
+            revealElements.forEach((el) => el.classList.add('reveal-ready'));
 
-        revealElements.forEach((el) => revealObserver.observe(el));
+            const revealObserver = new IntersectionObserver((entries, obs) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) return;
+                    entry.target.classList.add('is-visible');
+                    obs.unobserve(entry.target);
+                });
+            }, {
+                // threshold 0 + margem inferior: um bloco mais alto que a viewport
+                // (a seção de agendamento tem ~1900px) nunca alcançaria um
+                // threshold percentual e ficaria invisível para sempre.
+                threshold: 0,
+                rootMargin: '0px 0px -12% 0px'
+            });
+
+            revealElements.forEach((el) => revealObserver.observe(el));
+        }
     }
 
-    // Contadores da prova social
+    // ── Contadores da prova social ──────────────────────────────────────────
     const counterEls = document.querySelectorAll('[data-counter]');
     if (counterEls.length) {
-        const animateCounter = (el) => {
-            const target = Number(el.getAttribute('data-counter') || 0);
+        const finalValue = (el) => {
             const prefix = el.getAttribute('data-prefix') || '';
             const suffix = el.getAttribute('data-suffix') || '';
-            const duration = 1100;
-            const startTs = performance.now();
-
-            const tick = (ts) => {
-                const progress = Math.min((ts - startTs) / duration, 1);
-                const value = Math.floor(target * (1 - Math.pow(1 - progress, 3)));
-                el.textContent = `${prefix}${value}${suffix}`;
-                if (progress < 1) requestAnimationFrame(tick);
-            };
-            requestAnimationFrame(tick);
+            return `${prefix}${Number(el.getAttribute('data-counter') || 0)}${suffix}`;
         };
 
-        const countersObserver = new IntersectionObserver((entries, obs) => {
-            entries.forEach((entry) => {
-                if (!entry.isIntersecting) return;
-                animateCounter(entry.target);
-                obs.unobserve(entry.target);
-            });
-        }, { threshold: 0.4 });
+        if (prefersReducedMotion.matches || !('IntersectionObserver' in window)) {
+            counterEls.forEach((el) => { el.textContent = finalValue(el); });
+        } else {
+            const animateCounter = (el) => {
+                const target = Number(el.getAttribute('data-counter') || 0);
+                const prefix = el.getAttribute('data-prefix') || '';
+                const suffix = el.getAttribute('data-suffix') || '';
+                const duration = 1100;
+                const startTs = performance.now();
 
-        counterEls.forEach((el) => countersObserver.observe(el));
+                const tick = (ts) => {
+                    const progress = Math.min((ts - startTs) / duration, 1);
+                    const value = Math.floor(target * (1 - Math.pow(1 - progress, 3)));
+                    el.textContent = `${prefix}${value}${suffix}`;
+                    if (progress < 1) requestAnimationFrame(tick);
+                };
+                requestAnimationFrame(tick);
+            };
+
+            const countersObserver = new IntersectionObserver((entries, obs) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) return;
+                    animateCounter(entry.target);
+                    obs.unobserve(entry.target);
+                });
+            }, { threshold: 0.4 });
+
+            counterEls.forEach((el) => countersObserver.observe(el));
+        }
     }
 
-    // Barras de transformação antes/depois
+    // ── Barras de transformação antes/depois ────────────────────────────────
     const metricBars = document.querySelectorAll('[data-bar-target]');
     if (metricBars.length) {
-        const barsObserver = new IntersectionObserver((entries, obs) => {
-            entries.forEach((entry) => {
-                if (!entry.isIntersecting) return;
-                const target = Number(entry.target.getAttribute('data-bar-target') || 0);
-                entry.target.style.width = `${Math.max(0, Math.min(100, target))}%`;
-                obs.unobserve(entry.target);
-            });
-        }, { threshold: 0.45 });
+        const setBar = (bar) => {
+            const target = Number(bar.getAttribute('data-bar-target') || 0);
+            bar.style.width = `${Math.max(0, Math.min(100, target))}%`;
+        };
 
-        metricBars.forEach((bar) => barsObserver.observe(bar));
+        if (prefersReducedMotion.matches || !('IntersectionObserver' in window)) {
+            metricBars.forEach(setBar);
+        } else {
+            const barsObserver = new IntersectionObserver((entries, obs) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) return;
+                    setBar(entry.target);
+                    obs.unobserve(entry.target);
+                });
+            }, { threshold: 0.45 });
+
+            metricBars.forEach((bar) => barsObserver.observe(bar));
+        }
     }
 
     // Diagnóstico interativo rápido
@@ -193,7 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const selected = checked.map((el) => el.value).join(', ') || 'sem sintomas marcados';
             const message = `Olá, fiz o diagnóstico rápido no site. Sintomas: ${selected}. Quero análise técnica completa.`;
-            diagnosticWhatsappCta.href = `https://api.whatsapp.com/send?phone=5594984305772&text=${encodeURIComponent(message)}`;
+            diagnosticWhatsappCta.href = PCFT_CONFIG.linkWhatsApp(message);
         });
     }
 
@@ -228,7 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
             diagnosticQuizResult.hidden = false;
             diagnosticQuizResult.textContent = feedback;
             diagnosticQuizWhatsapp.hidden = false;
-            diagnosticQuizWhatsapp.href = `https://api.whatsapp.com/send?phone=5594984305772&text=${encodeURIComponent(`Olá, fiz o diagnóstico guiado e obtive pontuação ${score}/3. Quero receber o plano de otimização.`)}`;
+            diagnosticQuizWhatsapp.href = PCFT_CONFIG.linkWhatsApp(`Olá, fiz o diagnóstico guiado e obtive pontuação ${score}/3. Quero receber o plano de otimização.`);
             diagnosticQuizWhatsapp.dataset.whatsMessage = `Olá, fiz o diagnóstico guiado e obtive pontuação ${score}/3. Quero receber o plano de otimização.`;
         });
     }
@@ -242,7 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             e.preventDefault();
             const msg = btn.dataset.whatsMessage || 'Olá, quero receber meu diagnóstico completo.';
-            const url = `https://api.whatsapp.com/send?phone=5594984305772&text=${encodeURIComponent(msg)}`;
+            const url = PCFT_CONFIG.linkWhatsApp(msg);
             btn.setAttribute('href', url);
             window.open(url, '_blank', 'noopener');
         });
@@ -346,18 +446,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Menu Mobile DESABILITADO - Layout desktop sempre visível
     // O menu hamburguer não será utilizado
-    const menuToggle = document.querySelector('.menu-toggle');
-    const navLinks = document.querySelector('.nav-links');
-    
-    // Remove qualquer comportamento de menu mobile
-    if (menuToggle) {
-        menuToggle.style.display = 'none';
-    }
-    
-    if (navLinks) {
-        navLinks.style.display = 'flex';
-        navLinks.classList.remove('active');
-    }
 
     // Funcionalidade dos modais de serviço
     const serviceCards = document.querySelectorAll('.service-card');
@@ -430,7 +518,7 @@ document.addEventListener('DOMContentLoaded', () => {
         button.addEventListener('click', () => {
             const service = button.getAttribute('data-service') || 'Atendimento';
             const message = `Olá! Gostaria de mais informações sobre o serviço de ${service}.`;
-            const whatsappNumber = '5594984305772';
+            const whatsappNumber = PCFT_CONFIG.CONTATO.whatsapp;
             const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
             window.open(whatsappUrl, '_blank');
         });
@@ -701,7 +789,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         // Número do WhatsApp (com código do país)
-        const whatsappNumber = '5594984305772';
+        const whatsappNumber = PCFT_CONFIG.CONTATO.whatsapp;
         
         // Codificar mensagem para URL
         const encodedMessage = encodeURIComponent(message);
@@ -1010,7 +1098,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         message += `Poderia me passar mais informações?`;
         
-        const whatsappNumber = '5594984305772';
+        const whatsappNumber = PCFT_CONFIG.CONTATO.whatsapp;
         const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
         
         window.open(whatsappUrl, '_blank');

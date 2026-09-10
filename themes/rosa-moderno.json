@@ -6,8 +6,8 @@
   "description": "Tema claro em rose gold e nude suave. Moderno, sofisticado e agradável para todos os públicos.",
   "sortOrder": 80,
   "fonts": {
-    "heading": { "family": "'Inter', sans-serif" },
-    "body":    { "family": "'Inter', sans-serif" }
+    "heading": { "family": "'Sora', 'Segoe UI', system-ui, sans-serif" },
+    "body":    { "family": "'Manrope', 'Segoe UI', system-ui, sans-serif" }
   },
   "preview": {
     "cover":   "linear-gradient(135deg, #fff1f5 0%, #fecdd3 55%, #fb7185 100%)",
