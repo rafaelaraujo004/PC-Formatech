@@ -149,6 +149,105 @@
             updateDashboard();
             loadClientsTable();
             iniciarNotificacoes();
+            restaurarAbaSalva();
+            ativarOrdenacaoDeTabelas();
+        }
+
+        /**
+         * Volta para a aba em que se estava trabalhando. Antes, qualquer
+         * recarregamento — inclusive o F5 depois de salvar algo — jogava de
+         * volta no Dashboard.
+         */
+        function restaurarAbaSalva() {
+            let aba;
+            try { aba = localStorage.getItem('pcformatech_admin_tab'); } catch (e) { return; }
+            if (!aba || aba === 'dashboard') return;
+            if (!document.getElementById(`tab-${aba}`)) return;
+            switchTab(aba);
+        }
+
+        /**
+         * Ordenação por clique no cabeçalho, em todas as tabelas do painel.
+         *
+         * Nenhuma das 16 colunas era ordenável: com a lista crescendo, achar o
+         * cliente mais recente ou o maior orçamento virava rolagem no olho.
+         * A ordenação é feita sobre as linhas já renderizadas, então funciona
+         * em qualquer tabela sem depender de como os dados foram carregados.
+         */
+        function ativarOrdenacaoDeTabelas() {
+            document.querySelectorAll('.admin-panel table').forEach((tabela) => {
+                const cabecalhos = tabela.querySelectorAll('thead th');
+                if (!cabecalhos.length || tabela.dataset.ordenacaoAtiva) return;
+                tabela.dataset.ordenacaoAtiva = '1';
+
+                cabecalhos.forEach((th, indice) => {
+                    // A última coluna costuma ser "Ações" (botões): não ordena.
+                    const rotulo = th.textContent.trim().toLowerCase();
+                    if (!rotulo || rotulo === 'ações' || rotulo === 'acoes') return;
+
+                    th.classList.add('admin-sortable');
+                    th.tabIndex = 0;
+                    th.setAttribute('role', 'button');
+                    th.setAttribute('aria-sort', 'none');
+                    th.title = 'Ordenar por ' + th.textContent.trim();
+
+                    const ordenar = () => {
+                        const corpo = tabela.querySelector('tbody');
+                        if (!corpo) return;
+                        const linhas = [...corpo.querySelectorAll('tr')]
+                            .filter((tr) => !tr.classList.contains('admin-empty-row'));
+                        if (linhas.length < 2) return;
+
+                        const crescente = th.getAttribute('aria-sort') !== 'ascending';
+
+                        cabecalhos.forEach((outro) => {
+                            outro.setAttribute('aria-sort', 'none');
+                            outro.classList.remove('sort-asc', 'sort-desc');
+                        });
+                        th.setAttribute('aria-sort', crescente ? 'ascending' : 'descending');
+                        th.classList.add(crescente ? 'sort-asc' : 'sort-desc');
+
+                        linhas.sort((a, b) => {
+                            const x = valorDaCelula(a, indice);
+                            const y = valorDaCelula(b, indice);
+                            const cmp = (typeof x === 'number' && typeof y === 'number')
+                                ? x - y
+                                : String(x).localeCompare(String(y), 'pt-BR', { numeric: true, sensitivity: 'base' });
+                            return crescente ? cmp : -cmp;
+                        });
+
+                        linhas.forEach((tr) => corpo.appendChild(tr));
+                    };
+
+                    th.addEventListener('click', ordenar);
+                    th.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); ordenar(); }
+                    });
+                });
+            });
+        }
+
+        /**
+         * Valor comparável de uma célula. Reconhece dinheiro (R$ 1.234,56),
+         * data brasileira (dd/mm/aaaa) e número puro; o resto vira texto.
+         */
+        function valorDaCelula(linha, indice) {
+            const celula = linha.children[indice];
+            if (!celula) return '';
+            const texto = celula.textContent.trim();
+
+            const data = texto.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+            if (data) return new Date(`${data[3]}-${data[2]}-${data[1]}`).getTime();
+
+            if (/^R\$/.test(texto) || /^[\d.,]+$/.test(texto)) {
+                const numero = Number(texto.replace(/[^\d,-]/g, '').replace(/\./g, '').replace(',', '.'));
+                if (Number.isFinite(numero)) return numero;
+            }
+
+            const soDigitos = texto.match(/^\D*?(\d+)/);
+            if (soDigitos && texto.length < 12) return Number(soDigitos[1]);
+
+            return texto.toLowerCase();
         }
 
         // ===== SISTEMA DE TABS =====
@@ -156,10 +255,22 @@
             // Remover active de todos os botões e conteúdos
             document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            
-            // Ativar tab selecionada
-            event.target.classList.add('active');
-            document.getElementById(`tab-${tabName}`).classList.add('active');
+            // Resíduo de versões anteriores, que marcavam o <i> em vez do botão
+            document.querySelectorAll('.tab-button i.active').forEach(i => i.classList.remove('active'));
+
+            // O botão é localizado pelo próprio tabName. Antes vinha de
+            // event.target, que costuma ser o <i> do ícone e não o <button> —
+            // clicar no ícone deixava NENHUMA aba destacada. Chamar a função
+            // por código também quebrava, porque `event` era undefined.
+            const botaoAtivo = document.querySelector(`.tab-button[onclick*="'${tabName}'"]`);
+            if (botaoAtivo) botaoAtivo.classList.add('active');
+
+            const conteudoAba = document.getElementById(`tab-${tabName}`);
+            if (!conteudoAba) return;
+            conteudoAba.classList.add('active');
+
+            // Recarregar volta para a aba em que se estava trabalhando.
+            try { localStorage.setItem('pcformatech_admin_tab', tabName); } catch (e) {}
             
             // Carregar dados conforme a tab
             if (tabName === 'dashboard') {
@@ -540,11 +651,29 @@
 
             const searchTerm = document.getElementById('searchClient')?.value.toLowerCase() || '';
             
-            const filteredClients = clients.filter(client => 
-                client.name.toLowerCase().includes(searchTerm) ||
-                client.phone.toLowerCase().includes(searchTerm) ||
-                (client.cpf && client.cpf.toLowerCase().includes(searchTerm))
+            // String(...) protege contra registro sem nome ou sem telefone, que
+            // antes derrubava a listagem inteira com TypeError.
+            const contem = (valor) => String(valor || '').toLowerCase().includes(searchTerm);
+            const filteredClients = clients.filter(client =>
+                contem(client.name) || contem(client.phone) || contem(client.cpf)
             );
+
+            // Sem isto, a tabela vazia mostrava só o cabeçalho: nada distinguia
+            // "não há clientes" de "a busca não achou nada" ou "quebrou".
+            if (!filteredClients.length) {
+                const colunas = tbody.closest('table')?.querySelectorAll('thead th').length || 5;
+                tbody.innerHTML = `
+                    <tr class="admin-empty-row">
+                        <td colspan="${colunas}">
+                            <i class="fas fa-${searchTerm ? 'search' : 'user-plus'}" aria-hidden="true"></i>
+                            <strong>${searchTerm ? 'Nenhum cliente encontrado' : 'Nenhum cliente cadastrado ainda'}</strong>
+                            <span>${searchTerm
+                                ? 'Nada corresponde à busca. Verifique a grafia ou limpe o campo.'
+                                : 'Use o formulário acima para cadastrar o primeiro cliente.'}</span>
+                        </td>
+                    </tr>`;
+                return;
+            }
 
             filteredClients.forEach(client => {
                 const row = document.createElement('tr');
@@ -1525,7 +1654,12 @@ function updateChartTheme() {
             // Pontos reais: índice 0-6; pontos de projeção: 7-12
             // Projeção é visualmente diferenciada via `segment`
             const buildMerged = (real, proj) => {
-                return real.map((v, i) => (v !== null ? v : null)).concat(
+                // real.slice(0, PIVOT + 1) = só os 7 meses reais. Antes usava o
+                // array inteiro, que já traz 6 nulls futuros: 13 + 6 = 19 pontos
+                // para 13 rótulos, e o Chart.js descartava justamente os 6 da
+                // projeção. Resultado: a projeção nunca aparecia, e o botão
+                // "Ocultar Projeção" não tinha efeito visível.
+                return real.slice(0, PIVOT + 1).concat(
                     proj.slice(PIVOT + 1).map(v => (_projecaoVisivel ? v : null))
                 );
             };
@@ -3321,7 +3455,10 @@ function updateChartTheme() {
             // ── Orçamentos ────────────────────────────────────────────
             const orcAbertos   = budgets.filter(b => !b.finalizado).length;
             const orcFechados  = budgets.filter(b => b.finalizado).length;
-            const taxaConv     = budgets.length > 0 ? Math.round((svConcluido / budgets.length) * 100) : 0;
+            // Orçamentos que viraram serviço, sobre o total de orçamentos.
+            // Antes era svConcluido / budgets.length — serviços concluídos sobre
+            // orçamentos, duas populações sem relação, que dava 233%.
+            const taxaConv     = budgets.length > 0 ? Math.round((orcFechados / budgets.length) * 100) : 0;
 
             // ── Atualizar KPIs ────────────────────────────────────────
             _rtSet('rt-total-clientes', totalClientes);
