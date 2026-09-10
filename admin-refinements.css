@@ -169,6 +169,8 @@ html[data-theme='dark'] {
 /* Dez abas não cabem numa linha: quebravam em duas fileiras desalinhadas, e a
    segunda ficava sem a borda inferior que indica a aba ativa. Vira uma faixa
    rolável de uma linha só, com a ativa sempre marcada do mesmo jeito. */
+/* Sem scroll-snap: ele puxa de volta qualquer rolagem programática, e a
+   barra precisa poder trazer a aba ativa para a área visível por código. */
 .admin-tabs {
     display: flex;
     flex-wrap: nowrap;
@@ -178,7 +180,6 @@ html[data-theme='dark'] {
     gap: 0.15rem;
     padding: 0.35rem 0.35rem 0;
     border-radius: var(--adm-raio) var(--adm-raio) 0 0;
-    scroll-snap-type: x proximity;
 }
 
 .admin-tabs::-webkit-scrollbar {
@@ -192,7 +193,6 @@ html[data-theme='dark'] {
 
 .admin-panel .tab-button {
     flex: 0 0 auto;
-    scroll-snap-align: start;
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;

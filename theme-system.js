@@ -784,21 +784,33 @@
                 return getThemeById(previewId);
             }
             if (settings && settings.autoSeasonal) {
+                // Dentro de uma data comemorativa, o tema sazonal assume.
                 const seasonal = findSeasonalTheme(new Date());
                 if (seasonal) {
                     return seasonal;
                 }
-                if (themeMap.has('classico-neutro')) {
-                    return getThemeById('classico-neutro');
+
+                // Fora dela, vale o tema escolhido no painel.
+                //
+                // Antes, este ponto devolvia 'classico-neutro' direto sempre que
+                // ele existisse — e ele existe sempre. O efeito era que, com a
+                // automação sazonal ligada (o padrão), escolher qualquer tema no
+                // Gerenciador de Temas não mudava nada no site fora das datas
+                // comemorativas: o seletor salvava, mas a resolução ignorava.
+                // As linhas seguintes àquele return eram inalcançáveis.
+                if (settings.activeThemeId) {
+                    const escolhido = getThemeById(settings.activeThemeId);
+                    // Um tema sazonal escolhido à mão não vale fora da própria
+                    // data: nesse caso cai para o neutro.
+                    if (escolhido && escolhido.category !== 'seasonal') {
+                        return escolhido;
+                    }
                 }
                 if (settings.fallbackThemeId) {
                     return getThemeById(settings.fallbackThemeId);
                 }
-                if (settings.activeThemeId) {
-                    const activeTheme = getThemeById(settings.activeThemeId);
-                    if (activeTheme.category !== 'seasonal') {
-                        return activeTheme;
-                    }
+                if (themeMap.has('classico-neutro')) {
+                    return getThemeById('classico-neutro');
                 }
             }
             if (settings && settings.activeThemeId) {
