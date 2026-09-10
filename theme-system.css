@@ -1240,8 +1240,16 @@ label,
 }
 
 .header *,
-.footer * {
+.footer *,
+.form-header * {
     color: inherit;
+}
+
+/* O banner do formulário de formatação tem gradiente teal escuro próprio. Sem
+   isto, a regra global de cor de títulos pintava o h2 e o subtítulo com a cor
+   de superfície clara, deixando os dois em ~1,2:1 de contraste. */
+.form-header {
+    color: rgba(255, 255, 255, 0.95);
 }
 
 /* Header: cor calculada por JS para contrastar com qualquer fundo */
