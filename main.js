@@ -1225,3 +1225,48 @@ document.addEventListener('DOMContentLoaded', () => {
         startStatSlideshow();
     }
 });
+/**
+ * Chegada vinda da página de entrada: site.html?servico=formatacao#agende-servico
+ * já abre o formulário de agendamento com o serviço marcado e o total calculado.
+ * Aceita vários separados por vírgula. "remoto" não é um serviço do formulário,
+ * e sim o modo de atendimento.
+ */
+(function preselecionarServicoDaUrl() {
+    'use strict';
+
+    let ids = [];
+    try {
+        ids = (new URLSearchParams(window.location.search).get('servico') || '')
+            .split(',').map((s) => s.trim()).filter(Boolean);
+    } catch (e) { return; }
+    if (!ids.length) return;
+
+    function marcar() {
+        const cfg = window.PCFT_CONFIG;
+        ids.forEach((id) => {
+            if (id === 'remoto') {
+                const modo = document.getElementById('attendance-type');
+                if (modo) {
+                    modo.value = 'Remoto (AnyDesk)';
+                    modo.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+                return;
+            }
+            const servico = cfg && cfg.servicoPorId(id);
+            if (!servico) return;
+            const caixa = document.querySelector('.services-checkbox-group input[value="' + servico.nome + '"]');
+            if (caixa && !caixa.checked) {
+                caixa.checked = true;
+                caixa.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+        });
+
+        // O navegador já rolou até a âncora, mas imagens carregadas depois
+        // empurram o formulário; rola de novo com a página pronta.
+        const formulario = document.getElementById('agende-servico');
+        if (formulario) formulario.scrollIntoView({ block: 'start' });
+    }
+
+    if (document.readyState === 'complete') marcar();
+    else window.addEventListener('load', marcar);
+})();

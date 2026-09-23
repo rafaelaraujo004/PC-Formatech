@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <script>
+    // Links antigos apontavam para seções da página principal (ex.: /#agende-servico).
+    // Ela agora mora em site.html; sem isto, esses links cairiam aqui, no topo da busca.
+    (function () {
+        var h = location.hash.slice(1);
+        if (h && ['opcoes', 'busca', 'conteudo'].indexOf(h) === -1) {
+            location.replace('site.html' + location.search + location.hash);
+        }
+    })();
+    // Mesmo aplicador anti-flash do site: tema escuro antes do primeiro quadro.
+    (function () {
+        try {
+            var raw = localStorage.getItem('pcformatech_theme_settings');
+            var s = raw ? JSON.parse(raw) : null;
+            var id = s && s.activeThemeId ? String(s.activeThemeId) : '';
+            if (localStorage.getItem('pcft-theme') === 'dark' || localStorage.getItem('pcformatech-theme') === 'dark' || /dark/i.test(id)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        } catch (e) {}
+    })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>PC Formatech | Conserto, formatação e manutenção de computadores</title>
+    <meta name="description" content="Escreva o problema do seu computador e veja na hora o serviço certo e o preço: formatação, computador lento, vírus, programas, drivers e backup. Atendimento presencial ou à distância.">
+    <link rel="canonical" href="https://pcformatech.vercel.app/">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="PC Formatech">
+    <meta property="og:url" content="https://pcformatech.vercel.app/">
+    <meta property="og:title" content="PC Formatech | O que o seu computador precisa?">
+    <meta property="og:description" content="Escreva o problema e veja na hora o serviço certo e o preço. Formatação, lentidão, vírus, programas e mais.">
+    <meta property="og:image" content="https://pcformatech.vercel.app/images/og-preview.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="pt_BR">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <meta name="theme-color" content="#0B3D3D">
+    <link rel="icon" type="image/svg+xml" href="/favicon-icon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="portal.css">
+</head>
+<body class="pt">
+    <a class="pt-skip" href="#busca">Ir para a busca</a>
+
+    <!-- SVGs reutilizados pelos cards -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+        <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7.5"/><path d="m20.5 20.5-4.2-4.2"/></symbol>
+        <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></symbol>
+        <symbol id="i-chat" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M8 10.5h.01M12 10.5h.01M16 10.5h.01"/></symbol>
+        <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="16.5" rx="2"/><path d="M16 2.5v4M8 2.5v4M3 10h18"/></symbol>
+        <symbol id="i-laptop" viewBox="0 0 24 24"><rect x="4" y="4.5" width="16" height="11" rx="1.6"/><path d="M2 19.5h20"/><path d="m9.5 10 1.8 1.8 3.2-3.6"/></symbol>
+        <symbol id="i-gauge" viewBox="0 0 24 24"><path d="M3.4 18.5a10 10 0 1 1 17.2 0"/><path d="m12 14.5 4.5-5"/><circle cx="12" cy="14.5" r="1.4"/></symbol>
+        <symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.7 9a1 1 0 0 1-.6 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.2-2.7a1.2 1.2 0 0 1 1.6 0C14.5 3.8 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></symbol>
+        <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></symbol>
+        <symbol id="i-chip" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/></symbol>
+        <symbol id="i-photos" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></symbol>
+        <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
+        <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></symbol>
+        <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+        <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></symbol>
+    </svg>
+
+    <header class="pt-top">
+        <div class="pt-top-inner">
+            <div class="pt-brand">
+                <img src="/icon-192.png" alt="" width="40" height="40">
+                <span class="pt-brand-text">
+                    <strong>PC Formatech</strong>
+                    <span>Assistência técnica de computadores</span>
+                </span>
+            </div>
+            <a class="pt-main-link" href="site.html">
+                <span class="pt-main-link-long">Ir para o site principal</span>
+                <span class="pt-main-link-short">Site principal</span>
+                <svg class="pt-ico" aria-hidden="true"><use href="#i-arrow"/></svg>
+            </a>
+        </div>
+    </header>
+
+    <main id="conteudo">
+        <section class="pt-hero" aria-labelledby="pt-titulo">
+            <p class="pt-kicker">Formatação · Computador lento · Vírus · Programas</p>
+            <h1 id="pt-titulo">O que você precisa fazer no seu computador?</h1>
+            <p class="pt-sub">Escreva do seu jeito. Mostramos na hora o serviço certo e quanto custa.</p>
+
+            <form class="pt-search" id="busca" role="search" action="#opcoes">
+                <label for="pt-q" class="pt-sr">Descreva o problema do seu computador</label>
+                <svg class="pt-search-ico" aria-hidden="true"><use href="#i-search"/></svg>
+                <input id="pt-q" name="q" type="search" autocomplete="off" enterkeyhint="search"
+                       placeholder="Ex.: meu computador está lento" aria-describedby="pt-status">
+                <button type="submit" class="pt-search-btn">Buscar</button>
+            </form>
+
+            <div class="pt-chips" aria-label="Buscas mais comuns">
+                <span class="pt-chips-label">Mais procurados:</span>
+                <button type="button" class="pt-chip" data-q="está lento">Está lento</button>
+                <button type="button" class="pt-chip" data-q="formatar">Formatar</button>
+                <button type="button" class="pt-chip" data-q="vírus">Vírus</button>
+                <button type="button" class="pt-chip" data-q="instalar o Word e Excel">Instalar Office</button>
+                <button type="button" class="pt-chip" data-q="sem som">Sem som</button>
+                <button type="button" class="pt-chip" data-q="salvar minhas fotos">Salvar fotos</button>
+            </div>
+        </section>
+
+        <section class="pt-options" id="opcoes" aria-labelledby="pt-opcoes-titulo">
+            <div class="pt-options-head">
+                <h2 id="pt-opcoes-titulo">Principais serviços</h2>
+                <button type="button" class="pt-clear" id="pt-clear" hidden>Ver todos os serviços</button>
+            </div>
+            <p class="pt-status" id="pt-status" role="status" aria-live="polite"></p>
+
+            <div class="pt-empty" id="pt-empty" hidden>
+                <svg class="pt-empty-ico" aria-hidden="true"><use href="#i-help"/></svg>
+                <div>
+                    <p class="pt-empty-title">Não encontramos um serviço com essas palavras.</p>
+                    <p class="pt-empty-text">Sem problema: mande a sua descrição pelo WhatsApp e respondemos qual serviço resolve.</p>
+                    <a class="pt-btn pt-btn-primary" id="pt-empty-wa" target="_blank" rel="noopener"
+                       href="https://api.whatsapp.com/send?phone=5594984305772&amp;text=Ol%C3%A1!%20Preciso%20de%20ajuda%20com%20meu%20computador.">
+                        <svg class="pt-ico" aria-hidden="true"><use href="#i-chat"/></svg> Descrever no WhatsApp
+                    </a>
+                </div>
+            </div>
+
+            <div class="pt-grid" id="pt-grid">
+                <article class="pt-card" data-id="formatacao">
+                    <span class="pt-best">Indicado para você</span>
+                    <div class="pt-card-ico"><svg aria-hidden="true"><use href="#i-laptop"/></svg></div>
+                    <h3>Formatar o computador</h3>
+                    <p class="pt-card-text">Reinstala o Windows do zero, com navegador e programas essenciais. Garantia de 30 dias.</p>
+                    <p class="pt-price"><span>a partir de</span> <strong data-preco="formatacao">R$ 80,00</strong></p>
+                    <div class="pt-card-actions">
+                        <a class="pt-btn pt-btn-primary" data-wa target="_blank" rel="noopener" href="https://api.whatsapp.com/send?phone=5594984305772&amp;text=Ol%C3%A1!%20Quero%20formatar%20meu%20computador.">
+                            <svg class="pt-ico" aria-hidden="true"><use href="#i-chat"/></svg> Pedir pelo WhatsApp
+                        </a>
+                        <a class="pt-btn pt-btn-ghost" href="site.html?servico=formatacao#agende-servico">
+                            <svg class="pt-ico" aria-hidden="true"><use href="#i-calendar"/></svg> Agendar
+                        </a>
+                    </div>
+                </article>
+
+                <article class="pt-card" data-id="manutencao">
+                    <span class="pt-best">Indicado para você</span>
+                    <div class="pt-card-ico"><svg aria-hidden="true"><use href="#i-gauge"/></svg></div>
+                    <h3>Computador lento ou travando</h3>
+                    <p class="pt-card-text">Limpeza e otimização do sistema para ele voltar a ficar rápido.</p>
+                    <p class="pt-price"><span>a partir de</span> <strong data-preco="manutencao">R$ 70,00</strong></p>
+                    <div class="pt-card-actions">
+                        <a class="pt-btn pt-btn-primary" data-wa target="_blank" rel="noopener" href="https://api.whatsapp.com/send?phone=5594984305772&amp;text=Ol%C3%A1!%20Meu%20computador%20est%C3%A1%20lento.">
+                            <svg class="pt-ico" aria-hidden="true"><use href="#i-chat"/></svg> Pedir pelo WhatsApp
+                        </a>
+                        <a class="pt-btn pt-btn-ghost" href="site.html?servico=manutencao#agende-servico">
+                            <svg class="pt-ico" aria-hidden="true"><use href="#i-calendar"/></svg> Agendar
+                        </a>
+                    </div>
+                </article>
+
+                <article class="pt-card" data-id="seguranca">
+                    <span class="pt-best">Indicado para você</span>
+                    <div class="pt-card-ico"><svg aria-hidden="true"><use href="#i-shield"/></svg></div>
+                    <h3>Vírus e propagandas estranhas</h3>
+                    <p class="pt-card-text">Remove vírus e instala um antivírus para proteger seus arquivos e senhas.</p>
+                    <p class="pt-price"><span>a partir de</span> <strong data-preco="seguranca">R$ 60,00</strong></p>
+                    <div class="pt-card-actions">
+                        <a class="pt-btn pt-btn-primary" data-wa target="_blank" rel="noopener" href="https://api.whatsapp.com/send?phone=5594984305772&amp;text=Ol%C3%A1!%20Acho%20que%20meu%20computador%20est%C3%A1%20com%20v%C3%ADrus.">
+                            <svg class="pt-ico" aria-hidden="true"><use href="#i-chat"/></svg> Pedir pelo WhatsApp
+                        </a>
+                        <a class="pt-btn pt-btn-ghost" href="site.html?servico=seguranca#agende-servico">
+                            <svg class="pt-ico" aria-hidden="true"><use href="#i-calendar"/></svg> Agendar
+                        </a>
+                    </div>
+                </article>
+
+                <article class="pt-card" data-id="programas">
+                    <span class="pt-best">Indicado para você</span>
+                    <div class="pt-card-ico"><svg aria-hidden="true"><use href="#i-download"/></svg></div>
+                    <h3>Instalar programas</h3>
+                    <p class="pt-card-text">Word, Excel e o pacote Office, leitor de PDF e os programas de que você precisar.</p>
+                    <p class="pt-price"><span>a partir de</span> <strong data-preco="programas">R$ 50,00</strong></p>
+                    <div class="pt-card-actions">
+                        <a class="pt-btn pt-btn-primary" data-wa target="_blank" rel="noopener" href="https://api.whatsapp.com/send?phone=5594984305772&amp;text=Ol%C3%A1!%20Preciso%20instalar%20programas%20no%20meu%20computador.">
+                            <svg class="pt-ico" aria-hidden="true"><use href="#i-chat"/></svg> Pedir pelo WhatsApp
+                        </a>
+                        <a class="pt-btn pt-btn-ghost" href="site.html?servico=programas#agende-servico">
+                            <svg class="pt-ico" aria-hidden="true"><use href="#i-calendar"/></svg> Agendar
+                        </a>
+                    </div>
+                </article>
+
+                <article class="pt-card" data-id="drivers">
+                    <span class="pt-best">Indicado para você</span>
+                    <div class="pt-card-ico"><svg aria-hidden="true"><use href="#i-chip"/></svg></div>
+                    <h3>Som, Wi‑Fi ou vídeo não funcionam</h3>
+                    <p class="pt-card-text">Instala os drivers certos para cada peça do computador voltar a funcionar.</p>
+                    <p class="pt-price"><span>a partir de</span> <strong data-preco="drivers">R$ 40,00</strong></p>
+                    <div class="pt-card-actions">
+                        <a class="pt-btn pt-btn-primary" data-wa target="_blank" rel="noopener" href="https://api.whatsapp.com/send?phone=5594984305772&amp;text=Ol%C3%A1!%20Uma%20parte%20do%20meu%20computador%20parou%20de%20funcionar%20(som%2C%20Wi-Fi%20ou%20v%C3%ADdeo).">
+                            <svg class="pt-ico" aria-hidden="true"><use href="#i-chat"/></svg> Pedir pelo WhatsApp
+                        </a>
+                        <a class="pt-btn pt-btn-ghost" href="site.html?servico=drivers#agende-servico">
+                            <svg class="pt-ico" aria-hidden="true"><use href="#i-calendar"/></svg> Agendar
+                        </a>
+                    </div>
+                </article>
+
+                <article class="pt-card" data-id="backup">
+                    <span class="pt-best">Indicado para você</span>
+                    <div class="pt-card-ico"><svg aria-hidden="true"><use href="#i-photos"/></svg></div>
+                    <h3>Salvar fotos e arquivos</h3>
+                    <p class="pt-card-text">Faz uma cópia de segurança dos seus documentos, fotos e vídeos.</p>
+                    <p class="pt-price"><span>a partir de</span> <strong data-preco="backup">R$ 45,00</strong></p>
+                    <div class="pt-card-actions">
+                        <a class="pt-btn pt-btn-primary" data-wa target="_blank" rel="noopener" href="https://api.whatsapp.com/send?phone=5594984305772&amp;text=Ol%C3%A1!%20Quero%20fazer%20backup%20dos%20meus%20arquivos.">
+                            <svg class="pt-ico" aria-hidden="true"><use href="#i-chat"/></svg> Pedir pelo WhatsApp
+                        </a>
+                        <a class="pt-btn pt-btn-ghost" href="site.html?servico=backup#agende-servico">
+                            <svg class="pt-ico" aria-hidden="true"><use href="#i-calendar"/></svg> Agendar
+                        </a>
+                    </div>
+                </article>
+
+                <article class="pt-card" data-id="remoto">
+                    <span class="pt-best">Indicado para você</span>
+                    <div class="pt-card-ico"><svg aria-hidden="true"><use href="#i-home"/></svg></div>
+                    <h3>Atendimento sem sair de casa</h3>
+                    <p class="pt-card-text">Resolvemos à distância, pelo seu próprio computador, com 20% de desconto.</p>
+                    <p class="pt-price"><strong>20% de desconto</strong></p>
+                    <div class="pt-card-actions">
+                        <a class="pt-btn pt-btn-primary" data-wa target="_blank" rel="noopener" href="https://api.whatsapp.com/send?phone=5594984305772&amp;text=Ol%C3%A1!%20Quero%20atendimento%20remoto%20(%C3%A0%20dist%C3%A2ncia).">
+                            <svg class="pt-ico" aria-hidden="true"><use href="#i-chat"/></svg> Pedir pelo WhatsApp
+                        </a>
+                        <a class="pt-btn pt-btn-ghost" href="site.html?servico=remoto#agende-servico">
+                            <svg class="pt-ico" aria-hidden="true"><use href="#i-calendar"/></svg> Agendar
+                        </a>
+                    </div>
+                </article>
+
+                <article class="pt-card pt-card-help" data-id="ajuda">
+                    <span class="pt-best">Indicado para você</span>
+                    <div class="pt-card-ico"><svg aria-hidden="true"><use href="#i-help"/></svg></div>
+                    <h3>Não sei qual é o problema</h3>
+                    <p class="pt-card-text">Conte o que está acontecendo e receba uma orientação antes de decidir.</p>
+                    <p class="pt-price"><strong>Fale com a gente</strong></p>
+                    <div class="pt-card-actions">
+                        <a class="pt-btn pt-btn-primary" data-wa target="_blank" rel="noopener" href="https://api.whatsapp.com/send?phone=5594984305772&amp;text=Ol%C3%A1!%20Meu%20computador%20est%C3%A1%20com%20um%20problema%20e%20n%C3%A3o%20sei%20qual%20servi%C3%A7o%20escolher.">
+                            <svg class="pt-ico" aria-hidden="true"><use href="#i-chat"/></svg> Falar no WhatsApp
+                        </a>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="pt-trust" aria-label="Como funciona o atendimento">
+            <ul>
+                <li><svg class="pt-ico" aria-hidden="true"><use href="#i-pin"/></svg> Presencial em Canaã dos Carajás, PA</li>
+                <li><svg class="pt-ico" aria-hidden="true"><use href="#i-home"/></svg> À distância para qualquer cidade</li>
+                <li><svg class="pt-ico" aria-hidden="true"><use href="#i-check"/></svg> Garantia de 30 dias na formatação</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer class="pt-foot">
+        <p>
+            <strong>PC Formatech</strong> ·
+            WhatsApp <a href="https://api.whatsapp.com/send?phone=5594984305772" target="_blank" rel="noopener" data-contato="whatsapp">(94) 98430-5772</a> ·
+            <a href="https://instagram.com/pcformatech" target="_blank" rel="noopener">@pcformatech</a>
+        </p>
+        <a class="pt-foot-link" href="site.html">Conheça o site completo <svg class="pt-ico" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+    </footer>
+
+    <script src="site-config.js"></script>
+    <script src="portal.js"></script>
+
+    <!-- Tema escolhido no painel e contagem de visitantes do "Tempo Real".
+         Vêm por último: a busca já funciona antes de o Firebase carregar. -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script>if (typeof initFirebase === 'function') initFirebase();</script>
+    <script src="theme-system.js"></script>
+</body>
+</html>

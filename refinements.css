@@ -595,9 +595,12 @@ h4 { font-size: var(--fs-sm); }
     transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+/* !important obrigatório: theme-system.css pinta o fundo de todo input de
+   .form-group com var(--theme-surface) !important, e sem isto a caixa marcada
+   continuava branca — o cliente escolhia o serviço e nada indicava a escolha. */
 .services-checkbox-group input[type="checkbox"]:checked {
-    background: var(--brand-400, #40998F);
-    border-color: var(--brand-400, #40998F);
+    background: var(--brand-400, #40998F) !important;
+    border-color: var(--brand-400, #40998F) !important;
 }
 
 .services-checkbox-group input[type="checkbox"]:checked::after {
