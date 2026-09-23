@@ -29,8 +29,9 @@ function dateStrSP(date) {
 // ---------- handler ----------
 module.exports = async function handler(req, res) {
     // Proteção: aceita GET (cron do Vercel) ou POST
-    const secret = req.headers['x-cron-secret'] || req.query.secret;
-    if (secret !== process.env.CRON_SECRET) {
+    // O cron da Vercel manda "Authorization: Bearer <CRON_SECRET>"; sem aceitar
+    // esse formato, toda execução agendada voltava 401.
+    if (!require('./_push').autorizadoComoCron(req)) {
         return res.status(401).json({ error: 'Unauthorized' });
     }
 

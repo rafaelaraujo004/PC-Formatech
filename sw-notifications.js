@@ -52,17 +52,26 @@ self.addEventListener('message', event => {
 // ===== CLIQUE NA NOTIFICAÇÃO =====
 self.addEventListener('notificationclick', event => {
     event.notification.close();
+    // Cada notificação diz para qual aba levar (visita → Tempo Real);
+    // as de parcela, que não dizem, continuam indo para Parcelamentos.
+    const destino = (event.notification.data && event.notification.data.url) || '/admin.html#parcelamentos';
+    const aba = destino.split('#')[1] || '';
     event.waitUntil(
         self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clientList => {
             for (const client of clientList) {
                 if (client.url.includes('admin') && 'focus' in client) {
+                    if (aba) client.postMessage({ type: 'ABRIR_ABA', aba });
                     return client.focus();
                 }
             }
             if (self.clients.openWindow) {
-                return self.clients.openWindow('/admin.html#parcelamentos');
+                return self.clients.openWindow(destino);
             }
         })
     );
 });
+
+// Sem um "fetch" registrado, o Chrome do Android não oferece instalar o painel
+// como aplicativo. Não guarda nada em cache: só deixa a requisição seguir.
+self.addEventListener('fetch', () => {});
 

@@ -32,7 +32,7 @@
     <link rel="shortcut icon" href="/favicon-32x32.png">
 
     <!-- PWA / Adicionar à tela inicial -->
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="/manifest-admin.json">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="PC Formatech">
@@ -2508,6 +2508,103 @@
                 </div>
             </div>
 
+            <!-- Resumo de visitas (admin-visitas.js) -->
+            <div class="rt-section-title av-titulo">
+                <span><i class="fas fa-chart-line" style="color:#40998F;"></i> Resumo de visitas</span>
+                <div class="av-periodos" role="group" aria-label="Período do resumo">
+                    <button type="button" class="av-periodo is-ativo" data-dias="1">Hoje</button>
+                    <button type="button" class="av-periodo" data-dias="7">7 dias</button>
+                    <button type="button" class="av-periodo" data-dias="30">30 dias</button>
+                </div>
+            </div>
+            <p class="av-nota" id="av-nota">Carregando…</p>
+
+            <div class="av-kpis" id="av-kpis">
+                <div class="av-kpi"><span class="av-kpi-valor" id="av-visitantes">—</span><span class="av-kpi-rotulo">Pessoas diferentes</span></div>
+                <div class="av-kpi"><span class="av-kpi-valor" id="av-visitas">—</span><span class="av-kpi-rotulo">Visitas</span></div>
+                <div class="av-kpi av-kpi-destaque"><span class="av-kpi-valor" id="av-pico">—</span><span class="av-kpi-rotulo" id="av-pico-quando">Pico de pessoas online</span></div>
+                <div class="av-kpi"><span class="av-kpi-valor" id="av-duracao">—</span><span class="av-kpi-rotulo">Tempo médio no site</span></div>
+                <div class="av-kpi"><span class="av-kpi-valor" id="av-whatsapp">—</span><span class="av-kpi-rotulo">Clicaram no WhatsApp</span></div>
+                <div class="av-kpi"><span class="av-kpi-valor" id="av-agendamentos">—</span><span class="av-kpi-rotulo">Enviaram agendamento</span></div>
+            </div>
+
+            <div class="av-grade">
+                <div class="rt-card av-cartao">
+                    <h3 class="av-cartao-titulo"><i class="fas fa-fire"></i> Serviços mais procurados</h3>
+                    <ol class="av-barras" id="av-servicos"></ol>
+                </div>
+                <div class="rt-card av-cartao">
+                    <h3 class="av-cartao-titulo"><i class="fas fa-route"></i> De onde vieram</h3>
+                    <ol class="av-barras" id="av-origens"></ol>
+                </div>
+                <div class="rt-card av-cartao">
+                    <h3 class="av-cartao-titulo"><i class="fas fa-search"></i> O que escreveram na busca</h3>
+                    <ol class="av-barras" id="av-buscas"></ol>
+                </div>
+                <div class="rt-card av-cartao">
+                    <h3 class="av-cartao-titulo"><i class="fas fa-clock"></i> Horários com mais visitas</h3>
+                    <div class="av-horas" id="av-horas" aria-label="Visitas por hora do dia"></div>
+                    <div class="av-horas-eixo"><span>0h</span><span>6h</span><span>12h</span><span>18h</span><span>23h</span></div>
+                </div>
+            </div>
+
+            <div class="rt-card av-cartao av-dias" id="av-dias-cartao" hidden>
+                <h3 class="av-cartao-titulo"><i class="fas fa-calendar-alt"></i> Dia a dia</h3>
+                <div class="av-tabela-rolagem">
+                    <table class="av-tabela">
+                        <thead><tr><th>Dia</th><th>Pessoas</th><th>Visitas</th><th>Pico online</th></tr></thead>
+                        <tbody id="av-dias"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Controle: notificações, aparelho do dono, app e links -->
+            <div class="rt-section-title"><i class="fas fa-sliders-h" style="color:#40998F;"></i> Notificações e controle</div>
+            <div class="av-grade">
+                <div class="rt-card av-cartao">
+                    <h3 class="av-cartao-titulo"><i class="fas fa-bell"></i> Avisos no celular</h3>
+                    <label class="av-chave">
+                        <input type="checkbox" id="av-pref-visitas">
+                        <span><strong>Avisar quando alguém entrar no site</strong><small>Várias pessoas em sequência viram um aviso só.</small></span>
+                    </label>
+                    <label class="av-chave">
+                        <input type="checkbox" id="av-pref-resumo">
+                        <span><strong>Resumo do dia às 21h</strong><small>Aos domingos, também o resumo da semana.</small></span>
+                    </label>
+                    <label class="av-chave">
+                        <input type="checkbox" id="av-dono">
+                        <span><strong>Não contar as visitas deste aparelho</strong><small>Assim as suas entradas no site não aparecem no resumo.</small></span>
+                    </label>
+                    <div class="av-acoes">
+                        <button type="button" class="av-botao" id="av-ativar-push"><i class="fas fa-bell"></i> Ativar avisos neste aparelho</button>
+                        <button type="button" class="av-botao av-botao-secundario" id="av-instalar" hidden><i class="fas fa-mobile-alt"></i> Instalar como aplicativo</button>
+                    </div>
+                    <p class="av-status" id="av-push-status" role="status"></p>
+                </div>
+
+                <div class="rt-card av-cartao">
+                    <h3 class="av-cartao-titulo"><i class="fas fa-link"></i> Links rastreáveis</h3>
+                    <p class="av-texto">Crie um link para cada lugar onde você divulga. Quem entrar por ele aparece em "De onde vieram" com esse nome — assim você sabe quantas pessoas clicaram em cada link.</p>
+                    <div class="av-link-form">
+                        <input type="text" id="av-link-nome" maxlength="30" placeholder="Ex.: status-whatsapp" autocomplete="off" aria-label="Nome do link">
+                        <button type="button" class="av-botao" id="av-link-gerar">Criar link</button>
+                    </div>
+                    <div class="av-link-sugestoes">
+                        <button type="button" data-link="status-whatsapp">status-whatsapp</button>
+                        <button type="button" data-link="bio-instagram">bio-instagram</button>
+                        <button type="button" data-link="grupo-whatsapp">grupo-whatsapp</button>
+                        <button type="button" data-link="panfleto">panfleto</button>
+                    </div>
+                    <div class="av-link-resultado" id="av-link-resultado" hidden>
+                        <code id="av-link-url"></code>
+                        <div class="av-acoes">
+                            <button type="button" class="av-botao" id="av-link-copiar"><i class="fas fa-copy"></i> Copiar</button>
+                            <a class="av-botao av-botao-secundario" id="av-link-whatsapp" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> Enviar pelo WhatsApp</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Histórico 7 Dias -->
             <div class="rt-section-title"><i class="fas fa-history" style="color:#607D8B;"></i> Presença nos Últimos 7 Dias</div>
             <div class="rt-card" style="margin-bottom:14px;">
@@ -2599,5 +2696,7 @@
     </div>
 
         <script src="admin-app.js"></script>
+        <script src="resumo-visitas.js"></script>
+        <script src="admin-visitas.js"></script>
 </body>
 </html>

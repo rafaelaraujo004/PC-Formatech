@@ -93,7 +93,7 @@
         return String(texto || '')
             .toLowerCase()
             .normalize('NFD')
-            .replace(/[̀-ͯ]/g, '')
+            .replace(/[\u0300-\u036f]/g, '')
             .replace(/[^a-z0-9\s]/g, ' ')
             .replace(/\s+/g, ' ')
             .trim();
@@ -216,7 +216,7 @@
         const texto = String(consulta || '').trim();
         if (normalizar(texto).length < 2) {
             restaurar();
-            return;
+            return null;
         }
 
         const resultado = pontuar(texto);
@@ -236,7 +236,7 @@
             linkVazio.href = linkWhatsApp('Olá! Meu computador: ' + texto);
             titulo.textContent = 'Talvez seja um destes';
             status.textContent = 'Nenhum serviço com “' + texto + '”. Veja as opções abaixo ou fale com a gente.';
-            return;
+            return null;
         }
 
         vazio.hidden = true;
@@ -265,21 +265,51 @@
         status.textContent = anunciar
             ? 'Melhor opção: ' + nomeMelhor + (exibidos.length > 1 ? ' — e mais ' + (exibidos.length - 1) + ' relacionada(s).' : '.')
             : '';
+        return melhor.id;
     }
+
+    // ── Registro para o resumo do painel ─────────────────────────────────────
+    // O rastreador (theme-system.js) carrega depois desta página; por isso a
+    // busca por ele acontece na hora do evento, não no carregamento.
+    function registrar(tipo, valor) {
+        const r = window.PCFTPresenceTracker;
+        if (r && typeof r.registrar === 'function') r.registrar(tipo, valor);
+    }
+
+    // Só a busca "final" entra: enquanto a pessoa digita, cada letra geraria
+    // um registro ("f", "fo", "for"...).
+    let ultimaRegistrada = '';
+    function registrarBusca(texto, idMelhor) {
+        const limpo = normalizar(texto);
+        if (limpo.length < 3 || limpo === ultimaRegistrada) return;
+        ultimaRegistrada = limpo;
+        registrar('busca', limpo);
+        if (idMelhor) registrar('servico', idMelhor);
+    }
+
+    grade.addEventListener('click', (evento) => {
+        const card = evento.target.closest('.pt-card');
+        if (card && evento.target.closest('[data-wa]')) registrar('acao', 'whatsapp:' + card.dataset.id);
+    });
+    if (linkVazio) linkVazio.addEventListener('click', () => registrar('acao', 'whatsapp:sem-resultado'));
 
     let espera = null;
     campo.addEventListener('input', () => {
         clearTimeout(espera);
         espera = setTimeout(() => {
-            buscar(campo.value, true);
+            const idMelhor = buscar(campo.value, true);
             sincronizarUrl(campo.value);
+            clearTimeout(esperaRegistro);
+            esperaRegistro = setTimeout(() => registrarBusca(campo.value, idMelhor), 1500);
         }, 140);
     });
+    let esperaRegistro = null;
 
     form.addEventListener('submit', (evento) => {
         evento.preventDefault();
         clearTimeout(espera);
-        buscar(campo.value, true);
+        clearTimeout(esperaRegistro);
+        registrarBusca(campo.value, buscar(campo.value, true));
         sincronizarUrl(campo.value);
         irParaResultados();
     });
@@ -287,7 +317,7 @@
     document.querySelectorAll('.pt-chip').forEach((chip) => {
         chip.addEventListener('click', () => {
             campo.value = chip.dataset.q;
-            buscar(campo.value, true);
+            registrarBusca(campo.value, buscar(campo.value, true));
             sincronizarUrl(campo.value);
             irParaResultados();
         });

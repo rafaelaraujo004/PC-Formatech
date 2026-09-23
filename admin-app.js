@@ -144,6 +144,12 @@
             }
             document.getElementById('loginContainer').style.display = 'none';
             document.getElementById('adminPanel').style.display = 'block';
+            // Quem entra no painel é o dono: a partir daqui, as visitas deste
+            // aparelho ao site não entram na contagem de visitantes. Pode ser
+            // desfeito na aba Tempo Real.
+            try {
+                if (localStorage.getItem('pcft_dono') !== '0') localStorage.setItem('pcft_dono', '1');
+            } catch (e) { /* armazenamento bloqueado: segue sem marcar */ }
             loadHeroSlides();
             _loadAllFromFirebase();
             updateDashboard();
@@ -159,8 +165,11 @@
          * volta no Dashboard.
          */
         function restaurarAbaSalva() {
-            let aba;
-            try { aba = localStorage.getItem('pcformatech_admin_tab'); } catch (e) { return; }
+            // O endereço manda primeiro: as notificações abrem admin.html#realtime.
+            let aba = (window.location.hash || '').slice(1);
+            if (!aba || !document.getElementById(`tab-${aba}`)) {
+                try { aba = localStorage.getItem('pcformatech_admin_tab'); } catch (e) { return; }
+            }
             if (!aba || aba === 'dashboard') return;
             if (!document.getElementById(`tab-${aba}`)) return;
             switchTab(aba);
