@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "br.com.pcformatech.painel",
+      "sha256_cert_fingerprints": [
+        "CD:6E:8C:5F:E6:15:A2:F2:57:B1:FA:FC:E6:88:C8:9F:1E:EC:53:71:B0:03:25:EB:1C:30:EB:AC:34:45:A8:15"
+      ]
+    }
+  }
+]
