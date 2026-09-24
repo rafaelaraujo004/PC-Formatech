@@ -2,1669 +2,291 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <!-- Anti-flash: aplicar tema salvo antes do render -->
     <script>
-    (function(){
+    // Links antigos apontavam para seções da página principal (ex.: /#agende-servico).
+    // Ela agora mora em site.html; sem isto, esses links cairiam aqui, no topo da busca.
+    (function () {
+        var h = location.hash.slice(1);
+        if (h && ['opcoes', 'busca', 'conteudo'].indexOf(h) === -1) {
+            location.replace('site.html' + location.search + location.hash);
+        }
+    })();
+    // Mesmo aplicador anti-flash do site: tema escuro antes do primeiro quadro.
+    (function () {
         try {
-            const legacy = localStorage.getItem('pcft-theme');
-            const legacyManager = localStorage.getItem('pcformatech-theme');
-            const settingsRaw = localStorage.getItem('pcformatech_theme_settings');
-            const settings = settingsRaw ? JSON.parse(settingsRaw) : null;
-            const activeThemeId = settings && settings.activeThemeId ? String(settings.activeThemeId) : '';
-
-            if (
-                legacy === 'dark' ||
-                legacyManager === 'dark' ||
-                /dark/i.test(activeThemeId)
-            ) {
+            var raw = localStorage.getItem('pcformatech_theme_settings');
+            var s = raw ? JSON.parse(raw) : null;
+            var id = s && s.activeThemeId ? String(s.activeThemeId) : '';
+            if (localStorage.getItem('pcft-theme') === 'dark' || localStorage.getItem('pcformatech-theme') === 'dark' || /dark/i.test(id)) {
                 document.documentElement.setAttribute('data-theme', 'dark');
             }
-        } catch(e) {}
+        } catch (e) {}
     })();
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>PC Formatech | Otimização Premium e Assistência Técnica de Computadores</title>
-    
-    <!-- Meta Tags para SEO -->
-    <meta name="description" content="Assistência técnica premium para PCs lentos: diagnóstico inteligente, otimização completa, formatação segura e suporte rápido via WhatsApp.">
-    <meta name="keywords" content="otimização de pc, formatação premium, assistência técnica computador, suporte remoto, pc lento, limpeza e desempenho">
-    <meta name="author" content="PC Formatech">
-    
-    <!-- Open Graph / Facebook -->
+    <title>PC Formatech | Conserto, formatação e manutenção de computadores</title>
+    <meta name="description" content="Escreva o problema do seu computador e veja na hora o serviço certo e o preço: formatação, computador lento, vírus, programas, drivers e backup. Atendimento presencial ou à distância.">
     <link rel="canonical" href="https://pcformatech.vercel.app/">
+
     <meta property="og:type" content="website">
+    <meta property="og:site_name" content="PC Formatech">
     <meta property="og:url" content="https://pcformatech.vercel.app/">
-    <meta property="og:title" content="PC Formatech | Otimização Premium de Computadores">
-    <meta property="og:description" content="Transforme seu computador lento em uma máquina rápida com atendimento técnico premium e diagnóstico inteligente.">
+    <meta property="og:title" content="PC Formatech | O que o seu computador precisa?">
+    <meta property="og:description" content="Escreva o problema e veja na hora o serviço certo e o preço. Formatação, lentidão, vírus, programas e mais.">
     <meta property="og:image" content="https://pcformatech.vercel.app/images/og-preview.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:locale" content="pt_BR">
-    
-    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="https://pcformatech.vercel.app/">
-    <meta name="twitter:title" content="PC Formatech | Otimização Premium de Computadores">
-    <meta name="twitter:description" content="Diagnóstico técnico, otimização e suporte especializado para recuperar desempenho e estabilidade do seu PC.">
-    <meta name="twitter:image" content="https://pcformatech.vercel.app/images/og-preview.jpg">
-    
-    <!-- WhatsApp -->
-    <meta property="og:site_name" content="PC Formatech">
-    <meta property="og:image:alt" content="PC Formatech - Serviços de Informática">
-    
-    <!-- Tema do navegador -->
-    <meta name="theme-color" content="#2D7A7A">
-    <meta name="msapplication-navbutton-color" content="#2D7A7A">
-    <meta name="apple-mobile-web-app-status-bar-style" content="#2D7A7A">
 
-    <!-- Favicon -->
+    <meta name="theme-color" content="#0B3D3D">
     <link rel="icon" type="image/svg+xml" href="/favicon-icon.svg">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="shortcut icon" href="/favicon-32x32.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    
-    <!-- Google Fonts - Sora / Manrope -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="brand.css">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="mobile-desktop.css">
-    <link rel="stylesheet" href="styles2.css">
-    <link rel="stylesheet" href="theme-system.css">
-    <link rel="stylesheet" href="refinements.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <!-- Widget do WhatsApp -->
-    <style>
-        /* Botão flutuante principal */
-        .whatsapp-widget {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1000;
-        }
-        
-        .whatsapp-toggle {
-            width: 50px;
-            height: 50px;
-            background: #096c60;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            transition: all 0.3s ease;
-            border: none;
-        }
-        
-        .whatsapp-toggle:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
-        }
-        
-        .whatsapp-toggle i {
-            font-size: 26px;
-            color: white;
-        }
-        
-        /* Card do chat */
-        .whatsapp-chat {
-            position: absolute;
-            bottom: 80px;
-            right: 0;
-            width: 340px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(20px);
-            transition: all 0.3s ease;
-        }
-        
-        .whatsapp-chat.active {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-        
-        /* Cabeçalho do chat */
-        .whatsapp-header {
-            background: #086042;
-            color: white;
-            padding: 16px;
-            border-radius: 12px 12px 0 0;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .whatsapp-header-content {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .whatsapp-avatar {
-            width: 45px;
-            height: 45px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .whatsapp-avatar i {
-            font-size: 26px;
-            color: #40998F;
-        }
-        
-        .whatsapp-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin: 0;
-        }
-        
-        .whatsapp-subtitle {
-            font-size: 12px;
-            opacity: 0.9;
-            margin: 0;
-        }
-        
-        .whatsapp-close {
-            background: none;
-            border: none;
-            color: white;
-            cursor: pointer;
-            font-size: 20px;
-            padding: 4px;
-            line-height: 1;
-        }
-        
-        /* Corpo do chat */
-        .whatsapp-body {
-            padding: 20px;
-            background: #e5ddd5;
-            min-height: 150px;
-        }
-        
-        .whatsapp-message {
-            background: white;
-            padding: 12px 14px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            position: relative;
-            max-width: 85%;
-        }
-        
-        .whatsapp-message::before {
-            content: '';
-            position: absolute;
-            left: -8px;
-            top: 12px;
-            width: 0;
-            height: 0;
-            border-style: solid;
-            border-width: 0 8px 10px 0;
-            border-color: transparent white transparent transparent;
-        }
-        
-        .message-sender {
-            font-size: 13px;
-            color: #075e54;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-        
-        .message-text {
-            font-size: 14px;
-            color: #303030;
-            line-height: 1.5;
-            margin: 0;
-        }
-        
-        /* Rodapé do chat */
-        .whatsapp-footer {
-            padding: 16px;
-            background: white;
-            border-radius: 0 0 12px 12px;
-        }
-        
-        .whatsapp-button {
-            width: 100%;
-            background: #40998F;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 25px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-        }
-        
-        .whatsapp-button:hover {
-            background: #2D7A7A;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-        }
-        
-        .whatsapp-button i {
-            font-size: 18px;
-        }
-        
-        .wati-badge {
-            text-align: center;
-            margin-top: 8px;
-            font-size: 11px;
-            color: #999;
-        }
-        
-        .wati-badge a {
-            color: #ffb800;
-            text-decoration: none;
-            font-weight: 600;
-        }
-        
-        @media (max-width: 480px) {
-            .whatsapp-chat {
-                width: calc(100vw - 40px);
-                right: 20px;
-            }
-            
-            .whatsapp-title {
-                font-size: 14px;
-            }
-            
-            .whatsapp-subtitle {
-                font-size: 11px;
-            }
-            
-            .whatsapp-avatar {
-                width: 40px;
-                height: 40px;
-            }
-            
-            .whatsapp-avatar i {
-                font-size: 22px;
-            }
-            
-            .message-sender {
-                font-size: 12px;
-            }
-            
-            .message-text {
-                font-size: 13px;
-            }
-            
-            .whatsapp-button {
-                font-size: 14px;
-                padding: 10px 16px;
-            }
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="portal.css">
 </head>
-<body>
-    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
-    <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+<body class="pt">
+    <a class="pt-skip" href="#busca">Ir para a busca</a>
 
-    <header class="header">
-        <nav class="nav-bar">
-            <div class="logo">
-                <a href="admin.html" title="Painel Administrativo">
-                    <img src="/icon-192.png" alt="PC Formatech" class="logo-img" style="width:40px;height:40px;border-radius:10px;">
-                </a>
-                <div class="brand-text">
-                    <span class="brand-name">PCFORMATECH</span>
-                    <span class="tagline">ESPECIALISTAS EM TECNOLOGIA</span>
-                </div>
+    <!-- SVGs reutilizados pelos cards -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+        <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7.5"/><path d="m20.5 20.5-4.2-4.2"/></symbol>
+        <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></symbol>
+        <symbol id="i-chat" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M8 10.5h.01M12 10.5h.01M16 10.5h.01"/></symbol>
+        <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="16.5" rx="2"/><path d="M16 2.5v4M8 2.5v4M3 10h18"/></symbol>
+        <symbol id="i-laptop" viewBox="0 0 24 24"><rect x="4" y="4.5" width="16" height="11" rx="1.6"/><path d="M2 19.5h20"/><path d="m9.5 10 1.8 1.8 3.2-3.6"/></symbol>
+        <symbol id="i-gauge" viewBox="0 0 24 24"><path d="M3.4 18.5a10 10 0 1 1 17.2 0"/><path d="m12 14.5 4.5-5"/><circle cx="12" cy="14.5" r="1.4"/></symbol>
+        <symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.7 9a1 1 0 0 1-.6 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.2-2.7a1.2 1.2 0 0 1 1.6 0C14.5 3.8 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></symbol>
+        <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></symbol>
+        <symbol id="i-chip" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/></symbol>
+        <symbol id="i-photos" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></symbol>
+        <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
+        <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></symbol>
+        <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+        <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></symbol>
+    </svg>
+
+    <header class="pt-top">
+        <div class="pt-top-inner">
+            <div class="pt-brand">
+                <img src="/icon-192.png" alt="" width="40" height="40">
+                <span class="pt-brand-text">
+                    <strong>PC Formatech</strong>
+                    <span>Assistência técnica de computadores</span>
+                </span>
             </div>
-            <ul class="nav-links" id="navLinks">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#diagnostico">Diagnóstico</a></li>
-                <li><a href="#servicos">Serviços</a></li>
-                <li><a href="#sobre">Sobre</a></li>
-                <li><a href="#agende-servico" class="nav-cta">Agendar</a></li>
-            </ul>
-        </nav>
+            <a class="pt-main-link" href="site.html">
+                <span class="pt-main-link-long">Ir para o site principal</span>
+                <span class="pt-main-link-short">Site principal</span>
+                <svg class="pt-ico" aria-hidden="true"><use href="#i-arrow"/></svg>
+            </a>
+        </div>
     </header>
 
-    <!-- Widget do WhatsApp -->
-    <div class="whatsapp-widget">
-        <div class="whatsapp-chat" id="whatsappChat">
-            <div class="whatsapp-header">
-                <div class="whatsapp-header-content">
-                    <div class="whatsapp-avatar">
-                        <i class="fab fa-whatsapp" aria-hidden="true"></i>
-                    </div>
-                    <div>
-                        <h3 class="whatsapp-title">Atendimento PC Formatech</h3>
-                        <p class="whatsapp-subtitle">Online</p>
-                    </div>
-                </div>
-                <button class="whatsapp-close" onclick="toggleWhatsApp()" aria-label="Fechar atendimento">
-                    <i class="fas fa-times" aria-hidden="true"></i>
-                </button>
-            </div>
-            <div class="whatsapp-body">
-                <div class="whatsapp-message">
-                    <div class="message-sender">Atendimento PC Formatech</div>
-                    <p class="message-text">Olá,<br>Precisa de Ajuda?</p>
-                </div>
-            </div>
-            <div class="whatsapp-footer">
-                <a href="https://api.whatsapp.com/send?phone=5594984305772&text=Olá, preciso de ajuda!" 
-                   class="whatsapp-button" 
-                   target="_blank">
-                    <i class="fab fa-whatsapp" aria-hidden="true"></i>
-                    Fale Conosco
-                </a>
-                <div class="wati-badge">
-                </div>
-            </div>
-        </div>
-        <button class="whatsapp-toggle" onclick="toggleWhatsApp()" aria-label="Abrir atendimento no WhatsApp" aria-expanded="false" aria-controls="whatsappChat">
-            <i class="fab fa-whatsapp" aria-hidden="true"></i>
-        </button>
-    </div>
-
-    <script>
-        function toggleWhatsApp() {
-            const chat = document.getElementById('whatsappChat');
-            const aberto = chat.classList.toggle('active');
-            // aria-expanded precisa acompanhar o estado real do painel.
-            const toggle = document.querySelector('.whatsapp-toggle');
-            if (toggle) toggle.setAttribute('aria-expanded', String(aberto));
-        }
-        
-        // Fechar ao clicar fora
-        document.addEventListener('click', function(event) {
-            const widget = document.querySelector('.whatsapp-widget');
-            const chat = document.getElementById('whatsappChat');
-            if (!widget.contains(event.target) && chat.classList.contains('active')) {
-                chat.classList.remove('active');
-                const toggle = document.querySelector('.whatsapp-toggle');
-                if (toggle) toggle.setAttribute('aria-expanded', 'false');
-            }
-        });
-    </script>
-
     <main id="conteudo">
-        <section id="home" class="hero">
-            <div class="hero-slider">
-                <div class="hero-slide active">
-                    <picture>
-                        <source type="image/avif" srcset="images/hero/optimized/slide-01-640.avif 640w, images/hero/optimized/slide-01-1280.avif 1280w, images/hero/optimized/slide-01-1920.avif 1920w" sizes="100vw">
-                        <source type="image/webp" srcset="images/hero/optimized/slide-01-640.webp 640w, images/hero/optimized/slide-01-1280.webp 1280w, images/hero/optimized/slide-01-1920.webp 1920w" sizes="100vw">
-                        <img src="images/hero/slide-01.jpg" alt="Laptop em Manutenção" width="1920" height="1280" decoding="async" fetchpriority="high">
-                    </picture>
-                </div>
-                <div class="hero-slide" data-lazy-slide>
-                    <picture>
-                        <source type="image/avif" data-srcset="images/hero/optimized/slide-02-640.avif 640w, images/hero/optimized/slide-02-1280.avif 1280w, images/hero/optimized/slide-02-1920.avif 1920w" sizes="100vw">
-                        <source type="image/webp" data-srcset="images/hero/optimized/slide-02-640.webp 640w, images/hero/optimized/slide-02-1280.webp 1280w, images/hero/optimized/slide-02-1920.webp 1920w" sizes="100vw">
-                        <img data-src="images/hero/slide-02.jpg" alt="Workspace com Laptop" width="1920" height="1324" decoding="async">
-                    </picture>
-                </div>
-                <div class="hero-slide" data-lazy-slide>
-                    <picture>
-                        <source type="image/avif" data-srcset="images/hero/optimized/slide-03-640.avif 640w, images/hero/optimized/slide-03-1280.avif 1280w, images/hero/optimized/slide-03-1920.avif 1920w" sizes="100vw">
-                        <source type="image/webp" data-srcset="images/hero/optimized/slide-03-640.webp 640w, images/hero/optimized/slide-03-1280.webp 1280w, images/hero/optimized/slide-03-1920.webp 1920w" sizes="100vw">
-                        <img data-src="images/hero/slide-03.jpg" alt="Programação e Desenvolvimento" width="1920" height="1278" decoding="async">
-                    </picture>
-                </div>
-                <div class="hero-slide" data-lazy-slide>
-                    <picture>
-                        <source type="image/avif" data-srcset="images/hero/optimized/slide-04-640.avif 640w, images/hero/optimized/slide-04-1280.avif 1280w, images/hero/optimized/slide-04-1920.avif 1920w" sizes="100vw">
-                        <source type="image/webp" data-srcset="images/hero/optimized/slide-04-640.webp 640w, images/hero/optimized/slide-04-1280.webp 1280w, images/hero/optimized/slide-04-1920.webp 1920w" sizes="100vw">
-                        <img data-src="images/hero/slide-04.jpg" alt="Computador Profissional" width="1920" height="1277" decoding="async">
-                    </picture>
-                </div>
-                <div class="hero-slide" data-lazy-slide>
-                    <picture>
-                        <source type="image/avif" data-srcset="images/hero/optimized/slide-05-640.avif 640w, images/hero/optimized/slide-05-1280.avif 1280w, images/hero/optimized/slide-05-1920.avif 1920w" sizes="100vw">
-                        <source type="image/webp" data-srcset="images/hero/optimized/slide-05-640.webp 640w, images/hero/optimized/slide-05-1280.webp 1280w, images/hero/optimized/slide-05-1920.webp 1920w" sizes="100vw">
-                        <img data-src="images/hero/slide-05.jpg" alt="Laptop em Ambiente Profissional" width="1920" height="2880" decoding="async">
-                    </picture>
-                </div>
-                <div class="hero-slide" data-lazy-slide>
-                    <picture>
-                        <source type="image/avif" data-srcset="images/hero/optimized/slide-06-640.avif 640w, images/hero/optimized/slide-06-1280.avif 1280w, images/hero/optimized/slide-06-1920.avif 1920w" sizes="100vw">
-                        <source type="image/webp" data-srcset="images/hero/optimized/slide-06-640.webp 640w, images/hero/optimized/slide-06-1280.webp 1280w, images/hero/optimized/slide-06-1920.webp 1920w" sizes="100vw">
-                        <img data-src="images/hero/slide-06.jpg" alt="Setup Moderno de Programação" width="1920" height="1280" decoding="async">
-                    </picture>
-                </div>
-                <div class="hero-slide" data-lazy-slide>
-                    <picture>
-                        <source type="image/avif" data-srcset="images/hero/optimized/slide-07-640.avif 640w, images/hero/optimized/slide-07-1280.avif 1280w, images/hero/optimized/slide-07-1920.avif 1920w" sizes="100vw">
-                        <source type="image/webp" data-srcset="images/hero/optimized/slide-07-640.webp 640w, images/hero/optimized/slide-07-1280.webp 1280w, images/hero/optimized/slide-07-1920.webp 1920w" sizes="100vw">
-                        <img data-src="images/hero/slide-07.jpg" alt="Hardware e Componentes" width="1920" height="2400" decoding="async">
-                    </picture>
-                </div>
-                <div class="hero-slide" data-lazy-slide>
-                    <picture>
-                        <source type="image/avif" data-srcset="images/hero/optimized/slide-08-640.avif 640w, images/hero/optimized/slide-08-1280.avif 1280w, images/hero/optimized/slide-08-1920.avif 1920w" sizes="100vw">
-                        <source type="image/webp" data-srcset="images/hero/optimized/slide-08-640.webp 640w, images/hero/optimized/slide-08-1280.webp 1280w, images/hero/optimized/slide-08-1920.webp 1920w" sizes="100vw">
-                        <img data-src="images/hero/slide-08.jpg" alt="MacBook Pro Workspace" width="1920" height="1195" decoding="async">
-                    </picture>
-                </div>
-                <div class="hero-slide" data-lazy-slide>
-                    <picture>
-                        <source type="image/avif" data-srcset="images/hero/optimized/slide-09-640.avif 640w, images/hero/optimized/slide-09-1280.avif 1280w, images/hero/optimized/slide-09-1920.avif 1920w" sizes="100vw">
-                        <source type="image/webp" data-srcset="images/hero/optimized/slide-09-640.webp 640w, images/hero/optimized/slide-09-1280.webp 1280w, images/hero/optimized/slide-09-1920.webp 1920w" sizes="100vw">
-                        <img data-src="images/hero/slide-09.jpg" alt="Tech Workspace Minimalista" width="1920" height="1280" decoding="async">
-                    </picture>
-                </div>
-                <div class="hero-slide" data-lazy-slide>
-                    <picture>
-                        <source type="image/avif" data-srcset="images/hero/optimized/slide-10-640.avif 640w, images/hero/optimized/slide-10-1280.avif 1280w, images/hero/optimized/slide-10-1920.avif 1920w" sizes="100vw">
-                        <source type="image/webp" data-srcset="images/hero/optimized/slide-10-640.webp 640w, images/hero/optimized/slide-10-1280.webp 1280w, images/hero/optimized/slide-10-1920.webp 1920w" sizes="100vw">
-                        <img data-src="images/hero/slide-10.jpg" alt="Gaming PC Setup" width="1920" height="1269" decoding="async">
-                    </picture>
-                </div>
-                <div class="hero-slide" data-lazy-slide>
-                    <picture>
-                        <source type="image/avif" data-srcset="images/hero/optimized/slide-11-640.avif 640w, images/hero/optimized/slide-11-1280.avif 1280w, images/hero/optimized/slide-11-1920.avif 1920w" sizes="100vw">
-                        <source type="image/webp" data-srcset="images/hero/optimized/slide-11-640.webp 640w, images/hero/optimized/slide-11-1280.webp 1280w, images/hero/optimized/slide-11-1920.webp 1920w" sizes="100vw">
-                        <img data-src="images/hero/slide-11.jpg" alt="Setup Clean com Teclado Retroiluminado" width="1920" height="1536" decoding="async">
-                    </picture>
-                </div>
-                <div class="hero-slide" data-lazy-slide>
-                    <picture>
-                        <source type="image/avif" data-srcset="images/hero/optimized/slide-12-640.avif 640w, images/hero/optimized/slide-12-1280.avif 1280w, images/hero/optimized/slide-12-1920.avif 1920w" sizes="100vw">
-                        <source type="image/webp" data-srcset="images/hero/optimized/slide-12-640.webp 640w, images/hero/optimized/slide-12-1280.webp 1280w, images/hero/optimized/slide-12-1920.webp 1920w" sizes="100vw">
-                        <img data-src="images/hero/slide-12.jpg" alt="Mesa com Múltiplos Monitores" width="1920" height="1282" decoding="async">
-                    </picture>
-                </div>
-                <div class="hero-slide" data-lazy-slide>
-                    <picture>
-                        <source type="image/avif" data-srcset="images/hero/optimized/slide-13-640.avif 640w, images/hero/optimized/slide-13-1280.avif 1280w, images/hero/optimized/slide-13-1920.avif 1920w" sizes="100vw">
-                        <source type="image/webp" data-srcset="images/hero/optimized/slide-13-640.webp 640w, images/hero/optimized/slide-13-1280.webp 1280w, images/hero/optimized/slide-13-1920.webp 1920w" sizes="100vw">
-                        <img data-src="images/hero/slide-13.jpg" alt="Setup de Programação com Luzes LED" width="1920" height="1280" decoding="async">
-                    </picture>
-                </div>
-                <div class="hero-slide" data-lazy-slide>
-                    <picture>
-                        <source type="image/avif" data-srcset="images/hero/optimized/slide-19-640.avif 640w, images/hero/optimized/slide-19-1280.avif 1280w, images/hero/optimized/slide-19-1920.avif 1920w" sizes="100vw">
-                        <source type="image/webp" data-srcset="images/hero/optimized/slide-19-640.webp 640w, images/hero/optimized/slide-19-1280.webp 1280w, images/hero/optimized/slide-19-1920.webp 1920w" sizes="100vw">
-                        <img data-src="images/hero/slide-19.jpg" alt="Espaço de Trabalho com Luz e Monitores" width="1920" height="2319" decoding="async">
-                    </picture>
-                </div>
-                <div class="hero-slide" data-lazy-slide>
-                    <picture>
-                        <source type="image/avif" data-srcset="images/hero/optimized/slide-20-640.avif 640w, images/hero/optimized/slide-20-1280.avif 1280w, images/hero/optimized/slide-20-1920.avif 1920w" sizes="100vw">
-                        <source type="image/webp" data-srcset="images/hero/optimized/slide-20-640.webp 640w, images/hero/optimized/slide-20-1280.webp 1280w, images/hero/optimized/slide-20-1920.webp 1920w" sizes="100vw">
-                        <img data-src="images/hero/slide-20.jpg" alt="Interior de PC com Componentes Visíveis" width="1920" height="1260" decoding="async">
-                    </picture>
-                </div>
-                <div class="hero-slide" data-lazy-slide>
-                    <picture>
-                        <source type="image/avif" data-srcset="images/hero/optimized/slide-21-640.avif 640w, images/hero/optimized/slide-21-1280.avif 1280w, images/hero/optimized/slide-21-1920.avif 1920w" sizes="100vw">
-                        <source type="image/webp" data-srcset="images/hero/optimized/slide-21-640.webp 640w, images/hero/optimized/slide-21-1280.webp 1280w, images/hero/optimized/slide-21-1920.webp 1920w" sizes="100vw">
-                        <img data-src="images/hero/slide-21.jpg" alt="Setup Gamer RGB Aesthetic" width="1920" height="1282" decoding="async">
-                    </picture>
-                </div>
-                <div class="hero-slide" data-lazy-slide>
-                    <picture>
-                        <source type="image/avif" data-srcset="images/hero/optimized/slide-23-640.avif 640w, images/hero/optimized/slide-23-1280.avif 1280w, images/hero/optimized/slide-23-1920.avif 1920w" sizes="100vw">
-                        <source type="image/webp" data-srcset="images/hero/optimized/slide-23-640.webp 640w, images/hero/optimized/slide-23-1280.webp 1280w, images/hero/optimized/slide-23-1920.webp 1920w" sizes="100vw">
-                        <img data-src="images/hero/slide-23.jpg" alt="Setup Aesthetic com Monitor Ultrawide" width="1920" height="1280" decoding="async">
-                    </picture>
-                </div>
-            </div>
-            <div class="hero-overlay"></div>
-            <div class="hero-content">
-                <div id="pcft-seasonal-badge" hidden>
-                    <span class="pcft-seasonal-icon pcft-seasonal-icon-left"></span>
-                    <span class="pcft-seasonal-greeting">Feliz</span>
-                    <span class="pcft-seasonal-name"></span>
-                    <span class="pcft-seasonal-icon pcft-seasonal-icon-right"></span>
-                </div>
-                <span class="hero-kicker">Diagnóstico Técnico Premium com Resposta Rápida</span>
-                <h1>Seu PC pode ficar 2x mais rápido do que hoje. Descubra em minutos.</h1>
-                <p>Enquanto você lê esta página, seu computador pode estar perdendo desempenho por causas ocultas. Eu faço a correção certa, com método técnico e foco total em velocidade, segurança e estabilidade.</p>
-                <div class="hero-actions">
-                    <a href="https://api.whatsapp.com/send?phone=5594984305772&text=Ol%C3%A1%2C%20quero%20fazer%20diagn%C3%B3stico%20gr%C3%A1tis%20do%20meu%20PC." target="_blank" class="hero-cta-primary">
-                        <i class="fab fa-whatsapp" aria-hidden="true"></i>
-                        Fazer diagnóstico grátis
-                    </a>
-                    <a href="#diagnostico" class="hero-cta-secondary">Ver diagnóstico interativo</a>
-                </div>
-                <div class="hero-trust-strip">
-                    <span><i class="fas fa-check-circle" aria-hidden="true"></i> +100 PCs otimizados</span>
-                    <span><i class="fas fa-bolt" aria-hidden="true"></i> Resposta rápida</span>
-                    <span><i class="fas fa-shield-alt" aria-hidden="true"></i> Processo seguro</span>
-                    <span><i class="fas fa-star" aria-hidden="true"></i> Atendimento especializado</span>
-                </div>
-            </div>
-            
-            <!-- Botões de Navegação do Carrossel -->
-            <button class="hero-nav-btn hero-prev" onclick="changeSlide(-1)" aria-label="Imagem anterior">
-                <i class="fas fa-chevron-left" aria-hidden="true"></i>
-            </button>
-            <button class="hero-nav-btn hero-next" onclick="changeSlide(1)" aria-label="Próxima imagem">
-                <i class="fas fa-chevron-right" aria-hidden="true"></i>
-            </button>
-            
-            <!-- Indicadores gerados por main.js a partir do número real de slides. -->
-            <div class="hero-indicators" role="tablist" aria-label="Selecionar imagem do carrossel"></div>
-        </section>
+        <section class="pt-hero" aria-labelledby="pt-titulo">
+            <p class="pt-kicker">Formatação · Computador lento · Vírus · Programas</p>
+            <h1 id="pt-titulo">O que você precisa fazer no seu computador?</h1>
+            <p class="pt-sub">Escreva do seu jeito. Mostramos na hora o serviço certo e quanto custa.</p>
 
-        <section class="attention-flow">
-            <div class="attention-grid">
-                <article class="attention-card" data-reveal>
-                    <span class="attention-label">Curiosidade 01</span>
-                    <h3>O motivo oculto que deixa computadores lentos</h3>
-                    <p class="teaser">A maioria dos usuários nunca percebe esse gargalo porque ele não aparece de forma óbvia.</p>
-                    <p class="reveal-copy">No diagnóstico técnico, eu identifico processos, inicialização e conflitos silenciosos que drenam desempenho todos os dias.</p>
-                </article>
-                <article class="attention-card" data-reveal>
-                    <span class="attention-label">Curiosidade 02</span>
-                    <h3>Você pode estar perdendo tempo todos os dias sem perceber</h3>
-                    <p class="teaser">Abrir navegador, sistema e programas em câmera lenta parece normal até você comparar com um PC otimizado.</p>
-                    <p class="reveal-copy">Com ajustes finos e limpeza técnica, o ganho de fluidez é perceptível já nas primeiras tarefas.</p>
-                </article>
-                <article class="attention-card" data-reveal>
-                    <span class="attention-label">Curiosidade 03</span>
-                    <h3>O erro que destrói o desempenho de muitos PCs</h3>
-                    <p class="teaser">Continuar usando o sistema sem revisão preventiva acelera falhas e travamentos intermitentes.</p>
-                    <p class="reveal-copy">A correção preventiva protege seus arquivos, reduz risco de vírus e aumenta a vida útil do computador.</p>
-                </article>
-                <article class="attention-card" data-reveal>
-                    <span class="attention-label">Curiosidade 04</span>
-                    <h3>O detalhe ignorado que aumenta risco de perda de dados</h3>
-                    <p class="teaser">Muita gente só pensa em backup depois do problema acontecer, quando já é tarde para recuperar tudo.</p>
-                    <p class="reveal-copy">Com rotina de proteção e ajuste técnico, você reduz riscos e mantém seus arquivos importantes sempre seguros.</p>
-                </article>
+            <form class="pt-search" id="busca" role="search" action="#opcoes">
+                <label for="pt-q" class="pt-sr">Descreva o problema do seu computador</label>
+                <svg class="pt-search-ico" aria-hidden="true"><use href="#i-search"/></svg>
+                <input id="pt-q" name="q" type="search" autocomplete="off" enterkeyhint="search"
+                       placeholder="Ex.: meu computador está lento" aria-describedby="pt-status">
+                <button type="submit" class="pt-search-btn">Buscar</button>
+            </form>
+
+            <div class="pt-chips" aria-label="Buscas mais comuns">
+                <span class="pt-chips-label">Mais procurados:</span>
+                <button type="button" class="pt-chip" data-q="está lento">Está lento</button>
+                <button type="button" class="pt-chip" data-q="formatar">Formatar</button>
+                <button type="button" class="pt-chip" data-q="vírus">Vírus</button>
+                <button type="button" class="pt-chip" data-q="instalar o Word e Excel">Instalar Office</button>
+                <button type="button" class="pt-chip" data-q="sem som">Sem som</button>
+                <button type="button" class="pt-chip" data-q="salvar minhas fotos">Salvar fotos</button>
             </div>
         </section>
 
-        <section class="pc-transform" id="transformacao">
-            <div class="pc-transform-head" data-reveal>
-                <h2>Antes vs Depois: Perceba a transformação</h2>
-                <p>Visualize a diferença entre um computador sobrecarregado e um sistema otimizado para velocidade real.</p>
+        <section class="pt-options" id="opcoes" aria-labelledby="pt-opcoes-titulo">
+            <div class="pt-options-head">
+                <h2 id="pt-opcoes-titulo">Principais serviços</h2>
+                <button type="button" class="pt-clear" id="pt-clear" hidden>Ver todos os serviços</button>
             </div>
-            <div class="pc-transform-grid">
-                <article class="transform-card before" data-reveal>
-                    <h3>Antes</h3>
-                    <div class="transform-chip danger">Alto desgaste digital</div>
-                    <ul>
-                        <li>Inicialização lenta</li>
-                        <li>Travamentos frequentes</li>
-                        <li>Sistema pesado e inseguro</li>
-                        <li>Queda de desempenho em tarefas simples</li>
-                    </ul>
-                    <div class="transform-boot">Boot médio: 3m 20s</div>
-                </article>
-                <article class="transform-card after" data-reveal>
-                    <h3>Depois</h3>
-                    <div class="transform-chip success">Performance restaurada</div>
-                    <ul>
-                        <li>Boot muito mais rápido</li>
-                        <li>Navegação fluida</li>
-                        <li>Sistema limpo e otimizado</li>
-                        <li>Mais estabilidade e produtividade</li>
-                    </ul>
-                    <div class="transform-boot">Boot médio: 48s</div>
-                </article>
-            </div>
-            <div class="pc-metrics" data-reveal>
-                <div class="metric-item">
-                    <span>Tempo de inicialização</span>
-                    <div class="metric-bar"><i data-bar-target="82"></i></div>
-                    <small>Melhoria média de até 82%</small>
-                </div>
-                <div class="metric-item">
-                    <span>Fluidez geral do sistema</span>
-                    <div class="metric-bar"><i data-bar-target="91"></i></div>
-                    <small>Sensação de resposta imediata em uso diário</small>
-                </div>
-            </div>
-        </section>
+            <p class="pt-status" id="pt-status" role="status" aria-live="polite"></p>
 
-        <section id="diagnostico" class="diagnostic-section">
-            <div class="diagnostic-shell" data-reveal>
-                <h2>Diagnóstico rápido do seu computador</h2>
-                <p>Marque os sintomas abaixo e receba uma leitura inteligente em segundos:</p>
-                <div class="diagnostic-chipline" id="diagnosticLiveHint">Sem sintomas selecionados no momento.</div>
-                <div class="diagnostic-checks" id="diagnosticChecks">
-                    <label><input type="checkbox" value="demora para ligar"> Demora para ligar</label>
-                    <label><input type="checkbox" value="travamentos frequentes"> Travamentos frequentes</label>
-                    <label><input type="checkbox" value="superaquecimento"> Superaquecimento</label>
-                    <label><input type="checkbox" value="anuncios inesperados"> Abre anúncios sozinho</label>
-                    <label><input type="checkbox" value="jogos lentos"> Jogos ou apps pesados lentos</label>
-                </div>
-                <div class="diagnostic-actions">
-                    <button type="button" class="diagnostic-btn" id="runDiagnosticBtn">Ver resultado inteligente</button>
-                    <button type="button" class="diagnostic-btn ghost" id="openDiagnosticModal">Diagnóstico guiado</button>
-                </div>
-                <div class="diagnostic-result" id="diagnosticResult" hidden></div>
-                <a href="https://api.whatsapp.com/send?phone=5594984305772&text=Ol%C3%A1%2C%20quero%20receber%20diagn%C3%B3stico%20completo%20no%20WhatsApp." target="_blank" class="diagnostic-whatsapp" id="diagnosticWhatsappCta" hidden>
-                    <i class="fab fa-whatsapp" aria-hidden="true"></i>
-                    Receber diagnóstico no WhatsApp
-                </a>
-                <p class="diagnostic-urgency">Atendimentos do dia preenchendo rapidamente. Garanta seu horário com prioridade.</p>
-            </div>
-        </section>
-
-        <section class="proof-section" id="prova-social">
-            <div class="proof-head" data-reveal>
-                <h2>Confiança construída em resultados reais</h2>
-            </div>
-            <div class="proof-grid">
-                <article class="proof-card" data-reveal>
-                    <strong data-counter="100" data-prefix="+">0</strong>
-                    <span>computadores otimizados</span>
-                </article>
-                <article class="proof-card" data-reveal>
-                    <strong data-counter="98" data-suffix="%">0</strong>
-                    <span>de satisfação</span>
-                </article>
-                <article class="proof-card" data-reveal>
-                    <strong data-counter="1" data-suffix="h">0</strong>
-                    <span>hora para primeira resposta</span>
-                </article>
-                <article class="proof-card" data-reveal>
-                    <strong data-counter="100" data-prefix="+">0</strong>
-                    <span>foco em segurança e desempenho</span>
-                </article>
-            </div>
-        </section>
-
-        <section class="urgency-band" data-reveal>
-            <p><strong>Agenda Premium:</strong> últimos horários da semana para diagnóstico completo com prioridade no WhatsApp.</p>
-            <a href="https://api.whatsapp.com/send?phone=5594984305772&text=Ol%C3%A1%2C%20quero%20garantir%20um%20hor%C3%A1rio%20priorit%C3%A1rio%20de%20diagn%C3%B3stico." target="_blank" rel="noopener noreferrer" class="urgency-cta">Garantir horário agora</a>
-        </section>
-
-        <section id="servicos" class="services">
-            <h2>Nossos Serviços</h2>
-            <p class="services-subtitle">Selecione os serviços desejados e solicite um orçamento</p>
-            <div class="services-grid">
-                <label class="service-card" data-modal="formatacao">
-                    <input type="checkbox" class="service-checkbox" data-service="formatacao" data-price="80">
-                    <div class="service-check-mark">
-                        <i class="fas fa-check" aria-hidden="true"></i>
-                    </div>
-                    <div class="service-icon-wrapper">
-                        <i class="fas fa-laptop" aria-hidden="true"></i>
-                    </div>
-                    <h3>Formatação de Computadores</h3>
-                    <p>Formatação completa com backup de seus arquivos</p>
-                    <ul class="service-card-points">
-                        <li>Formatação com Windows original</li>
-                        <li>Navegadores e players de mídia</li>
-                        <li>Programas essenciais</li>
-                    </ul>
-                    <button type="button" class="service-details-btn">Ver Detalhes</button>
-                    <div class="price-tag"><span>A partir de</span><span>R$ 80,00</span></div>
-                </label>
-                <label class="service-card" data-modal="programas">
-                    <input type="checkbox" class="service-checkbox" data-service="programas" data-price="50">
-                    <div class="service-check-mark">
-                        <i class="fas fa-check" aria-hidden="true"></i>
-                    </div>
-                    <div class="service-icon-wrapper">
-                        <i class="fas fa-download" aria-hidden="true"></i>
-                    </div>
-                    <h3>Instalação de Programas</h3>
-                    <p>Instalação de programas essenciais e específicos</p>
-                    <ul class="service-card-points">
-                        <li>Instalação de softwares específicos</li>
-                        <li>Pacote Office atualizado</li>
-                        <li>Programas de produtividade</li>
-                    </ul>
-                    <button type="button" class="service-details-btn">Ver Detalhes</button>
-                    <div class="price-tag"><span>A partir de</span><span>R$ 50,00</span></div>
-                </label>
-                <label class="service-card" data-modal="seguranca">
-                    <input type="checkbox" class="service-checkbox" data-service="seguranca" data-price="60">
-                    <div class="service-check-mark">
-                        <i class="fas fa-check" aria-hidden="true"></i>
-                    </div>
-                    <div class="service-icon-wrapper">
-                        <i class="fas fa-shield-alt" aria-hidden="true"></i>
-                    </div>
-                    <h3>Proteção e Segurança</h3>
-                    <p>Instalação de antivírus e ferramentas de proteção</p>
-                    <ul class="service-card-points">
-                        <li>Instalação de antivírus premium</li>
-                        <li>Configuração de firewall</li>
-                        <li>Remoção de malware</li>
-                    </ul>
-                    <button type="button" class="service-details-btn">Ver Detalhes</button>
-                    <div class="price-tag"><span>A partir de</span><span>R$ 60,00</span></div>
-                </label>
-                <label class="service-card" data-modal="manutencao">
-                    <input type="checkbox" class="service-checkbox" data-service="manutencao" data-price="70">
-                    <div class="service-check-mark">
-                        <i class="fas fa-check" aria-hidden="true"></i>
-                    </div>
-                    <div class="service-icon-wrapper">
-                        <i class="fas fa-tools" aria-hidden="true"></i>
-                    </div>
-                    <h3>Manutenção Preventiva</h3>
-                    <p>Limpeza e otimização do sistema</p>
-                    <ul class="service-card-points">
-                        <li>Limpeza do sistema</li>
-                        <li>Otimização do Windows</li>
-                        <li>Atualização de drivers</li>
-                    </ul>
-                    <button type="button" class="service-details-btn">Ver Detalhes</button>
-                    <div class="price-tag"><span>A partir de</span><span>R$ 70,00</span></div>
-                </label>
-                <label class="service-card" data-modal="drivers">
-                    <input type="checkbox" class="service-checkbox" data-service="drivers" data-price="40">
-                    <div class="service-check-mark">
-                        <i class="fas fa-check" aria-hidden="true"></i>
-                    </div>
-                    <div class="service-icon-wrapper">
-                        <i class="fas fa-microchip" aria-hidden="true"></i>
-                    </div>
-                    <h3>Instalação de Drivers</h3>
-                    <p>Atualização e instalação de drivers do sistema</p>
-                    <ul class="service-card-points">
-                        <li>Identificação de hardware</li>
-                        <li>Drivers oficiais e atualizados</li>
-                        <li>Otimização de desempenho</li>
-                    </ul>
-                    <button type="button" class="service-details-btn">Ver Detalhes</button>
-                    <div class="price-tag"><span>A partir de</span><span>R$ 40,00</span></div>
-                </label>
-                <label class="service-card" data-modal="backup">
-                    <input type="checkbox" class="service-checkbox" data-service="backup" data-price="45">
-                    <div class="service-check-mark">
-                        <i class="fas fa-check" aria-hidden="true"></i>
-                    </div>
-                    <div class="service-icon-wrapper">
-                        <i class="fas fa-database" aria-hidden="true"></i>
-                    </div>
-                    <h3>Backup de Dados</h3>
-                    <p>Backup completo dos seus arquivos importantes</p>
-                    <ul class="service-card-points">
-                        <li>Backup completo dos arquivos</li>
-                        <li>Verificação de integridade</li>
-                        <li>Organização dos dados</li>
-                    </ul>
-                    <button type="button" class="service-details-btn">Ver Detalhes</button>
-                    <div class="price-tag"><span>A partir de</span><span>R$ 45,00</span></div>
-                </label>
-                <label class="service-card" data-modal="remoto">
-                    <input type="checkbox" class="service-checkbox" data-service="remoto" data-price="0">
-                    <div class="service-check-mark">
-                        <i class="fas fa-check" aria-hidden="true"></i>
-                    </div>
-                    <div class="service-icon-wrapper">
-                        <i class="fas fa-globe" aria-hidden="true"></i>
-                    </div>
-                    <h3>Atendimento Remoto</h3>
-                    <p>Suporte técnico via AnyDesk com 20% de desconto</p>
-                    <ul class="service-card-points">
-                        <li>Atendimento sem sair de casa</li>
-                        <li>Suporte técnico em tempo real</li>
-                        <li>Resolução rápida de problemas</li>
-                    </ul>
-                    <button type="button" class="service-details-btn">Ver Detalhes</button>
-                    <div class="service-badge">20% OFF</div>
-                    <div class="price-tag"><span>Consulte</span><span>valores</span></div>
-                </label>
-                <a href="formulario-formatacao.html" class="service-card service-card-link">
-                    <div class="service-icon-wrapper">
-                        <i class="fas fa-clipboard-list" aria-hidden="true"></i>
-                    </div>
-                    <h3>Formulário de Formatação</h3>
-                    <p>Preencha o formulário completo para seu atendimento</p>
-                    <button type="button" class="service-details-btn">Preencher Formulário</button>
-                </a>
-            </div>
-        </section>
-
-        <!-- Barra flutuante de resumo de seleção -->
-        <div class="services-summary" id="servicesSummary">
-            <div class="summary-content">
-                <button class="clear-selection-btn" onclick="clearAllServices()" title="Limpar seleção" aria-label="Limpar seleção de serviços">
-                    <i class="fas fa-times" aria-hidden="true"></i>
-                </button>
-                <div class="summary-info">
-                    <span class="summary-count">0 serviços selecionados</span>
-                    <span class="summary-total">Total: R$ 0,00</span>
-                </div>
-                <button class="summary-btn" onclick="requestQuote()">Solicitar Orçamento</button>
-            </div>
-        </div>
-
-    
-        <section id="depoimentos" class="testimonials">
-            <h2 class="section-title">Resultados Reais de Quem Já Otimizou <i class="fas fa-comments" aria-hidden="true"></i></h2>
-            <div class="testimonials-container">
-                <div class="testimonials-grid">
-                    <div class="testimonial-card whatsapp-style">
-                        <div class="testimonial-rating" aria-label="5 estrelas">★★★★★</div>
-                        <div class="testimonial-bubble">
-                            <p>"Excelente serviço! Meu computador ficou muito mais rápido após a formatação e otimização."</p>
-                        </div>
-                        <div class="client-info">
-                            <div class="client-avatar-initial">JS</div>
-                            <div class="client-details">
-                                <h4>João Silva</h4>
-                                <small class="testimonial-outcome">Boot reduziu de minutos para segundos</small>
-                                <div class="testimonial-time" data-days-ago="3" data-time="19:15"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="testimonial-card whatsapp-style">
-                        <div class="testimonial-rating" aria-label="5 estrelas">★★★★★</div>
-                        <div class="testimonial-bubble">
-                            <p>"Atendimento muito técnico e transparente. Resolveram meu problema rapidamente."</p>
-                        </div>
-                        <div class="client-info">
-                            <div class="client-avatar-initial">MR</div>
-                            <div class="client-details">
-                                <h4>Maria Rosa</h4>
-                                <small class="testimonial-outcome">Mais estabilidade para trabalho diário</small>
-                                <div class="testimonial-time" data-days-ago="7" data-time="18:35"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="testimonial-card whatsapp-style">
-                        <div class="testimonial-rating" aria-label="5 estrelas">★★★★★</div>
-                        <div class="testimonial-bubble">
-                            <p>"Ótimo atendimento e preço justo. Meu notebook parece novo novamente."</p>
-                        </div>
-                        <div class="client-info">
-                            <div class="client-avatar-initial">PL</div>
-                            <div class="client-details">
-                                <h4>Pedro Lima</h4>
-                                <small class="testimonial-outcome">Recuperação nítida de performance</small>
-                                <div class="testimonial-time" data-days-ago="30" data-time="18:45"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="faq" class="faq">
-            <h2 class="section-title"><i class="fas fa-question-circle" aria-hidden="true"></i> Perguntas Frequentes</h2>
-            <div class="faq-container">
-                <div class="faq-grid">
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <div class="question-icon">
-                                <i class="fas fa-clock" aria-hidden="true"></i>
-                            </div>
-                            <h3>Quanto tempo leva para formatar meu computador?</h3>
-                        </div>
-                        <div class="faq-answer">
-                            <p>O serviço geralmente leva entre <strong>2 a 4 horas</strong>, dependendo das configurações e dos programas necessários.</p>
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <div class="question-icon">
-                                <i class="fas fa-database" aria-hidden="true"></i>
-                            </div>
-                            <h3>Vocês fazem backup dos meus arquivos?</h3>
-                        </div>
-                        <div class="faq-answer">
-                            <p><strong>Sim!</strong> O backup dos arquivos é opcional. Caso deseje preservar seus dados antes da formatação, o cliente deve informar a necessidade do backup no momento do atendimento.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="agende-servico" class="scheduling">
-            <h2><i class="fas fa-calendar-check" aria-hidden="true"></i> Agende seu Serviço</h2>
-            <div class="scheduling-container">
-                <div class="scheduling-options">
-                    <div class="quick-booking">
-                        <h3><i class="fas fa-user-clock" aria-hidden="true"></i> Preencha seus Dados</h3>
-                        <form id="scheduling-form" class="schedule-form">
-                            <div class="form-group">
-                                <label for="client-name">
-                                    <i class="fas fa-user" aria-hidden="true"></i> Nome Completo *
-                                </label>
-                                <input type="text" id="client-name" name="name" required placeholder="Digite seu nome completo" style="font-size: 16px;">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="client-phone">
-                                    <i class="fas fa-phone" aria-hidden="true"></i> Telefone/WhatsApp *
-                                </label>
-                                <input type="tel" id="client-phone" name="phone" required placeholder="(00) 00000-0000" style="font-size: 16px;">
-                            </div>
-
-                            <div class="form-group">
-                                <label>
-                                    <i class="fas fa-laptop" aria-hidden="true"></i> Tipo de Serviço * (Selecione um ou mais)
-                                </label>
-                                <div class="services-checkbox-group">
-                                    <label class="service-checkbox">
-                                        <input type="checkbox" name="service[]" value="Formatação de Computador" data-price="80">
-                                        <span>Formatação de Computador - R$ 80,00</span>
-                                    </label>
-                                    <label class="service-checkbox">
-                                        <input type="checkbox" name="service[]" value="Instalação de Programas" data-price="50">
-                                        <span>Instalação de Programas - R$ 50,00</span>
-                                    </label>
-                                    <label class="service-checkbox">
-                                        <input type="checkbox" name="service[]" value="Proteção e Segurança" data-price="60">
-                                        <span>Proteção e Segurança - R$ 60,00</span>
-                                    </label>
-                                    <label class="service-checkbox">
-                                        <input type="checkbox" name="service[]" value="Manutenção Preventiva" data-price="70">
-                                        <span>Manutenção Preventiva - R$ 70,00</span>
-                                    </label>
-                                    <label class="service-checkbox">
-                                        <input type="checkbox" name="service[]" value="Instalação de Drivers" data-price="40">
-                                        <span>Instalação de Drivers - R$ 40,00</span>
-                                    </label>
-                                    <label class="service-checkbox">
-                                        <input type="checkbox" name="service[]" value="Backup de Dados" data-price="45">
-                                        <span>Backup de Dados - R$ 45,00</span>
-                                    </label>
-                                </div>
-                                <div class="total-price-display">
-                                    <span class="total-label">Valor Total:</span>
-                                    <span class="total-value" id="total-value">R$ 0,00</span>
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="attendance-type">
-                                        <i class="fas fa-headset" aria-hidden="true"></i> Modo de Atendimento *
-                                    </label>
-                                    <select id="attendance-type" name="attendance" required>
-                                        <option value="">Selecione</option>
-                                        <option value="Presencial">Presencial</option>
-                                        <option value="Remoto (AnyDesk)">Remoto (AnyDesk) - 20% OFF</option>
-                                    </select>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="cleaning-type">
-                                        <i class="fas fa-broom" aria-hidden="true"></i> Tipo de Limpeza (Opcional)
-                                    </label>
-                                    <select id="cleaning-type" name="cleaning">
-                                        <option value="Não se aplica" data-price="0">Não se aplica</option>
-                                        <option value="Limpeza Simples" data-price="25">Limpeza Simples - R$ 25,00</option>
-                                        <option value="Limpeza Completa" data-price="45">Limpeza Completa - R$ 45,00</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="schedule-date">
-                                        <i class="fas fa-calendar" aria-hidden="true"></i> Data *
-                                    </label>
-                                    <input type="date" id="schedule-date" name="date" required>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="schedule-time">
-                                        <i class="fas fa-clock" aria-hidden="true"></i> Horário *
-                                    </label>
-                                    <select id="schedule-time" name="time" required>
-                                        <option value="">Selecione o horário</option>
-                                        <option value="08:00">08:00</option>
-                                        <option value="09:00">09:00</option>
-                                        <option value="10:00">10:00</option>
-                                        <option value="11:00">11:00</option>
-                                        <option value="12:00">12:00</option>
-                                        <option value="13:00">13:00</option>
-                                        <option value="14:00">14:00</option>
-                                        <option value="15:00">15:00</option>
-                                        <option value="16:00">16:00</option>
-                                        <option value="17:00">17:00</option>
-                                        <option value="18:00">18:00</option>
-                                    </select>
-                                    <small class="schedule-info">
-                                        <i class="fas fa-info-circle" aria-hidden="true"></i> 
-                                        Segunda a Sexta: 8h às 18h | Sábado: 8h às 12h
-                                    </small>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="client-address">
-                                    <i class="fas fa-map-marker-alt" aria-hidden="true"></i> Endereço (Opcional)
-                                </label>
-                                <input type="text" id="client-address" name="address" placeholder="Rua, número, bairro" style="font-size: 16px;">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="additional-info">
-                                    <i class="fas fa-comment" aria-hidden="true"></i> Observações (Opcional)
-                                </label>
-                                <textarea id="additional-info" name="notes" rows="4" placeholder="Ex: Preciso de atendimento remoto pelo AnyDesk, meu PC está lento..." style="font-size: 16px;"></textarea>
-                            </div>
-
-                            <button type="submit" class="submit-schedule-btn">
-                                <i class="fab fa-whatsapp" aria-hidden="true"></i>
-                                Agendar via WhatsApp
-                            </button>
-                        </form>
-                    </div>
-                    <div class="scheduling-info">
-                        <div class="info-card">
-                            <i class="fas fa-clock" aria-hidden="true"></i>
-                            <h4>Horário de Atendimento</h4>
-                            <p><strong>Segunda a Sexta:</strong> 8h às 18h</p>
-                            <p><strong>Sábado:</strong> 8h às 12h</p>
-                        </div>
-                        <div class="info-card">
-                            <i class="fas fa-map-marked-alt" aria-hidden="true"></i>
-                            <h4>Atendimento em</h4>
-                            <p><strong>Canaã dos Carajás, PA</strong></p>
-                            <small>Atendimento a domicílio disponível</small>
-                        </div>
-                        <div class="info-card">
-                            <i class="fas fa-info-circle" aria-hidden="true"></i>
-                            <h4>Como Funciona</h4>
-                            <p>1. Preencha o formulário</p>
-                            <p>2. Clique em "Agendar via WhatsApp"</p>
-                            <p>3. Confirme no WhatsApp</p>
-                            <small>Resposta em até 1 hora</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="social" class="social-proof">
-            <h2><i class="fas fa-share-alt" aria-hidden="true"></i> Conecte-se Conosco</h2>
-            <div class="social-container">
-                <div class="social-links">
-                    <a href="https://instagram.com/pcformatech" target="_blank" class="social-link instagram">
-                        <i class="fab fa-instagram" aria-hidden="true"></i>
-                        <span><strong>@pcformatech</strong> no Instagram</span>
-                        <small>181 seguindo • 94 seguidores • 34 posts</small>
-                    </a>
-                    <a href="https://api.whatsapp.com/send?phone=5594984305772&text=Olá! Gostaria de atendimento rápido pelo WhatsApp." target="_blank" class="social-link whatsapp">
-                        <i class="fab fa-whatsapp" aria-hidden="true"></i>
-                        <span><strong>Agende pelo WhatsApp</strong></span>
-                        <small><span data-contato="whatsapp">(94) 98430-5772</span> • Atendimento Rápido</small>
-                    </a>
-                    <div class="location-info">
-                        <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
-                        <span><strong>Canaã dos Carajás, PA</strong></span>
-                        <small>📍 Atendemos em toda a Região</small>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <div class="modal" id="diagnosticModal">
-            <div class="modal-content diagnostic-modal-content">
-                <span class="close-modal">&times;</span>
-                <h3>Diagnóstico guiado em 30 segundos</h3>
-                <form id="diagnosticQuizForm" class="diagnostic-quiz-form">
-                    <div class="diagnostic-quiz-question">
-                        <p>Seu PC demora para ficar pronto após ligar?</p>
-                        <label><input type="radio" name="q1" value="1" required> Sim</label>
-                        <label><input type="radio" name="q1" value="0"> Não</label>
-                    </div>
-                    <div class="diagnostic-quiz-question">
-                        <p>Ele trava durante tarefas simples?</p>
-                        <label><input type="radio" name="q2" value="1" required> Sim</label>
-                        <label><input type="radio" name="q2" value="0"> Não</label>
-                    </div>
-                    <div class="diagnostic-quiz-question">
-                        <p>Você percebe aquecimento acima do normal?</p>
-                        <label><input type="radio" name="q3" value="1" required> Sim</label>
-                        <label><input type="radio" name="q3" value="0"> Não</label>
-                    </div>
-                    <button type="submit" class="diagnostic-btn">Gerar diagnóstico</button>
-                </form>
-                <div class="diagnostic-quiz-result" id="diagnosticQuizResult" hidden></div>
-                <a href="https://api.whatsapp.com/send?phone=5594984305772&text=Ol%C3%A1%2C%20quero%20receber%20meu%20resultado%20de%20diagn%C3%B3stico." target="_blank" rel="noopener noreferrer" class="diagnostic-whatsapp" id="diagnosticQuizWhatsapp" hidden>
-                    <i class="fab fa-whatsapp" aria-hidden="true"></i>
-                    Enviar resultado no WhatsApp
-                </a>
-            </div>
-        </div>
-
-        <!-- Modals de Serviços -->
-        <div class="modal" id="modal-formatacao">
-            <div class="modal-content">
-                <span class="close-modal">&times;</span>
-                <h3>Formatação de Computadores</h3>
-                <ul class="service-features">
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Formatação com Windows original</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Navegadores e players de mídia</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Programas essenciais</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Garantia de 30 dias</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Suporte pós-formatação (30 dias)</li>
-                    <li><i class="fas fa-info-circle" aria-hidden="true"></i> Backup opcional (sob consulta)</li>
-                </ul>
-                <div class="price-details">
-                    <p class="price">A partir de R$ 80,00</p>
-                    <button class="whatsapp-btn" data-service="Formatação de Computadores">
-                        <i class="fab fa-whatsapp" aria-hidden="true"></i> Solicitar por WhatsApp
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal" id="modal-programas">
-            <div class="modal-content">
-                <span class="close-modal">&times;</span>
-                <h3>Instalação de Programas</h3>
-                <ul class="service-features">
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Instalação de softwares específicos</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Pacote Office atualizado</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Programas de produtividade</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Softwares de edição</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Antivírus e segurança</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Configuração personalizada</li>
-                </ul>
-                <div class="price-details">
-                    <p class="price">A partir de R$ 50,00</p>
-                    <button class="whatsapp-btn" data-service="Instalação de Programas">
-                        <i class="fab fa-whatsapp" aria-hidden="true"></i> Solicitar por WhatsApp
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal" id="modal-seguranca">
-            <div class="modal-content">
-                <span class="close-modal">&times;</span>
-                <h3>Proteção e Segurança</h3>
-                <ul class="service-features">
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Instalação de antivírus premium</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Configuração de firewall</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Remoção de malware</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Proteção contra ransomware</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Backup em nuvem</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Monitoramento de segurança</li>
-                </ul>
-                <div class="price-details">
-                    <p class="price">A partir de R$ 60,00</p>
-                    <button class="whatsapp-btn" data-service="Proteção e Segurança">
-                        <i class="fab fa-whatsapp" aria-hidden="true"></i> Solicitar por WhatsApp
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal" id="modal-manutencao">
-            <div class="modal-content">
-                <span class="close-modal">&times;</span>
-                <h3>Manutenção Preventiva</h3>
-                <ul class="service-features">
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Limpeza do sistema</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Otimização do Windows</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Atualização de drivers</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Verificação de hardware</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Remoção de arquivos temporários</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Relatório de desempenho</li>
-                </ul>
-                <div class="price-details">
-                    <p class="price">A partir de R$ 70,00</p>
-                    <button class="whatsapp-btn" data-service="Manutenção Preventiva">
-                        <i class="fab fa-whatsapp" aria-hidden="true"></i> Solicitar por WhatsApp
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal" id="modal-drivers">
-            <div class="modal-content">
-                <span class="close-modal">&times;</span>
-                <h3>Instalação de Drivers</h3>
-                <ul class="service-features">
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Identificação de hardware</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Drivers oficiais e atualizados</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Otimização de desempenho</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Correção de problemas</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Backup dos drivers atuais</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Teste de funcionamento</li>
-                </ul>
-                <div class="price-details">
-                    <p class="price">A partir de R$ 40,00</p>
-                    <button class="whatsapp-btn" data-service="Instalação de Drivers">
-                        <i class="fab fa-whatsapp" aria-hidden="true"></i> Solicitar por WhatsApp
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal" id="modal-backup">
-            <div class="modal-content">
-                <span class="close-modal">&times;</span>
-                <h3>Backup de Dados</h3>
-                <ul class="service-features">
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Backup completo dos arquivos</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Verificação de integridade</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Organização dos dados</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Armazenamento seguro</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Backup em múltiplos dispositivos</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Relatório detalhado</li>
-                </ul>
-                <div class="price-details">
-                    <p class="price">A partir de R$ 45,00</p>
-                    <button class="whatsapp-btn" data-service="Backup de Dados">
-                        <i class="fab fa-whatsapp" aria-hidden="true"></i> Solicitar por WhatsApp
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal" id="modal-remoto">
-            <div class="modal-content">
-                <span class="close-modal">&times;</span>
-                <h3>Atendimento Remoto via AnyDesk</h3>
-                <div class="remote-service-highlight">
-                    <div class="discount-badge">
-                        <i class="fas fa-percentage" aria-hidden="true"></i>
-                        <span>20% de desconto em todos os serviços</span>
-                    </div>
-                </div>
-                <ul class="service-features">
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Atendimento sem sair de casa</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Suporte técnico em tempo real</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Resolução rápida de problemas</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Instalação de programas remotamente</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Diagnóstico e otimização do sistema</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Conexão segura e criptografada</li>
-                </ul>
-                <div class="anydesk-download">
-                    <h4>Como funciona:</h4>
-                    <ol>
-                        <li>1. Baixe o AnyDesk clicando no botão abaixo</li>
-                        <li>2. Instale o programa (não precisa reiniciar)</li>
-                        <li>3. Entre em contato conosco pelo WhatsApp</li>
-                        <li>4. Receba atendimento com 20% de desconto!</li>
-                    </ol>
-                    <a href="https://anydesk.com/pt/downloads" target="_blank" class="download-btn">
-                        <i class="fas fa-download" aria-hidden="true"></i> Baixar AnyDesk
+            <div class="pt-empty" id="pt-empty" hidden>
+                <svg class="pt-empty-ico" aria-hidden="true"><use href="#i-help"/></svg>
+                <div>
+                    <p class="pt-empty-title">Não encontramos um serviço com essas palavras.</p>
+                    <p class="pt-empty-text">Sem problema: mande a sua descrição pelo WhatsApp e respondemos qual serviço resolve.</p>
+                    <a class="pt-btn pt-btn-primary" id="pt-empty-wa" target="_blank" rel="noopener"
+                       href="https://api.whatsapp.com/send?phone=5594984305772&amp;text=Ol%C3%A1!%20Preciso%20de%20ajuda%20com%20meu%20computador.">
+                        <svg class="pt-ico" aria-hidden="true"><use href="#i-chat"/></svg> Descrever no WhatsApp
                     </a>
                 </div>
-                <div class="price-details">
-                    <p class="remote-discount">Todos os serviços com 20% de desconto no atendimento remoto!</p>
-                    <button class="whatsapp-btn" data-service="Atendimento Remoto">
-                        <i class="fab fa-whatsapp" aria-hidden="true"></i> Solicitar Atendimento Remoto
-                    </button>
-                </div>
             </div>
-        </div>
 
-        <!-- Sistema de Agendamento + Contato lado a lado -->
-
-        <section id="sobre" class="about about-premium">
-            <div class="about-header">
-                <h2>Quem está por trás da performance</h2>
-                <p class="about-subtitle">Assistência técnica humanizada, moderna e orientada a resultado</p>
-            </div>
-            <div class="about-content">
-                <div class="about-main">
-                    <div class="about-image">
-                        <div class="about-image-placeholder about-profile-photo" aria-label="Foto estilizada de Rafael">
-                            <span>RAFAEL</span>
-                            <i class="fas fa-microchip" aria-hidden="true"></i>
-                        </div>
-                    </div>
-                    <div class="about-text">
-                        <h3>Sou Rafael, apaixonado por tecnologia e otimização de computadores.</h3>
-                        <p class="highlight-text">Meu foco é transformar computadores lentos em máquinas fluidas, seguras e confiáveis, com atendimento direto, sem enrolação e com explicação clara de cada etapa.</p>
-                        <p>Você não fala com um robô nem com suporte genérico. Fala com quem analisa seu caso com profundidade e recomenda apenas o que realmente gera ganho de desempenho.</p>
-                        <p>Atendo presencial e remoto, com padrão premium de organização, segurança de dados e compromisso com resultado perceptível no dia a dia.</p>
-                        <a href="https://api.whatsapp.com/send?phone=5594984305772&text=Ol%C3%A1%2C%20Rafael.%20Quero%20otimizar%20meu%20computador%20com%20seu%20atendimento%20premium." class="about-personal-cta" target="_blank" rel="noopener noreferrer">
-                            <i class="fab fa-whatsapp" aria-hidden="true"></i>
-                            Falar direto com o Rafael
+            <div class="pt-grid" id="pt-grid">
+                <article class="pt-card" data-id="formatacao">
+                    <span class="pt-best">Indicado para você</span>
+                    <div class="pt-card-ico"><svg aria-hidden="true"><use href="#i-laptop"/></svg></div>
+                    <h3>Formatar o computador</h3>
+                    <p class="pt-card-text">Reinstala o Windows do zero, com navegador e programas essenciais. Garantia de 30 dias.</p>
+                    <p class="pt-price"><span>a partir de</span> <strong data-preco="formatacao">R$ 80,00</strong></p>
+                    <div class="pt-card-actions">
+                        <a class="pt-btn pt-btn-primary" data-wa target="_blank" rel="noopener" href="https://api.whatsapp.com/send?phone=5594984305772&amp;text=Ol%C3%A1!%20Quero%20formatar%20meu%20computador.">
+                            <svg class="pt-ico" aria-hidden="true"><use href="#i-chat"/></svg> Pedir pelo WhatsApp
+                        </a>
+                        <a class="pt-btn pt-btn-ghost" href="site.html?servico=formatacao#agende-servico">
+                            <svg class="pt-ico" aria-hidden="true"><use href="#i-calendar"/></svg> Agendar
                         </a>
                     </div>
-                </div>
-                
-                <div class="about-features">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-user-check" aria-hidden="true"></i>
-                        </div>
-                        <h4>Atendimento Personalizado</h4>
-                        <p>Cada cliente é único e merece atenção especial</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-bolt" aria-hidden="true"></i>
-                        </div>
-                        <h4>Serviço Rápido</h4>
-                        <p>Seu tempo é valioso, trabalhamos com agilidade</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-award" aria-hidden="true"></i>
-                        </div>
-                        <h4>Garantia de Qualidade</h4>
-                        <p>Todos os serviços com garantia e suporte</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-headset" aria-hidden="true"></i>
-                        </div>
-                        <h4>Suporte Contínuo</h4>
-                        <p>Estamos sempre disponíveis para ajudar</p>
-                    </div>
-                </div>
+                </article>
 
-                <div class="about-stats">
-                    <div class="stat-item">
-                        <div class="stat-number">500+</div>
-                        <div class="stat-label">Clientes Atendidos</div>
+                <article class="pt-card" data-id="manutencao">
+                    <span class="pt-best">Indicado para você</span>
+                    <div class="pt-card-ico"><svg aria-hidden="true"><use href="#i-gauge"/></svg></div>
+                    <h3>Computador lento ou travando</h3>
+                    <p class="pt-card-text">Limpeza e otimização do sistema para ele voltar a ficar rápido.</p>
+                    <p class="pt-price"><span>a partir de</span> <strong data-preco="manutencao">R$ 70,00</strong></p>
+                    <div class="pt-card-actions">
+                        <a class="pt-btn pt-btn-primary" data-wa target="_blank" rel="noopener" href="https://api.whatsapp.com/send?phone=5594984305772&amp;text=Ol%C3%A1!%20Meu%20computador%20est%C3%A1%20lento.">
+                            <svg class="pt-ico" aria-hidden="true"><use href="#i-chat"/></svg> Pedir pelo WhatsApp
+                        </a>
+                        <a class="pt-btn pt-btn-ghost" href="site.html?servico=manutencao#agende-servico">
+                            <svg class="pt-ico" aria-hidden="true"><use href="#i-calendar"/></svg> Agendar
+                        </a>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-number">5+</div>
-                        <div class="stat-label">Anos de Experiência</div>
+                </article>
+
+                <article class="pt-card" data-id="seguranca">
+                    <span class="pt-best">Indicado para você</span>
+                    <div class="pt-card-ico"><svg aria-hidden="true"><use href="#i-shield"/></svg></div>
+                    <h3>Vírus e propagandas estranhas</h3>
+                    <p class="pt-card-text">Remove vírus e instala um antivírus para proteger seus arquivos e senhas.</p>
+                    <p class="pt-price"><span>a partir de</span> <strong data-preco="seguranca">R$ 60,00</strong></p>
+                    <div class="pt-card-actions">
+                        <a class="pt-btn pt-btn-primary" data-wa target="_blank" rel="noopener" href="https://api.whatsapp.com/send?phone=5594984305772&amp;text=Ol%C3%A1!%20Acho%20que%20meu%20computador%20est%C3%A1%20com%20v%C3%ADrus.">
+                            <svg class="pt-ico" aria-hidden="true"><use href="#i-chat"/></svg> Pedir pelo WhatsApp
+                        </a>
+                        <a class="pt-btn pt-btn-ghost" href="site.html?servico=seguranca#agende-servico">
+                            <svg class="pt-ico" aria-hidden="true"><use href="#i-calendar"/></svg> Agendar
+                        </a>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-number">98%</div>
-                        <div class="stat-label">Satisfação</div>
+                </article>
+
+                <article class="pt-card" data-id="programas">
+                    <span class="pt-best">Indicado para você</span>
+                    <div class="pt-card-ico"><svg aria-hidden="true"><use href="#i-download"/></svg></div>
+                    <h3>Instalar programas</h3>
+                    <p class="pt-card-text">Word, Excel e o pacote Office, leitor de PDF e os programas de que você precisar.</p>
+                    <p class="pt-price"><span>a partir de</span> <strong data-preco="programas">R$ 50,00</strong></p>
+                    <div class="pt-card-actions">
+                        <a class="pt-btn pt-btn-primary" data-wa target="_blank" rel="noopener" href="https://api.whatsapp.com/send?phone=5594984305772&amp;text=Ol%C3%A1!%20Preciso%20instalar%20programas%20no%20meu%20computador.">
+                            <svg class="pt-ico" aria-hidden="true"><use href="#i-chat"/></svg> Pedir pelo WhatsApp
+                        </a>
+                        <a class="pt-btn pt-btn-ghost" href="site.html?servico=programas#agende-servico">
+                            <svg class="pt-ico" aria-hidden="true"><use href="#i-calendar"/></svg> Agendar
+                        </a>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-number">24h</div>
-                        <div class="stat-label">Tempo de Resposta</div>
+                </article>
+
+                <article class="pt-card" data-id="drivers">
+                    <span class="pt-best">Indicado para você</span>
+                    <div class="pt-card-ico"><svg aria-hidden="true"><use href="#i-chip"/></svg></div>
+                    <h3>Som, Wi‑Fi ou vídeo não funcionam</h3>
+                    <p class="pt-card-text">Instala os drivers certos para cada peça do computador voltar a funcionar.</p>
+                    <p class="pt-price"><span>a partir de</span> <strong data-preco="drivers">R$ 40,00</strong></p>
+                    <div class="pt-card-actions">
+                        <a class="pt-btn pt-btn-primary" data-wa target="_blank" rel="noopener" href="https://api.whatsapp.com/send?phone=5594984305772&amp;text=Ol%C3%A1!%20Uma%20parte%20do%20meu%20computador%20parou%20de%20funcionar%20(som%2C%20Wi-Fi%20ou%20v%C3%ADdeo).">
+                            <svg class="pt-ico" aria-hidden="true"><use href="#i-chat"/></svg> Pedir pelo WhatsApp
+                        </a>
+                        <a class="pt-btn pt-btn-ghost" href="site.html?servico=drivers#agende-servico">
+                            <svg class="pt-ico" aria-hidden="true"><use href="#i-calendar"/></svg> Agendar
+                        </a>
                     </div>
-                </div>
+                </article>
+
+                <article class="pt-card" data-id="backup">
+                    <span class="pt-best">Indicado para você</span>
+                    <div class="pt-card-ico"><svg aria-hidden="true"><use href="#i-photos"/></svg></div>
+                    <h3>Salvar fotos e arquivos</h3>
+                    <p class="pt-card-text">Faz uma cópia de segurança dos seus documentos, fotos e vídeos.</p>
+                    <p class="pt-price"><span>a partir de</span> <strong data-preco="backup">R$ 45,00</strong></p>
+                    <div class="pt-card-actions">
+                        <a class="pt-btn pt-btn-primary" data-wa target="_blank" rel="noopener" href="https://api.whatsapp.com/send?phone=5594984305772&amp;text=Ol%C3%A1!%20Quero%20fazer%20backup%20dos%20meus%20arquivos.">
+                            <svg class="pt-ico" aria-hidden="true"><use href="#i-chat"/></svg> Pedir pelo WhatsApp
+                        </a>
+                        <a class="pt-btn pt-btn-ghost" href="site.html?servico=backup#agende-servico">
+                            <svg class="pt-ico" aria-hidden="true"><use href="#i-calendar"/></svg> Agendar
+                        </a>
+                    </div>
+                </article>
+
+                <article class="pt-card" data-id="remoto">
+                    <span class="pt-best">Indicado para você</span>
+                    <div class="pt-card-ico"><svg aria-hidden="true"><use href="#i-home"/></svg></div>
+                    <h3>Atendimento sem sair de casa</h3>
+                    <p class="pt-card-text">Resolvemos à distância, pelo seu próprio computador, com 20% de desconto.</p>
+                    <p class="pt-price"><strong>20% de desconto</strong></p>
+                    <div class="pt-card-actions">
+                        <a class="pt-btn pt-btn-primary" data-wa target="_blank" rel="noopener" href="https://api.whatsapp.com/send?phone=5594984305772&amp;text=Ol%C3%A1!%20Quero%20atendimento%20remoto%20(%C3%A0%20dist%C3%A2ncia).">
+                            <svg class="pt-ico" aria-hidden="true"><use href="#i-chat"/></svg> Pedir pelo WhatsApp
+                        </a>
+                        <a class="pt-btn pt-btn-ghost" href="site.html?servico=remoto#agende-servico">
+                            <svg class="pt-ico" aria-hidden="true"><use href="#i-calendar"/></svg> Agendar
+                        </a>
+                    </div>
+                </article>
+
+                <article class="pt-card pt-card-help" data-id="ajuda">
+                    <span class="pt-best">Indicado para você</span>
+                    <div class="pt-card-ico"><svg aria-hidden="true"><use href="#i-help"/></svg></div>
+                    <h3>Não sei qual é o problema</h3>
+                    <p class="pt-card-text">Conte o que está acontecendo e receba uma orientação antes de decidir.</p>
+                    <p class="pt-price"><strong>Fale com a gente</strong></p>
+                    <div class="pt-card-actions">
+                        <a class="pt-btn pt-btn-primary" data-wa target="_blank" rel="noopener" href="https://api.whatsapp.com/send?phone=5594984305772&amp;text=Ol%C3%A1!%20Meu%20computador%20est%C3%A1%20com%20um%20problema%20e%20n%C3%A3o%20sei%20qual%20servi%C3%A7o%20escolher.">
+                            <svg class="pt-ico" aria-hidden="true"><use href="#i-chat"/></svg> Falar no WhatsApp
+                        </a>
+                    </div>
+                </article>
             </div>
+        </section>
+
+        <section class="pt-trust" aria-label="Como funciona o atendimento">
+            <ul>
+                <li><svg class="pt-ico" aria-hidden="true"><use href="#i-pin"/></svg> Presencial em Canaã dos Carajás, PA</li>
+                <li><svg class="pt-ico" aria-hidden="true"><use href="#i-home"/></svg> À distância para qualquer cidade</li>
+                <li><svg class="pt-ico" aria-hidden="true"><use href="#i-check"/></svg> Garantia de 30 dias na formatação</li>
+            </ul>
         </section>
     </main>
 
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-info">
-                <h3>PC Formatech</h3>
-                <p class="slogan">Seu computador em boas mãos</p>
-                <p class="footer-description">Soluções completas em formatação e manutenção de computadores para sua casa ou empresa.</p>
-                <div class="payment-highlight">
-                    <h4><i class="fas fa-credit-card" aria-hidden="true"></i> Formas de Pagamento</h4>
-                    <div class="payment-methods">
-                        <div class="payment-item">
-                            <i class="fab fa-pix" aria-hidden="true"></i>
-                            <span>PIX</span>
-                        </div>
-                        <div class="payment-item">
-                            <i class="fas fa-credit-card" aria-hidden="true"></i>
-                            <span>Cartão de Crédito</span>
-                        </div>
-                        <div class="payment-item">
-                            <i class="fas fa-money-bill-wave" aria-hidden="true"></i>
-                            <span>Dinheiro</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-contact">
-                <h4><i class="fas fa-headset" aria-hidden="true"></i> Contato</h4>
-                <div class="contact-item">
-                    <i class="fas fa-phone" aria-hidden="true"></i>
-                    <div class="contact-info">
-                        <p><strong data-contato="whatsapp">(94) 98430-5772</strong></p>
-                        <small>Atendimento rápido via WhatsApp</small>
-                    </div>
-                </div>
-                <div class="contact-item">
-                    <i class="fas fa-envelope" aria-hidden="true"></i>
-                    <div class="contact-info">
-                        <p>contato@pcformatech.com</p>
-                    </div>
-                </div>
-                <div class="contact-item">
-                    <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
-                    <div class="contact-info">
-                        <p><strong>Canaã dos Carajás, PA</strong></p>
-                        <small>Atendimento em toda a região</small>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-social">
-                <h4><i class="fas fa-share-alt" aria-hidden="true"></i> Redes Sociais</h4>
-                <div class="social-links">
-                    <a href="https://instagram.com/pcformatech" target="_blank" class="social-link instagram">
-                        <i class="fab fa-instagram" aria-hidden="true"></i>
-                        <span>
-                            <strong>Instagram</strong>
-                            <small>@pcformatech</small>
-                        </span>
-                    </a>
-                    <a href="https://wa.me/5594984305772" target="_blank" class="social-link whatsapp">
-                        <i class="fab fa-whatsapp" aria-hidden="true"></i>
-                        <span>
-                            <strong>WhatsApp</strong>
-                            <small data-contato="whatsapp">(94) 98430-5772</small>
-                        </span>
-                    </a>
-                </div>
-                <div class="location-info">
-                    <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
-                    <span>
-                        <strong>Canaã dos Carajás, PA</strong>
-                        <small>📍 Atendimento em toda a região</small>
-                    </span>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <div class="footer-info-bottom">
-                <p>&copy; 2025 PC Formatech. Todos os direitos reservados.</p>
-                <div class="payment-methods-icons">
-                    <i class="fab fa-cc-visa" aria-hidden="true"></i>
-                    <i class="fab fa-cc-mastercard" aria-hidden="true"></i>
-                    <i class="fas fa-money-bill-wave" aria-hidden="true"></i>
-                    <i class="fab fa-pix" aria-hidden="true"></i>
-                </div>
-            </div>
-            <a href="admin.html" style="opacity: 0.2; font-size: 12px; color: #666; text-decoration: none; display: inline-block; margin-top: 10px;" title="Painel Administrativo">
-                <i class="fas fa-key" aria-hidden="true"></i>
-            </a>
-        </div>
+    <footer class="pt-foot">
+        <p>
+            <strong>PC Formatech</strong> ·
+            WhatsApp <a href="https://api.whatsapp.com/send?phone=5594984305772" target="_blank" rel="noopener" data-contato="whatsapp">(94) 98430-5772</a> ·
+            <a href="https://instagram.com/pcformatech" target="_blank" rel="noopener">@pcformatech</a>
+        </p>
+        <a class="pt-foot-link" href="site.html">Conheça o site completo <svg class="pt-ico" aria-hidden="true"><use href="#i-arrow"/></svg></a>
     </footer>
 
-    <!-- Botão Voltar ao Topo -->
-    <button id="scrollToTop" class="scroll-to-top" aria-label="Voltar ao topo">
-        <i class="fas fa-arrow-up" aria-hidden="true"></i>
-    </button>
+    <script src="site-config.js"></script>
+    <script src="portal.js"></script>
 
-    <!-- Firebase SDK (compat) - necessário para rastreamento de presença -->
+    <!-- Tema escolhido no painel e contagem de visitantes do "Tempo Real".
+         Vêm por último: a busca já funciona antes de o Firebase carregar. -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <script src="firebase-config.js"></script>
-    <script>initFirebase();</script>
-    <script src="site-config.js"></script>
+    <script>if (typeof initFirebase === 'function') initFirebase();</script>
     <script src="theme-system.js"></script>
-    <script src="main.js"></script>
-    <script src="seasonal-badge.js" defer></script>
-    <script src="formatacao-form.js"></script>
-    <script>
-    /* ── Badge sazonal ───────────────────────────────────────────────────── */
-    (function () {
-        var PRE_EXTRA = 3;
-        var POST_EXTRA = 0;
-        var SEASONAL = [
-            { name: 'Natal',                greeting: 'Feliz',  icon: '🎄', start: '12-25', end: '12-25' },
-            { name: 'Ano Novo',             greeting: 'Feliz',  icon: '✨', start: '01-01', end: '01-01' },
-            { name: 'Páscoa',               greeting: 'Feliz',  icon: '🐣', start: '03-25', end: '04-22' },
-            { name: 'Dia das Mães',         greeting: 'Feliz',  icon: '💐', start: '05-08', end: '05-14' },
-            { name: 'Festa Junina',         greeting: 'Feliz',  icon: '🌽', start: '06-24', end: '06-24' },
-            { name: 'Dia dos Pais',         greeting: 'Feliz',  icon: '🏆', start: '08-08', end: '08-14' },
-            { name: 'Dia das Crianças',     greeting: 'Feliz',  icon: '🎈', start: '10-12', end: '10-12' },
-            { name: 'Halloween',            greeting: 'Happy',  icon: '🎃', start: '10-31', end: '10-31' }
-        ];
-        function doy(m, d) {
-            var acc = [0,31,28,31,30,31,30,31,31,30,31,30,31], n = d;
-            for (var i = 1; i < m; i++) n += acc[i];
-            return n;
-        }
-        function isActive(start, end) {
-            var now = new Date(), tDOY = doy(now.getMonth() + 1, now.getDate());
-            var sp = start.split('-').map(Number), ep = end.split('-').map(Number);
-            var sN = doy(sp[0], sp[1]), eN = doy(ep[0], ep[1]);
-            var wraps = eN < sN;
-            if (wraps) eN += 365;
-                 return (tDOY >= sN - PRE_EXTRA && tDOY <= eN + POST_EXTRA) ||
-                     (wraps && (tDOY + 365 >= sN - PRE_EXTRA && tDOY + 365 <= eN + POST_EXTRA));
-        }
-
-        function iconByThemeId(themeId) {
-            var map = {
-                'natal': '🎄',
-                'ano-novo': '✨',
-                'pascoa': '🐣',
-                'dia-das-maes': '💐',
-                'festa-junina': '🌽',
-                'dia-dos-pais': '🏆',
-                'dia-das-criancas': '🎈',
-                'halloween': '🎃'
-            };
-            return map[themeId] || '🎉';
-        }
-
-        function splitSeasonalTitle(title) {
-            var raw = String(title || '').trim().replace(/[!]+$/, '');
-            if (!raw) {
-                return { greeting: 'Feliz', name: 'Data Comemorativa' };
-            }
-            var parts = raw.split(/\s+/);
-            if (parts.length > 1 && /^(feliz|happy)$/i.test(parts[0])) {
-                return { greeting: parts[0], name: parts.slice(1).join(' ') };
-            }
-            return { greeting: 'Feliz', name: raw };
-        }
-
-        function getThemeSeasonalBadge() {
-            var root = document.documentElement;
-            if (!root || root.getAttribute('data-theme-category') !== 'seasonal') {
-                return null;
-            }
-
-            var themeId = root.getAttribute('data-theme-id') || '';
-            var manager = window.PCFormatechThemeManager;
-            var theme = manager && typeof manager.getCurrentTheme === 'function'
-                ? manager.getCurrentTheme()
-                : null;
-
-            if (!theme || theme.category !== 'seasonal') {
-                return null;
-            }
-
-            var title = '';
-            if (theme.banner && Array.isArray(theme.banner.slides) && theme.banner.slides[0] && theme.banner.slides[0].title) {
-                title = theme.banner.slides[0].title;
-            } else if (theme.name) {
-                title = theme.name;
-            }
-
-            var parsed = splitSeasonalTitle(title);
-            return {
-                greeting: parsed.greeting,
-                name: parsed.name,
-                icon: iconByThemeId(themeId || theme.id || '')
-            };
-        }
-        function showBadge() {
-            var badge = document.getElementById('pcft-seasonal-badge');
-            if (!badge) return;
-            var iconLeft  = badge.querySelector('.pcft-seasonal-icon-left');
-            var iconRight = badge.querySelector('.pcft-seasonal-icon-right');
-            var greetEl   = badge.querySelector('.pcft-seasonal-greeting');
-            var nameEl    = badge.querySelector('.pcft-seasonal-name');
-
-            var forcedByTheme = getThemeSeasonalBadge();
-            if (forcedByTheme) {
-                if (iconLeft)  iconLeft.textContent  = forcedByTheme.icon;
-                if (iconRight) iconRight.textContent = forcedByTheme.icon;
-                if (greetEl)   greetEl.textContent   = forcedByTheme.greeting;
-                if (nameEl)    nameEl.textContent    = forcedByTheme.name + '!';
-                badge.hidden = false;
-                return;
-            }
-
-            var active = null;
-            for (var i = 0; i < SEASONAL.length; i++) {
-                if (isActive(SEASONAL[i].start, SEASONAL[i].end)) { active = SEASONAL[i]; break; }
-            }
-            if (!active) {
-                badge.hidden = true;
-                if (greetEl) greetEl.textContent = '';
-                if (nameEl) nameEl.textContent = '';
-                return;
-            }
-            if (iconLeft)  iconLeft.textContent  = active.icon;
-            if (iconRight) iconRight.textContent = active.icon;
-            if (greetEl)   greetEl.textContent   = active.greeting;
-            if (nameEl)    nameEl.textContent     = active.name + '!';
-            badge.hidden = false;
-        }
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', showBadge);
-        } else {
-            showBadge();
-        }
-
-        window.addEventListener('pcformatech:themechange', showBadge);
-    })();
-    /* ───────────────────────────────────────────────────────────────────── */
-    </script>
-    <script>
-        // Slides personalizados vindos do painel administrativo.
-        // Os indicadores NÃO são criados aqui: initHeroCarousel() os gera a partir
-        // do número real de slides, o que evita a dessincronia entre as duas listas.
-        document.addEventListener('DOMContentLoaded', () => {
-            let savedSlides;
-            try {
-                savedSlides = JSON.parse(localStorage.getItem('pcformatech_hero_slides') || 'null');
-            } catch (e) {
-                savedSlides = null;
-            }
-
-            if (!Array.isArray(savedSlides) || !savedSlides.length) return;
-
-            const heroSlider = document.querySelector('.hero-slider');
-            if (!heroSlider) return;
-
-            heroSlider.innerHTML = '';
-
-            savedSlides.forEach((slide, index) => {
-                const slideDiv = document.createElement('div');
-                slideDiv.className = 'hero-slide' + (index === 0 ? ' active' : '');
-
-                const img = document.createElement('img');
-                img.alt = slide.alt || '';
-                img.setAttribute('decoding', 'async');
-                if (index === 0) {
-                    img.setAttribute('fetchpriority', 'high');
-                } else {
-                    img.setAttribute('loading', 'lazy');
-                }
-
-                // Slide quebrado sai da lista e o carrossel é reconstruído.
-                img.addEventListener('error', function onImgError() {
-                    img.removeEventListener('error', onImgError);
-                    slideDiv.remove();
-                    const remaining = heroSlider.querySelectorAll('.hero-slide');
-                    remaining.forEach((s, i) => s.classList.toggle('active', i === 0));
-                    if (typeof window.initHeroCarousel === 'function') window.initHeroCarousel();
-                });
-
-                img.src = slide.url;
-                slideDiv.appendChild(img);
-                heroSlider.appendChild(slideDiv);
-            });
-
-            if (typeof window.initHeroCarousel === 'function') window.initHeroCarousel();
-        });
-    </script>
 </body>
 </html>

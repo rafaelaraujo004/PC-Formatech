@@ -1138,9 +1138,64 @@
         };
     }
 
+    // Marcado pelo painel quando o dono faz login neste aparelho. As visitas
+    // dele ao site deixam de entrar na contagem de visitantes.
+    const PRESENCE_OWNER_KEY = 'pcft_dono';
+
     function shouldTrackPresence() {
         const path = (window.location.pathname || '').toLowerCase();
-        return !(path.includes('/admin') || path.endsWith('admin.html'));
+        if (path.includes('/admin') || path.endsWith('admin.html')) return false;
+        if (safeGet(localStorage, PRESENCE_OWNER_KEY) === '1') return false;
+        // Testes locais usam o mesmo banco de produção: sem isto, cada página
+        // aberta durante o desenvolvimento virava um "visitante".
+        const host = window.location.hostname;
+        if (host === 'localhost' || host === '127.0.0.1' || host === '') return false;
+        return true;
+    }
+
+    /**
+     * De onde a pessoa veio. Ordem de confiança: link marcado pelo dono
+     * (?origem=status-whatsapp), parâmetros de anúncio, navegador interno de
+     * app, e por último o referrer. O WhatsApp não envia referrer, então quem
+     * vem de lá sem link marcado aparece como "direto" — por isso o painel
+     * oferece os links rastreáveis.
+     * Guardado na sessão: ir da página de entrada ao site principal não
+     * transforma a visita em "direto".
+     */
+    function detectarOrigem() {
+        const salva = safeGet(sessionStorage, 'pcft_origem');
+        if (salva) return salva;
+
+        let origem = 'direto';
+        try {
+            const params = new URLSearchParams(window.location.search);
+            const marcada = params.get('origem') || params.get('utm_source') || params.get('ref');
+            const ua = navigator.userAgent || '';
+            if (marcada) {
+                origem = 'link:' + marcada.toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 30);
+            } else if (params.get('gclid')) {
+                origem = 'google';
+            } else if (params.get('fbclid') || /FBAN|FBAV/.test(ua)) {
+                origem = 'facebook';
+            } else if (/Instagram/.test(ua)) {
+                origem = 'instagram';
+            } else if (document.referrer) {
+                const host = new URL(document.referrer).hostname.replace(/^www\./, '');
+                if (host && host !== window.location.hostname.replace(/^www\./, '')) {
+                    if (/whatsapp|wa\.me/.test(host)) origem = 'whatsapp';
+                    else if (/instagram/.test(host)) origem = 'instagram';
+                    else if (/facebook|fb\.com|fb\.me/.test(host)) origem = 'facebook';
+                    else if (/google\./.test(host)) origem = 'google';
+                    else if (/bing\.|yahoo|duckduckgo/.test(host)) origem = 'busca';
+                    else if (/youtube|youtu\.be/.test(host)) origem = 'youtube';
+                    else if (/tiktok/.test(host)) origem = 'tiktok';
+                    else origem = 'site:' + host.slice(0, 30);
+                }
+            }
+        } catch (e) { /* fica "direto" */ }
+
+        safeSet(sessionStorage, 'pcft_origem', origem);
+        return origem;
     }
 
     function getOrCreateSessionId() {
@@ -1212,6 +1267,12 @@
         const sessionStart = getOrCreateSessionStart();
         const visitorId = getOrCreateVisitorId();
         const visitorLabel = 'Visitante ' + visitorId;
+        const origem = detectarOrigem();
+
+        // Interesse registrado antes de o Firebase conectar fica na fila.
+        const fila = [];
+        const LIMITE_POR_CAMPO = 20;
+        const contagem = { servicos: 0, buscas: 0, acoes: 0 };
 
         let presenceRef = null;
         let presenceHistoryRef = null;
@@ -1248,9 +1309,71 @@
                 page: getPagePath().slice(0, 40),
                 pagina: getPageLabel().slice(0, 120),
                 dispositivo: getDeviceType(),
+                origem: origem,
+                entrouClient: sessionStart,
                 lastSeen: ctx.firebase.firestore.FieldValue.serverTimestamp(),
                 lastSeenClient: Date.now()
             };
+        }
+
+        /**
+         * Guarda na visita do dia o que a pessoa procurou ou fez. O painel soma
+         * isso para mostrar os serviços mais procurados e as buscas.
+         * tipo: 'servico' (id do serviço), 'busca' (texto), 'acao' (ex.: 'whatsapp:formatacao')
+         */
+        function registrar(tipo, valor) {
+            if (!started) return;
+            const campo = tipo === 'busca' ? 'buscas' : tipo === 'acao' ? 'acoes' : 'servicos';
+            const texto = String(valor || '').trim().toLowerCase().slice(0, 60);
+            if (!texto || contagem[campo] >= LIMITE_POR_CAMPO) return;
+            contagem[campo] += 1;
+
+            const ctx = getFirebaseContext();
+            if (!ctx) { fila.push([campo, texto]); return; }
+            const ref = ensurePresenceHistoryRef(ctx);
+            const payload = buildHistoryPayload(ctx);
+            payload[campo] = ctx.firebase.firestore.FieldValue.arrayUnion(texto);
+            ref.set(payload, { merge: true }).catch(() => {});
+        }
+
+        function esvaziarFila(ctx) {
+            if (!fila.length) return;
+            const ref = ensurePresenceHistoryRef(ctx);
+            const payload = buildHistoryPayload(ctx);
+            const porCampo = {};
+            fila.splice(0).forEach(([campo, texto]) => { (porCampo[campo] = porCampo[campo] || []).push(texto); });
+            Object.keys(porCampo).forEach((campo) => {
+                payload[campo] = ctx.firebase.firestore.FieldValue.arrayUnion.apply(null, porCampo[campo]);
+            });
+            ref.set(payload, { merge: true }).catch(() => {});
+        }
+
+        /**
+         * Avisa o servidor, uma vez por sessão, que alguém entrou — é ele quem
+         * manda a notificação para o celular do dono. Espera alguns segundos
+         * porque o servidor confere se a presença já está gravada antes de
+         * notificar (assim ninguém dispara notificação chamando a API à toa).
+         */
+        function avisarChegada() {
+            if (safeGet(sessionStorage, 'pcft_avisado') === '1') return;
+            const host = window.location.hostname;
+            if (host === 'localhost' || host === '127.0.0.1') return;
+            safeSet(sessionStorage, 'pcft_avisado', '1');
+            setTimeout(() => {
+                try {
+                    fetch('/api/visita', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        keepalive: true,
+                        body: JSON.stringify({
+                            sessionId: sessionId,
+                            dispositivo: getDeviceType(),
+                            origem: origem,
+                            pagina: getPageLabel().slice(0, 80)
+                        })
+                    }).catch(() => {});
+                } catch (e) { /* sem fetch: segue sem notificar */ }
+            }, 4000);
         }
 
         function writePresenceHistory(forceWrite) {
@@ -1275,7 +1398,8 @@
                 dispositivo: getDeviceType(),
                 idioma: navigator.language || 'pt-BR',
                 timezone: getTimezone(),
-                referrer: document.referrer || '',
+                referrer: (document.referrer || '').slice(0, 200),
+                origem: origem,
                 status: explicitStatus || (document.hidden ? 'away' : 'online'),
                 entrouClient: sessionStart,
                 lastSeen: ctx.firebase.firestore.FieldValue.serverTimestamp(),
@@ -1306,6 +1430,8 @@
             });
 
             writePresenceHistory(true);
+            esvaziarFila(ctx);
+            avisarChegada();
             return true;
         }
 
@@ -1415,7 +1541,11 @@
             },
             getSessionId: function () {
                 return sessionId;
-            }
+            },
+            getOrigem: function () {
+                return origem;
+            },
+            registrar: registrar
         };
     }
 

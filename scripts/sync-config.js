@@ -16,7 +16,7 @@ const fs = require('fs');
 const path = require('path');
 
 const RAIZ = path.join(__dirname, '..');
-const HTML = path.join(RAIZ, 'index.html');
+const HTML = path.join(RAIZ, 'site.html');
 const CONFIG = path.join(RAIZ, 'site-config.js');
 
 const apenasVerificar = process.argv.includes('--check');
@@ -105,19 +105,19 @@ function main() {
     const unicas = [...new Set(mudancas)];
 
     if (html === original) {
-        console.log('index.html já está de acordo com site-config.js.');
+        console.log('site.html já está de acordo com site-config.js.');
         return;
     }
 
     if (apenasVerificar) {
-        console.error('index.html está DESATUALIZADO em relação a site-config.js:');
+        console.error('site.html está DESATUALIZADO em relação a site-config.js:');
         unicas.forEach((m) => console.error('  · ' + m));
         console.error('\nRode: npm run sync:config');
         process.exit(1);
     }
 
     fs.writeFileSync(HTML, html);
-    console.log('index.html sincronizado com site-config.js:');
+    console.log('site.html sincronizado com site-config.js:');
     unicas.forEach((m) => console.log('  · ' + m));
 }
 

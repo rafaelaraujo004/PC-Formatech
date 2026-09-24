@@ -1,0 +1,637 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   PC FORMATECH — Página de entrada (index.html)
+
+   Uma tarefa só: quem chega entende em segundos que aqui se conserta
+   computador, escreve o problema e vê o serviço e o preço.
+
+   As cores de destaque vêm do tema escolhido no painel (variáveis --pcft-* que
+   o theme-system.js escreve no :root). Até ele carregar, valem os valores da
+   marca declarados aqui como reserva.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+    --pt-bg: #f3f8f7;
+    --pt-surface: #ffffff;
+    --pt-surface-2: #eaf4f1;
+    --pt-text: #12302f;
+    --pt-muted: #4a6664;
+    --pt-border: #d3e5e0;
+    --pt-accent: var(--theme-accent, #2d7a7a);
+    --pt-accent-strong: var(--theme-accent-2, #0b3d3d);
+    --pt-accent-soft: rgba(45, 122, 122, 0.12);
+    --pt-hero-bg: var(--pcft-header-background, linear-gradient(135deg, #0b3d3d 0%, #155858 100%));
+    --pt-hero-text: var(--pcft-header-text, #ffffff);
+    --pt-btn-bg: var(--pcft-button-background, linear-gradient(135deg, #2d7a7a 0%, #40998f 100%));
+    --pt-btn-text: var(--pcft-button-text, #ffffff);
+    --pt-wa: #15803d;
+    --pt-radius: 16px;
+    --pt-shadow: 0 1px 2px rgba(11, 61, 61, 0.06), 0 12px 32px -18px rgba(11, 61, 61, 0.35);
+    --pt-font-head: 'Sora', 'Segoe UI', system-ui, sans-serif;
+    --pt-font-body: 'Manrope', 'Segoe UI', system-ui, sans-serif;
+    color-scheme: light;
+}
+
+html[data-theme='dark'] {
+    --pt-bg: #0b1622;
+    --pt-surface: #121f2e;
+    --pt-surface-2: #172838;
+    --pt-text: #e3eef6;
+    --pt-muted: #9fb7c8;
+    --pt-border: rgba(111, 191, 179, 0.18);
+    --pt-accent: #6fbfb3;
+    --pt-accent-strong: #a8dfd6;
+    --pt-accent-soft: rgba(111, 191, 179, 0.14);
+    --pt-wa: #15803d;
+    --pt-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 14px 34px -18px rgba(0, 0, 0, 0.9);
+    color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+
+body.pt {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--pt-bg);
+    color: var(--pt-text);
+    font-family: var(--pt-font-body);
+    font-size: 1rem;
+    line-height: 1.55;
+}
+
+.pt h1, .pt h2, .pt h3 {
+    font-family: var(--pt-font-head);
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin: 0;
+}
+
+.pt a { color: inherit; }
+
+.pt-ico {
+    width: 1.15em;
+    height: 1.15em;
+    flex: none;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.pt-sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+.pt-skip {
+    position: absolute;
+    left: 1rem;
+    top: -4rem;
+    z-index: 100;
+    padding: 0.7rem 1rem;
+    border-radius: 10px;
+    background: #fff;
+    color: #0b3d3d;
+    font-weight: 700;
+}
+.pt-skip:focus { top: 1rem; }
+
+.pt :focus-visible {
+    outline: 3px solid #f2b84b;
+    outline-offset: 3px;
+}
+
+
+/* ── Barra do topo ───────────────────────────────────────────────────────── */
+
+.pt-top {
+    background: var(--pt-hero-bg);
+    color: var(--pt-hero-text);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.pt-top-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0.9rem clamp(1rem, 4vw, 2rem);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.pt-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    min-width: 0;
+}
+
+.pt-brand img {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    flex: none;
+}
+
+.pt-brand-text { display: grid; line-height: 1.2; min-width: 0; }
+.pt-brand-text strong { font-family: var(--pt-font-head); font-size: 1.05rem; }
+.pt-brand-text span { font-size: 0.8rem; opacity: 0.85; }
+
+/* O botão que o dono pediu "bem visível": o único elemento claro sobre a faixa
+   escura do topo, com seta indicando saída para outra página. */
+.pt-main-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: none;
+    min-height: 46px;
+    padding: 0.65rem 1.15rem;
+    border-radius: 999px;
+    background: #ffffff;
+    color: #0b3d3d !important;
+    font-weight: 800;
+    font-size: 0.98rem;
+    text-decoration: none;
+    box-shadow: 0 6px 20px -6px rgba(0, 0, 0, 0.45);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.pt-main-link:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 26px -8px rgba(0, 0, 0, 0.55);
+}
+
+.pt-main-link:hover .pt-ico { transform: translateX(3px); }
+.pt-main-link .pt-ico { transition: transform 0.18s ease; }
+.pt-main-link-short { display: none; }
+
+
+/* ── Destaque com a busca ────────────────────────────────────────────────── */
+
+.pt-hero {
+    background: var(--pt-hero-bg);
+    color: var(--pt-hero-text);
+    padding: clamp(1.75rem, 4vw, 3rem) clamp(1rem, 4vw, 2rem) clamp(2rem, 4.5vw, 3.25rem);
+    text-align: center;
+}
+
+.pt-hero > * { max-width: 780px; margin-left: auto; margin-right: auto; }
+
+.pt-kicker {
+    margin-top: 0;
+    margin-bottom: 0.9rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.85;
+}
+
+.pt-hero h1 {
+    margin-left: auto;
+    margin-right: auto;
+    font-size: clamp(1.85rem, 4.6vw, 3rem);
+    font-weight: 800;
+    text-wrap: balance;
+}
+
+.pt-sub {
+    margin-top: 0.85rem;
+    margin-bottom: 1.5rem;
+    font-size: clamp(1rem, 2vw, 1.15rem);
+    opacity: 0.92;
+    text-wrap: balance;
+}
+
+.pt-search {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem;
+    border-radius: 18px;
+    background: #ffffff;
+    box-shadow: 0 18px 44px -18px rgba(0, 0, 0, 0.55);
+}
+
+.pt-search-ico {
+    width: 24px;
+    height: 24px;
+    margin-left: 0.8rem;
+    flex: none;
+    fill: none;
+    stroke: #4a6664;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+}
+
+.pt-search input {
+    flex: 1;
+    min-width: 0;
+    min-height: 54px;
+    border: 0;
+    background: transparent;
+    color: #12302f;
+    font: inherit;
+    font-size: 1.12rem;
+    font-weight: 600;
+    outline: none;
+}
+
+.pt-search input::placeholder { color: #6b8584; font-weight: 500; }
+.pt-search input::-webkit-search-cancel-button { cursor: pointer; }
+.pt-search:focus-within { box-shadow: 0 0 0 3px #f2b84b, 0 18px 44px -18px rgba(0, 0, 0, 0.55); }
+
+.pt-search-btn {
+    flex: none;
+    min-height: 54px;
+    padding: 0 1.6rem;
+    border: 0;
+    border-radius: 13px;
+    background: var(--pt-btn-bg);
+    color: var(--pt-btn-text);
+    font: inherit;
+    font-size: 1.05rem;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.pt-search-btn:hover { filter: brightness(1.08); }
+
+.pt-chips {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.15rem;
+}
+
+.pt-chips-label { font-size: 0.88rem; opacity: 0.85; margin-right: 0.15rem; }
+
+.pt-chip {
+    min-height: 40px;
+    padding: 0.4rem 0.95rem;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.1);
+    color: inherit;
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+.pt-chip:hover { background: rgba(255, 255, 255, 0.2); border-color: rgba(255, 255, 255, 0.6); }
+
+
+/* ── Opções ──────────────────────────────────────────────────────────────── */
+
+main { flex: 1; }
+
+.pt-options {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: clamp(1.5rem, 3vw, 2.25rem) clamp(1rem, 4vw, 2rem) 1rem;
+    scroll-margin-top: 1rem;
+}
+
+.pt-options-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.pt-options h2 { font-size: clamp(1.3rem, 2.6vw, 1.65rem); }
+
+.pt-clear {
+    border: 0;
+    background: none;
+    padding: 0.35rem 0;
+    color: var(--pt-accent);
+    font: inherit;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+}
+
+.pt-status {
+    min-height: 1.2em;
+    margin: 0.25rem 0 0.9rem;
+    color: var(--pt-muted);
+    font-size: 0.95rem;
+}
+
+.pt-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.pt-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    padding: 1.3rem 1.25rem 1.2rem;
+    border: 1px solid var(--pt-border);
+    border-radius: var(--pt-radius);
+    background: var(--pt-surface);
+    box-shadow: var(--pt-shadow);
+    transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pt-card:hover { border-color: var(--pt-accent); }
+
+.pt-card[hidden] { display: none; }
+
+.pt-card-ico {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 13px;
+    background: var(--pt-accent-soft);
+    color: var(--pt-accent);
+}
+
+.pt-card-ico svg {
+    width: 26px;
+    height: 26px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.pt-card h3 { font-size: 1.12rem; font-weight: 700; margin-top: 0.2rem; }
+
+.pt-card-text {
+    margin: 0;
+    color: var(--pt-muted);
+    font-size: 0.95rem;
+    flex: 1;
+}
+
+.pt-price {
+    margin: 0.2rem 0 0.35rem;
+    font-size: 0.85rem;
+    color: var(--pt-muted);
+}
+
+.pt-price strong {
+    color: var(--pt-text);
+    font-family: var(--pt-font-head);
+    font-size: 1.3rem;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+}
+
+.pt-card-actions {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.pt-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 46px;
+    padding: 0.6rem 1rem;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: filter 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+}
+
+.pt-btn-primary {
+    background: var(--pt-wa);
+    color: #ffffff !important;
+}
+
+.pt-btn-primary:hover { filter: brightness(1.1); }
+
+.pt-btn-ghost {
+    border: 1.5px solid var(--pt-border);
+    color: var(--pt-text) !important;
+    background: transparent;
+}
+
+.pt-btn-ghost:hover { border-color: var(--pt-accent); background: var(--pt-accent-soft); }
+
+/* Selo da melhor correspondência: só aparece durante uma busca. */
+.pt-best {
+    display: none;
+    position: absolute;
+    top: -0.7rem;
+    left: 1.1rem;
+    padding: 0.2rem 0.7rem;
+    border-radius: 999px;
+    background: #f2b84b;
+    color: #3a2600;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+}
+
+.pt-card.is-best {
+    border: 2px solid #f2b84b;
+    box-shadow: 0 0 0 4px rgba(242, 184, 75, 0.18), var(--pt-shadow);
+}
+
+.pt-card.is-best .pt-best { display: inline-block; }
+
+/* Durante a busca a melhor opção ocupa a linha inteira, para ser impossível
+   não perceber qual é a resposta. */
+.pt-grid.is-searching .pt-card.is-best {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas:
+        "ico title price"
+        "ico text  actions";
+    column-gap: 1.25rem;
+    row-gap: 0.35rem;
+    align-items: center;
+    padding: 1.5rem 1.5rem 1.4rem;
+}
+
+.pt-grid.is-searching .pt-card.is-best .pt-card-ico { grid-area: ico; width: 64px; height: 64px; }
+.pt-grid.is-searching .pt-card.is-best .pt-card-ico svg { width: 34px; height: 34px; }
+.pt-grid.is-searching .pt-card.is-best h3 { grid-area: title; font-size: 1.35rem; margin: 0; }
+.pt-grid.is-searching .pt-card.is-best .pt-card-text { grid-area: text; font-size: 1rem; }
+.pt-grid.is-searching .pt-card.is-best .pt-price { grid-area: price; margin: 0; text-align: right; }
+.pt-grid.is-searching .pt-card.is-best .pt-card-actions { grid-area: actions; grid-auto-flow: column; }
+
+.pt-card-help { background: var(--pt-surface-2); }
+
+.pt-empty {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    margin-bottom: 1.25rem;
+    padding: 1.25rem 1.35rem;
+    border: 1px dashed var(--pt-accent);
+    border-radius: var(--pt-radius);
+    background: var(--pt-surface);
+}
+
+.pt-empty[hidden] { display: none; }
+
+.pt-empty-ico {
+    width: 32px;
+    height: 32px;
+    flex: none;
+    fill: none;
+    stroke: var(--pt-accent);
+    stroke-width: 2;
+    stroke-linecap: round;
+}
+
+.pt-empty-title { margin: 0; font-weight: 800; font-size: 1.05rem; }
+.pt-empty-text { margin: 0.25rem 0 0.85rem; color: var(--pt-muted); }
+
+
+/* ── Faixa de confiança e rodapé ─────────────────────────────────────────── */
+
+.pt-trust {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 1.25rem clamp(1rem, 4vw, 2rem) 2.5rem;
+}
+
+.pt-trust ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem 2rem;
+    margin: 0;
+    padding: 1rem 1.25rem;
+    list-style: none;
+    border-top: 1px solid var(--pt-border);
+    color: var(--pt-muted);
+    font-size: 0.93rem;
+    font-weight: 600;
+}
+
+.pt-trust li { display: inline-flex; align-items: center; gap: 0.45rem; }
+.pt-trust .pt-ico { color: var(--pt-accent); }
+
+.pt-foot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem 1.5rem;
+    padding: 1.25rem clamp(1rem, 4vw, 2rem) calc(1.25rem + env(safe-area-inset-bottom));
+    background: var(--pt-hero-bg);
+    color: var(--pt-hero-text);
+    font-size: 0.92rem;
+}
+
+.pt-foot p { margin: 0; }
+.pt-foot a { font-weight: 700; }
+
+.pt-foot-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    text-decoration: none;
+}
+
+.pt-foot-link:hover { text-decoration: underline; }
+
+/* Botão flutuante de tema criado pelo theme-system.js. Aqui não carregamos o
+   theme-system.css, então o estilo mínimo dele mora nesta folha. */
+#themeToggleBtn {
+    position: fixed;
+    right: 16px;
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    z-index: 50;
+    width: 46px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--pt-border);
+    border-radius: 50%;
+    background: var(--pt-surface);
+    color: var(--pt-text);
+    box-shadow: var(--pt-shadow);
+    cursor: pointer;
+}
+
+
+/* ── Responsivo ──────────────────────────────────────────────────────────── */
+
+@media (max-width: 1024px) {
+    .pt-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 720px) {
+    .pt-grid.is-searching .pt-card.is-best {
+        display: flex;
+        align-items: stretch;
+        padding: 1.4rem 1.2rem 1.2rem;
+    }
+    .pt-grid.is-searching .pt-card.is-best .pt-card-ico { width: 52px; height: 52px; }
+    .pt-grid.is-searching .pt-card.is-best .pt-price { text-align: left; }
+    .pt-grid.is-searching .pt-card.is-best .pt-card-actions { grid-auto-flow: row; }
+}
+
+@media (max-width: 600px) {
+    .pt-brand-text span { display: none; }
+    .pt-main-link { padding: 0.55rem 0.95rem; font-size: 0.92rem; }
+    .pt-main-link-long { display: none; }
+    .pt-main-link-short { display: inline; }
+
+    .pt-hero { text-align: left; }
+    .pt-hero h1 { font-size: 1.75rem; }
+    .pt-kicker { font-size: 0.72rem; }
+
+    /* Uma faixa só, deslizando para o lado: em três linhas os atalhos
+       empurravam os serviços para fora da primeira tela. */
+    .pt-chips {
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        overflow-x: auto;
+        margin-left: -1rem;
+        margin-right: -1rem;
+        padding: 0 1rem 0.25rem;
+        scrollbar-width: none;
+    }
+    .pt-chips::-webkit-scrollbar { display: none; }
+    .pt-chips-label { flex: none; }
+    .pt-chip { flex: none; }
+
+    .pt-search { flex-wrap: wrap; padding: 0.4rem; }
+    .pt-search-ico { margin-left: 0.6rem; }
+    .pt-search input { font-size: 1.05rem; min-height: 52px; }
+    .pt-search-btn { width: 100%; min-height: 50px; }
+
+    .pt-grid { grid-template-columns: 1fr; gap: 0.85rem; }
+    .pt-card-actions { grid-template-columns: 1fr; }
+
+    .pt-trust ul { justify-content: flex-start; flex-direction: column; }
+    .pt-foot { flex-direction: column; align-items: flex-start; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .pt *, .pt *::before, .pt *::after { transition: none !important; }
+}

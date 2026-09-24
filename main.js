@@ -1225,3 +1225,116 @@ document.addEventListener('DOMContentLoaded', () => {
         startStatSlideshow();
     }
 });
+/**
+ * Chegada vinda da página de entrada: site.html?servico=formatacao#agende-servico
+ * já abre o formulário de agendamento com o serviço marcado e o total calculado.
+ * Aceita vários separados por vírgula. "remoto" não é um serviço do formulário,
+ * e sim o modo de atendimento.
+ */
+(function preselecionarServicoDaUrl() {
+    'use strict';
+
+    let ids = [];
+    try {
+        ids = (new URLSearchParams(window.location.search).get('servico') || '')
+            .split(',').map((s) => s.trim()).filter(Boolean);
+    } catch (e) { return; }
+    if (!ids.length) return;
+
+    function marcar() {
+        const cfg = window.PCFT_CONFIG;
+        ids.forEach((id) => {
+            if (id === 'remoto') {
+                const modo = document.getElementById('attendance-type');
+                if (modo) {
+                    modo.value = 'Remoto (AnyDesk)';
+                    modo.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+                return;
+            }
+            const servico = cfg && cfg.servicoPorId(id);
+            if (!servico) return;
+            const caixa = document.querySelector('.services-checkbox-group input[value="' + servico.nome + '"]');
+            if (caixa && !caixa.checked) {
+                caixa.checked = true;
+                caixa.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+        });
+
+        // O navegador já rolou até a âncora, mas imagens carregadas depois
+        // empurram o formulário; rola de novo com a página pronta.
+        const formulario = document.getElementById('agende-servico');
+        if (formulario) formulario.scrollIntoView({ block: 'start' });
+
+        const rastreador = window.PCFTPresenceTracker;
+        if (rastreador && rastreador.registrar) {
+            ids.forEach((id) => rastreador.registrar('acao', 'agendar:' + id));
+        }
+    }
+
+    if (document.readyState === 'complete') marcar();
+    else window.addEventListener('load', marcar);
+})();
+
+
+/**
+ * O que o visitante demonstrou interesse, para o resumo do painel: serviços
+ * abertos ou marcados, agendamentos enviados e cliques no WhatsApp. Escuta por
+ * delegação, sem depender dos handlers de cada componente.
+ */
+(function registrarInteresses() {
+    'use strict';
+
+    function registrar(tipo, valor) {
+        const r = window.PCFTPresenceTracker;
+        if (r && typeof r.registrar === 'function') r.registrar(tipo, valor);
+    }
+
+    function idPorNome(nome) {
+        const cfg = window.PCFT_CONFIG;
+        const servico = cfg && cfg.servicoPorNome(nome);
+        return servico ? servico.id : String(nome || '').toLowerCase();
+    }
+
+    document.addEventListener('click', (evento) => {
+        const detalhes = evento.target.closest('.service-card[data-modal] .service-details-btn');
+        if (detalhes) {
+            registrar('servico', detalhes.closest('.service-card').getAttribute('data-modal'));
+            return;
+        }
+
+        const whatsapp = evento.target.closest('a[href*="api.whatsapp.com"], a[href*="wa.me/"]');
+        if (whatsapp) {
+            const modal = whatsapp.closest('.modal[id^="modal-"]');
+            registrar('acao', 'whatsapp' + (modal ? ':' + modal.id.slice(6) : ''));
+        }
+    }, true);
+
+    document.addEventListener('change', (evento) => {
+        const alvo = evento.target;
+        if (!alvo || !alvo.checked) return;
+        if (alvo.matches('.service-checkbox[data-service]')) {
+            registrar('servico', alvo.dataset.service);
+        } else if (alvo.matches('.services-checkbox-group input[name="service[]"]')) {
+            registrar('servico', idPorNome(alvo.value));
+        }
+    }, true);
+
+    // Captura antes da validação do próprio formulário: só conta o envio que
+    // tem os campos obrigatórios preenchidos, como a validação exige.
+    const form = document.getElementById('scheduling-form');
+    if (form) {
+        form.addEventListener('submit', () => {
+            const marcados = Array.from(form.querySelectorAll('input[name="service[]"]:checked'));
+            // Mesmos campos obrigatórios que a validação do formulário exige;
+            // um envio recusado por falta de data não conta como agendamento.
+            const preenchido = (id) => {
+                const campo = document.getElementById(id);
+                return campo && String(campo.value || '').trim();
+            };
+            const obrigatorios = ['client-name', 'client-phone', 'attendance-type', 'schedule-date', 'schedule-time'];
+            if (!marcados.length || !obrigatorios.every(preenchido)) return;
+            marcados.forEach((caixa) => registrar('acao', 'agendou:' + idPorNome(caixa.value)));
+        }, true);
+    }
+})();
