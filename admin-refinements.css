@@ -700,31 +700,115 @@ input[id^="search"] {
 
 /* ── 14 · Resumo de visitas, avisos e links (aba Tempo Real) ────────────── */
 
-.av-titulo {
+/* Cabeçalho da seção — a linha viva do resumo. Ícone, título, mensagem de
+   estado (última atualização, carregando, erro) e um botão redondo de girar
+   agulha à direita, que também roda quando a rede está buscando. */
+.av-cabecalho {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 0.6rem;
+    gap: 0.8rem;
+    padding: 0.85rem 1rem;
+    margin: 0.5rem 0 0.6rem;
+    border-radius: var(--adm-raio);
+    background: linear-gradient(135deg, #eefbf6 0%, #e2f4ef 100%);
+    border: 1px solid var(--adm-borda);
 }
 
+html[data-theme='dark'] .av-cabecalho {
+    background: linear-gradient(135deg, #142a2a 0%, #0f2020 100%);
+}
+
+.av-cabecalho-titulo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.av-cabecalho-icone {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 11px;
+    background: var(--brand-400, #40998F);
+    color: #fff;
+    font-size: 1.05rem;
+    flex: none;
+}
+
+.av-cabecalho-nome {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--adm-texto);
+    font-family: var(--pcft-font-heading, 'Sora', system-ui, sans-serif);
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+}
+
+.av-cabecalho-linha {
+    margin: 0.15rem 0 0;
+    font-size: var(--adm-fs-xs);
+    color: var(--adm-texto-suave);
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+}
+
+.av-refresh {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    flex: none;
+    border: 1px solid var(--adm-borda);
+    border-radius: 50%;
+    background: var(--adm-superficie);
+    color: var(--adm-texto);
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.av-refresh:hover {
+    border-color: var(--brand-400, #40998F);
+    color: var(--brand-400, #40998F);
+}
+
+/* Enquanto uma leitura está em andamento, a agulha gira. */
+.av-refresh.is-carregando i {
+    animation: av-girar 0.9s linear infinite;
+}
+.av-refresh:disabled { cursor: default; opacity: 0.75; }
+
+@keyframes av-girar {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Seletor de período: pílula única na largura toda. */
 .av-periodos {
-    display: inline-flex;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3px;
     padding: 3px;
-    border-radius: 10px;
+    margin: 0 0 0.9rem;
+    border-radius: 12px;
     background: var(--adm-superficie-2);
     border: 1px solid var(--adm-borda);
 }
 
 .av-periodo {
-    min-height: 34px;
-    padding: 0 0.85rem;
+    min-height: 40px;
     border: 0;
-    border-radius: 8px;
+    border-radius: 9px;
     background: transparent;
     color: var(--adm-texto-suave);
     font: inherit;
-    font-size: var(--adm-fs-xs);
+    font-size: var(--adm-fs-sm);
     font-weight: 700;
     cursor: pointer;
 }
@@ -735,89 +819,246 @@ input[id^="search"] {
     box-shadow: var(--adm-sombra);
 }
 
-.av-nota {
-    margin: 0.2rem 0 0.9rem;
-    color: var(--adm-texto-suave);
-    font-size: var(--adm-fs-xs);
+/* Painel de alerta para permissão negada — vermelho suave que não assusta,
+   com botões de ação para a pessoa resolver ali mesmo. */
+.av-alerta {
+    display: flex;
+    gap: 0.85rem;
+    padding: 1rem;
+    margin: 0 0 0.9rem;
+    border-radius: var(--adm-raio);
+    background: var(--adm-critico-suave);
+    border: 1px solid rgba(180, 48, 42, 0.28);
 }
 
-.av-kpis {
+.av-alerta[hidden] { display: none; }
+
+.av-alerta-icone {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    flex: none;
+    border-radius: 10px;
+    background: var(--adm-critico);
+    color: #fff;
+    font-size: 1rem;
+}
+
+.av-alerta-corpo { min-width: 0; }
+
+.av-alerta-titulo {
+    margin: 0;
+    font-weight: 800;
+    color: var(--adm-critico);
+    font-size: var(--adm-fs-base);
+}
+
+.av-alerta-texto {
+    margin: 0.35rem 0 0.75rem;
+    color: var(--adm-texto);
+    font-size: var(--adm-fs-sm);
+    line-height: 1.45;
+}
+
+.av-alerta-texto code {
+    padding: 0.05rem 0.35rem;
+    border-radius: 5px;
+    background: rgba(11, 61, 61, 0.06);
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 0.85em;
+}
+
+.av-alerta-acoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/* KPIs grandes — visual do dashboard, com faixa colorida à esquerda e ícone
+   redondo. Três em desktop, um por linha em celular. */
+.av-kpis-grandes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
     gap: 0.75rem;
-    margin-bottom: 0.9rem;
+    margin: 0 0 0.75rem;
 }
 
-.av-kpi {
-    display: grid;
-    gap: 0.2rem;
-    padding: 0.95rem 1rem;
+.av-kpi-grande {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 1rem 1.1rem;
+    background: var(--adm-superficie);
     border: 1px solid var(--adm-borda);
     border-radius: var(--adm-raio);
-    background: var(--adm-superficie);
     box-shadow: var(--adm-sombra);
+    overflow: hidden;
+}
+
+.av-kpi-grande::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--kpi-cor, var(--brand-400));
+}
+
+.av-kpi-icone {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    flex: none;
+    border-radius: 12px;
+    background: var(--kpi-bg, rgba(64, 153, 143, 0.14));
+    color: var(--kpi-cor, var(--brand-400));
+    font-size: 1.15rem;
+}
+
+html[data-theme='dark'] .av-kpi-icone {
+    background: color-mix(in srgb, var(--kpi-cor) 28%, transparent);
+}
+
+.av-kpi-corpo {
+    display: grid;
+    gap: 0.1rem;
+    min-width: 0;
+    flex: 1;
 }
 
 .av-kpi-valor {
     font-family: var(--pcft-font-heading, 'Sora', system-ui, sans-serif);
-    font-size: 1.75rem;
+    font-size: 1.85rem;
     font-weight: 800;
-    line-height: 1.1;
+    line-height: 1.05;
     color: var(--adm-texto);
     font-variant-numeric: tabular-nums;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .av-kpi-rotulo {
     font-size: var(--adm-fs-xs);
     color: var(--adm-texto-suave);
+    line-height: 1.25;
 }
 
+/* Pico ganha um brilho leve — é o número mais impressionante. */
 .av-kpi-destaque {
-    border-color: var(--adm-ok);
-    background: var(--adm-ok-suave);
+    background: linear-gradient(135deg, var(--adm-superficie) 0%, color-mix(in srgb, var(--kpi-cor) 8%, var(--adm-superficie)) 100%);
+    border-color: color-mix(in srgb, var(--kpi-cor) 30%, var(--adm-borda));
 }
 
-.av-kpi-destaque .av-kpi-valor { color: var(--adm-ok); }
+/* KPIs miniaturas — três chips em linha no celular, para tempo, WhatsApp e
+   agendamento não roubarem a atenção dos três principais. */
+.av-kpis-mini {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin: 0 0 0.9rem;
+}
 
+.av-kpi-mini {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.6rem 0.7rem;
+    background: var(--adm-superficie);
+    border: 1px solid var(--adm-borda);
+    border-radius: 10px;
+    min-width: 0;
+}
+
+.av-kpi-icone-mini {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    flex: none;
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--kpi-cor) 14%, transparent);
+    color: var(--kpi-cor);
+    font-size: 0.85rem;
+}
+
+.av-kpi-mini-corpo { min-width: 0; }
+
+.av-kpi-valor-mini {
+    font-family: var(--pcft-font-heading, 'Sora', system-ui, sans-serif);
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--adm-texto);
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.av-kpi-rotulo-mini {
+    font-size: 0.68rem;
+    color: var(--adm-texto-suave);
+    line-height: 1.2;
+    margin-top: 0.1rem;
+}
+
+/* Grade de cartões (Serviços, Origens, Buscas, Horários). */
 .av-grade {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
-    gap: 0.9rem;
-    margin-bottom: 0.9rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: 0.75rem;
+    margin: 0 0 0.9rem;
 }
 
-.av-cartao { margin: 0; }
+.av-cartao {
+    margin: 0;
+    padding: 1rem 1rem 0.9rem;
+}
 
 .av-cartao-titulo {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin: 0 0 0.85rem;
-    font-size: var(--adm-fs-base);
+    margin: 0 0 0.75rem;
+    font-size: 0.98rem;
+    font-weight: 700;
     color: var(--adm-texto);
+    font-family: var(--pcft-font-heading, 'Sora', system-ui, sans-serif);
+    letter-spacing: -0.005em;
 }
 
-.av-cartao-titulo i { color: var(--brand-400, #40998F); }
+.av-cartao-titulo i {
+    font-size: 0.95em;
+}
 
+/* Barras horizontais proporcionais. A primeira leva o realce verde para
+   dizer "esse é o número 1". */
 .av-barras {
     display: grid;
-    gap: 0.45rem;
+    gap: 0.4rem;
     margin: 0;
     padding: 0;
     list-style: none;
+    min-height: 60px;
 }
 
-/* Barra de fundo proporcional ao total, atrás do nome. */
 .av-barras li {
     position: relative;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     gap: 0.75rem;
-    padding: 0.45rem 0.65rem;
+    padding: 0.5rem 0.7rem;
     border-radius: 8px;
     font-size: var(--adm-fs-sm);
     color: var(--adm-texto);
     isolation: isolate;
+    line-height: 1.25;
 }
 
 .av-barras li::before {
@@ -828,6 +1069,7 @@ input[id^="search"] {
     border-radius: 8px;
     background: var(--adm-info-suave);
     z-index: -1;
+    transition: width 0.35s ease;
 }
 
 .av-barras li:first-child::before { background: var(--adm-ok-suave); }
@@ -837,27 +1079,33 @@ input[id^="search"] {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    font-weight: 500;
 }
 
 .av-barra-total {
     flex: none;
     font-weight: 800;
     font-variant-numeric: tabular-nums;
+    color: var(--adm-texto);
 }
 
 .av-barras li.av-vazio {
     color: var(--adm-texto-suave);
     font-size: var(--adm-fs-xs);
+    padding: 0.65rem 0;
+    text-align: center;
+    display: block;
 }
 
 .av-barras li.av-vazio::before { display: none; }
 
+/* Gráfico de horas — 24 colunas escalonadas para caber em qualquer largura. */
 .av-horas {
     display: grid;
     grid-template-columns: repeat(24, 1fr);
     align-items: end;
     gap: 3px;
-    height: 120px;
+    height: 110px;
     padding-top: 0.25rem;
 }
 
@@ -866,6 +1114,7 @@ input[id^="search"] {
     border-radius: 3px 3px 0 0;
     background: var(--adm-info-suave);
     border: 1px solid var(--adm-borda);
+    transition: height 0.35s ease;
 }
 
 .av-horas span.is-maior {
@@ -876,12 +1125,13 @@ input[id^="search"] {
 .av-horas-eixo {
     display: flex;
     justify-content: space-between;
-    margin-top: 0.35rem;
+    margin-top: 0.4rem;
     font-size: var(--adm-fs-label);
     color: var(--adm-texto-suave);
 }
 
-.av-dias { margin-bottom: 0.9rem; }
+/* Dia a dia — só aparece nos períodos de 7 e 30 dias. */
+.av-dias { margin: 0 0 0.9rem; }
 .av-dias[hidden] { display: none; }
 
 .av-tabela-rolagem { overflow-x: auto; }
@@ -908,41 +1158,90 @@ input[id^="search"] {
     color: var(--adm-texto-suave);
 }
 
+/* Aparência de "carregando pela 1ª vez": números escondem-se atrás de um
+   pulso suave, para o app parecer vivo antes dos dados chegarem. */
+.av-esqueleto .av-kpi-valor,
+.av-esqueleto .av-kpi-valor-mini {
+    color: transparent;
+    position: relative;
+}
+
+.av-esqueleto .av-kpi-valor::after,
+.av-esqueleto .av-kpi-valor-mini::after {
+    content: '';
+    position: absolute;
+    inset: 15% 40% 15% 0;
+    border-radius: 5px;
+    background: linear-gradient(90deg, var(--adm-superficie-2) 0%, var(--adm-borda) 50%, var(--adm-superficie-2) 100%);
+    background-size: 200% 100%;
+    animation: av-pulso 1.4s ease-in-out infinite;
+}
+
+@keyframes av-pulso {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Chave (interruptor) — cada linha bem separada, com bordas entre elas. */
 .av-chave {
     display: flex;
     align-items: flex-start;
     gap: 0.75rem;
-    padding: 0.7rem 0;
+    padding: 0.85rem 0;
     border-bottom: 1px solid var(--adm-borda);
     cursor: pointer;
 }
 
+.av-chave:last-of-type { border-bottom: 0; }
+
 .av-chave input {
     flex: none;
-    width: 20px;
-    height: 20px;
-    margin-top: 2px;
+    width: 22px;
+    height: 22px;
+    margin: 2px 0 0;
     accent-color: var(--brand-400, #40998F);
     cursor: pointer;
 }
 
-.av-chave span { display: grid; gap: 0.15rem; }
-.av-chave strong { font-size: var(--adm-fs-sm); color: var(--adm-texto); }
-.av-chave small { font-size: var(--adm-fs-xs); color: var(--adm-texto-suave); }
+/* O <span> que agrupa <strong> e <small>: chave = grid, quebra em linha
+   independente do que a folha global aplique a "span". */
+.av-chave > span {
+    display: grid !important;
+    gap: 0.2rem;
+    min-width: 0;
+    flex: 1;
+}
 
+.av-chave > span strong {
+    font-size: var(--adm-fs-sm);
+    font-weight: 700;
+    color: var(--adm-texto);
+    line-height: 1.3;
+    display: block;
+}
+
+.av-chave > span small {
+    font-size: var(--adm-fs-xs);
+    color: var(--adm-texto-suave);
+    line-height: 1.35;
+    display: block;
+}
+
+/* Botões de ação e links da seção. */
 .av-acoes {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    margin-top: 0.85rem;
+    margin-top: 0.9rem;
 }
 
 .av-botao {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 0.45rem;
-    min-height: 42px;
-    padding: 0 1rem;
+    min-height: 44px;
+    padding: 0 1.05rem;
     border: 0;
     border-radius: 10px;
     background: var(--brand-400, #40998F);
@@ -963,8 +1262,14 @@ input[id^="search"] {
     border: 1.5px solid var(--adm-borda-forte);
 }
 
+.av-botao-secundario:hover {
+    border-color: var(--brand-400, #40998F);
+    color: var(--brand-400, #40998F) !important;
+    filter: none;
+}
+
 .av-status {
-    margin: 0.7rem 0 0;
+    margin: 0.75rem 0 0;
     font-size: var(--adm-fs-xs);
     color: var(--adm-texto-suave);
 }
@@ -973,17 +1278,25 @@ input[id^="search"] {
     margin: 0 0 0.8rem;
     font-size: var(--adm-fs-sm);
     color: var(--adm-texto-suave);
+    line-height: 1.5;
 }
 
 .av-link-form {
     display: flex;
     gap: 0.5rem;
+    flex-wrap: wrap;
 }
 
 .av-link-form input {
     flex: 1;
     min-width: 0;
-    min-height: 42px;
+    min-height: 44px;
+    padding: 0 0.8rem;
+    border-radius: 10px;
+    border: 1px solid var(--adm-borda-forte);
+    background: var(--adm-superficie);
+    color: var(--adm-texto);
+    font: inherit;
 }
 
 .av-link-sugestoes {
@@ -995,7 +1308,7 @@ input[id^="search"] {
 
 .av-link-sugestoes button {
     min-height: 32px;
-    padding: 0 0.7rem;
+    padding: 0 0.75rem;
     border: 1px solid var(--adm-borda);
     border-radius: 999px;
     background: var(--adm-superficie-2);
@@ -1005,9 +1318,14 @@ input[id^="search"] {
     cursor: pointer;
 }
 
+.av-link-sugestoes button:hover {
+    border-color: var(--brand-400, #40998F);
+    color: var(--brand-400, #40998F);
+}
+
 .av-link-resultado {
-    margin-top: 0.85rem;
-    padding: 0.8rem;
+    margin-top: 0.9rem;
+    padding: 0.85rem;
     border-radius: 10px;
     background: var(--adm-superficie-2);
     border: 1px dashed var(--adm-borda-forte);
@@ -1021,6 +1339,28 @@ input[id^="search"] {
     font-family: 'JetBrains Mono', ui-monospace, monospace;
     font-size: var(--adm-fs-xs);
     color: var(--adm-texto);
+    line-height: 1.5;
 }
 
-.av-link-resultado .av-acoes { margin-top: 0.6rem; }
+.av-link-resultado .av-acoes { margin-top: 0.7rem; }
+
+/* Em telas estreitas, os KPIs ficam mais compactos. */
+@media (max-width: 420px) {
+    .av-kpi-icone { width: 42px; height: 42px; font-size: 1rem; }
+    .av-kpi-valor { font-size: 1.6rem; }
+    .av-kpi-valor-mini { font-size: 0.98rem; }
+    .av-kpi-rotulo-mini { font-size: 0.62rem; }
+    .av-kpi-mini { padding: 0.55rem 0.55rem; gap: 0.45rem; }
+    .av-cabecalho { padding: 0.75rem 0.85rem; }
+    .av-cabecalho-nome { font-size: 1rem; }
+    .av-cartao { padding: 0.9rem 0.85rem 0.8rem; }
+}
+
+/* Menos animação para quem escolheu o modo tranquilo. */
+@media (prefers-reduced-motion: reduce) {
+    .av-refresh.is-carregando i { animation: none; }
+    .av-esqueleto .av-kpi-valor::after,
+    .av-esqueleto .av-kpi-valor-mini::after { animation: none; }
+    .av-barras li::before,
+    .av-horas span { transition: none; }
+}

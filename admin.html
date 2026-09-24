@@ -1650,7 +1650,7 @@
     <link rel="stylesheet" href="theme-system.css">
     <script src="theme-system.js"></script>
     <!-- Camada de refinamento: por ultimo, para vencer o <style> embutido e o theme-system.css -->
-    <link rel="stylesheet" href="admin-refinements.css">
+    <link rel="stylesheet" href="admin-refinements.css?v=3">
     <script src="auth-system.secure.js" defer></script>
 </head>
 <body>
@@ -2509,47 +2509,110 @@
             </div>
 
             <!-- Resumo de visitas (admin-visitas.js) -->
-            <div class="rt-section-title av-titulo">
-                <span><i class="fas fa-chart-line" style="color:#40998F;"></i> Resumo de visitas</span>
-                <div class="av-periodos" role="group" aria-label="Período do resumo">
-                    <button type="button" class="av-periodo is-ativo" data-dias="1">Hoje</button>
-                    <button type="button" class="av-periodo" data-dias="7">7 dias</button>
-                    <button type="button" class="av-periodo" data-dias="30">30 dias</button>
+            <div class="av-cabecalho">
+                <div class="av-cabecalho-titulo">
+                    <span class="av-cabecalho-icone"><i class="fas fa-chart-line"></i></span>
+                    <div>
+                        <h2 class="av-cabecalho-nome">Resumo de visitas</h2>
+                        <p class="av-cabecalho-linha" id="av-nota">Carregando…</p>
+                    </div>
+                </div>
+                <button type="button" class="av-refresh" id="av-refresh" title="Atualizar agora" aria-label="Atualizar agora">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+
+            <div class="av-periodos" role="group" aria-label="Período do resumo">
+                <button type="button" class="av-periodo is-ativo" data-dias="1">Hoje</button>
+                <button type="button" class="av-periodo" data-dias="7">7 dias</button>
+                <button type="button" class="av-periodo" data-dias="30">30 dias</button>
+            </div>
+
+            <!-- Estado quando o banco recusa a leitura (regras do Firestore). -->
+            <div class="av-alerta" id="av-alerta" hidden>
+                <div class="av-alerta-icone"><i class="fas fa-lock"></i></div>
+                <div class="av-alerta-corpo">
+                    <p class="av-alerta-titulo" id="av-alerta-titulo">Sem permissão para ler as visitas</p>
+                    <p class="av-alerta-texto" id="av-alerta-texto">As regras do Firebase precisam liberar a coleção <code>presenceDaily</code> para o seu e-mail. Enquanto isso, mostro os últimos dados que este aparelho recebeu.</p>
+                    <div class="av-alerta-acoes">
+                        <button type="button" class="av-botao av-botao-secundario" id="av-copiar-regras"><i class="fas fa-copy"></i> Copiar regras corrigidas</button>
+                        <a class="av-botao av-botao-secundario" href="https://console.firebase.google.com/project/_/firestore/rules" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> Abrir Firebase</a>
+                    </div>
                 </div>
             </div>
-            <p class="av-nota" id="av-nota">Carregando…</p>
 
-            <div class="av-kpis" id="av-kpis">
-                <div class="av-kpi"><span class="av-kpi-valor" id="av-visitantes">—</span><span class="av-kpi-rotulo">Pessoas diferentes</span></div>
-                <div class="av-kpi"><span class="av-kpi-valor" id="av-visitas">—</span><span class="av-kpi-rotulo">Visitas</span></div>
-                <div class="av-kpi av-kpi-destaque"><span class="av-kpi-valor" id="av-pico">—</span><span class="av-kpi-rotulo" id="av-pico-quando">Pico de pessoas online</span></div>
-                <div class="av-kpi"><span class="av-kpi-valor" id="av-duracao">—</span><span class="av-kpi-rotulo">Tempo médio no site</span></div>
-                <div class="av-kpi"><span class="av-kpi-valor" id="av-whatsapp">—</span><span class="av-kpi-rotulo">Clicaram no WhatsApp</span></div>
-                <div class="av-kpi"><span class="av-kpi-valor" id="av-agendamentos">—</span><span class="av-kpi-rotulo">Enviaram agendamento</span></div>
+            <!-- KPIs grandes em destaque -->
+            <div class="av-kpis-grandes">
+                <div class="av-kpi-grande" style="--kpi-cor:#40998F;--kpi-bg:#e8f5f4;">
+                    <div class="av-kpi-icone"><i class="fas fa-user-friends"></i></div>
+                    <div class="av-kpi-corpo">
+                        <span class="av-kpi-valor" id="av-visitantes">—</span>
+                        <span class="av-kpi-rotulo">Pessoas diferentes</span>
+                    </div>
+                </div>
+                <div class="av-kpi-grande" style="--kpi-cor:#2196F3;--kpi-bg:#e3f2fd;">
+                    <div class="av-kpi-icone"><i class="fas fa-eye"></i></div>
+                    <div class="av-kpi-corpo">
+                        <span class="av-kpi-valor" id="av-visitas">—</span>
+                        <span class="av-kpi-rotulo">Visitas</span>
+                    </div>
+                </div>
+                <div class="av-kpi-grande av-kpi-destaque" style="--kpi-cor:#E91E63;--kpi-bg:#fce4ec;">
+                    <div class="av-kpi-icone"><i class="fas fa-bolt"></i></div>
+                    <div class="av-kpi-corpo">
+                        <span class="av-kpi-valor" id="av-pico">—</span>
+                        <span class="av-kpi-rotulo" id="av-pico-quando">Pico de pessoas online</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KPIs miniaturas -->
+            <div class="av-kpis-mini">
+                <div class="av-kpi-mini" style="--kpi-cor:#607D8B;">
+                    <div class="av-kpi-icone-mini"><i class="fas fa-hourglass-half"></i></div>
+                    <div class="av-kpi-mini-corpo">
+                        <div class="av-kpi-valor-mini" id="av-duracao">—</div>
+                        <div class="av-kpi-rotulo-mini">Tempo médio no site</div>
+                    </div>
+                </div>
+                <div class="av-kpi-mini" style="--kpi-cor:#25D366;">
+                    <div class="av-kpi-icone-mini"><i class="fab fa-whatsapp"></i></div>
+                    <div class="av-kpi-mini-corpo">
+                        <div class="av-kpi-valor-mini" id="av-whatsapp">—</div>
+                        <div class="av-kpi-rotulo-mini">Clicaram no WhatsApp</div>
+                    </div>
+                </div>
+                <div class="av-kpi-mini" style="--kpi-cor:#9C27B0;">
+                    <div class="av-kpi-icone-mini"><i class="fas fa-calendar-check"></i></div>
+                    <div class="av-kpi-mini-corpo">
+                        <div class="av-kpi-valor-mini" id="av-agendamentos">—</div>
+                        <div class="av-kpi-rotulo-mini">Enviaram agendamento</div>
+                    </div>
+                </div>
             </div>
 
             <div class="av-grade">
                 <div class="rt-card av-cartao">
-                    <h3 class="av-cartao-titulo"><i class="fas fa-fire"></i> Serviços mais procurados</h3>
+                    <h3 class="av-cartao-titulo"><i class="fas fa-fire" style="color:#FF5722;"></i> Serviços mais procurados</h3>
                     <ol class="av-barras" id="av-servicos"></ol>
                 </div>
                 <div class="rt-card av-cartao">
-                    <h3 class="av-cartao-titulo"><i class="fas fa-route"></i> De onde vieram</h3>
+                    <h3 class="av-cartao-titulo"><i class="fas fa-route" style="color:#3F51B5;"></i> De onde vieram</h3>
                     <ol class="av-barras" id="av-origens"></ol>
                 </div>
                 <div class="rt-card av-cartao">
-                    <h3 class="av-cartao-titulo"><i class="fas fa-search"></i> O que escreveram na busca</h3>
+                    <h3 class="av-cartao-titulo"><i class="fas fa-search" style="color:#009688;"></i> O que escreveram na busca</h3>
                     <ol class="av-barras" id="av-buscas"></ol>
                 </div>
                 <div class="rt-card av-cartao">
-                    <h3 class="av-cartao-titulo"><i class="fas fa-clock"></i> Horários com mais visitas</h3>
+                    <h3 class="av-cartao-titulo"><i class="fas fa-clock" style="color:#FF9800;"></i> Horários com mais visitas</h3>
                     <div class="av-horas" id="av-horas" aria-label="Visitas por hora do dia"></div>
                     <div class="av-horas-eixo"><span>0h</span><span>6h</span><span>12h</span><span>18h</span><span>23h</span></div>
                 </div>
             </div>
 
             <div class="rt-card av-cartao av-dias" id="av-dias-cartao" hidden>
-                <h3 class="av-cartao-titulo"><i class="fas fa-calendar-alt"></i> Dia a dia</h3>
+                <h3 class="av-cartao-titulo"><i class="fas fa-calendar-alt" style="color:#795548;"></i> Dia a dia</h3>
                 <div class="av-tabela-rolagem">
                     <table class="av-tabela">
                         <thead><tr><th>Dia</th><th>Pessoas</th><th>Visitas</th><th>Pico online</th></tr></thead>
@@ -2696,7 +2759,7 @@
     </div>
 
         <script src="admin-app.js"></script>
-        <script src="resumo-visitas.js"></script>
-        <script src="admin-visitas.js"></script>
+        <script src="resumo-visitas.js?v=3"></script>
+        <script src="admin-visitas.js?v=3"></script>
 </body>
 </html>
