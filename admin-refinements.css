@@ -29,6 +29,7 @@
      12 · Mobile
      13 · prefers-reduced-motion
      14 · Resumo de visitas, avisos e links (aba Tempo Real)
+     15 · Entrar com biometria
    ═══════════════════════════════════════════════════════════════════════════ */
 
 
@@ -1363,4 +1364,119 @@ html[data-theme='dark'] .av-kpi-icone {
     .av-esqueleto .av-kpi-valor-mini::after { animation: none; }
     .av-barras li::before,
     .av-horas span { transition: none; }
+}
+
+
+/* ── 15 · Entrar com biometria (login e aba Tempo Real) ─────────────────── */
+
+.login-divisor {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 1.1rem 0;
+    color: var(--adm-texto-suave);
+    font-size: var(--adm-fs-xs);
+}
+
+.login-divisor::before,
+.login-divisor::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.35;
+}
+
+.login-divisor[hidden],
+.btn-biometria[hidden] { display: none; }
+
+.btn-biometria {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    min-height: 52px;
+    padding: 0 1rem;
+    border: 2px solid var(--brand-400, #40998F);
+    border-radius: var(--brand-radius-md, 12px);
+    background: transparent;
+    color: var(--brand-700, #1A5C5C);
+    font: inherit;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-biometria i { font-size: 1.45rem; }
+.btn-biometria:hover { background: rgba(64, 153, 143, 0.1); }
+.btn-biometria.is-carregando { opacity: 0.65; pointer-events: none; }
+.btn-biometria.is-carregando i { animation: bio-pulso 1.1s ease-in-out infinite; }
+html[data-theme='dark'] .btn-biometria { color: #6FBFB3; }
+
+@keyframes bio-pulso {
+    50% { opacity: 0.35; }
+}
+
+.biometria-status {
+    min-height: 1.2em;
+    margin: 0.7rem 0 0;
+    font-size: var(--adm-fs-xs);
+    text-align: center;
+    color: var(--adm-texto-suave);
+}
+
+.biometria-status.is-erro,
+.av-status.is-erro { color: #c0392b; }
+html[data-theme='dark'] .biometria-status.is-erro,
+html[data-theme='dark'] .av-status.is-erro { color: #ff8a80; }
+
+.bio-lista {
+    list-style: none;
+    margin: 0 0 0.25rem;
+    padding: 0;
+    display: grid;
+    gap: 0.5rem;
+}
+
+.bio-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.4rem 0.6rem 0.8rem;
+    border: 1px solid var(--adm-borda);
+    border-radius: 10px;
+    background: var(--adm-superficie-2);
+}
+
+.bio-item.is-deste { border-color: var(--brand-400, #40998F); }
+.bio-item > i { font-size: 1.3rem; color: var(--brand-400, #40998F); }
+
+.bio-item-texto { flex: 1; min-width: 0; }
+.bio-item-texto strong,
+.bio-item-texto small { display: block; }
+.bio-item-texto strong { font-size: var(--adm-fs-sm); color: var(--adm-texto); }
+.bio-item-texto small { font-size: var(--adm-fs-xs); color: var(--adm-texto-suave); }
+
+.bio-remover {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: #c0392b;
+    cursor: pointer;
+}
+
+.bio-remover:hover { background: rgba(192, 57, 43, 0.1); }
+
+.bio-vazio {
+    font-size: var(--adm-fs-sm);
+    color: var(--adm-texto-suave);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .btn-biometria.is-carregando i { animation: none; }
 }
