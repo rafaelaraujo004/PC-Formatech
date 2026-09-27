@@ -1627,3 +1627,212 @@ textarea:focus-visible,
 .footer .location-info small {
     color: inherit;
 }
+
+
+/* ── 16 · Hero com a foto inteira ────────────────────────────────────────────
+   Antes as 17 fotos eram cortadas para cobrir a tela (object-fit: cover) e a
+   placa de vidro do texto ficava por cima de quase tudo: no celular não se via
+   nada da imagem. Agora a foto aparece inteira (contain), as sobras são
+   preenchidas pela mesma foto desfocada (--hero-fundo, definido no main.js) e
+   o texto sai de cima dela: fica embaixo no celular e ao lado no computador.
+
+   Os seletores usam #home para vencer as regras antigas espalhadas por
+   styles.css, mobile-desktop.css e theme-system.css sem disputar !important. */
+
+#home.hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+        "foto"
+        "texto";
+    align-items: center;
+    gap: 0;
+    min-height: 0;
+    height: auto;
+    padding: 0 0 2rem;
+    text-align: left;
+    overflow: hidden;
+    background:
+        radial-gradient(900px 520px at 85% 0%, color-mix(in srgb, var(--theme-accent, #2d7a7a) 32%, transparent), transparent 70%),
+        linear-gradient(160deg, #0b2b2c 0%, #061719 100%);
+}
+
+#home .hero-overlay { display: none; }
+
+/* Moldura da foto */
+#home .hero-slider {
+    grid-area: foto;
+    position: relative;
+    top: auto;
+    left: auto;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: #04100f;
+    box-shadow: none;
+}
+
+#home .hero-slide {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+/* A mesma foto, desfocada e escurecida, preenche o que a foto inteira não cobre. */
+#home .hero-slide::before {
+    content: '';
+    position: absolute;
+    inset: -48px;
+    z-index: -1;
+    background: var(--hero-fundo, none) center / cover no-repeat;
+    filter: blur(30px) brightness(0.68) saturate(1.25);
+}
+
+#home .hero-slide picture {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+#home .hero-slide img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    filter: none;
+    transform: none;
+}
+
+/* Setas: no meio das laterais da foto, com fundo para aparecerem em qualquer imagem. */
+#home .hero-nav-btn {
+    grid-area: foto;
+    position: absolute;
+    top: 50%;
+    bottom: auto;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgba(3, 14, 14, 0.55);
+    -webkit-backdrop-filter: blur(6px);
+            backdrop-filter: blur(6px);
+    opacity: 0.85;
+    transform: translateY(-50%);
+    z-index: 3;
+}
+
+#home .hero-nav-btn:hover { opacity: 1; }
+#home .hero-nav-btn i { font-size: 18px; }
+#home .hero-prev { left: 10px; right: auto; }
+#home .hero-next { right: 10px; left: auto; }
+
+#home .hero-indicators {
+    grid-area: foto;
+    position: absolute;
+    top: auto;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(3, 14, 14, 0.45);
+    z-index: 3;
+}
+
+/* Texto: fora da foto, sem placa de vidro */
+#home .hero-content {
+    grid-area: texto;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 1.5rem 1rem 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+    -webkit-backdrop-filter: none;
+            backdrop-filter: none;
+    text-align: left;
+}
+
+#home .hero-content::before { display: none; }
+
+#home .hero-content h1 {
+    margin: 0 0 0.6rem;
+    font-size: clamp(1.8rem, 7vw, 3.2rem);
+    line-height: 1.06;
+    text-shadow: none;
+}
+
+#home .hero-content p {
+    max-width: 46ch;
+    margin: 0 0 1.3rem;
+    font-size: clamp(1rem, 1.25vw, 1.12rem);
+    line-height: 1.55;
+}
+
+#home .hero-actions {
+    justify-content: flex-start;
+    padding-bottom: 0;
+}
+
+#home .hero-trust-strip {
+    justify-content: flex-start;
+    margin-top: 1.2rem;
+}
+
+@media (max-width: 899px) {
+    /* No celular os dois botões dividem a largura, sem quebrar em linhas soltas. */
+    #home .hero-actions > a {
+        flex: 1 1 100%;
+        justify-content: center;
+    }
+
+    /* Selos em grade 2×2, menores: em fila solta ocupavam três linhas e
+       ficavam embaixo dos botões flutuantes. */
+    #home .hero-trust-strip {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.5rem;
+        padding-bottom: 4.5rem;
+    }
+
+    #home .hero-trust-strip span {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 0.45rem;
+        padding: 0.5rem 0.65rem;
+        border-radius: 12px;
+        font-size: 0.72rem;
+        line-height: 1.25;
+        white-space: normal;
+    }
+}
+
+@media (min-width: 900px) {
+    #home.hero {
+        grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+        grid-template-areas: "texto foto";
+        gap: clamp(1.75rem, 3.5vw, 3.5rem);
+        padding: clamp(1.75rem, 3vw, 2.75rem) clamp(1.25rem, 4vw, 4rem);
+    }
+
+    #home .hero-slider {
+        aspect-ratio: 3 / 2;
+        max-height: calc(100vh - 210px);
+        min-height: 360px;
+        border-radius: 22px !important;
+        box-shadow: 0 30px 70px -35px rgba(0, 0, 0, 0.85);
+    }
+
+    #home .hero-content { padding: 0; }
+    #home .hero-content h1 { font-size: clamp(2.2rem, 3.6vw, 3.4rem); }
+}
+

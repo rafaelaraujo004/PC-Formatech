@@ -35,6 +35,31 @@ document.addEventListener('DOMContentLoaded', () => {
         slide.removeAttribute('data-lazy-slide');
     }
 
+    /**
+     * A foto do slide aparece inteira (object-fit: contain, em refinements.css);
+     * as sobras são preenchidas pela mesma foto desfocada, que o CSS lê de
+     * --hero-fundo. Usa currentSrc para reaproveitar o arquivo já baixado
+     * (avif/webp) em vez de baixar outro.
+     */
+    function prepararFundo(slide) {
+        const img = slide.querySelector('img');
+        if (!img || slide.dataset.fundoPronto) return;
+
+        const aplicar = () => {
+            const url = img.currentSrc || img.src;
+            if (!url) return;
+            slide.style.setProperty('--hero-fundo', `url("${url.replace(/"/g, '%22')}")`);
+            slide.dataset.fundoPronto = '1';
+        };
+
+        if (img.complete && img.naturalWidth) {
+            aplicar();
+        } else {
+            // Slides preguiçosos disparam o load quando o carrossel preenche o src.
+            img.addEventListener('load', aplicar, { once: true });
+        }
+    }
+
     // Mantém carregados o slide atual e o próximo, para a transição nunca
     // aparecer em branco.
     function preloadAround(index) {
@@ -134,6 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const container = document.querySelector('.hero-indicators');
         if (!slides.length || !container) return;
 
+        slides.forEach(prepararFundo);
         buildIndicators(container);
 
         currentSlide = 0;
