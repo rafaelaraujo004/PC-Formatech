@@ -12,11 +12,11 @@
             const settings = settingsRaw ? JSON.parse(settingsRaw) : null;
             const activeThemeId = settings && settings.activeThemeId ? String(settings.activeThemeId) : '';
 
-            if (
-                legacy === 'dark' ||
-                legacyManager === 'dark' ||
-                /dark/i.test(activeThemeId)
-            ) {
+            // pcft-theme guarda o modo aplicado da última vez; as outras chaves só
+            // valem para quem ainda não abriu o site depois da correção dos temas.
+            const escuro = legacy ? legacy === 'dark' : (legacyManager === 'dark' || /dark/i.test(activeThemeId));
+
+            if (escuro) {
                 document.documentElement.setAttribute('data-theme', 'dark');
             }
         } catch(e) {}
@@ -1648,7 +1648,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="firebase-config.secure.js"></script>
     <link rel="stylesheet" href="theme-system.css">
-    <script src="theme-system.js"></script>
+    <script src="theme-system.js?v=4"></script>
     <!-- Camada de refinamento: por ultimo, para vencer o <style> embutido e o theme-system.css -->
     <link rel="stylesheet" href="admin-refinements.css?v=3">
     <script src="auth-system.secure.js" defer></script>
@@ -2758,7 +2758,7 @@
         </div>
     </div>
 
-        <script src="admin-app.js"></script>
+        <script src="admin-app.js?v=4"></script>
         <script src="resumo-visitas.js?v=3"></script>
         <script src="admin-visitas.js?v=3"></script>
 </body>

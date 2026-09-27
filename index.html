@@ -17,7 +17,8 @@
             var raw = localStorage.getItem('pcformatech_theme_settings');
             var s = raw ? JSON.parse(raw) : null;
             var id = s && s.activeThemeId ? String(s.activeThemeId) : '';
-            if (localStorage.getItem('pcft-theme') === 'dark' || localStorage.getItem('pcformatech-theme') === 'dark' || /dark/i.test(id)) {
+            var modo = localStorage.getItem('pcft-theme');
+            if (modo ? modo === 'dark' : (localStorage.getItem('pcformatech-theme') === 'dark' || /dark/i.test(id))) {
                 document.documentElement.setAttribute('data-theme', 'dark');
             }
         } catch (e) {}
@@ -287,6 +288,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <script src="firebase-config.js"></script>
     <script>if (typeof initFirebase === 'function') initFirebase();</script>
-    <script src="theme-system.js"></script>
+    <script src="theme-system.js?v=4"></script>
 </body>
 </html>

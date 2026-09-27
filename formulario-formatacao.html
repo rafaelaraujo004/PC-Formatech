@@ -11,11 +11,11 @@
             const settings = settingsRaw ? JSON.parse(settingsRaw) : null;
             const activeThemeId = settings && settings.activeThemeId ? String(settings.activeThemeId) : '';
 
-            if (
-                legacy === 'dark' ||
-                legacyManager === 'dark' ||
-                /dark/i.test(activeThemeId)
-            ) {
+            // pcft-theme guarda o modo aplicado da última vez; as outras chaves só
+            // valem para quem ainda não abriu o site depois da correção dos temas.
+            const escuro = legacy ? legacy === 'dark' : (legacyManager === 'dark' || /dark/i.test(activeThemeId));
+
+            if (escuro) {
                 document.documentElement.setAttribute('data-theme', 'dark');
             }
         } catch(e) {}
@@ -561,7 +561,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <script src="firebase-config.js"></script>
     <script>initFirebase();</script>
-    <script src="theme-system.js"></script>
+    <script src="theme-system.js?v=4"></script>
     <script src="formatacao-form.js"></script>
 </body>
 </html>
