@@ -66,17 +66,18 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     
     <!-- Google Fonts - Sora / Manrope -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="preload" href="/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/sora-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="fontes.css">
     
     <link rel="stylesheet" href="brand.css">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="mobile-desktop.css">
-    <link rel="stylesheet" href="styles2.css?v=2">
-    <link rel="stylesheet" href="theme-system.css?v=5">
-    <link rel="stylesheet" href="refinements.css?v=5">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles2.css?v=3">
+    <link rel="stylesheet" href="theme-system.css?v=6">
+    <link rel="stylesheet" href="refinements.css?v=6">
+    <link rel="preload" href="/fonts/fa-solid-subset-1.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="icones.css">
     
     <!-- Widget do WhatsApp -->
     <style>
@@ -166,6 +167,7 @@
         }
         
         .whatsapp-title {
+            font-family: var(--pcft-font-heading, inherit);
             font-size: 16px;
             font-weight: 600;
             margin: 0;
@@ -349,7 +351,7 @@
                         <i class="fab fa-whatsapp" aria-hidden="true"></i>
                     </div>
                     <div>
-                        <h3 class="whatsapp-title">Atendimento PC Formatech</h3>
+                        <p class="whatsapp-title">Atendimento PC Formatech</p>
                         <p class="whatsapp-subtitle">Online</p>
                     </div>
                 </div>
@@ -562,7 +564,8 @@
             <div class="hero-indicators" role="tablist" aria-label="Selecionar imagem do carrossel"></div>
         </section>
 
-        <section class="attention-flow">
+        <section class="attention-flow" aria-labelledby="curiosidades-titulo">
+            <h2 class="titulo-oculto" id="curiosidades-titulo">Por que o computador fica lento</h2>
             <div class="attention-grid">
                 <article class="attention-card" data-reveal>
                     <span class="attention-label">Curiosidade 01</span>
@@ -843,7 +846,7 @@
 
         <!-- Loja Bird Tech (loja.html) -->
         <section class="bird-tech-faixa" aria-labelledby="bird-tech-titulo">
-            <img src="/images/loja/bird-tech-icone.png" alt="" width="84" height="84" loading="lazy">
+            <img src="/images/loja/bird-tech-icone-176.webp" alt="" width="84" height="84" loading="lazy">
             <div class="bird-tech-texto">
                 <p class="bird-tech-selo">Nossa loja</p>
                 <h2 id="bird-tech-titulo">Bird Tech: periféricos e acessórios</h2>
@@ -864,7 +867,7 @@
                         <div class="client-info">
                             <div class="client-avatar-initial">JS</div>
                             <div class="client-details">
-                                <h4>João Silva</h4>
+                                <h3>João Silva</h3>
                                 <small class="testimonial-outcome">Boot reduziu de minutos para segundos</small>
                                 <div class="testimonial-time" data-days-ago="3" data-time="19:15"></div>
                             </div>
@@ -878,7 +881,7 @@
                         <div class="client-info">
                             <div class="client-avatar-initial">MR</div>
                             <div class="client-details">
-                                <h4>Maria Rosa</h4>
+                                <h3>Maria Rosa</h3>
                                 <small class="testimonial-outcome">Mais estabilidade para trabalho diário</small>
                                 <div class="testimonial-time" data-days-ago="7" data-time="18:35"></div>
                             </div>
@@ -892,7 +895,7 @@
                         <div class="client-info">
                             <div class="client-avatar-initial">PL</div>
                             <div class="client-details">
-                                <h4>Pedro Lima</h4>
+                                <h3>Pedro Lima</h3>
                                 <small class="testimonial-outcome">Recuperação nítida de performance</small>
                                 <div class="testimonial-time" data-days-ago="30" data-time="18:45"></div>
                             </div>
@@ -1310,7 +1313,7 @@
         </div>
         <div class="footer-bottom">
             <div class="footer-info-bottom">
-                <p>&copy; 2025 PC Formatech. Todos os direitos reservados.</p>
+                <p>&copy; <span data-ano-atual>2026</span> PC Formatech. Todos os direitos reservados.</p>
                 <div class="payment-methods-icons">
                     <i class="fab fa-cc-visa" aria-hidden="true"></i>
                     <i class="fab fa-cc-mastercard" aria-hidden="true"></i>

@@ -32,18 +32,18 @@
     <link rel="icon" type="image/png" href="/images/loja/bird-tech-favicon.png">
     <link rel="apple-touch-icon" href="/images/loja/bird-tech-favicon.png">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="loja.css?v=1">
+    <link rel="preload" href="/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/sora-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="fontes.css">
+    <link rel="stylesheet" href="loja.css?v=2">
 </head>
 <body>
     <a class="bt-pular" href="#vitrine">Pular para os produtos</a>
 
     <header class="bt-topo">
         <div class="bt-topo-dentro">
-            <a class="bt-marca" href="loja.html" aria-label="Bird Tech, início da loja">
-                <img src="/images/loja/bird-tech-icone.png" alt="" width="44" height="44">
+            <a class="bt-marca" href="loja.html">
+                <img src="/images/loja/bird-tech-icone-176.webp" alt="" width="44" height="44">
                 <span>
                     <strong>Bird Tech</strong>
                     <small>por PC Formatech</small>
@@ -59,7 +59,7 @@
 
     <main id="conteudo">
         <section class="bt-hero" aria-labelledby="bt-titulo">
-            <img class="bt-hero-logo" src="/images/loja/bird-tech-icone.png" alt="" width="120" height="120">
+            <img class="bt-hero-logo" src="/images/loja/bird-tech-icone-176.webp" alt="" width="88" height="88" fetchpriority="high">
             <p class="bt-selo">Loja de periféricos e acessórios</p>
             <h1 id="bt-titulo">Tecnologia com preço justo, <span>perto de você.</span></h1>
             <p class="bt-sub">Escolha o produto e finalize a compra pelo WhatsApp, direto com a PC Formatech em Canaã dos Carajás.</p>
@@ -112,7 +112,7 @@
     </main>
 
     <footer class="bt-rodape">
-        <img src="/images/loja/bird-tech-logo.png" alt="Bird Tech" width="72" height="104">
+        <img src="/images/loja/bird-tech-logo-144.webp" alt="Bird Tech" width="64" height="93" loading="lazy">
         <p>Bird Tech é a loja de periféricos da <a href="site.html">PC Formatech</a> · Canaã dos Carajás, PA</p>
         <p>WhatsApp <a href="https://api.whatsapp.com/send?phone=5594984305772" target="_blank" rel="noopener" data-contato="whatsapp">(94) 98430-5772</a> · <a href="https://instagram.com/pcformatech" target="_blank" rel="noopener">@pcformatech</a></p>
     </footer>

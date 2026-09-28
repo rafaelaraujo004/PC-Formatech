@@ -149,6 +149,11 @@ window.PCFT_CONFIG = (function () {
             }
         });
 
+        // Ano do rodapé sempre o atual (estava fixo em 2025).
+        document.querySelectorAll('[data-ano-atual]').forEach((el) => {
+            el.textContent = String(new Date().getFullYear());
+        });
+
         // 5 · Números de telefone exibidos como texto.
         document.querySelectorAll('[data-contato="whatsapp"]').forEach((el) => {
             el.textContent = cfg.CONTATO.whatsappExibicao;

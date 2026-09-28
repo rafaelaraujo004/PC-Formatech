@@ -1,0 +1,112 @@
+/* Font Awesome 6.0.0 (Free, licença SIL OFL 1.1 / CC BY 4.0 — fontawesome.com)
+   reduzido aos 69 ícones usados em site.html e formulario-formatacao.html.
+   Antes o site baixava a biblioteca inteira do cdnjs (313 KB, bloqueando a
+   primeira pintura). Gerado por subset-font; para acrescentar um ícone, gere
+   de novo com o nome dele e troque o número do arquivo das fontes.
+   Ícones que não existem na versão Free 6.0.0 e já não apareciam: nenhum. */
+
+@font-face {
+    font-family: 'Font Awesome 6 Free';
+    font-style: normal;
+    font-weight: 900;
+    font-display: block;
+    src: url('/fonts/fa-solid-subset-1.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Font Awesome 6 Brands';
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url('/fonts/fa-brands-subset-1.woff2') format('woff2');
+}
+
+.fa, .fas, .fa-solid, .fab, .fa-brands {
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    line-height: 1;
+    text-rendering: auto;
+}
+
+.fa, .fas, .fa-solid {
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+}
+
+.fab, .fa-brands {
+    font-family: 'Font Awesome 6 Brands';
+    font-weight: 400;
+}
+
+.fa-arrow-left::before { content: "\f060"; }
+.fa-arrow-right::before { content: "\f061"; }
+.fa-arrow-up::before { content: "\f062"; }
+.fa-award::before { content: "\f559"; }
+.fa-bolt::before { content: "\f0e7"; }
+.fa-briefcase::before { content: "\f0b1"; }
+.fa-broom::before { content: "\f51a"; }
+.fa-bug::before { content: "\f188"; }
+.fa-bullseye::before { content: "\f140"; }
+.fa-cc-mastercard::before { content: "\f1f1"; }
+.fa-cc-visa::before { content: "\f1f0"; }
+.fa-check::before { content: "\f00c"; }
+.fa-check-circle::before { content: "\f058"; }
+.fa-chevron-left::before { content: "\f053"; }
+.fa-chevron-right::before { content: "\f054"; }
+.fa-city::before { content: "\f64f"; }
+.fa-clipboard-check::before { content: "\f46c"; }
+.fa-clipboard-list::before { content: "\f46d"; }
+.fa-clock::before { content: "\f017"; }
+.fa-comments::before { content: "\f086"; }
+.fa-credit-card::before { content: "\f09d"; }
+.fa-database::before { content: "\f1c0"; }
+.fa-desktop::before { content: "\f390"; }
+.fa-download::before { content: "\f019"; }
+.fa-edit::before { content: "\f044"; }
+.fa-envelope::before { content: "\f0e0"; }
+.fa-exclamation-triangle::before { content: "\f071"; }
+.fa-file::before { content: "\f15b"; }
+.fa-file-signature::before { content: "\f573"; }
+.fa-file-word::before { content: "\f1c2"; }
+.fa-folder-open::before { content: "\f07c"; }
+.fa-globe::before { content: "\f0ac"; }
+.fa-graduation-cap::before { content: "\f19d"; }
+.fa-headset::before { content: "\f590"; }
+.fa-image::before { content: "\f03e"; }
+.fa-info-circle::before { content: "\f05a"; }
+.fa-instagram::before { content: "\f16d"; }
+.fa-key::before { content: "\f084"; }
+.fa-keyboard::before { content: "\f11c"; }
+.fa-laptop::before { content: "\f109"; }
+.fa-laptop-code::before { content: "\f5fc"; }
+.fa-laptop-house::before { content: "\e066"; }
+.fa-lightbulb::before { content: "\f0eb"; }
+.fa-lock::before { content: "\f023"; }
+.fa-map-marker-alt::before { content: "\f3c5"; }
+.fa-microchip::before { content: "\f2db"; }
+.fa-microsoft::before { content: "\f3ca"; }
+.fa-money-bill-wave::before { content: "\f53a"; }
+.fa-percentage::before { content: "\25"; }
+.fa-phone::before { content: "\f095"; }
+.fa-pix::before { content: "\e43a"; }
+.fa-plus::before { content: "\2b"; }
+.fa-power-off::before { content: "\f011"; }
+.fa-question::before { content: "\3f"; }
+.fa-question-circle::before { content: "\f059"; }
+.fa-save::before { content: "\f0c7"; }
+.fa-share-alt::before { content: "\f1e0"; }
+.fa-shield-alt::before { content: "\f3ed"; }
+.fa-star::before { content: "\f005"; }
+.fa-tachometer-alt::before { content: "\f625"; }
+.fa-tag::before { content: "\f02b"; }
+.fa-times::before { content: "\f00d"; }
+.fa-tools::before { content: "\f7d9"; }
+.fa-undo::before { content: "\f0e2"; }
+.fa-user::before { content: "\f007"; }
+.fa-user-check::before { content: "\f4fc"; }
+.fa-video::before { content: "\f03d"; }
+.fa-whatsapp::before { content: "\f232"; }
+.fa-windows::before { content: "\f17a"; }

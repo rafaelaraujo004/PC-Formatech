@@ -415,6 +415,7 @@
     flex: 1;
 }
 
+.testimonial-card.whatsapp-style .client-details h3,
 .testimonial-card.whatsapp-style .client-details h4 {
     margin: 0 0 0.2rem 0;
     color: #303030;
@@ -529,6 +530,7 @@
     flex: 1;
 }
 
+.client-details h3,
 .client-details h4 {
     margin: 0 0 0.2rem 0;
     color: #303030;
