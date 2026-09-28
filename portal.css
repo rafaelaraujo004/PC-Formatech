@@ -635,3 +635,45 @@ main { flex: 1; }
     html { scroll-behavior: auto; }
     .pt *, .pt *::before, .pt *::after { transition: none !important; }
 }
+
+
+/* ── Atalho para a loja Bird Tech ─────────────────────────────────────────── */
+
+.pt-loja {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    max-width: 720px;
+    margin: 0.5rem auto 2rem;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--pt-border);
+    border-radius: var(--pt-radius);
+    background: var(--pt-surface);
+    color: var(--pt-text);
+    box-shadow: var(--pt-shadow);
+    text-decoration: none;
+}
+
+.pt-loja:hover { border-color: #2f7fe0; }
+.pt-loja img { width: 56px; height: 56px; flex: 0 0 auto; }
+.pt-loja-texto { flex: 1; min-width: 0; }
+.pt-loja-texto strong,
+.pt-loja-texto small { display: block; }
+
+.pt-loja-texto strong {
+    font-size: 1.05rem;
+    background: linear-gradient(90deg, #1a47b8, #33b5f5);
+    -webkit-background-clip: text;
+            background-clip: text;
+    color: transparent;
+}
+
+html[data-theme='dark'] .pt-loja-texto strong {
+    background-image: linear-gradient(90deg, #5b8dff, #5cc8ff);
+}
+
+.pt-loja-texto small { color: var(--pt-muted); font-size: 0.875rem; }
+
+@media (max-width: 760px) {
+    .pt-loja { margin-inline: 1rem; }
+}

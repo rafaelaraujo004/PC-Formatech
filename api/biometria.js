@@ -22,21 +22,13 @@ const {
     verifyAuthenticationResponse
 } = require('@simplewebauthn/server');
 const { iniciarAdmin } = require('./_push');
+const { EMAILS_ADMIN, ErroDeAcesso, exigirAdmin: exigirAdminBase } = require('./_admin');
 
-const EMAILS_ADMIN = (process.env.ADMIN_EMAILS || 'rafaelaraujo004@gmail.com')
-    .split(',').map((e) => e.trim().toLowerCase()).filter(Boolean);
 const ORIGENS = (process.env.PASSKEY_ORIGINS || 'https://pcformatech.vercel.app')
     .split(',').map((o) => o.trim()).filter(Boolean);
 const VALIDADE_DESAFIO_MS = 2 * 60 * 1000;
 const COLECAO = 'adminPasskeys';
 const COLECAO_USADOS = 'passkeyUsados';
-
-class ErroDeAcesso extends Error {
-    constructor(status, mensagem) {
-        super(mensagem);
-        this.status = status;
-    }
-}
 
 function segredo() {
     if (process.env.PASSKEY_SECRET) return process.env.PASSKEY_SECRET;
@@ -81,17 +73,8 @@ async function gastarDesafio(db, desafio) {
     }
 }
 
-async function exigirAdmin(admin, idToken) {
-    if (!idToken) throw new ErroDeAcesso(401, 'Entre com e-mail e senha antes de cadastrar a biometria.');
-    let decodificado;
-    try {
-        decodificado = await admin.auth().verifyIdToken(String(idToken));
-    } catch (erro) {
-        throw new ErroDeAcesso(401, 'Sessão expirada. Entre de novo com e-mail e senha.');
-    }
-    const email = String(decodificado.email || '').toLowerCase();
-    if (!EMAILS_ADMIN.includes(email)) throw new ErroDeAcesso(403, 'Usuário sem permissão de administrador.');
-    return { uid: decodificado.uid, email };
+function exigirAdmin(admin, idToken) {
+    return exigirAdminBase(admin, idToken, 'Entre com e-mail e senha antes de cadastrar a biometria.');
 }
 
 async function passkeysDo(db, uid) {

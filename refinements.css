@@ -2418,3 +2418,79 @@ textarea:focus-visible,
         font-size: 0.8rem;
     }
 }
+
+
+/* ── 21 · Faixa da loja Bird Tech ────────────────────────────────────────────
+   Chamada para loja.html depois dos serviços. As cores são as do logo da
+   Bird Tech, iguais nos dois temas: a faixa é da loja, não do tema do site. */
+
+.bird-tech-faixa {
+    max-width: 1120px;
+    margin: 0 auto 2.5rem;
+    padding: 1.4rem 1.6rem;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem 1.6rem;
+    border-radius: 22px;
+    background: linear-gradient(120deg, #1a47b8 0%, #2f7fe0 60%, #33b5f5 100%);
+    color: #fff;
+    box-shadow: 0 24px 48px -28px rgba(26, 71, 184, 0.8);
+}
+
+.bird-tech-faixa img {
+    width: 84px;
+    height: 84px;
+    flex: 0 0 auto;
+    padding: 10px;
+    border-radius: 20px;
+    background: #fff;
+}
+
+.bird-tech-texto { flex: 1; min-width: 0; }
+
+.bird-tech-selo {
+    margin: 0 0 0.2rem;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.85;
+}
+
+.bird-tech-faixa h2 {
+    margin: 0 0 0.25rem;
+    font-size: clamp(1.2rem, 2.4vw, 1.5rem);
+    line-height: 1.2;
+    color: #fff !important;
+    text-align: left;
+}
+
+.bird-tech-faixa p { margin: 0; color: rgba(255, 255, 255, 0.92) !important; }
+
+.bird-tech-botao {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 0 0 auto;
+    min-height: 46px;
+    padding: 0 1.3rem;
+    border-radius: 999px;
+    background: #fff;
+    color: #1a47b8 !important;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.bird-tech-botao:hover { filter: brightness(0.96); }
+
+@media (max-width: 760px) {
+    .bird-tech-faixa {
+        margin: 0 1rem 2rem;
+        padding: 1.1rem;
+        flex-wrap: wrap;
+    }
+
+    .bird-tech-faixa img { width: 64px; height: 64px; padding: 8px; border-radius: 16px; }
+    .bird-tech-texto { flex-basis: calc(100% - 88px); }
+    .bird-tech-botao { width: 100%; justify-content: center; }
+}
