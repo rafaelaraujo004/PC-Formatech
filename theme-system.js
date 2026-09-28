@@ -2,6 +2,12 @@
     const LEGACY_THEME_STORAGE_KEY = 'pcformatech-theme';
     const LEGACY_DARKMODE_STORAGE_KEY = 'pcft-theme';
     const DEFAULT_SETTINGS_STORAGE_KEY = 'pcformatech_theme_settings';
+    // Claro/escuro escolhido pelo próprio visitante no botão flutuante. Fica
+    // separado do tema do site (definido no painel): antes o botão gravava por
+    // cima das configurações do site, e quem tocava nele uma vez ficava preso
+    // naquele tema, sem receber as trocas feitas no painel.
+    const VISITOR_MODE_STORAGE_KEY = 'pcft_modo_visitante';
+    const VISITOR_MODE_MIGRATED_KEY = 'pcft_modo_migrado';
     const THEME_MANIFEST_PATH = 'themes/manifest.json';
     const THEME_REMOTE_COLLECTION = 'siteSettings';
     const THEME_REMOTE_DOC = 'themeManager';
@@ -700,21 +706,11 @@
         let ready = false;
         let initPromise = null;
         let remoteUnsubscribe = null;
+        let visitorMode = null;
         const subscribers = new Set();
 
         function getThemeById(themeId) {
             return themeMap.get(themeId) || themeMap.get(manifest && manifest.defaultThemeId) || themeMap.get(EMBEDDED_FALLBACK_THEME.id) || EMBEDDED_FALLBACK_THEME;
-        }
-
-        function getLegacyThemeId() {
-            const darkmodeLegacy = safeGet(localStorage, LEGACY_DARKMODE_STORAGE_KEY);
-            if (darkmodeLegacy === 'dark') return 'dark-tech';
-            if (darkmodeLegacy === 'light') return 'light-clean';
-
-            const legacy = safeGet(localStorage, LEGACY_THEME_STORAGE_KEY);
-            if (legacy === 'dark') return 'dark-tech';
-            if (legacy === 'light') return 'light-clean';
-            return null;
         }
 
         function sanitizeSettings(raw) {
@@ -747,23 +743,66 @@
             if (cached) {
                 return sanitizeSettings(cached);
             }
-            const legacyThemeId = getLegacyThemeId();
-            if (legacyThemeId) {
-                return sanitizeSettings({
-                    activeThemeId: legacyThemeId,
-                    fallbackThemeId: (manifest && manifest.fallbackThemeId) || DEFAULT_SETTINGS.fallbackThemeId,
-                    autoSeasonal: false,
-                    updatedAt: Date.now()
-                });
-            }
+            // As chaves antigas pcft-theme/pcformatech-theme guardam só o modo
+            // aplicado (claro/escuro). Antes eram convertidas aqui em tema do site,
+            // e um 'light' virava light-clean (azul) no lugar do tema do painel.
             return sanitizeSettings(DEFAULT_SETTINGS);
         }
 
         function cacheSettings(settings) {
             safeSet(localStorage, settingsStorageKey, JSON.stringify(settings));
-            const mode = settings.activeThemeId === 'dark-tech' ? 'dark' : currentTheme.mode;
-            safeSet(localStorage, LEGACY_THEME_STORAGE_KEY, mode);
+        }
+
+        /**
+         * Grava o modo realmente aplicado. É o que o script anti-flash de cada
+         * página lê no <head> para já abrir escura, antes do CSS dos temas.
+         */
+        function rememberAppliedMode(theme) {
+            const mode = theme && theme.mode === 'dark' ? 'dark' : 'light';
             safeSet(localStorage, LEGACY_DARKMODE_STORAGE_KEY, mode);
+            safeSet(localStorage, LEGACY_THEME_STORAGE_KEY, mode);
+        }
+
+        function readVisitorMode() {
+            const saved = safeGet(localStorage, VISITOR_MODE_STORAGE_KEY);
+            if (saved === 'dark' || saved === 'light') return saved;
+
+            // Primeira visita depois da correção: quem já usava o escuro continua
+            // no escuro; as configurações antigas, contaminadas pelo botão, são
+            // descartadas para voltar a seguir o tema do site.
+            if (safeGet(localStorage, VISITOR_MODE_MIGRATED_KEY) !== '1') {
+                safeSet(localStorage, VISITOR_MODE_MIGRATED_KEY, '1');
+                const legacyDark = safeGet(localStorage, LEGACY_DARKMODE_STORAGE_KEY) === 'dark'
+                    || safeGet(localStorage, LEGACY_THEME_STORAGE_KEY) === 'dark';
+                if (!isAdminPage()) {
+                    try { localStorage.removeItem(settingsStorageKey); } catch (error) { /* sem storage */ }
+                }
+                if (legacyDark) {
+                    safeSet(localStorage, VISITOR_MODE_STORAGE_KEY, 'dark');
+                    return 'dark';
+                }
+            }
+            return null;
+        }
+
+        function writeVisitorMode(mode) {
+            if (mode === 'dark' || mode === 'light') {
+                safeSet(localStorage, VISITOR_MODE_STORAGE_KEY, mode);
+            } else {
+                try { localStorage.removeItem(VISITOR_MODE_STORAGE_KEY); } catch (error) { /* sem storage */ }
+            }
+        }
+
+        /** Tema equivalente no modo pedido, respeitando o que o painel definiu. */
+        function counterpartTheme(mode, settings, siteTheme) {
+            const candidates = mode === 'dark'
+                ? ['dark-tech', 'gamer-rgb']
+                : [settings && settings.fallbackThemeId, settings && settings.activeThemeId, 'classico-neutro', 'light-clean'];
+            for (const id of candidates) {
+                const theme = id && themeMap.get(id);
+                if (theme && theme.mode === mode && theme.category !== 'seasonal') return theme;
+            }
+            return themeList.find((theme) => theme.mode === mode && theme.category !== 'seasonal') || siteTheme;
         }
 
         function findSeasonalTheme(date) {
@@ -783,6 +822,15 @@
             if (previewId) {
                 return getThemeById(previewId);
             }
+            const siteTheme = resolveSiteTheme(settings);
+            if (!visitorMode || siteTheme.mode === visitorMode) {
+                return siteTheme;
+            }
+            return counterpartTheme(visitorMode, settings, siteTheme);
+        }
+
+        /** O tema que o painel definiu para o site, sem a escolha do visitante. */
+        function resolveSiteTheme(settings) {
             if (settings && settings.autoSeasonal) {
                 // Dentro de uma data comemorativa, o tema sazonal assume.
                 const seasonal = findSeasonalTheme(new Date());
@@ -852,6 +900,7 @@
             currentTheme = resolveTheme(currentSettings, previewThemeId);
             injectThemeFonts(currentTheme);
             applyThemeVariables(currentTheme);
+            if (!previewThemeId) rememberAppliedMode(currentTheme);
             syncThemeEffects(currentTheme);
             applyDecorations(currentTheme);
             currentBannerSlides = buildBannerSlidesForTheme(currentTheme);
@@ -859,10 +908,11 @@
             return currentTheme;
         }
 
-        function shouldUseRemote(remoteSettings, localSettings) {
-            if (!remoteSettings) return false;
-            if (!localSettings) return true;
-            return (remoteSettings.updatedAt || 0) >= (localSettings.updatedAt || 0);
+        function shouldUseRemote(remoteSettings) {
+            // O painel é a única fonte do tema do site; o que está no aparelho é
+            // só uma cópia para abrir rápido. A escolha claro/escuro do visitante
+            // mora em outra chave e não compete com isto.
+            return Boolean(remoteSettings);
         }
 
         function fetchRemoteSettings() {
@@ -879,7 +929,7 @@
             remoteUnsubscribe = ctx.db.collection(THEME_REMOTE_COLLECTION).doc(THEME_REMOTE_DOC).onSnapshot((doc) => {
                 if (!doc.exists) return;
                 const remoteSettings = sanitizeSettings(doc.data());
-                if (!shouldUseRemote(remoteSettings, currentSettings)) return;
+                if (!shouldUseRemote(remoteSettings)) return;
                 currentSettings = remoteSettings;
                 cacheSettings(currentSettings);
                 previewThemeId = null;
@@ -1044,9 +1094,10 @@
 
             initPromise = loadCatalog()
                 .then(() => {
+                    visitorMode = readVisitorMode();
                     currentSettings = getCachedSettings();
                     return fetchRemoteSettings().then((remoteSettings) => {
-                        if (shouldUseRemote(remoteSettings, currentSettings)) {
+                        if (shouldUseRemote(remoteSettings)) {
                             currentSettings = remoteSettings;
                             cacheSettings(currentSettings);
                         }
@@ -1095,6 +1146,24 @@
             },
             getCurrentTheme: function () {
                 return currentTheme;
+            },
+            // Tema definido no painel, ignorando o claro/escuro deste visitante.
+            getSiteTheme: function () {
+                return resolveSiteTheme(currentSettings || getCachedSettings());
+            },
+            getVisitorMode: function () {
+                return visitorMode;
+            },
+            /**
+             * Claro/escuro só deste aparelho. Passar o mesmo modo do tema do site
+             * (ou null) apaga a preferência e volta a seguir o painel.
+             */
+            setVisitorMode: function (mode) {
+                const siteMode = resolveSiteTheme(currentSettings || getCachedSettings()).mode;
+                visitorMode = (mode === 'dark' || mode === 'light') && mode !== siteMode ? mode : null;
+                writeVisitorMode(visitorMode);
+                previewThemeId = null;
+                return applyResolvedTheme('visitor-mode');
             },
             getBannerSlides: function () {
                 return currentBannerSlides.slice();
@@ -1557,24 +1626,6 @@
         return '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.64 13a1 1 0 0 0-1.05-.14 8 8 0 0 1-10.45-10.45 1 1 0 0 0-1.19-1.33A10 10 0 1 0 23 14.05a1 1 0 0 0-1.36-1.05Z"></path></svg>';
     }
 
-    function getPreferredThemeIdForMode(manager, targetMode) {
-        const preferredIds = targetMode === 'dark'
-            ? ['dark-tech', 'gamer-rgb']
-            : ['light-clean', 'classico-neutro', 'profissional-corporativo'];
-        const themes = manager.getThemes();
-
-        for (const preferredId of preferredIds) {
-            const match = themes.find((theme) => theme.id === preferredId && theme.mode === targetMode);
-            if (match) return match.id;
-        }
-
-        const modeMatch = themes.find((theme) => theme.mode === targetMode);
-        if (modeMatch) return modeMatch.id;
-
-        const settings = manager.getSettings();
-        return settings.fallbackThemeId || settings.activeThemeId || EMBEDDED_FALLBACK_THEME.id;
-    }
-
     function ensureThemeToggleButton(manager) {
         if (!manager || !document.body) return;
 
@@ -1599,13 +1650,10 @@
             button.addEventListener('click', () => {
                 const currentTheme = manager.getCurrentTheme();
                 const nextMode = currentTheme && currentTheme.mode === 'dark' ? 'light' : 'dark';
-                const nextThemeId = getPreferredThemeIdForMode(manager, nextMode);
-                // Ao voltar para claro, restaura autoSeasonal para que o tema sazonal
-                // configurado seja reaplicado automaticamente, sem intervenção do usuário.
-                manager.saveSettings({
-                    activeThemeId: nextThemeId,
-                    autoSeasonal: nextMode === 'light'
-                });
+                // Só este aparelho muda. Voltar ao modo do site devolve exatamente
+                // o tema do painel (inclusive o sazonal do dia), e no admin o botão
+                // não troca mais o tema de todos os visitantes.
+                manager.setVisitorMode(nextMode);
             });
 
             manager.subscribe((payload) => {
