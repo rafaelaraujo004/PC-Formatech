@@ -1,0 +1,671 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Bird Tech — loja de periféricos da PC Formatech
+   Paleta tirada do logo: azul profundo do pássaro e o azul-claro das asas.
+   O tema claro/escuro segue o mesmo botão das outras páginas (data-theme).
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+    --bt-azul: #1a47b8;
+    --bt-azul-2: #2f7fe0;
+    --bt-ceu: #33b5f5;
+    --bt-whats: #15803d;
+
+    --bt-fundo: #f3f6fb;
+    --bt-superficie: #ffffff;
+    --bt-superficie-2: #eef3fa;
+    --bt-texto: #0f1d33;
+    --bt-suave: #52627a;
+    --bt-borda: #dbe4f0;
+    --bt-sombra: 0 1px 2px rgba(15, 29, 51, 0.06), 0 14px 34px -20px rgba(26, 71, 184, 0.35);
+    --bt-raio: 18px;
+
+    --bt-fonte-titulo: 'Sora', 'Segoe UI', system-ui, sans-serif;
+    --bt-fonte: 'Manrope', 'Segoe UI', system-ui, sans-serif;
+    color-scheme: light;
+}
+
+html[data-theme='dark'] {
+    --bt-azul: #5b8dff;
+    --bt-azul-2: #4fa3ff;
+    --bt-ceu: #5cc8ff;
+    --bt-fundo: #0a1120;
+    --bt-superficie: #111b2e;
+    --bt-superficie-2: #16233a;
+    --bt-texto: #e6eefb;
+    --bt-suave: #9cb0cc;
+    --bt-borda: rgba(120, 160, 230, 0.18);
+    --bt-sombra: 0 1px 2px rgba(0, 0, 0, 0.4), 0 16px 36px -20px rgba(0, 0, 0, 0.9);
+    color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+        radial-gradient(900px 480px at 85% -10%, color-mix(in srgb, var(--bt-ceu) 16%, transparent), transparent 70%),
+        radial-gradient(700px 420px at -10% 10%, color-mix(in srgb, var(--bt-azul) 12%, transparent), transparent 70%),
+        var(--bt-fundo);
+    color: var(--bt-texto);
+    font-family: var(--bt-fonte);
+    font-size: 1rem;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; display: block; }
+a { color: inherit; }
+
+/* Ícones de traço da loja. Fica fora o botão de tema (theme-system.js), cujo
+   ícone de lua é preenchido. */
+:where(.bt-topo, main, .bt-detalhe) svg {
+    width: 1.1em;
+    height: 1.1em;
+    flex: 0 0 auto;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.bt-oculto {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+.bt-pular {
+    position: absolute;
+    left: 1rem;
+    top: -3rem;
+    z-index: 50;
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    background: var(--bt-azul);
+    color: #fff;
+    text-decoration: none;
+}
+
+.bt-pular:focus { top: 1rem; }
+
+:focus-visible {
+    outline: 3px solid var(--bt-ceu);
+    outline-offset: 2px;
+}
+
+/* ── Topo ─────────────────────────────────────────────────────────────────── */
+
+.bt-topo {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: color-mix(in srgb, var(--bt-fundo) 82%, transparent);
+    -webkit-backdrop-filter: blur(14px) saturate(1.3);
+            backdrop-filter: blur(14px) saturate(1.3);
+    border-bottom: 1px solid var(--bt-borda);
+}
+
+.bt-topo-dentro {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0.7rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.bt-marca {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    text-decoration: none;
+}
+
+.bt-marca img { width: 44px; height: 44px; }
+
+.bt-marca strong {
+    display: block;
+    font-family: var(--bt-fonte-titulo);
+    font-size: 1.2rem;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    background: linear-gradient(90deg, var(--bt-azul), var(--bt-ceu));
+    -webkit-background-clip: text;
+            background-clip: text;
+    color: transparent;
+}
+
+.bt-marca small {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--bt-suave);
+    font-weight: 600;
+}
+
+.bt-voltar {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 42px;
+    padding: 0 0.95rem;
+    border-radius: 999px;
+    border: 1px solid var(--bt-borda);
+    background: var(--bt-superficie);
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: var(--bt-sombra);
+}
+
+.bt-voltar:hover { border-color: var(--bt-azul-2); color: var(--bt-azul); }
+.bt-voltar-curto { display: none; }
+
+/* ── Chamada ──────────────────────────────────────────────────────────────── */
+
+.bt-hero {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 2.6rem 1rem 1.5rem;
+    text-align: center;
+}
+
+.bt-hero-logo {
+    width: 88px;
+    height: 88px;
+    margin: 0 auto 0.6rem;
+    filter: drop-shadow(0 10px 24px color-mix(in srgb, var(--bt-azul) 35%, transparent));
+}
+
+.bt-selo {
+    display: inline-block;
+    margin: 0 0 0.9rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--bt-azul) 10%, transparent);
+    color: var(--bt-azul);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.bt-hero h1 {
+    margin: 0 0 0.75rem;
+    font-family: var(--bt-fonte-titulo);
+    font-size: clamp(1.9rem, 5.2vw, 3rem);
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+}
+
+.bt-hero h1 span {
+    background: linear-gradient(90deg, var(--bt-azul), var(--bt-ceu));
+    -webkit-background-clip: text;
+            background-clip: text;
+    color: transparent;
+}
+
+.bt-sub {
+    max-width: 52ch;
+    margin: 0 auto 1.4rem;
+    color: var(--bt-suave);
+    font-size: 1.02rem;
+}
+
+.bt-busca {
+    position: relative;
+    max-width: 520px;
+    margin: 0 auto;
+}
+
+.bt-busca svg {
+    position: absolute;
+    left: 1.05rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--bt-suave);
+    width: 1.2rem;
+    height: 1.2rem;
+}
+
+.bt-busca input {
+    width: 100%;
+    min-height: 54px;
+    padding: 0 1.1rem 0 3rem;
+    border-radius: 999px;
+    border: 1.5px solid var(--bt-borda);
+    background: var(--bt-superficie);
+    color: var(--bt-texto);
+    font: inherit;
+    font-size: 1rem;
+    box-shadow: var(--bt-sombra);
+}
+
+.bt-busca input::placeholder { color: var(--bt-suave); }
+.bt-busca input:focus { outline: none; border-color: var(--bt-azul-2); box-shadow: 0 0 0 4px color-mix(in srgb, var(--bt-azul-2) 18%, transparent); }
+
+.bt-garantias {
+    list-style: none;
+    margin: 1.2rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 1.2rem;
+    color: var(--bt-suave);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.bt-garantias li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.bt-garantias svg { color: var(--bt-azul-2); }
+
+/* ── Vitrine ──────────────────────────────────────────────────────────────── */
+
+.bt-vitrine {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 1rem 1rem 2.5rem;
+}
+
+.bt-vitrine-topo {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.8rem;
+}
+
+.bt-vitrine h2 {
+    margin: 0;
+    font-family: var(--bt-fonte-titulo);
+    font-size: 1.4rem;
+    letter-spacing: -0.02em;
+}
+
+.bt-contagem {
+    margin: 0;
+    color: var(--bt-suave);
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.bt-categorias {
+    display: flex;
+    gap: 0.45rem;
+    overflow-x: auto;
+    padding: 0.2rem 0 0.9rem;
+    scrollbar-width: none;
+}
+
+.bt-categorias::-webkit-scrollbar { display: none; }
+
+.bt-categorias button {
+    flex: 0 0 auto;
+    min-height: 40px;
+    padding: 0 1rem;
+    border-radius: 999px;
+    border: 1px solid var(--bt-borda);
+    background: var(--bt-superficie);
+    color: var(--bt-texto);
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.bt-categorias button[aria-pressed='true'] {
+    background: var(--bt-azul);
+    border-color: var(--bt-azul);
+    color: #fff;
+}
+
+.bt-grade {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
+    gap: 1.1rem;
+}
+
+.bt-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    border-radius: var(--bt-raio);
+    border: 1px solid var(--bt-borda);
+    background: var(--bt-superficie);
+    box-shadow: var(--bt-sombra);
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.bt-card:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in srgb, var(--bt-azul-2) 45%, var(--bt-borda));
+    box-shadow: 0 18px 40px -22px color-mix(in srgb, var(--bt-azul) 60%, transparent);
+}
+
+.bt-card-foto {
+    display: block;
+    padding: 0;
+    border: 0;
+    background: #dcdcdc;
+    cursor: pointer;
+}
+
+.bt-card-foto img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 940 / 907;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.bt-card:hover .bt-card-foto img { transform: scale(1.03); }
+
+.bt-card-info {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 0.95rem 1rem 1rem;
+}
+
+.bt-card-cat {
+    margin: 0;
+    color: var(--bt-azul-2);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.bt-card h3 {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.3;
+    font-weight: 700;
+}
+
+.bt-card h3 button {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.bt-preco {
+    margin: 0.15rem 0 0.6rem;
+    font-family: var(--bt-fonte-titulo);
+    font-size: 1.45rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+}
+
+.bt-preco small {
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-right: 0.15rem;
+}
+
+.bt-card .bt-botao {
+    margin-top: auto;
+    padding: 0 0.8rem;
+    font-size: 0.875rem;
+    white-space: nowrap;
+}
+
+/* Esqueleto enquanto carrega. */
+.bt-esqueleto {
+    aspect-ratio: 940 / 1240;
+    background: linear-gradient(100deg, var(--bt-superficie) 30%, var(--bt-superficie-2) 50%, var(--bt-superficie) 70%);
+    background-size: 300% 100%;
+    animation: bt-brilho 1.3s linear infinite;
+}
+
+@keyframes bt-brilho {
+    from { background-position: 100% 0; }
+    to { background-position: -100% 0; }
+}
+
+.bt-vazio {
+    padding: 2rem 1rem;
+    border: 1px dashed var(--bt-borda);
+    border-radius: var(--bt-raio);
+    text-align: center;
+    color: var(--bt-suave);
+}
+
+.bt-vazio p { margin: 0 0 0.4rem; }
+.bt-vazio strong { color: var(--bt-texto); }
+.bt-vazio .bt-botao { display: inline-flex; width: auto; margin-top: 0.8rem; }
+
+/* ── Botões ───────────────────────────────────────────────────────────────── */
+
+.bt-botao {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    min-height: 46px;
+    padding: 0 1.1rem;
+    border-radius: 12px;
+    border: 0;
+    font: inherit;
+    font-size: 0.925rem;
+    font-weight: 800;
+    text-decoration: none;
+    cursor: pointer;
+    transition: filter 0.2s ease, transform 0.2s ease;
+}
+
+.bt-botao:hover { filter: brightness(1.08); }
+.bt-botao:active { transform: translateY(1px); }
+
+.bt-botao-whats { background: var(--bt-whats); color: #fff; }
+.bt-botao-whats svg { width: 1.2rem; height: 1.2rem; }
+
+.bt-botao-claro {
+    width: auto;
+    background: #fff;
+    color: var(--bt-azul);
+}
+
+.bt-botao-contorno {
+    background: transparent;
+    color: var(--bt-texto);
+    border: 1.5px solid var(--bt-borda);
+}
+
+/* ── Encomenda ────────────────────────────────────────────────────────────── */
+
+.bt-encomenda {
+    max-width: 1148px;
+    margin: 0 auto 2.5rem;
+    padding: 1.6rem 1.6rem;
+    border-radius: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.2rem 2rem;
+    flex-wrap: wrap;
+    background: linear-gradient(120deg, #1a47b8 0%, #2f7fe0 60%, #33b5f5 100%);
+    color: #fff;
+    box-shadow: 0 24px 48px -28px rgba(26, 71, 184, 0.8);
+}
+
+.bt-encomenda h2 {
+    margin: 0 0 0.3rem;
+    font-family: var(--bt-fonte-titulo);
+    font-size: 1.3rem;
+}
+
+.bt-encomenda p { margin: 0; max-width: 56ch; opacity: 0.92; }
+
+/* ── Rodapé ───────────────────────────────────────────────────────────────── */
+
+.bt-rodape {
+    padding: 2rem 1rem 5rem;
+    border-top: 1px solid var(--bt-borda);
+    text-align: center;
+    color: var(--bt-suave);
+    font-size: 0.875rem;
+}
+
+.bt-rodape img { width: 64px; height: auto; margin: 0 auto 0.6rem; }
+.bt-rodape p { margin: 0.25rem 0; }
+.bt-rodape a { color: var(--bt-azul-2); font-weight: 700; }
+
+/* ── Detalhe do produto ───────────────────────────────────────────────────── */
+
+.bt-detalhe {
+    width: min(920px, calc(100% - 2rem));
+    max-height: calc(100dvh - 2rem);
+    padding: 0;
+    border: 1px solid var(--bt-borda);
+    border-radius: 22px;
+    background: var(--bt-superficie);
+    color: var(--bt-texto);
+    box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.6);
+    overflow: auto;
+}
+
+.bt-detalhe::backdrop {
+    background: rgba(6, 12, 26, 0.6);
+    -webkit-backdrop-filter: blur(4px);
+            backdrop-filter: blur(4px);
+}
+
+.bt-detalhe-corpo {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+}
+
+.bt-detalhe-corpo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: #dcdcdc;
+}
+
+.bt-detalhe-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    padding: 2rem 1.6rem 1.6rem;
+}
+
+.bt-detalhe-cat {
+    margin: 0;
+    color: var(--bt-azul-2);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.bt-detalhe h2 {
+    margin: 0;
+    font-family: var(--bt-fonte-titulo);
+    font-size: 1.5rem;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+}
+
+.bt-detalhe .bt-preco { font-size: 2rem; margin: 0.2rem 0 0.2rem; }
+
+.bt-detalhe-desc {
+    margin: 0 0 0.6rem;
+    color: var(--bt-suave);
+    white-space: pre-line;
+}
+
+.bt-fechar {
+    position: absolute;
+    top: 0.7rem;
+    right: 0.7rem;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 0;
+    background: rgba(15, 29, 51, 0.72);
+    color: #fff;
+    cursor: pointer;
+}
+
+/* Botão claro/escuro criado por theme-system.js. */
+#themeToggleBtn {
+    position: fixed;
+    right: 16px;
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    z-index: 30;
+    width: 46px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--bt-borda);
+    border-radius: 50%;
+    background: var(--bt-superficie);
+    color: var(--bt-texto);
+    box-shadow: var(--bt-sombra);
+    cursor: pointer;
+}
+
+#themeToggleBtn svg { width: 20px; height: 20px; }
+
+/* ── Telas pequenas ───────────────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+    .bt-voltar-longo { display: none; }
+    .bt-voltar-curto { display: inline; }
+
+    .bt-hero { padding-top: 1.6rem; }
+    .bt-hero-logo { width: 68px; height: 68px; }
+
+    /* Duas colunas de produtos no celular. */
+    .bt-grade {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.65rem;
+    }
+
+    .bt-card-info { padding: 0.7rem 0.7rem 0.75rem; gap: 0.25rem; }
+    .bt-card h3 { font-size: 0.86rem; }
+    .bt-preco { font-size: 1.15rem; margin-bottom: 0.45rem; }
+    .bt-card .bt-botao { min-height: 42px; font-size: 0.8rem; padding: 0 0.5rem; }
+    .bt-card .bt-botao .bt-botao-longo { display: none; }
+
+    .bt-detalhe-corpo { grid-template-columns: 1fr; }
+    .bt-detalhe-corpo img { height: auto; aspect-ratio: 940 / 907; }
+    .bt-detalhe-info { padding: 1.2rem 1.1rem 1.3rem; }
+
+    .bt-encomenda { margin-inline: 1rem; padding: 1.3rem; }
+    .bt-encomenda .bt-botao { width: 100%; }
+}
+
+@media (min-width: 641px) {
+    .bt-card .bt-botao .bt-botao-curto { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; animation: none !important; }
+    html { scroll-behavior: auto; }
+}

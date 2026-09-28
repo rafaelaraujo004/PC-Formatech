@@ -42,7 +42,7 @@
     <meta name="msapplication-TileColor" content="#0B3D3D">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700&family=Montserrat:wght@800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="brand.css">
     <link rel="stylesheet" href="theme-system.css?v=5">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -1650,7 +1650,7 @@
     <link rel="stylesheet" href="theme-system.css?v=5">
     <script src="theme-system.js?v=4"></script>
     <!-- Camada de refinamento: por ultimo, para vencer o <style> embutido e o theme-system.css -->
-    <link rel="stylesheet" href="admin-refinements.css?v=4">
+    <link rel="stylesheet" href="admin-refinements.css?v=5">
     <script src="auth-system.secure.js" defer></script>
 </head>
 <body>
@@ -1743,6 +1743,9 @@
             </button>
             <button class="tab-button" onclick="switchTab('products')">
                 <i class="fas fa-box"></i> Produtos
+            </button>
+            <button class="tab-button" onclick="switchTab('loja')">
+                <i class="fas fa-store"></i> Loja Bird Tech
             </button>
             <button class="tab-button" onclick="switchTab('prices')">
                 <i class="fas fa-dollar-sign"></i> Preços
@@ -2346,6 +2349,88 @@
         </div>
     </div>
 
+    <!-- Loja Bird Tech: produtos da vitrine pública (loja.html) -->
+    <div id="tab-loja" class="tab-content">
+        <div class="clients-container">
+            <div class="bl-cabecalho">
+                <img src="/images/loja/bird-tech-icone.png" alt="" width="52" height="52">
+                <div>
+                    <h2>Loja Bird Tech</h2>
+                    <p>Cadastre os produtos da loja. A foto ganha o fundo azul Bird Tech e a etiqueta com o nome automaticamente.</p>
+                </div>
+                <a class="av-botao av-botao-secundario" href="/loja.html" target="_blank" rel="noopener"><i class="fas fa-external-link-alt" aria-hidden="true"></i> Ver loja</a>
+            </div>
+
+            <div class="bl-editor" id="bl-editor-inicio">
+                <form id="bl-form" class="bl-form" novalidate>
+                    <h3 class="bl-subtitulo" id="bl-titulo-editor">Novo produto</h3>
+                    <div class="input-group">
+                        <label for="bl-nome">Nome do produto *</label>
+                        <input type="text" id="bl-nome" maxlength="80" placeholder="Ex.: Fone de Ouvido Hmaston EJ-40" autocomplete="off">
+                    </div>
+                    <div class="bl-linha">
+                        <div class="input-group">
+                            <label for="bl-preco">Preço (R$) *</label>
+                            <input type="text" id="bl-preco" inputmode="decimal" placeholder="14,99" autocomplete="off">
+                        </div>
+                        <div class="input-group">
+                            <label for="bl-categoria">Categoria</label>
+                            <select id="bl-categoria">
+                                <option value="fones">Fones de ouvido</option>
+                                <option value="mouses">Mouses</option>
+                                <option value="teclados">Teclados</option>
+                                <option value="cabos">Cabos e adaptadores</option>
+                                <option value="carregadores">Carregadores</option>
+                                <option value="armazenamento">Pendrives e memória</option>
+                                <option value="acessorios">Acessórios</option>
+                                <option value="outros">Outros</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="bl-descricao">Descrição</label>
+                        <textarea id="bl-descricao" rows="3" maxlength="600" placeholder="O que é, para que serve, compatibilidade…"></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="bl-foto">Foto do produto *</label>
+                        <input type="file" id="bl-foto" accept="image/*">
+                        <small class="bl-dica">Dica: fotografe o produto sobre um fundo claro e liso (mesa branca, folha de papel). O fundo é recortado sozinho.</small>
+                        <small class="bl-dica" id="bl-recorte-info" aria-live="polite"></small>
+                    </div>
+                    <label class="av-chave">
+                        <input type="checkbox" id="bl-recortar" checked>
+                        <span><strong>Recortar o fundo claro da foto</strong><small>Desligue se o recorte cortar parte do produto.</small></span>
+                    </label>
+                    <label class="av-chave">
+                        <input type="checkbox" id="bl-aplicar-fundo" checked>
+                        <span><strong>Aplicar o fundo Bird Tech</strong><small>Desligue só se a imagem já vier pronta, com o fundo azul.</small></span>
+                    </label>
+                    <label class="av-chave">
+                        <input type="checkbox" id="bl-ativo" checked>
+                        <span><strong>Mostrar na loja</strong><small>Desligado, o produto fica salvo mas escondido da vitrine.</small></span>
+                    </label>
+                    <div class="av-acoes">
+                        <button type="submit" class="av-botao" id="bl-salvar"><i class="fas fa-save" aria-hidden="true"></i> Cadastrar produto</button>
+                        <button type="button" class="av-botao av-botao-secundario" id="bl-cancelar" hidden>Cancelar edição</button>
+                    </div>
+                    <p class="av-status" id="bl-status" role="status" aria-live="polite"></p>
+                </form>
+
+                <figure class="bl-previa">
+                    <canvas id="bl-previa" width="940" height="908" aria-label="Prévia da imagem do produto na loja"></canvas>
+                    <figcaption>Prévia: é assim que o produto aparece na loja.</figcaption>
+                    <p class="bl-aviso" id="bl-aviso-nome" hidden>Esta imagem veio pronta, então a etiqueta continua com o nome antigo. Para atualizar a etiqueta, envie a foto de novo.</p>
+                </figure>
+            </div>
+
+            <div class="bl-lista-topo">
+                <h3 class="bl-subtitulo">Produtos cadastrados</h3>
+                <span class="bl-total" id="bl-total"></span>
+            </div>
+            <div class="bl-lista" id="bl-lista"></div>
+        </div>
+    </div>
+
     <!-- Gestão de Imagens da Tela Inicial -->
     <div id="tab-slider" class="tab-content">
         <div class="clients-container">
@@ -2778,5 +2863,7 @@
         <script src="admin-visitas.js?v=3"></script>
         <script src="https://cdn.jsdelivr.net/npm/@simplewebauthn/browser@14.0.0/dist/bundle/index.umd.min.js" integrity="sha384-06g944bCm8L/wG3i0Q8PdB8jccE4GdpHdNCa1tJY8eMqoP3GIHGJdL6B5lD5OMGD" crossorigin="anonymous"></script>
         <script src="admin-biometria.js?v=1"></script>
+        <script src="loja-fundo.js?v=1"></script>
+        <script src="admin-loja.js?v=1"></script>
 </body>
 </html>

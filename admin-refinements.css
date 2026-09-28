@@ -30,6 +30,7 @@
      13 · prefers-reduced-motion
      14 · Resumo de visitas, avisos e links (aba Tempo Real)
      15 · Entrar com biometria
+     16 · Loja Bird Tech
    ═══════════════════════════════════════════════════════════════════════════ */
 
 
@@ -1479,4 +1480,163 @@ html[data-theme='dark'] .av-status.is-erro { color: #ff8a80; }
 
 @media (prefers-reduced-motion: reduce) {
     .btn-biometria.is-carregando i { animation: none; }
+}
+
+
+/* ── 16 · Loja Bird Tech ─────────────────────────────────────────────────── */
+
+.bl-cabecalho {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.4rem;
+}
+
+.bl-cabecalho img { width: 52px; height: 52px; flex: 0 0 auto; }
+.bl-cabecalho h2 { margin: 0; }
+.bl-cabecalho p { margin: 0.2rem 0 0; color: var(--adm-texto-suave); font-size: var(--adm-fs-sm); }
+.bl-cabecalho .av-botao { margin-left: auto; flex: 0 0 auto; }
+
+.bl-editor {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+    gap: 1.5rem;
+    align-items: start;
+    padding: 1.2rem;
+    border: 1px solid var(--adm-borda);
+    border-radius: var(--adm-raio);
+    background: var(--adm-superficie-2);
+    scroll-margin-top: 1rem;
+}
+
+.bl-form { display: grid; gap: 0.2rem; min-width: 0; }
+.bl-form .input-group { margin-bottom: 0.7rem; }
+.bl-form select,
+.bl-form input[type="file"] { width: 100%; }
+
+.bl-form select {
+    min-height: 44px;
+    padding: 0 0.75rem;
+    border: 1.5px solid var(--adm-borda-forte);
+    border-radius: 8px;
+    background: var(--adm-superficie);
+    color: var(--adm-texto);
+    font: inherit;
+}
+
+.bl-linha {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 0.75rem;
+}
+
+.bl-dica {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: var(--adm-fs-xs);
+    color: var(--adm-texto-suave);
+}
+
+.bl-dica:empty { display: none; }
+
+.bl-subtitulo {
+    margin: 0 0 0.8rem;
+    font-size: var(--adm-fs-lg);
+}
+
+.bl-previa {
+    position: sticky;
+    top: 1rem;
+    margin: 0;
+}
+
+.bl-previa canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 14px;
+    box-shadow: var(--adm-sombra);
+}
+
+.bl-previa figcaption {
+    margin-top: 0.5rem;
+    font-size: var(--adm-fs-xs);
+    color: var(--adm-texto-suave);
+    text-align: center;
+}
+
+.bl-aviso {
+    margin: 0.6rem 0 0;
+    padding: 0.6rem 0.75rem;
+    border-radius: 10px;
+    background: rgba(224, 142, 11, 0.12);
+    color: #9a5b00;
+    font-size: var(--adm-fs-xs);
+}
+
+html[data-theme='dark'] .bl-aviso { color: #ffc46b; }
+
+.bl-lista-topo {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin: 1.8rem 0 0.2rem;
+}
+
+.bl-total { color: var(--adm-texto-suave); font-size: var(--adm-fs-sm); }
+
+.bl-lista { display: grid; gap: 0.6rem; }
+
+.bl-item {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.6rem 0.7rem;
+    border: 1px solid var(--adm-borda);
+    border-radius: 12px;
+    background: var(--adm-superficie);
+}
+
+.bl-item.is-oculto { opacity: 0.6; }
+
+.bl-item img {
+    width: 76px;
+    height: 74px;
+    flex: 0 0 auto;
+    object-fit: cover;
+    border-radius: 10px;
+    background: #dcdcdc;
+}
+
+.bl-item-info { flex: 1; min-width: 0; }
+.bl-item-info strong,
+.bl-item-info small { display: block; }
+.bl-item-info strong { color: var(--adm-texto); font-size: var(--adm-fs-sm); }
+.bl-item-info small { color: var(--adm-texto-suave); font-size: var(--adm-fs-xs); margin-top: 0.15rem; }
+
+.bl-item-acoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    justify-content: flex-end;
+}
+
+.bl-item-acoes .av-botao { min-height: 38px; padding: 0 0.75rem; }
+.bl-item-acoes .bl-remover { color: #c0392b !important; }
+
+@media (max-width: 860px) {
+    .bl-editor { grid-template-columns: 1fr; }
+    /* No celular a prévia fica depois do formulário e só aparece quando há
+       foto: vazia, ela empurrava o formulário uma tela para baixo. */
+    .bl-previa { position: static; max-width: 420px; justify-self: center; width: 100%; }
+    .bl-previa.is-vazia { display: none; }
+}
+
+@media (max-width: 560px) {
+    .bl-cabecalho { flex-wrap: wrap; }
+    .bl-cabecalho .av-botao { margin-left: 0; width: 100%; }
+    .bl-editor { padding: 0.9rem; }
+    .bl-item { flex-wrap: wrap; }
+    .bl-item-acoes { width: 100%; justify-content: stretch; }
+    .bl-item-acoes .av-botao { flex: 1 1 0; padding: 0 0.4rem; }
 }
