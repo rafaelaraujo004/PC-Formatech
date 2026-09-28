@@ -1945,6 +1945,122 @@
     color: #856404;
 }
 
+/* Alerta "Campo Crítico" (backup de arquivos) — único uso de .alert-warning
+   na página, por isso pisa nos valores genéricos acima com segurança. Antes
+   essas cores viviam em style="" inline no HTML: nada disso conseguia
+   adaptar para o tema escuro (a correção fica em theme-system.css). */
+.alert-warning {
+    padding: 0.8rem 0.8rem 0.8rem 0.6rem;
+    border-radius: 10px;
+    border-left: 4px solid #ff6b6b;
+    background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
+    box-shadow: 0 3px 10px rgba(255, 107, 107, 0.12);
+    color: #212529;
+}
+
+.alert-warning-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+}
+
+.alert-warning-emoji,
+.alert-warning-tip-emoji {
+    font-size: 1.8rem;
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+}
+
+.alert-warning-tip-emoji { font-size: 1.2rem; }
+
+.alert-warning-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.alert-warning-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #c92a2a;
+    margin-bottom: 0.7rem;
+    line-height: 1.2;
+}
+
+.alert-warning-danger-box {
+    background: #ffffff;
+    padding: 0.75rem;
+    border-radius: 6px;
+    margin-bottom: 0.7rem;
+    border: 2px solid #ff8787;
+}
+
+.alert-warning-danger-box p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: #212529;
+}
+
+.alert-warning-danger-text {
+    display: inline !important;
+    margin-bottom: 0 !important;
+    font-size: inherit !important;
+    color: #c92a2a !important;
+    text-decoration: underline;
+}
+
+.alert-warning-tip-box {
+    background: linear-gradient(135deg, #fff9db 0%, #fff3bf 100%);
+    padding: 0.75rem;
+    border-radius: 6px;
+    border-left: 3px solid #ffd43b;
+    margin-bottom: 0.7rem;
+}
+
+.alert-warning-tip-title {
+    display: block !important;
+    color: #862e9c !important;
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+    line-height: 1.3;
+}
+
+.alert-warning-tip-text {
+    margin: 0;
+    color: #495057;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.alert-warning-tip-text strong {
+    display: inline !important;
+    margin-bottom: 0 !important;
+    font-size: inherit !important;
+    color: #862e9c !important;
+}
+
+.alert-warning-note-box {
+    background: #e7f5ff;
+    padding: 0.65rem;
+    border-radius: 6px;
+    border-left: 3px solid #339af0;
+}
+
+.alert-warning-note-box i {
+    color: #1971c2;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.alert-warning-note-text {
+    margin: 0;
+    color: #1864ab;
+    font-weight: 500;
+    font-size: 0.82rem;
+    line-height: 1.3;
+}
+
 .alert-info {
     background: linear-gradient(135deg, #e3f8fc 0%, #d1ecf1 100%);
     border-left: 5px solid #17a2b8;
@@ -2076,4 +2192,36 @@
         padding: 0.8rem 1rem;
         font-size: 0.9rem;
     }
+}
+
+
+/* ── Formulário de formatação: opções compactas ──────────────────────────
+   Cada opção ocupava uma linha inteira de ~50px com 0.8rem de folga: a lista
+   de problemas, tipos de arquivo e expectativas somava várias telas. Agora
+   ficam em duas colunas (uma só em telas muito estreitas) e mais baixas.
+   A autorização final continua em largura total: é um texto longo. */
+.checkbox-group,
+.radio-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 170px), 1fr));
+    gap: 0.5rem;
+}
+
+.checkbox-label,
+.radio-label {
+    min-width: 0;
+    padding: 0.6rem 0.75rem;
+    font-size: 0.9rem;
+    line-height: 1.3;
+}
+
+.checkbox-label input[type="checkbox"],
+.radio-label input[type="radio"] {
+    flex-shrink: 0;
+    margin-right: 0.6rem;
+}
+
+.form-group:has(> .authorization-checkbox) .checkbox-label,
+.authorization-checkbox {
+    grid-column: 1 / -1;
 }

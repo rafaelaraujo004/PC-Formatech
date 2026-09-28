@@ -368,7 +368,12 @@ html[data-theme='dark'] .modal {
 }
 
 html[data-theme='dark'] .modal-content {
-    background: var(--theme-surface);
+    /* !important necessário: uma regra sem tema mais abaixo neste arquivo
+       força ".modal-content { background: #ffffff !important; }" sem nenhuma
+       condição de tema. Sem vencer essa regra aqui, os modais de serviço
+       (Formatação, Programas etc.) ficavam brancos com texto claro por cima
+       no tema escuro — quase ilegível. */
+    background: var(--theme-surface) !important;
     border: 1px solid var(--theme-border);
     box-shadow: 0 24px 64px rgba(0, 0, 0, .7);
     color: var(--theme-text);
@@ -2518,3 +2523,107 @@ html[data-theme='dark'] .services-summary {
     70%       { transform: translateY(-18px) scale(1.09); }
 }
 
+
+
+/* ════════════════════════════════════════════════════════════════════════
+   Formulário de formatação (formulario-formatacao.html) — tema escuro
+
+   As classes desta página (.checkbox-label, .radio-label, .critical-section,
+   .alert-warning*, .alert-info, .authorization-checkbox, .btn-reset) nunca
+   tiveram versão escura: o fundo ficava claro enquanto as regras gerais
+   deste arquivo pintavam o texto de claro por cima — texto quase invisível.
+   ════════════════════════════════════════════════════════════════════════ */
+
+html[data-theme='dark'] .checkbox-label,
+html[data-theme='dark'] .radio-label {
+    background-color: var(--theme-surface-2);
+    border-color: var(--theme-border);
+}
+
+html[data-theme='dark'] .checkbox-label:hover,
+html[data-theme='dark'] .radio-label:hover {
+    background-color: var(--theme-surface-3, var(--theme-surface-2));
+    border-color: var(--theme-accent);
+}
+
+html[data-theme='dark'] .checkbox-label:has(input:checked),
+html[data-theme='dark'] .radio-label:has(input:checked) {
+    border-color: var(--theme-accent);
+    background-color: color-mix(in srgb, var(--theme-accent) 12%, var(--theme-surface-2));
+}
+
+html[data-theme='dark'] .critical-section {
+    background-color: color-mix(in srgb, #ff6b6b 6%, var(--theme-surface));
+    border-color: color-mix(in srgb, #ff6b6b 35%, transparent);
+}
+
+html[data-theme='dark'] .critical-section h3 {
+    color: #ff8a80;
+}
+
+html[data-theme='dark'] .authorization-checkbox {
+    background-color: color-mix(in srgb, #4caf50 12%, var(--theme-surface-2)) !important;
+    border-color: #4caf50 !important;
+}
+
+html[data-theme='dark'] .authorization-checkbox small,
+html[data-theme='dark'] .help-text {
+    color: var(--theme-muted);
+}
+
+html[data-theme='dark'] .btn-reset {
+    background-color: var(--theme-surface-2);
+    color: var(--theme-text);
+    border: 1px solid var(--theme-border);
+}
+
+html[data-theme='dark'] .btn-reset:hover {
+    background-color: var(--theme-surface-3, var(--theme-surface-2));
+}
+
+/* Alerta "Campo Crítico" */
+html[data-theme='dark'] .alert-warning {
+    background: color-mix(in srgb, #ff6b6b 10%, var(--theme-surface-2));
+    color: var(--theme-text);
+}
+
+html[data-theme='dark'] .alert-warning-title,
+html[data-theme='dark'] .alert-warning-danger-text {
+    color: #ff8a80 !important;
+}
+
+html[data-theme='dark'] .alert-warning-danger-box {
+    background: var(--theme-surface);
+    border-color: color-mix(in srgb, #ff8787 60%, transparent);
+}
+
+html[data-theme='dark'] .alert-warning-danger-box p {
+    color: var(--theme-text);
+}
+
+html[data-theme='dark'] .alert-warning-tip-box {
+    background: color-mix(in srgb, #ffd43b 10%, var(--theme-surface));
+}
+
+html[data-theme='dark'] .alert-warning-tip-title,
+html[data-theme='dark'] .alert-warning-tip-text strong {
+    color: #e599f7 !important;
+}
+
+html[data-theme='dark'] .alert-warning-tip-text {
+    color: var(--theme-text);
+}
+
+html[data-theme='dark'] .alert-warning-note-box {
+    background: color-mix(in srgb, #339af0 12%, var(--theme-surface));
+}
+
+html[data-theme='dark'] .alert-warning-note-box i,
+html[data-theme='dark'] .alert-warning-note-text {
+    color: #74c0fc;
+}
+
+html[data-theme='dark'] .alert-info {
+    background: color-mix(in srgb, #17a2b8 12%, var(--theme-surface-2));
+    color: var(--theme-text);
+}
