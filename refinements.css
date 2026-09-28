@@ -775,6 +775,12 @@ textarea:focus-visible,
    linha só: a altura do header fica estável e os 5 itens continuam acessíveis. */
 
 @media (max-width: 560px) {
+    /* .header é flex e .nav-bar é o único item: por padrão um item flex não
+       encolhe abaixo do tamanho do próprio conteúdo (min-width:auto), então a
+       fila de links sem quebra alargava o header (e a página) além da tela em
+       vez de rolar dentro dele. min-width:0 devolve o direito de encolher. */
+    .nav-bar { min-width: 0; }
+
     .nav-links {
         flex-wrap: nowrap;
         overflow-x: auto;
@@ -1223,43 +1229,74 @@ textarea:focus-visible,
 
 .about-main {
     display: grid;
-    grid-template-columns: minmax(220px, 300px) minmax(0, 1fr);
-    gap: 2rem;
-    align-items: start;
+    /* Sem uma coluna explícita, o único item do grid encolhe para caber no
+       conteúdo (o cartão de texto ficava estreito, sobrando vazio ao lado). */
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 640px;
     text-align: left;
+}
+
+/* Avatar e nome na mesma linha, alinhados pelo centro: antes eram dois
+   blocos separados (uma foto-placeholder alta de um lado, o texto do outro)
+   sem relação visual direta entre a "foto" e o nome que ela representa. */
+.about-profile-row {
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+    margin-bottom: 1.1rem;
 }
 
 .about-profile-photo {
     display: grid;
-    place-content: center;
-    gap: 0.5rem;
-    aspect-ratio: 3 / 4;
-    border-radius: 18px;
-    border: 1px solid rgba(64, 153, 143, 0.3);
+    place-items: center;
+    flex: 0 0 auto;
+    width: 76px;
+    height: 76px;
+    /* styles.css e styles2.css têm min-height (220–280px) sobrando do antigo
+       cartão-retrato: min-height sempre vence sobre height quando é maior,
+       então sem isto o avatar virava uma pílula alta em vez de um círculo. */
+    min-width: 0;
+    min-height: 0;
+    border-radius: 50%;
+    border: 1px solid rgba(64, 153, 143, 0.35);
     background:
-        radial-gradient(circle at 50% 30%, rgba(64, 153, 143, 0.22), transparent 62%),
+        radial-gradient(circle at 50% 30%, rgba(64, 153, 143, 0.28), transparent 62%),
         linear-gradient(160deg, rgba(11, 61, 61, 0.9), rgba(26, 92, 92, 0.75));
     color: #cdf3ec;
     box-shadow: var(--glow-accent);
 }
 
-.about-profile-photo span {
-    font-family: var(--pcft-font-heading);
-    font-size: var(--fs-lg);
-    font-weight: 800;
-    letter-spacing: 0.18em;
+.about-profile-photo i {
+    font-size: 1.7rem;
+    opacity: 0.8;
 }
 
-.about-profile-photo i {
-    font-size: 2rem;
-    justify-self: center;
-    opacity: 0.65;
+.about-profile-id { min-width: 0; }
+
+/* .about-text tinha seu próprio cartão branco porque, no layout antigo, ela
+   ficava sozinha ao lado da foto, sem nenhum cartão externo unificando as
+   duas. Agora .about-main já é o cartão (regra coletiva de "premium card"
+   compartilhada com outras seções); manter os dois criava uma caixa branca
+   dentro de outra caixa branca, com padding em dobro. */
+.about-main .about-text {
+    background: none;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+}
+
+.about-role {
+    display: block;
+    margin-top: 0.2rem;
+    font-size: var(--fs-sm);
+    color: var(--pcft-muted-color, var(--text-light));
 }
 
 .about-text h3 {
     font-size: var(--fs-xl);
     line-height: 1.2;
-    margin: 0 0 1rem;
+    margin: 0;
 }
 
 .about-text p {
@@ -1583,14 +1620,6 @@ textarea:focus-visible,
         grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
     }
 
-    .about-main {
-        grid-template-columns: 1fr;
-    }
-
-    .about-profile-photo {
-        aspect-ratio: 16 / 9;
-        max-width: 320px;
-    }
 }
 
 @media (max-width: 560px) {
@@ -1626,4 +1655,766 @@ textarea:focus-visible,
 .footer .social-link small,
 .footer .location-info small {
     color: inherit;
+}
+
+
+/* ── 16 · Hero: foto em moldura própria ──────────────────────────────────────
+   Antes as 17 fotos ocupavam a tela inteira atrás de uma placa de vidro com
+   todo o texto: no celular não se via nada da imagem. Agora a foto tem uma
+   moldura no formato da maioria delas (3:2) e a preenche (cover): as poucas
+   que não têm esse formato ganham zoom em vez de faixas vazias. No computador
+   o texto fica ao lado; no celular, só o título passa por cima (ver abaixo).
+
+   Os seletores usam #home para vencer as regras antigas espalhadas por
+   styles.css, mobile-desktop.css e theme-system.css sem disputar !important. */
+
+#home.hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+        "foto"
+        "texto";
+    align-items: center;
+    gap: 0;
+    min-height: 0;
+    height: auto;
+    padding: 0 0 2rem;
+    text-align: left;
+    overflow: hidden;
+    background:
+        radial-gradient(900px 520px at 85% 0%, color-mix(in srgb, var(--theme-accent, #2d7a7a) 32%, transparent), transparent 70%),
+        linear-gradient(160deg, #0b2b2c 0%, #061719 100%);
+}
+
+#home .hero-overlay { display: none; }
+
+/* Moldura da foto */
+#home .hero-slider {
+    grid-area: foto;
+    position: relative;
+    top: auto;
+    left: auto;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: #04100f;
+    box-shadow: none;
+}
+
+#home .hero-slide {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+#home .hero-slide picture {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+#home .hero-slide img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    filter: none;
+    transform: none;
+}
+
+/* Setas: no meio das laterais da foto, com fundo para aparecerem em qualquer imagem. */
+#home .hero-nav-btn {
+    grid-area: foto;
+    position: absolute;
+    top: 50%;
+    bottom: auto;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgba(3, 14, 14, 0.55);
+    -webkit-backdrop-filter: blur(6px);
+            backdrop-filter: blur(6px);
+    opacity: 0.85;
+    transform: translateY(-50%);
+    z-index: 3;
+}
+
+#home .hero-nav-btn:hover { opacity: 1; }
+#home .hero-nav-btn i { font-size: 18px; }
+#home .hero-prev { left: 10px; right: auto; }
+#home .hero-next { right: 10px; left: auto; }
+
+#home .hero-indicators {
+    grid-area: foto;
+    position: absolute;
+    top: auto;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(3, 14, 14, 0.45);
+    z-index: 3;
+}
+
+/* Texto: fora da foto, sem placa de vidro */
+#home .hero-content {
+    grid-area: texto;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 1.5rem 1rem 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+    -webkit-backdrop-filter: none;
+            backdrop-filter: none;
+    text-align: left;
+}
+
+#home .hero-content::before { display: none; }
+
+#home .hero-content h1 {
+    margin: 0 0 0.6rem;
+    font-size: clamp(1.8rem, 7vw, 3.2rem);
+    line-height: 1.06;
+    text-shadow: none;
+}
+
+#home .hero-content p {
+    max-width: 46ch;
+    margin: 0 0 1.3rem;
+    font-size: clamp(1rem, 1.25vw, 1.12rem);
+    line-height: 1.55;
+}
+
+#home .hero-actions {
+    justify-content: flex-start;
+    padding-bottom: 0;
+}
+
+#home .hero-trust-strip {
+    justify-content: flex-start;
+    margin-top: 1.2rem;
+}
+
+@media (max-width: 899px) {
+    /* Título e frase por cima da foto, numa faixa com sombra só no topo: a
+       moldura quadrada deixa a maior parte da foto livre embaixo do texto.
+       A caixa de texto some do layout (display: contents) para o título, os
+       botões e os selos ocuparem cada um a sua área da grade. */
+    #home.hero {
+        grid-template-areas:
+            "selo"
+            "foto"
+            "acoes"
+            "confianca";
+    }
+
+    #home .hero-content { display: contents; }
+
+    #home .hero-slider {
+        aspect-ratio: 1 / 1;
+        max-height: calc(100svh - 7rem);
+    }
+
+    #home #pcft-seasonal-badge {
+        grid-area: selo;
+        justify-self: start;
+        margin: 1rem 1rem 0;
+    }
+
+    /* Cartão de vidro, não um degradê solto: uma faixa que só esmaece nas
+       bordas lia bem em fotos escuras, mas em fotos claras (mesa clara,
+       tela branca) o texto quase sumia. Um cartão com fundo translúcido e
+       contorno próprio lê em cima de qualquer foto do carrossel. */
+    #home .hero-titulo {
+        grid-area: foto;
+        align-self: start;
+        position: relative;
+        z-index: 2;
+        margin: 0.9rem 1rem;
+        padding: 0.9rem 1rem;
+        border-radius: 14px;
+        background: rgba(2, 12, 12, 0.62);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        -webkit-backdrop-filter: blur(10px) saturate(1.1);
+                backdrop-filter: blur(10px) saturate(1.1);
+        box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.6);
+        pointer-events: none;
+    }
+
+    #home .hero-content h1 {
+        margin: 0 0 0.4rem;
+        padding: 0;
+        text-shadow: 0 1px 10px rgba(0, 0, 0, 0.4);
+    }
+
+    #home .hero-content p {
+        max-width: none;
+        margin: 0;
+        padding: 0;
+        text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Setas descem para a altura da foto, longe do título. */
+    #home .hero-nav-btn { top: 64%; }
+
+    #home .hero-actions {
+        grid-area: acoes;
+        padding: 1rem 1rem 0;
+    }
+
+    #home .hero-trust-strip {
+        grid-area: confianca;
+        margin: 1rem 1rem 0;
+    }
+
+    /* No celular os dois botões dividem a largura, sem quebrar em linhas soltas. */
+    #home .hero-actions > a {
+        flex: 1 1 100%;
+        justify-content: center;
+    }
+
+    /* Selos em grade 2×2, menores: em fila solta ocupavam três linhas e
+       ficavam embaixo dos botões flutuantes. */
+    #home .hero-trust-strip {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.5rem;
+        padding-bottom: 4.5rem;
+    }
+
+    #home .hero-trust-strip span {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 0.45rem;
+        padding: 0.5rem 0.65rem;
+        border-radius: 12px;
+        font-size: 0.72rem;
+        line-height: 1.25;
+        white-space: normal;
+    }
+}
+
+@media (min-width: 900px) {
+    #home.hero {
+        grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+        grid-template-areas: "texto foto";
+        gap: clamp(1.75rem, 3.5vw, 3.5rem);
+        padding: clamp(1.75rem, 3vw, 2.75rem) clamp(1.25rem, 4vw, 4rem);
+    }
+
+    #home .hero-slider {
+        aspect-ratio: 3 / 2;
+        max-height: calc(100vh - 210px);
+        min-height: 360px;
+        border-radius: 22px !important;
+        box-shadow: 0 30px 70px -35px rgba(0, 0, 0, 0.85);
+    }
+
+    #home .hero-content { padding: 0; }
+    #home .hero-content h1 { font-size: clamp(2.2rem, 3.6vw, 3.4rem); }
+}
+
+
+/* ── 17 · "Agendar" no menu ──────────────────────────────────────────────────
+   O fundo translúcido com borda (regra original, seção 13) lia como uma aba
+   já selecionada. Um botão branco cheio corrigia isso mas virou ênfase forte
+   demais. Sem caixa nenhuma: só texto, um pouco mais forte que os outros
+   links — reconhecível como ação, sem chamar mais atenção que o resto do
+   menu nem parecer um estado ativo. */
+
+.nav-links li .nav-cta {
+    background: none;
+    border: 0;
+    box-shadow: none;
+    font-weight: 800;
+}
+
+.nav-links li .nav-cta:hover,
+.nav-links li .nav-cta:focus-visible {
+    background: color-mix(in srgb, currentColor 12%, transparent);
+}
+
+
+/* ── 18 · Celular compacto ───────────────────────────────────────────────────
+   No celular a página passava de 14.000px: cabeçalho de 151px fixo na tela,
+   cards empilhados um por linha e textos longos. Aqui os blocos ficam lado a
+   lado sempre que cabem, o cabeçalho encolhe e o que se repete sai. */
+
+@media (max-width: 600px) {
+    /* Cabeçalho: de 151px para 104px — é espaço que fica o tempo todo na tela.
+       O logo e o título tinham margin-top de 1cm e cada item do menu 1rem em
+       cima e embaixo (styles.css), o que empurrava o menu para fora do fundo. */
+    body {
+        padding-top: 6.5rem;
+        padding-bottom: 0;
+    }
+
+    .header { height: 6.5rem; }
+
+    .logo-img,
+    .brand-text { margin-top: 0; }
+
+    .nav-links li { margin: 0; }
+
+    .nav-bar {
+        padding: 0.55rem 0.75rem 0.4rem;
+        gap: 0.4rem;
+    }
+
+    .logo-img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .brand-name { font-size: 1.2rem; }
+    .tagline { font-size: 0.66rem; }
+
+    /* Banner: sem a folga grande embaixo dos selos. */
+    #home.hero { padding-bottom: 1.5rem; }
+    #home .hero-content h1 { font-size: 1.75rem; }
+    #home .hero-content p { font-size: 0.95rem; }
+    #home .hero-trust-strip { padding-bottom: 0; margin-top: 1rem; }
+
+    /* Seções: menos respiro vertical. */
+    .attention-flow,
+    .pc-transform,
+    .diagnostic-section,
+    .proof-section,
+    .services,
+    .testimonials,
+    .faq,
+    .scheduling,
+    .social-proof,
+    .about {
+        padding-top: 2.25rem;
+        padding-bottom: 2.25rem;
+    }
+
+    .faq-container,
+    .scheduling-container,
+    .social-container {
+        width: 100%;
+        max-width: 100%;
+        padding-inline: 1rem;
+        box-sizing: border-box;
+    }
+
+    h2,
+    .section-title,
+    .scheduling > h2,
+    .social-proof > h2 {
+        font-size: 1.5rem;
+    }
+
+    /* Curiosidades: 2 colunas com texto curto. */
+    .attention-grid { gap: 0.6rem; }
+
+    .attention-card {
+        padding: 0.9rem 0.8rem;
+        gap: 0.45rem;
+    }
+
+    .attention-card h3 {
+        font-size: 0.98rem;
+        line-height: 1.22;
+    }
+
+    .attention-card .teaser {
+        font-size: 0.82rem;
+        line-height: 1.45;
+    }
+
+    /* Antes x Depois lado a lado. */
+    .pc-transform-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.6rem;
+    }
+
+    .transform-card {
+        padding: 0.85rem 0.75rem;
+        gap: 0.5rem;
+    }
+
+    .transform-chip {
+        font-size: 0.6rem;
+        padding: 0.3rem 0.5rem;
+        letter-spacing: 0.06em;
+    }
+
+    .transform-card ul { gap: 0.3rem; }
+    .transform-card li { font-size: 0.75rem; line-height: 1.3; }
+    .transform-boot { font-size: 0.82rem; padding-top: 0.5rem; }
+
+    .pc-metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem;
+    }
+
+    .metric-item span { font-size: 0.82rem; }
+    .metric-item small { font-size: 0.72rem; }
+
+    /* Diagnóstico: sintomas em 2 colunas, botões na mesma linha. */
+    .diagnostic-shell { padding: 1.25rem 1rem; }
+
+    .diagnostic-checks {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.45rem;
+    }
+
+    .diagnostic-checks label {
+        width: auto;
+        min-height: 44px;
+        padding: 0.5rem 0.6rem;
+        font-size: 0.8rem;
+        line-height: 1.25;
+    }
+
+    .diagnostic-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.5rem;
+    }
+
+    .diagnostic-actions .diagnostic-btn {
+        width: 100%;
+        padding-inline: 0.5rem;
+        font-size: 0.82rem;
+    }
+
+    .diagnostic-whatsapp { width: 100%; justify-content: center; }
+    .diagnostic-urgency { font-size: 0.8rem; }
+
+    /* Serviços: a lista de itens já está em "Ver Detalhes"; no card fica o essencial. */
+    .service-card .service-card-points { display: none; }
+
+    .service-card p {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+        font-size: 0.8rem;
+    }
+
+    /* Perguntas: lado a lado, ícone menor. */
+    .faq-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.6rem;
+    }
+
+    .faq-item { padding: 0.9rem 0.75rem; }
+    .faq-question { gap: 0.5rem; }
+
+    .faq-question .question-icon {
+        width: 34px;
+        height: 34px;
+        font-size: 0.9rem;
+    }
+
+    .faq-question h3 { font-size: 0.86rem; line-height: 1.3; }
+    .faq-answer p { font-size: 0.8rem; line-height: 1.45; }
+
+    /* Agendamento: serviços, modo/limpeza e data/horário em 2 colunas. */
+    .services-checkbox-group {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.45rem;
+    }
+
+    .services-checkbox-group label.service-checkbox {
+        padding: 0.55rem 0.55rem;
+        gap: 0.45rem;
+        align-items: flex-start;
+    }
+
+    .services-checkbox-group label.service-checkbox span {
+        font-size: 0.78rem;
+        line-height: 1.3;
+    }
+
+    .schedule-form .form-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.6rem;
+    }
+
+    .schedule-form .form-row label { font-size: 0.78rem; }
+
+    .scheduling-info {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.6rem;
+    }
+
+    .scheduling-info .info-card { padding: 0.9rem 0.8rem; }
+    .scheduling-info .info-card:last-child { grid-column: 1 / -1; }
+    .scheduling-info .info-card h4 { font-size: 0.9rem; }
+    .scheduling-info .info-card p,
+    .scheduling-info .info-card small { font-size: 0.78rem; }
+
+    /* Conecte-se: três quadros lado a lado. */
+    .social-proof .social-links {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.5rem;
+    }
+
+    .social-proof .social-link,
+    .social-proof .location-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 0.4rem;
+        padding: 0.85rem 0.4rem;
+        text-align: center;
+    }
+
+    .social-proof .social-link span,
+    .social-proof .location-info span {
+        display: block;
+        font-size: 0.74rem;
+        line-height: 1.3;
+    }
+
+    .social-proof .social-link small,
+    .social-proof .location-info small { display: none; }
+
+    /* Sobre: texto enxuto e os quatro diferenciais em 2×2. */
+    .about-text h3 { font-size: 1.45rem; line-height: 1.15; }
+    .about-text .highlight-text { font-size: 0.95rem; }
+    .about-text p { font-size: 0.88rem; }
+
+    .about-features {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.6rem;
+    }
+
+    /* minmax(0, 1fr) deixa a COLUNA encolher, mas cada item de grid ainda tem
+       min-width:auto por padrão e pode vazar da própria coluna sem empurrar
+       nada visivelmente — só alarga o documento (rolagem lateral fantasma
+       de ~21px). min-width:0 nos itens fecha essa saída. */
+    .feature-card,
+    .stat-item { min-width: 0; }
+
+    .feature-card {
+        padding: 0.9rem 0.75rem;
+        gap: 0.35rem;
+        text-align: left;
+        justify-items: start;
+    }
+
+    .feature-card .feature-icon {
+        width: 34px;
+        height: 34px;
+        margin: 0;
+    }
+
+    .feature-card h4 { font-size: 0.86rem; line-height: 1.25; }
+    .feature-card p { font-size: 0.76rem; line-height: 1.4; }
+
+    .about-stats { gap: 0.5rem; }
+    .about-stats .stat-item { padding: 0.9rem 0.5rem; }
+    .about-stats .stat-number { font-size: 1.6rem; }
+
+    /* Rodapé: pagamento em uma linha e sem repetir a cidade. */
+    .footer-content { gap: 1.5rem; }
+
+    .payment-highlight .payment-methods {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.4rem;
+    }
+
+    .payment-highlight .payment-methods > * {
+        width: auto;
+        min-width: 0;
+        padding: 0.5rem 0.35rem;
+        font-size: 0.74rem;
+        justify-content: center;
+    }
+
+    .footer-contact .contact-item { padding: 0.6rem 0.75rem; }
+    .footer-social .location-info { display: none; }
+
+    .footer-social .social-links {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.5rem;
+    }
+
+    .footer { padding-bottom: 5.5rem; }
+}
+
+
+/* ── 19 · Depoimentos compactos ──────────────────────────────────────────────
+   Eram três faixas largas empilhadas (≈240px cada), com estrelas, balão,
+   avatar, resultado e data cada um numa linha própria. Agora: três cartões
+   lado a lado a partir do tablet e uma faixa que desliza no celular, com o
+   cartão enxuto — estrelas, frase, e quem disse numa linha só.
+   #depoimentos vence as regras do tema escuro sem precisar de !important. */
+
+#depoimentos .testimonials-container { max-width: 1120px; }
+
+#depoimentos .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: stretch;
+    gap: 1rem;
+    padding: 0.5rem 0 0;
+}
+
+#depoimentos .testimonial-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    width: auto;
+    max-width: none;
+    margin: 0;
+    padding: 1.1rem 1.15rem 1rem;
+    border-radius: 16px;
+    text-align: left;
+    transform: none;
+}
+
+#depoimentos .testimonial-card:hover { transform: translateY(-2px); }
+
+#depoimentos .testimonial-rating {
+    margin: 0;
+    color: #f8b84e;
+    font-size: 0.82rem;
+    letter-spacing: 0.1em;
+    text-align: left;
+}
+
+/* O theme-system.css pinta o balão com !important (regra coletiva de cards);
+   aqui ele vira só texto dentro do cartão. */
+#depoimentos .testimonial-bubble {
+    padding: 0;
+    border-radius: 0;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+#depoimentos .testimonial-bubble p {
+    margin: 0;
+    font-size: 0.93rem;
+    line-height: 1.5;
+    text-align: left;
+}
+
+#depoimentos .client-info {
+    margin-top: auto;
+    padding: 0.65rem 0 0;
+    gap: 0.6rem;
+    background: none;
+    border-top: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+}
+
+#depoimentos .client-avatar-initial {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+    font-size: 0.75rem;
+}
+
+#depoimentos .client-details h4 {
+    margin: 0;
+    font-size: 0.88rem;
+    line-height: 1.2;
+}
+
+#depoimentos .testimonial-outcome {
+    margin: 0.1rem 0 0;
+    font-size: 0.74rem;
+    line-height: 1.3;
+}
+
+/* A data exata ("24 de setembro às 19:15") ocupava uma linha a mais em cada
+   cartão sem ajudar a decidir nada. */
+#depoimentos .testimonial-time { display: none; }
+
+@media (max-width: 760px) {
+    /* A margem negativa da faixa (abaixo) pode alargar o overflow do documento
+       além da tela em navegadores mobile, mesmo sem nada visível cortado —
+       é um bug conhecido de margem negativa dentro de overflow-x:auto. Este
+       contentor não precisa rolar por si só, então ele contém esse excesso. */
+    #depoimentos .testimonials-container { overflow-x: hidden; }
+
+    #depoimentos .testimonials-grid {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        gap: 0.75rem;
+        margin-inline: -1rem;
+        padding: 0.25rem 1rem 0.75rem;
+        scrollbar-width: none;
+    }
+
+    #depoimentos .testimonials-grid::-webkit-scrollbar { display: none; }
+
+    #depoimentos .testimonial-card {
+        flex: 0 0 78%;
+        scroll-snap-align: center;
+    }
+}
+
+
+/* ── 20 · Serviços compactos ─────────────────────────────────────────────────
+   O card tinha min-height: 320px (styles.css) e as linhas do grid eram
+   iguais (1fr): com o texto curto, sobrava um vão grande entre a descrição
+   e o botão. Sem altura mínima, cada linha fica só do tamanho do card mais
+   alto dela, e o botão continua alinhado no rodapé entre as colunas. */
+
+.services-grid {
+    gap: 1.25rem;
+    grid-auto-rows: auto;
+}
+
+.service-card {
+    min-height: 0;
+    height: auto;
+    padding: 2.4rem 1rem 1rem;
+    gap: 0.5rem;
+}
+
+.service-card .service-icon-wrapper {
+    margin-block: 0;
+}
+
+.service-icon-wrapper i { font-size: 1.8rem; }
+
+.service-card .service-details-btn {
+    margin-bottom: 0;
+}
+
+@media (max-width: 760px) {
+    .services-grid { gap: 0.6rem; }
+
+    .service-card {
+        padding: 2.35rem 0.7rem 0.8rem;
+        gap: 0.4rem;
+    }
+
+    .service-card h3 {
+        font-size: 0.98rem;
+        line-height: 1.2;
+    }
+
+    .service-icon-wrapper i { font-size: 1.45rem; }
+
+    .service-card .service-details-btn {
+        min-height: 38px;
+        padding: 0.45rem 0.6rem;
+        font-size: 0.8rem;
+    }
 }

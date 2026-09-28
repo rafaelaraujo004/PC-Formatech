@@ -73,9 +73,9 @@
     <link rel="stylesheet" href="brand.css">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="mobile-desktop.css">
-    <link rel="stylesheet" href="styles2.css">
-    <link rel="stylesheet" href="theme-system.css">
-    <link rel="stylesheet" href="refinements.css">
+    <link rel="stylesheet" href="styles2.css?v=2">
+    <link rel="stylesheet" href="theme-system.css?v=5">
+    <link rel="stylesheet" href="refinements.css?v=4">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <!-- Widget do WhatsApp -->
@@ -334,7 +334,7 @@
                 <li><a href="#diagnostico">Diagnóstico</a></li>
                 <li><a href="#servicos">Serviços</a></li>
                 <li><a href="#sobre">Sobre</a></li>
-                <li><a href="#agende-servico" class="nav-cta">Agendar</a></li>
+                <li><a href="https://api.whatsapp.com/send?phone=5594984305772&text=Ol%C3%A1%2C%20quero%20agendar%20um%20atendimento." target="_blank" class="nav-cta">Agendar</a></li>
             </ul>
         </nav>
     </header>
@@ -530,9 +530,10 @@
                     <span class="pcft-seasonal-name"></span>
                     <span class="pcft-seasonal-icon pcft-seasonal-icon-right"></span>
                 </div>
-                <span class="hero-kicker">Diagnóstico Técnico Premium com Resposta Rápida</span>
-                <h1>Seu PC pode ficar 2x mais rápido do que hoje. Descubra em minutos.</h1>
-                <p>Enquanto você lê esta página, seu computador pode estar perdendo desempenho por causas ocultas. Eu faço a correção certa, com método técnico e foco total em velocidade, segurança e estabilidade.</p>
+                <div class="hero-titulo">
+                    <h1>Seu PC pode ficar 2x mais rápido.</h1>
+                    <p>Formatação, limpeza e otimização, presencial ou à distância. O diagnóstico pelo WhatsApp é grátis.</p>
+                </div>
                 <div class="hero-actions">
                     <a href="https://api.whatsapp.com/send?phone=5594984305772&text=Ol%C3%A1%2C%20quero%20fazer%20diagn%C3%B3stico%20gr%C3%A1tis%20do%20meu%20PC." target="_blank" class="hero-cta-primary">
                         <i class="fab fa-whatsapp" aria-hidden="true"></i>
@@ -564,27 +565,23 @@
             <div class="attention-grid">
                 <article class="attention-card" data-reveal>
                     <span class="attention-label">Curiosidade 01</span>
-                    <h3>O motivo oculto que deixa computadores lentos</h3>
-                    <p class="teaser">A maioria dos usuários nunca percebe esse gargalo porque ele não aparece de forma óbvia.</p>
-                    <p class="reveal-copy">No diagnóstico técnico, eu identifico processos, inicialização e conflitos silenciosos que drenam desempenho todos os dias.</p>
+                    <h3>Por que o PC fica lento</h3>
+                    <p class="teaser">Programas escondidos e inicialização pesada roubam desempenho todo dia. O diagnóstico acha e corrige.</p>
                 </article>
                 <article class="attention-card" data-reveal>
                     <span class="attention-label">Curiosidade 02</span>
-                    <h3>Você pode estar perdendo tempo todos os dias sem perceber</h3>
-                    <p class="teaser">Abrir navegador, sistema e programas em câmera lenta parece normal até você comparar com um PC otimizado.</p>
-                    <p class="reveal-copy">Com ajustes finos e limpeza técnica, o ganho de fluidez é perceptível já nas primeiras tarefas.</p>
+                    <h3>Tempo perdido todo dia</h3>
+                    <p class="teaser">Programas abrindo em câmera lenta parecem normais, até você usar um PC otimizado.</p>
                 </article>
                 <article class="attention-card" data-reveal>
                     <span class="attention-label">Curiosidade 03</span>
-                    <h3>O erro que destrói o desempenho de muitos PCs</h3>
-                    <p class="teaser">Continuar usando o sistema sem revisão preventiva acelera falhas e travamentos intermitentes.</p>
-                    <p class="reveal-copy">A correção preventiva protege seus arquivos, reduz risco de vírus e aumenta a vida útil do computador.</p>
+                    <h3>Sem manutenção, só piora</h3>
+                    <p class="teaser">Sem revisão, travamentos e falhas aumentam. A preventiva protege arquivos e prolonga a vida do PC.</p>
                 </article>
                 <article class="attention-card" data-reveal>
                     <span class="attention-label">Curiosidade 04</span>
-                    <h3>O detalhe ignorado que aumenta risco de perda de dados</h3>
-                    <p class="teaser">Muita gente só pensa em backup depois do problema acontecer, quando já é tarde para recuperar tudo.</p>
-                    <p class="reveal-copy">Com rotina de proteção e ajuste técnico, você reduz riscos e mantém seus arquivos importantes sempre seguros.</p>
+                    <h3>Backup antes do problema</h3>
+                    <p class="teaser">Quem deixa para depois costuma perder fotos e documentos. Com proteção em dia, eles ficam seguros.</p>
                 </article>
             </div>
         </section>
@@ -592,7 +589,7 @@
         <section class="pc-transform" id="transformacao">
             <div class="pc-transform-head" data-reveal>
                 <h2>Antes vs Depois: Perceba a transformação</h2>
-                <p>Visualize a diferença entre um computador sobrecarregado e um sistema otimizado para velocidade real.</p>
+                <p>A diferença entre um PC sobrecarregado e um otimizado.</p>
             </div>
             <div class="pc-transform-grid">
                 <article class="transform-card before" data-reveal>
@@ -635,7 +632,7 @@
         <section id="diagnostico" class="diagnostic-section">
             <div class="diagnostic-shell" data-reveal>
                 <h2>Diagnóstico rápido do seu computador</h2>
-                <p>Marque os sintomas abaixo e receba uma leitura inteligente em segundos:</p>
+                <p>Marque os sintomas e veja o resultado na hora:</p>
                 <div class="diagnostic-chipline" id="diagnosticLiveHint">Sem sintomas selecionados no momento.</div>
                 <div class="diagnostic-checks" id="diagnosticChecks">
                     <label><input type="checkbox" value="demora para ligar"> Demora para ligar</label>
@@ -653,7 +650,7 @@
                     <i class="fab fa-whatsapp" aria-hidden="true"></i>
                     Receber diagnóstico no WhatsApp
                 </a>
-                <p class="diagnostic-urgency">Atendimentos do dia preenchendo rapidamente. Garanta seu horário com prioridade.</p>
+                <p class="diagnostic-urgency">Horários do dia acabando: garanta o seu com prioridade.</p>
             </div>
         </section>
 
@@ -688,7 +685,7 @@
 
         <section id="servicos" class="services">
             <h2>Nossos Serviços</h2>
-            <p class="services-subtitle">Selecione os serviços desejados e solicite um orçamento</p>
+            <p class="services-subtitle">Selecione os serviços e peça seu orçamento</p>
             <div class="services-grid">
                 <label class="service-card" data-modal="formatacao">
                     <input type="checkbox" class="service-checkbox" data-service="formatacao" data-price="80">
@@ -905,7 +902,7 @@
                             <h3>Quanto tempo leva para formatar meu computador?</h3>
                         </div>
                         <div class="faq-answer">
-                            <p>O serviço geralmente leva entre <strong>2 a 4 horas</strong>, dependendo das configurações e dos programas necessários.</p>
+                            <p>Normalmente de <strong>2 a 4 horas</strong>, conforme os programas que você precisa.</p>
                         </div>
                     </div>
                     <div class="faq-item">
@@ -916,172 +913,14 @@
                             <h3>Vocês fazem backup dos meus arquivos?</h3>
                         </div>
                         <div class="faq-answer">
-                            <p><strong>Sim!</strong> O backup dos arquivos é opcional. Caso deseje preservar seus dados antes da formatação, o cliente deve informar a necessidade do backup no momento do atendimento.</p>
+                            <p><strong>Sim</strong>, é opcional: basta avisar no agendamento que quer guardar seus arquivos.</p>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="agende-servico" class="scheduling">
-            <h2><i class="fas fa-calendar-check" aria-hidden="true"></i> Agende seu Serviço</h2>
-            <div class="scheduling-container">
-                <div class="scheduling-options">
-                    <div class="quick-booking">
-                        <h3><i class="fas fa-user-clock" aria-hidden="true"></i> Preencha seus Dados</h3>
-                        <form id="scheduling-form" class="schedule-form">
-                            <div class="form-group">
-                                <label for="client-name">
-                                    <i class="fas fa-user" aria-hidden="true"></i> Nome Completo *
-                                </label>
-                                <input type="text" id="client-name" name="name" required placeholder="Digite seu nome completo" style="font-size: 16px;">
-                            </div>
 
-                            <div class="form-group">
-                                <label for="client-phone">
-                                    <i class="fas fa-phone" aria-hidden="true"></i> Telefone/WhatsApp *
-                                </label>
-                                <input type="tel" id="client-phone" name="phone" required placeholder="(00) 00000-0000" style="font-size: 16px;">
-                            </div>
-
-                            <div class="form-group">
-                                <label>
-                                    <i class="fas fa-laptop" aria-hidden="true"></i> Tipo de Serviço * (Selecione um ou mais)
-                                </label>
-                                <div class="services-checkbox-group">
-                                    <label class="service-checkbox">
-                                        <input type="checkbox" name="service[]" value="Formatação de Computador" data-price="80">
-                                        <span>Formatação de Computador - R$ 80,00</span>
-                                    </label>
-                                    <label class="service-checkbox">
-                                        <input type="checkbox" name="service[]" value="Instalação de Programas" data-price="50">
-                                        <span>Instalação de Programas - R$ 50,00</span>
-                                    </label>
-                                    <label class="service-checkbox">
-                                        <input type="checkbox" name="service[]" value="Proteção e Segurança" data-price="60">
-                                        <span>Proteção e Segurança - R$ 60,00</span>
-                                    </label>
-                                    <label class="service-checkbox">
-                                        <input type="checkbox" name="service[]" value="Manutenção Preventiva" data-price="70">
-                                        <span>Manutenção Preventiva - R$ 70,00</span>
-                                    </label>
-                                    <label class="service-checkbox">
-                                        <input type="checkbox" name="service[]" value="Instalação de Drivers" data-price="40">
-                                        <span>Instalação de Drivers - R$ 40,00</span>
-                                    </label>
-                                    <label class="service-checkbox">
-                                        <input type="checkbox" name="service[]" value="Backup de Dados" data-price="45">
-                                        <span>Backup de Dados - R$ 45,00</span>
-                                    </label>
-                                </div>
-                                <div class="total-price-display">
-                                    <span class="total-label">Valor Total:</span>
-                                    <span class="total-value" id="total-value">R$ 0,00</span>
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="attendance-type">
-                                        <i class="fas fa-headset" aria-hidden="true"></i> Modo de Atendimento *
-                                    </label>
-                                    <select id="attendance-type" name="attendance" required>
-                                        <option value="">Selecione</option>
-                                        <option value="Presencial">Presencial</option>
-                                        <option value="Remoto (AnyDesk)">Remoto (AnyDesk) - 20% OFF</option>
-                                    </select>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="cleaning-type">
-                                        <i class="fas fa-broom" aria-hidden="true"></i> Tipo de Limpeza (Opcional)
-                                    </label>
-                                    <select id="cleaning-type" name="cleaning">
-                                        <option value="Não se aplica" data-price="0">Não se aplica</option>
-                                        <option value="Limpeza Simples" data-price="25">Limpeza Simples - R$ 25,00</option>
-                                        <option value="Limpeza Completa" data-price="45">Limpeza Completa - R$ 45,00</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="schedule-date">
-                                        <i class="fas fa-calendar" aria-hidden="true"></i> Data *
-                                    </label>
-                                    <input type="date" id="schedule-date" name="date" required>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="schedule-time">
-                                        <i class="fas fa-clock" aria-hidden="true"></i> Horário *
-                                    </label>
-                                    <select id="schedule-time" name="time" required>
-                                        <option value="">Selecione o horário</option>
-                                        <option value="08:00">08:00</option>
-                                        <option value="09:00">09:00</option>
-                                        <option value="10:00">10:00</option>
-                                        <option value="11:00">11:00</option>
-                                        <option value="12:00">12:00</option>
-                                        <option value="13:00">13:00</option>
-                                        <option value="14:00">14:00</option>
-                                        <option value="15:00">15:00</option>
-                                        <option value="16:00">16:00</option>
-                                        <option value="17:00">17:00</option>
-                                        <option value="18:00">18:00</option>
-                                    </select>
-                                    <small class="schedule-info">
-                                        <i class="fas fa-info-circle" aria-hidden="true"></i> 
-                                        Segunda a Sexta: 8h às 18h | Sábado: 8h às 12h
-                                    </small>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="client-address">
-                                    <i class="fas fa-map-marker-alt" aria-hidden="true"></i> Endereço (Opcional)
-                                </label>
-                                <input type="text" id="client-address" name="address" placeholder="Rua, número, bairro" style="font-size: 16px;">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="additional-info">
-                                    <i class="fas fa-comment" aria-hidden="true"></i> Observações (Opcional)
-                                </label>
-                                <textarea id="additional-info" name="notes" rows="4" placeholder="Ex: Preciso de atendimento remoto pelo AnyDesk, meu PC está lento..." style="font-size: 16px;"></textarea>
-                            </div>
-
-                            <button type="submit" class="submit-schedule-btn">
-                                <i class="fab fa-whatsapp" aria-hidden="true"></i>
-                                Agendar via WhatsApp
-                            </button>
-                        </form>
-                    </div>
-                    <div class="scheduling-info">
-                        <div class="info-card">
-                            <i class="fas fa-clock" aria-hidden="true"></i>
-                            <h4>Horário de Atendimento</h4>
-                            <p><strong>Segunda a Sexta:</strong> 8h às 18h</p>
-                            <p><strong>Sábado:</strong> 8h às 12h</p>
-                        </div>
-                        <div class="info-card">
-                            <i class="fas fa-map-marked-alt" aria-hidden="true"></i>
-                            <h4>Atendimento em</h4>
-                            <p><strong>Canaã dos Carajás, PA</strong></p>
-                            <small>Atendimento a domicílio disponível</small>
-                        </div>
-                        <div class="info-card">
-                            <i class="fas fa-info-circle" aria-hidden="true"></i>
-                            <h4>Como Funciona</h4>
-                            <p>1. Preencha o formulário</p>
-                            <p>2. Clique em "Agendar via WhatsApp"</p>
-                            <p>3. Confirme no WhatsApp</p>
-                            <small>Resposta em até 1 hora</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
 
         <section id="social" class="social-proof">
             <h2><i class="fas fa-share-alt" aria-hidden="true"></i> Conecte-se Conosco</h2>
@@ -1311,17 +1150,18 @@
             </div>
             <div class="about-content">
                 <div class="about-main">
-                    <div class="about-image">
-                        <div class="about-image-placeholder about-profile-photo" aria-label="Foto estilizada de Rafael">
-                            <span>RAFAEL</span>
-                            <i class="fas fa-microchip" aria-hidden="true"></i>
-                        </div>
-                    </div>
                     <div class="about-text">
-                        <h3>Sou Rafael, apaixonado por tecnologia e otimização de computadores.</h3>
-                        <p class="highlight-text">Meu foco é transformar computadores lentos em máquinas fluidas, seguras e confiáveis, com atendimento direto, sem enrolação e com explicação clara de cada etapa.</p>
-                        <p>Você não fala com um robô nem com suporte genérico. Fala com quem analisa seu caso com profundidade e recomenda apenas o que realmente gera ganho de desempenho.</p>
-                        <p>Atendo presencial e remoto, com padrão premium de organização, segurança de dados e compromisso com resultado perceptível no dia a dia.</p>
+                        <div class="about-profile-row">
+                            <div class="about-profile-photo" aria-hidden="true">
+                                <i class="fas fa-microchip" aria-hidden="true"></i>
+                            </div>
+                            <div class="about-profile-id">
+                                <h3>Rafael</h3>
+                                <span class="about-role">Técnico em manutenção e otimização de computadores</span>
+                            </div>
+                        </div>
+                        <p class="highlight-text">Mais de 5 anos resolvendo lentidão, travamentos, vírus e perda de desempenho, sempre com diagnóstico técnico antes do serviço.</p>
+                        <p>Atendimento presencial em Canaã dos Carajás ou remoto para todo o Brasil, com explicação clara de cada etapa.</p>
                         <a href="https://api.whatsapp.com/send?phone=5594984305772&text=Ol%C3%A1%2C%20Rafael.%20Quero%20otimizar%20meu%20computador%20com%20seu%20atendimento%20premium." class="about-personal-cta" target="_blank" rel="noopener noreferrer">
                             <i class="fab fa-whatsapp" aria-hidden="true"></i>
                             Falar direto com o Rafael
@@ -1484,7 +1324,7 @@
     <script>initFirebase();</script>
     <script src="site-config.js"></script>
     <script src="theme-system.js?v=4"></script>
-    <script src="main.js"></script>
+    <script src="main.js?v=3"></script>
     <script src="seasonal-badge.js" defer></script>
     <script src="formatacao-form.js"></script>
     <script>
