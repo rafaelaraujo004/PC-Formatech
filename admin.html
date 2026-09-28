@@ -12,11 +12,11 @@
             const settings = settingsRaw ? JSON.parse(settingsRaw) : null;
             const activeThemeId = settings && settings.activeThemeId ? String(settings.activeThemeId) : '';
 
-            if (
-                legacy === 'dark' ||
-                legacyManager === 'dark' ||
-                /dark/i.test(activeThemeId)
-            ) {
+            // pcft-theme guarda o modo aplicado da última vez; as outras chaves só
+            // valem para quem ainda não abriu o site depois da correção dos temas.
+            const escuro = legacy ? legacy === 'dark' : (legacyManager === 'dark' || /dark/i.test(activeThemeId));
+
+            if (escuro) {
                 document.documentElement.setAttribute('data-theme', 'dark');
             }
         } catch(e) {}
@@ -44,7 +44,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="brand.css">
-    <link rel="stylesheet" href="theme-system.css">
+    <link rel="stylesheet" href="theme-system.css?v=5">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
@@ -1647,10 +1647,10 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="firebase-config.secure.js"></script>
-    <link rel="stylesheet" href="theme-system.css">
-    <script src="theme-system.js"></script>
+    <link rel="stylesheet" href="theme-system.css?v=5">
+    <script src="theme-system.js?v=4"></script>
     <!-- Camada de refinamento: por ultimo, para vencer o <style> embutido e o theme-system.css -->
-    <link rel="stylesheet" href="admin-refinements.css?v=3">
+    <link rel="stylesheet" href="admin-refinements.css?v=4">
     <script src="auth-system.secure.js" defer></script>
 </head>
 <body>
@@ -1669,6 +1669,11 @@
             </div>
             <button type="submit" class="btn-login">Entrar</button>
         </form>
+        <div class="login-divisor" id="login-divisor" hidden><span>ou</span></div>
+        <button type="button" class="btn-biometria" id="btn-biometria" hidden>
+            <i class="fas fa-fingerprint" aria-hidden="true"></i> Entrar com biometria
+        </button>
+        <p class="biometria-status" id="biometria-status" role="status" aria-live="polite"></p>
     </div>
 
     <!-- Painel Admin -->
@@ -2645,6 +2650,16 @@
                     <p class="av-status" id="av-push-status" role="status"></p>
                 </div>
 
+                <div class="rt-card av-cartao" id="bio-cartao">
+                    <h3 class="av-cartao-titulo"><i class="fas fa-fingerprint"></i> Entrar com biometria</h3>
+                    <p class="av-texto">Cadastre a digital ou o rosto deste aparelho e entre no painel sem digitar a senha. A biometria não sai do celular.</p>
+                    <ul class="bio-lista" id="bio-lista"></ul>
+                    <div class="av-acoes">
+                        <button type="button" class="av-botao" id="bio-cadastrar"><i class="fas fa-fingerprint"></i> Cadastrar biometria neste aparelho</button>
+                    </div>
+                    <p class="av-status" id="bio-status" role="status" aria-live="polite"></p>
+                </div>
+
                 <div class="rt-card av-cartao">
                     <h3 class="av-cartao-titulo"><i class="fas fa-link"></i> Links rastreáveis</h3>
                     <p class="av-texto">Crie um link para cada lugar onde você divulga. Quem entrar por ele aparece em "De onde vieram" com esse nome — assim você sabe quantas pessoas clicaram em cada link.</p>
@@ -2758,8 +2773,10 @@
         </div>
     </div>
 
-        <script src="admin-app.js"></script>
+        <script src="admin-app.js?v=4"></script>
         <script src="resumo-visitas.js?v=3"></script>
         <script src="admin-visitas.js?v=3"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@simplewebauthn/browser@14.0.0/dist/bundle/index.umd.min.js" integrity="sha384-06g944bCm8L/wG3i0Q8PdB8jccE4GdpHdNCa1tJY8eMqoP3GIHGJdL6B5lD5OMGD" crossorigin="anonymous"></script>
+        <script src="admin-biometria.js?v=1"></script>
 </body>
 </html>

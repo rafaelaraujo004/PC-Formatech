@@ -472,7 +472,8 @@
 
             const themes = manager.getThemes();
             const settings = manager.getSettings();
-            const currentTheme = manager.getCurrentTheme();
+            // O catálogo mostra o tema do site, não o claro/escuro deste aparelho.
+            const currentTheme = manager.getSiteTheme ? manager.getSiteTheme() : manager.getCurrentTheme();
 
             const autoSeasonal = document.getElementById('themeAutoSeasonal');
             const fallbackSelect = document.getElementById('themeFallbackSelect');
