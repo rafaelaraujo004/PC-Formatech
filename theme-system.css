@@ -471,7 +471,9 @@ html[data-theme='dark'] .testimonial-card.whatsapp-style .client-info {
     border-top-color: var(--theme-border);
 }
 
+html[data-theme='dark'] .client-details h3,
 html[data-theme='dark'] .client-details h4,
+html[data-theme='dark'] .testimonial-card.whatsapp-style .client-details h3,
 html[data-theme='dark'] .testimonial-card.whatsapp-style .client-details h4 {
     color: var(--theme-text);
 }
