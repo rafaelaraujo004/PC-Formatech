@@ -1650,7 +1650,8 @@
     <link rel="stylesheet" href="theme-system.css?v=6">
     <script src="theme-system.js?v=4"></script>
     <!-- Camada de refinamento: por ultimo, para vencer o <style> embutido e o theme-system.css -->
-    <link rel="stylesheet" href="admin-refinements.css?v=6">
+    <link rel="stylesheet" href="admin-refinements.css?v=7">
+    <link rel="stylesheet" href="anuncios.css?v=1">
     <script src="auth-system.secure.js" defer></script>
 </head>
 <body>
@@ -1746,6 +1747,9 @@
             </button>
             <button class="tab-button" onclick="switchTab('loja')">
                 <i class="fas fa-store"></i> Loja Bird Tech
+            </button>
+            <button class="tab-button" onclick="switchTab('anuncios')">
+                <i class="fas fa-bullhorn"></i> Anúncios
             </button>
             <button class="tab-button" onclick="switchTab('prices')">
                 <i class="fas fa-dollar-sign"></i> Preços
@@ -2431,6 +2435,145 @@
         </div>
     </div>
 
+    <!-- Anúncios do banner da página principal -->
+    <div id="tab-anuncios" class="tab-content">
+        <div class="clients-container">
+            <div class="bl-cabecalho">
+                <span class="ad-cabecalho-icone" aria-hidden="true"><i class="fas fa-bullhorn"></i></span>
+                <div>
+                    <h2>Anúncios no banner</h2>
+                    <p>Os anúncios entram no carrossel de imagens da página principal, intercalados com as fotos. Produtos da loja puxam nome, preço e foto do cadastro.</p>
+                </div>
+                <a class="av-botao av-botao-secundario" href="/site.html" target="_blank" rel="noopener"><i class="fas fa-external-link-alt" aria-hidden="true"></i> Ver no site</a>
+            </div>
+
+            <div class="ad-resumo" id="ad-resumo" aria-live="polite"></div>
+
+            <div class="bl-editor ad-editor" id="ad-editor-inicio">
+                <form id="ad-form" class="bl-form" novalidate>
+                    <h3 class="bl-subtitulo" id="ad-titulo-editor">Novo anúncio</h3>
+
+                    <fieldset class="ad-segmento">
+                        <legend>Tipo de anúncio</legend>
+                        <label><input type="radio" name="ad-tipo" value="produto" checked> <span><i class="fas fa-store" aria-hidden="true"></i> Produto da loja</span></label>
+                        <label><input type="radio" name="ad-tipo" value="imagem"> <span><i class="fas fa-image" aria-hidden="true"></i> Arte própria</span></label>
+                    </fieldset>
+
+                    <div class="input-group" data-ad-so="produto">
+                        <label for="ad-produto">Produto *</label>
+                        <select id="ad-produto"></select>
+                    </div>
+
+                    <div class="input-group" data-ad-so="imagem">
+                        <label for="ad-arte">Arte do anúncio *</label>
+                        <input type="file" id="ad-arte" accept="image/*">
+                        <small class="bl-dica">Aparece inteira, sem cortes. Formato quadrado ou deitado (3:2) fica melhor.</small>
+                    </div>
+
+                    <div class="bl-linha">
+                        <div class="input-group">
+                            <label for="ad-selo">Selo</label>
+                            <input type="text" id="ad-selo" maxlength="24" list="ad-selos" placeholder="Ex.: Oferta" autocomplete="off">
+                            <datalist id="ad-selos">
+                                <option value="Novidade"></option>
+                                <option value="Oferta"></option>
+                                <option value="Mais vendido"></option>
+                                <option value="Pronta entrega"></option>
+                                <option value="Últimas unidades"></option>
+                                <option value="Lançamento"></option>
+                                <option value="Promoção"></option>
+                            </datalist>
+                        </div>
+                        <div class="input-group" data-ad-so="produto">
+                            <label for="ad-preco-antigo">Preço antigo (R$)</label>
+                            <input type="text" id="ad-preco-antigo" inputmode="decimal" placeholder="Opcional: mostra o desconto" autocomplete="off">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="ad-titulo">Título</label>
+                        <input type="text" id="ad-titulo" maxlength="70" autocomplete="off">
+                        <small class="bl-dica" id="ad-titulo-dica"></small>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="ad-chamada">Frase de apoio</label>
+                        <textarea id="ad-chamada" rows="2" maxlength="150"></textarea>
+                        <small class="bl-dica">No celular a frase não aparece, para sobrar espaço para o produto.</small>
+                    </div>
+
+                    <div class="bl-linha">
+                        <div class="input-group">
+                            <label for="ad-botao-texto">Texto do botão</label>
+                            <input type="text" id="ad-botao-texto" maxlength="28" autocomplete="off">
+                        </div>
+                        <div class="input-group">
+                            <label for="ad-link">Link do botão</label>
+                            <input type="text" id="ad-link" maxlength="400" placeholder="https://…" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="ad-atalhos">
+                        <span>Atalhos do link:</span>
+                        <button type="button" class="ad-chip" data-ad-link="whatsapp"><i class="fab fa-whatsapp" aria-hidden="true"></i> WhatsApp</button>
+                        <button type="button" class="ad-chip" data-ad-link="loja"><i class="fas fa-store" aria-hidden="true"></i> Loja</button>
+                        <button type="button" class="ad-chip" data-ad-link="">Limpar</button>
+                    </div>
+                    <small class="bl-dica" id="ad-link-dica"></small>
+
+                    <fieldset class="ad-estilos">
+                        <legend>Estilo</legend>
+                        <label class="ad-estilo ad-estilo-bird"><input type="radio" name="ad-estilo" value="bird" checked><span>Azul Bird Tech</span></label>
+                        <label class="ad-estilo ad-estilo-noite"><input type="radio" name="ad-estilo" value="noite"><span>Noite</span></label>
+                        <label class="ad-estilo ad-estilo-ouro"><input type="radio" name="ad-estilo" value="ouro"><span>Dourado</span></label>
+                    </fieldset>
+
+                    <div class="bl-linha">
+                        <div class="input-group">
+                            <label for="ad-inicio">Começa em</label>
+                            <input type="datetime-local" id="ad-inicio">
+                        </div>
+                        <div class="input-group">
+                            <label for="ad-fim">Termina em</label>
+                            <input type="datetime-local" id="ad-fim">
+                        </div>
+                    </div>
+                    <small class="bl-dica">Datas opcionais. Vazio: começa agora e fica no ar até você pausar. Na última semana o anúncio mostra "Só até dd/mm".</small>
+
+                    <label class="av-chave">
+                        <input type="checkbox" id="ad-ativo" checked>
+                        <span><strong>No ar</strong><small>Desligado, o anúncio fica salvo mas não aparece no site.</small></span>
+                    </label>
+
+                    <div class="av-acoes">
+                        <button type="submit" class="av-botao" id="ad-salvar"><i class="fas fa-save" aria-hidden="true"></i> Publicar anúncio</button>
+                        <button type="button" class="av-botao av-botao-secundario" id="ad-cancelar" hidden>Cancelar edição</button>
+                    </div>
+                    <p class="av-status" id="ad-status" role="status" aria-live="polite"></p>
+                </form>
+
+                <div class="ad-previa">
+                    <div class="ad-previa-topo">
+                        <div class="ad-tela" role="group" aria-label="Tamanho da prévia">
+                            <button type="button" class="is-ativo" data-ad-tela="computador" aria-pressed="true"><i class="fas fa-desktop" aria-hidden="true"></i> Computador</button>
+                            <button type="button" data-ad-tela="celular" aria-pressed="false"><i class="fas fa-mobile-alt" aria-hidden="true"></i> Celular</button>
+                        </div>
+                        <button type="button" class="ad-chip" id="ad-animar"><i class="fas fa-play" aria-hidden="true"></i> Ver animação</button>
+                    </div>
+                    <div class="ad-moldura" id="ad-moldura" data-tela="computador">
+                        <div class="ad-moldura-vazia">Escolha um produto ou envie uma arte.</div>
+                    </div>
+                    <p class="ad-previa-legenda">Prévia real: é assim que o anúncio aparece no banner do site.</p>
+                </div>
+            </div>
+
+            <div class="bl-lista-topo">
+                <h3 class="bl-subtitulo">Anúncios <small>na ordem em que aparecem</small></h3>
+                <span class="bl-total" id="ad-total"></span>
+            </div>
+            <div class="ad-lista" id="ad-lista"></div>
+        </div>
+    </div>
+
     <!-- Gestão de Imagens da Tela Inicial -->
     <div id="tab-slider" class="tab-content">
         <div class="clients-container">
@@ -2865,5 +3008,7 @@
         <script src="admin-biometria.js?v=1"></script>
         <script src="loja-fundo.js?v=1"></script>
         <script src="admin-loja.js?v=1"></script>
+        <script src="anuncios.js?v=1"></script>
+        <script src="admin-anuncios.js?v=1"></script>
 </body>
 </html>
