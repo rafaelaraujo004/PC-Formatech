@@ -176,3 +176,7 @@ module.exports = async function handler(req, res) {
         return res.status(500).json({ error: 'Não foi possível concluir. Tente de novo.' });
     }
 };
+
+// Usados por /api/anuncios, que mostra os produtos no banner do site.
+module.exports.garantirCatalogoInicial = garantirCatalogoInicial;
+module.exports.paraSaida = paraSaida;

@@ -26,11 +26,11 @@ document.addEventListener('DOMContentLoaded', () => {
             source.removeAttribute('data-srcset');
         });
 
-        const img = slide.querySelector('img[data-src]');
-        if (img) {
+        // Anúncios de arte própria têm duas imagens (a arte e o fundo desfocado).
+        slide.querySelectorAll('img[data-src]').forEach((img) => {
             img.src = img.dataset.src;
             img.removeAttribute('data-src');
-        }
+        });
 
         slide.removeAttribute('data-lazy-slide');
     }
@@ -52,7 +52,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         preloadAround(currentSlide);
 
-        slides.forEach((slide, i) => slide.classList.toggle('active', i === currentSlide));
+        slides.forEach((slide, i) => {
+            const ativo = i === currentSlide;
+            slide.classList.toggle('active', ativo);
+            // Slides empilhados: os escondidos não podem receber clique nem foco
+            // (os anúncios têm botões).
+            slide.inert = !ativo;
+        });
+
+        const atual = slides[currentSlide];
+        const hero = document.getElementById('home');
+        if (hero) hero.classList.toggle('em-anuncio', atual.classList.contains('hero-anuncio'));
+        document.dispatchEvent(new CustomEvent('pcft:hero-slide', { detail: { slide: atual, index: currentSlide } }));
         indicators.forEach((indicator, i) => {
             const isActive = i === currentSlide;
             indicator.classList.toggle('active', isActive);
@@ -128,7 +139,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function initHeroCarousel() {
+    let reducedMotionBound = false;
+
+    /**
+     * opcoes.manter: continua no slide que está na tela (usado quando os
+     * anúncios entram no carrossel depois do carregamento).
+     */
+    function initHeroCarousel(opcoes) {
+        const anterior = (opcoes && opcoes.manter) ? slides[currentSlide] : null;
         slides = Array.from(document.querySelectorAll('.hero-slide'));
 
         const container = document.querySelector('.hero-indicators');
@@ -136,14 +154,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         buildIndicators(container);
 
-        currentSlide = 0;
-        showSlide(0);
+        const indice = anterior ? slides.indexOf(anterior) : -1;
+        currentSlide = indice >= 0 ? indice : 0;
+        showSlide(currentSlide);
         bindHeroInteractions();
-        startSlideshow();
+        if (!anterior) startSlideshow();
 
         // Se o visitante ligar "reduzir movimento" no meio da sessão, o autoplay para.
-        if (typeof prefersReducedMotion.addEventListener === 'function') {
+        if (!reducedMotionBound && typeof prefersReducedMotion.addEventListener === 'function') {
             prefersReducedMotion.addEventListener('change', resetSlideshow);
+            reducedMotionBound = true;
         }
     }
 
