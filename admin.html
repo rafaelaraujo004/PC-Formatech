@@ -1650,7 +1650,7 @@
     <link rel="stylesheet" href="theme-system.css?v=6">
     <script src="theme-system.js?v=4"></script>
     <!-- Camada de refinamento: por ultimo, para vencer o <style> embutido e o theme-system.css -->
-    <link rel="stylesheet" href="admin-refinements.css?v=7">
+    <link rel="stylesheet" href="admin-refinements.css?v=8">
     <link rel="stylesheet" href="anuncios.css?v=1">
     <script src="auth-system.secure.js" defer></script>
 </head>
@@ -1729,44 +1729,44 @@
         </div>
 
         <!-- Tabs de Navegação -->
-        <div class="admin-tabs">
-            <button class="tab-button active" onclick="switchTab('dashboard')">
-                <i class="fas fa-chart-line"></i> Dashboard
+        <nav class="admin-tabs" aria-label="Seções do painel">
+            <button type="button" class="tab-button active" onclick="switchTab('dashboard')">
+                <i class="fas fa-chart-line" aria-hidden="true"></i><span>Dashboard</span>
             </button>
-            <button class="tab-button" onclick="switchTab('clients')">
-                <i class="fas fa-users"></i> Clientes
+            <button type="button" class="tab-button" onclick="switchTab('realtime')" title="Dashboard Tempo Real">
+                <i class="fas fa-satellite-dish" aria-hidden="true"></i><span>Tempo Real</span>
             </button>
-            <button class="tab-button" onclick="switchTab('services')">
-                <i class="fas fa-cog"></i> Serviços
+            <button type="button" class="tab-button" onclick="switchTab('clients')">
+                <i class="fas fa-users" aria-hidden="true"></i><span>Clientes</span>
             </button>
-            <button class="tab-button" onclick="switchTab('budgets')">
-                <i class="fas fa-file-invoice"></i> Orçamentos/Laudos
+            <button type="button" class="tab-button" onclick="switchTab('services')">
+                <i class="fas fa-cog" aria-hidden="true"></i><span>Serviços</span>
             </button>
-            <button class="tab-button" onclick="switchTab('products')">
-                <i class="fas fa-box"></i> Produtos
+            <button type="button" class="tab-button" onclick="switchTab('budgets')" title="Orçamentos e Laudos">
+                <i class="fas fa-file-invoice" aria-hidden="true"></i><span>Orçamentos</span>
             </button>
-            <button class="tab-button" onclick="switchTab('loja')">
-                <i class="fas fa-store"></i> Loja Bird Tech
+            <button type="button" class="tab-button" onclick="switchTab('parcelamentos')" title="Parcelamentos e vendas a prazo">
+                <i class="fas fa-hand-holding-usd" aria-hidden="true"></i><span>Parcelamentos</span>
             </button>
-            <button class="tab-button" onclick="switchTab('anuncios')">
-                <i class="fas fa-bullhorn"></i> Anúncios
+            <button type="button" class="tab-button" onclick="switchTab('products')">
+                <i class="fas fa-box" aria-hidden="true"></i><span>Produtos</span>
             </button>
-            <button class="tab-button" onclick="switchTab('prices')">
-                <i class="fas fa-dollar-sign"></i> Preços
+            <button type="button" class="tab-button" onclick="switchTab('prices')">
+                <i class="fas fa-dollar-sign" aria-hidden="true"></i><span>Preços</span>
             </button>
-            <button class="tab-button" onclick="switchTab('slider')">
-                <i class="fas fa-images"></i> Imagens da Tela Inicial
+            <button type="button" class="tab-button" onclick="switchTab('loja')" title="Loja Bird Tech">
+                <i class="fas fa-store" aria-hidden="true"></i><span>Loja</span>
             </button>
-            <button class="tab-button" onclick="switchTab('themes')">
-                <i class="fas fa-palette"></i> Gerenciador de Temas
+            <button type="button" class="tab-button" onclick="switchTab('anuncios')" title="Anúncios no banner">
+                <i class="fas fa-bullhorn" aria-hidden="true"></i><span>Anúncios</span>
             </button>
-            <button class="tab-button" onclick="switchTab('realtime')">
-                <i class="fas fa-satellite-dish"></i> Dashboard Tempo Real
+            <button type="button" class="tab-button" onclick="switchTab('slider')" title="Imagens da Tela Inicial">
+                <i class="fas fa-images" aria-hidden="true"></i><span>Imagens</span>
             </button>
-            <button class="tab-button" onclick="switchTab('parcelamentos')">
-                <i class="fas fa-hand-holding-usd"></i> Parcelamentos / Prazo
+            <button type="button" class="tab-button" onclick="switchTab('themes')" title="Gerenciador de Temas">
+                <i class="fas fa-palette" aria-hidden="true"></i><span>Temas</span>
             </button>
-        </div>
+        </nav>
 
         <!-- Dashboard -->
         <div id="tab-dashboard" class="tab-content active">

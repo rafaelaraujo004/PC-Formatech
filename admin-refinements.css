@@ -169,67 +169,107 @@ html[data-theme='dark'] {
 
 /* ── 03 · Barra de abas ─────────────────────────────────────────────────── */
 
-/* Dez abas não cabem numa linha: quebravam em duas fileiras desalinhadas, e a
-   segunda ficava sem a borda inferior que indica a aba ativa. Vira uma faixa
-   rolável de uma linha só, com a ativa sempre marcada do mesmo jeito. */
-/* Sem scroll-snap: ele puxa de volta qualquer rolagem programática, e a
-   barra precisa poder trazer a aba ativa para a área visível por código. */
-.admin-tabs {
+/* Doze abas em grade, sem rolagem: 6 por linha no computador (atendimento em
+   cima, vendas e site embaixo), 4 no tablet e blocos de ícone 3 por linha no
+   celular. A aba ativa é um botão preenchido, visível em qualquer posição.
+   O #adminPanel dá peso para vencer as regras antigas do admin.html e dos
+   temas, várias com !important. */
+#adminPanel .admin-tabs {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 0.35rem;
+    overflow: visible;
+    margin-bottom: 1.5rem;
+    padding: 0.4rem;
+    border: 1px solid var(--adm-borda) !important;
+    border-radius: 14px;
+    background: var(--adm-superficie) !important;
+    box-shadow: var(--adm-sombra) !important;
+}
+
+#adminPanel .admin-tabs .tab-button {
     display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scrollbar-width: thin;
-    gap: 0.15rem;
-    padding: 0.35rem 0.35rem 0;
-    border-radius: var(--adm-raio) var(--adm-raio) 0 0;
-}
-
-.admin-tabs::-webkit-scrollbar {
-    height: 4px;
-}
-
-.admin-tabs::-webkit-scrollbar-thumb {
-    background: var(--adm-borda-forte);
-    border-radius: 4px;
-}
-
-.admin-panel .tab-button {
-    flex: 0 0 auto;
-    display: inline-flex;
     align-items: center;
-    gap: 0.45rem;
-    white-space: nowrap;
-    padding: 0.7rem 0.95rem;
-    border: 0;
-    border-bottom: 2px solid transparent;
-    border-radius: 8px 8px 0 0;
-    background: transparent;
-    color: var(--adm-texto-suave);
+    justify-content: center;
+    gap: 0.5rem;
+    min-width: 0;
+    min-height: 44px;
+    margin: 0;
+    padding: 0.55rem 0.6rem;
+    border: 0 !important;
+    border-radius: 10px;
+    background: transparent !important;
+    color: var(--adm-texto-suave) !important;
     font-family: inherit;
     font-size: var(--adm-fs-sm);
-    font-weight: 600;
+    font-weight: 700;
+    line-height: 1.2;
+    white-space: nowrap;
+    text-align: center;
+    box-shadow: none !important;
     cursor: pointer;
-    transition: color 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+    transition: background-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
 }
 
-.admin-panel .tab-button:hover {
-    color: var(--adm-texto);
-    background: var(--adm-superficie-2);
+#adminPanel .admin-tabs .tab-button span {
+    color: inherit !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.admin-panel .tab-button.active {
-    color: var(--brand-400, #40998F);
-    border-bottom-color: var(--brand-400, #40998F);
-    background: var(--adm-superficie-2);
-}
-
-/* O ícone nunca deve receber o clique como alvo próprio — era daí que vinha o
-   bug de nenhuma aba ficar destacada. */
-.admin-panel .tab-button i {
+#adminPanel .admin-tabs .tab-button i {
+    flex: 0 0 auto;
+    margin: 0;
+    font-size: 0.95em;
+    color: inherit !important;
+    opacity: 0.8;
     pointer-events: none;
-    font-size: 0.9em;
-    opacity: 0.85;
+}
+
+#adminPanel .admin-tabs .tab-button:hover {
+    background: var(--adm-superficie-2) !important;
+    color: var(--adm-texto) !important;
+}
+
+#adminPanel .admin-tabs .tab-button.active {
+    background: linear-gradient(135deg, #2f8f86, #1d6a63) !important;
+    color: #fff !important;
+    box-shadow: 0 8px 18px -10px rgba(29, 106, 99, 0.9) !important;
+}
+
+#adminPanel .admin-tabs .tab-button.active i { opacity: 1; }
+
+#adminPanel .admin-tabs .tab-button:focus-visible {
+    outline: 2px solid var(--brand-400, #40998F);
+    outline-offset: 2px;
+}
+
+html[data-theme='dark'] #adminPanel .admin-tabs .tab-button.active {
+    background: linear-gradient(135deg, #2bb3a6, #17786f) !important;
+}
+
+@media (max-width: 1100px) {
+    #adminPanel .admin-tabs { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+/* Celular: ícone em cima do nome, três por linha. */
+@media (max-width: 640px) {
+    #adminPanel .admin-tabs {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.25rem;
+        margin-bottom: 1rem;
+        padding: 0.3rem;
+    }
+
+    #adminPanel .admin-tabs .tab-button {
+        flex-direction: column;
+        gap: 0.3rem;
+        min-height: 58px;
+        padding: 0.5rem 0.25rem;
+        font-size: 0.72rem;
+    }
+
+    #adminPanel .admin-tabs .tab-button i { font-size: 1.05rem; }
 }
 
 
