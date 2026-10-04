@@ -231,6 +231,48 @@
         document.getElementById('vitrine').scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
 
+    /**
+     * Dados estruturados dos produtos (schema.org/Product) para o Google
+     * mostrar nome, foto e preço na busca. O Google executa o JavaScript da
+     * página, então o bloco montado aqui é lido junto com a vitrine.
+     */
+    function publicarDadosEstruturados() {
+        const base = location.origin;
+        const dados = {
+            '@context': 'https://schema.org',
+            '@type': 'ItemList',
+            name: 'Bird Tech: periféricos e acessórios',
+            itemListElement: produtos.map((p, i) => ({
+                '@type': 'ListItem',
+                position: i + 1,
+                item: {
+                    '@type': 'Product',
+                    name: p.nome,
+                    description: p.descricao || p.nome,
+                    image: new URL(p.imagem, base).href,
+                    url: base + '/loja.html#' + encodeURIComponent(p.id),
+                    brand: { '@type': 'Brand', name: 'Bird Tech' },
+                    offers: {
+                        '@type': 'Offer',
+                        price: Number(p.preco).toFixed(2),
+                        priceCurrency: 'BRL',
+                        availability: 'https://schema.org/InStock',
+                        url: base + '/loja.html#' + encodeURIComponent(p.id),
+                        seller: { '@type': 'Organization', name: 'PC Formatech' }
+                    }
+                }
+            }))
+        };
+        let bloco = document.getElementById('bt-dados-estruturados');
+        if (!bloco) {
+            bloco = document.createElement('script');
+            bloco.type = 'application/ld+json';
+            bloco.id = 'bt-dados-estruturados';
+            document.head.appendChild(bloco);
+        }
+        bloco.textContent = JSON.stringify(dados);
+    }
+
     // ── Início ──────────────────────────────────────────────────────────────
 
     carregar().then((dados) => {
@@ -238,6 +280,7 @@
         produtos = dados.produtos || [];
         desenharCategorias();
         desenhar();
+        publicarDadosEstruturados();
 
         // Link compartilhado (loja.html#id-do-produto) abre direto no produto.
         const pedido = decodeURIComponent(location.hash.slice(1));
