@@ -1726,25 +1726,27 @@ textarea:focus-visible,
     transform: none;
 }
 
-/* Setas: no meio das laterais da foto, com fundo para aparecerem em qualquer imagem. */
+/* Setas: fixas nos cantos de baixo, na linha dos indicadores, em todos os
+   slides. No meio das laterais elas cobriam o texto e os botões dos anúncios,
+   e mudar de lugar só nos anúncios fazia as setas pularem. */
 #home .hero-nav-btn {
     grid-area: foto;
     position: absolute;
-    top: 50%;
-    bottom: auto;
-    width: 42px;
-    height: 42px;
+    top: auto;
+    bottom: 7px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     background: rgba(3, 14, 14, 0.55);
     -webkit-backdrop-filter: blur(6px);
             backdrop-filter: blur(6px);
     opacity: 0.85;
-    transform: translateY(-50%);
+    transform: none;
     z-index: 3;
 }
 
 #home .hero-nav-btn:hover { opacity: 1; }
-#home .hero-nav-btn i { font-size: 18px; }
+#home .hero-nav-btn i { font-size: 15px; }
 #home .hero-prev { left: 10px; right: auto; }
 #home .hero-next { right: 10px; left: auto; }
 
@@ -1863,9 +1865,6 @@ textarea:focus-visible,
         padding: 0;
         text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
     }
-
-    /* Setas descem para a altura da foto, longe do título. */
-    #home .hero-nav-btn { top: 64%; }
 
     #home .hero-actions {
         grid-area: acoes;

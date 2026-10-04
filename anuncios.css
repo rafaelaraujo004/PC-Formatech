@@ -558,21 +558,11 @@
 
 /* ── Integração com o banner da página principal ─────────────────────────── */
 
-/* Enquanto o anúncio está na tela: setas descem para perto dos indicadores,
-   longe dos botões do anúncio, e o título do site sai de cima (celular). */
+/* Enquanto o anúncio está na tela, o título do site sai de cima (celular).
+   As setas ficam sempre no mesmo lugar (refinements.css, seção 16). */
 #home .hero-titulo {
     transition: opacity 0.45s ease, transform 0.45s ease, visibility 0.45s;
 }
-
-#home.em-anuncio .hero-nav-btn {
-    top: auto;
-    bottom: 7px;
-    width: 34px;
-    height: 34px;
-    transform: none;
-}
-
-#home.em-anuncio .hero-nav-btn i { font-size: 14px; }
 
 @media (max-width: 899px) {
     #home.em-anuncio .hero-titulo {
