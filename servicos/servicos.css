@@ -1,0 +1,428 @@
+/* Páginas de serviço (servicos/), geradas por ferramentas/gerar-seo.js.
+   Folha própria e leve: estas páginas existem para o Google e para quem
+   chega pela busca, então carregam rápido e vão direto ao ponto. */
+
+:root {
+    --sv-fundo: #f4f8f7;
+    --sv-superficie: #ffffff;
+    --sv-texto: #12263a;
+    --sv-suave: #536576;
+    --sv-borda: rgba(11, 61, 61, 0.12);
+    --sv-acento: #2d7a7a;
+    --sv-acento-forte: #1d6a63;
+    --sv-hero-1: #0b2b2c;
+    --sv-hero-2: #061719;
+    --sv-sombra: 0 1px 2px rgba(11, 61, 61, 0.05), 0 14px 34px -22px rgba(11, 61, 61, 0.45);
+    color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+    --sv-fundo: #071214;
+    --sv-superficie: #0e1d20;
+    --sv-texto: #e2eef0;
+    --sv-suave: #9db5ba;
+    --sv-borda: rgba(95, 201, 190, 0.16);
+    --sv-acento: #4fd1c0;
+    --sv-acento-forte: #2bb3a6;
+    --sv-sombra: 0 1px 2px rgba(0, 0, 0, 0.4), 0 14px 34px -22px rgba(0, 0, 0, 0.9);
+    color-scheme: dark;
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background: var(--sv-fundo);
+    color: var(--sv-texto);
+    font-family: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-size: 1rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; }
+
+h1, h2 {
+    font-family: 'Sora', 'Manrope', sans-serif;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+}
+
+/* ── Topo ──────────────────────────────────────────────────────────────── */
+
+.sv-topo {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.7rem clamp(1rem, 4vw, 3rem);
+    background: rgba(11, 43, 44, 0.92);
+    -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+    color: #fff;
+}
+
+.sv-marca {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: 'Sora', sans-serif;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+}
+
+.sv-marca img { border-radius: 9px; }
+
+.sv-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.sv-nav a {
+    padding: 0.5rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.sv-nav a:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+
+.sv-nav .sv-nav-zap {
+    background: #25d366;
+    color: #04210f;
+}
+
+.sv-nav .sv-nav-zap:hover { background: #3be07a; color: #04210f; }
+
+/* ── Hero ──────────────────────────────────────────────────────────────── */
+
+.sv-hero {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(2rem, 6vw, 4.5rem) clamp(1rem, 6vw, 5rem) clamp(2.25rem, 6vw, 4.5rem);
+    background:
+        radial-gradient(800px 460px at 90% 0%, rgba(79, 209, 192, 0.28), transparent 70%),
+        linear-gradient(160deg, var(--sv-hero-1), var(--sv-hero-2));
+    color: #fff;
+}
+
+.sv-hero > * { max-width: 760px; }
+
+.sv-trilha {
+    margin-bottom: 1.4rem;
+    font-size: 0.82rem;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.sv-trilha a { color: rgba(255, 255, 255, 0.82); text-decoration: none; }
+.sv-trilha a:hover { text-decoration: underline; }
+.sv-trilha span[aria-hidden] { margin: 0 0.35rem; }
+
+.sv-hero-icone {
+    display: inline-grid;
+    place-items: center;
+    width: 54px;
+    height: 54px;
+    margin-bottom: 1rem;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(79, 209, 192, 0.3), rgba(79, 209, 192, 0.08));
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    color: #8ff1e3;
+    font-size: 1.35rem;
+}
+
+.sv-hero h1 {
+    margin: 0 0 0.9rem;
+    font-size: clamp(1.85rem, 5vw, 3.1rem);
+    font-weight: 800;
+    text-wrap: balance;
+}
+
+.sv-hero-texto {
+    margin: 0 0 1.2rem;
+    font-size: clamp(1rem, 1.6vw, 1.15rem);
+    color: rgba(255, 255, 255, 0.82);
+}
+
+.sv-preco {
+    display: inline-block;
+    margin: 0 0 1.5rem;
+    padding: 0.4rem 0.9rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    font-weight: 800;
+    color: #8ff1e3;
+}
+
+.sv-acoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+}
+
+.sv-cta,
+.sv-cta-sec {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    min-height: 50px;
+    padding: 0.8rem 1.4rem;
+    border-radius: 999px;
+    font-weight: 800;
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sv-cta {
+    background: linear-gradient(135deg, #4fd1c0, #2d9c90);
+    color: #032421;
+    box-shadow: 0 14px 30px -14px rgba(79, 209, 192, 0.8);
+}
+
+.sv-cta-sec {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+}
+
+.sv-cta:hover,
+.sv-cta-sec:hover { transform: translateY(-2px); }
+
+.sv-cta:focus-visible,
+.sv-cta-sec:focus-visible,
+.sv-nav a:focus-visible,
+.sv-outros a:focus-visible,
+.sv-faq summary:focus-visible {
+    outline: 3px solid #8ff1e3;
+    outline-offset: 3px;
+}
+
+.sv-selos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.2rem;
+    margin: 1.6rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.88rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.sv-selos i { color: #8ff1e3; margin-right: 0.3rem; }
+
+/* ── Conteúdo ──────────────────────────────────────────────────────────── */
+
+.sv-conteudo {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.2rem;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: clamp(1.5rem, 4vw, 3rem) 1rem;
+}
+
+.sv-bloco {
+    min-width: 0;
+    padding: clamp(1.2rem, 3vw, 1.8rem);
+    border: 1px solid var(--sv-borda);
+    border-radius: 18px;
+    background: var(--sv-superficie);
+    box-shadow: var(--sv-sombra);
+}
+
+.sv-bloco-largo { grid-column: 1 / -1; }
+
+.sv-bloco h2 {
+    margin: 0 0 1rem;
+    font-size: clamp(1.25rem, 2.4vw, 1.55rem);
+}
+
+.sv-lista {
+    display: grid;
+    gap: 0.6rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.sv-lista li {
+    display: flex;
+    gap: 0.65rem;
+    align-items: baseline;
+}
+
+.sv-lista i { color: var(--sv-acento); flex: 0 0 auto; }
+.sv-lista-sinais i { color: #d9922b; }
+
+.sv-passos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
+    gap: 0.8rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: passo;
+}
+
+.sv-passos li {
+    position: relative;
+    padding: 1rem 1rem 1rem 3.4rem;
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--sv-acento) 8%, transparent);
+    counter-increment: passo;
+}
+
+.sv-passos li::before {
+    content: counter(passo);
+    position: absolute;
+    left: 1rem;
+    top: 1rem;
+    display: grid;
+    place-items: center;
+    width: 1.8rem;
+    height: 1.8rem;
+    border-radius: 50%;
+    background: var(--sv-acento);
+    color: #fff;
+    font-weight: 800;
+    font-size: 0.9rem;
+}
+
+:root[data-theme="dark"] .sv-passos li::before { color: #032421; }
+
+.sv-faq {
+    border-top: 1px solid var(--sv-borda);
+}
+
+.sv-faq:last-child { border-bottom: 1px solid var(--sv-borda); }
+
+.sv-faq summary {
+    position: relative;
+    padding: 1rem 2.2rem 1rem 0;
+    font-weight: 700;
+    cursor: pointer;
+    list-style: none;
+}
+
+.sv-faq summary::-webkit-details-marker { display: none; }
+
+.sv-faq summary::after {
+    content: '+';
+    position: absolute;
+    right: 0.3rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: var(--sv-acento);
+}
+
+.sv-faq[open] summary::after { content: '\2212'; }
+
+.sv-faq p {
+    margin: 0 0 1rem;
+    color: var(--sv-suave);
+}
+
+.sv-chamada {
+    text-align: center;
+    background:
+        radial-gradient(500px 260px at 50% 0%, rgba(79, 209, 192, 0.25), transparent 70%),
+        linear-gradient(160deg, var(--sv-hero-1), var(--sv-hero-2));
+    color: #fff;
+    border: 0;
+}
+
+.sv-chamada p {
+    max-width: 52ch;
+    margin: 0 auto 1.3rem;
+    color: rgba(255, 255, 255, 0.82);
+}
+
+.sv-outros {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr));
+    gap: 0.7rem;
+}
+
+.sv-outros a {
+    display: flex;
+    gap: 0.8rem;
+    align-items: flex-start;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--sv-borda);
+    border-radius: 14px;
+    text-decoration: none;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.sv-outros a:hover {
+    border-color: var(--sv-acento);
+    transform: translateY(-2px);
+}
+
+.sv-outros i {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+    background: color-mix(in srgb, var(--sv-acento) 14%, transparent);
+    color: var(--sv-acento);
+}
+
+.sv-outros span { display: grid; gap: 0.1rem; min-width: 0; }
+.sv-outros strong { font-size: 0.95rem; }
+.sv-outros small { color: var(--sv-acento); font-weight: 700; }
+.sv-outros em { font-style: normal; font-size: 0.88rem; color: var(--sv-suave); margin-top: 0.3rem; }
+
+.sv-outros-grande { grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); }
+.sv-outros-grande a { padding: 1.1rem 1.2rem; }
+
+/* ── Rodapé ────────────────────────────────────────────────────────────── */
+
+.sv-rodape {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    gap: 1.5rem;
+    padding: 2rem clamp(1rem, 6vw, 5rem);
+    background: var(--sv-hero-2);
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 0.9rem;
+}
+
+.sv-rodape strong { color: #fff; font-family: 'Sora', sans-serif; }
+.sv-rodape p { margin: 0.4rem 0 0; }
+
+.sv-rodape nav {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 0.4rem 1rem;
+}
+
+.sv-rodape a { text-decoration: none; }
+.sv-rodape a:hover { color: #fff; text-decoration: underline; }
+.sv-rodape-contato { grid-column: 1 / -1; }
+
+@media (max-width: 720px) {
+    .sv-conteudo { grid-template-columns: minmax(0, 1fr); }
+    .sv-nav a:not(.sv-nav-zap) { padding: 0.5rem 0.55rem; }
+    .sv-marca span { display: none; }
+    .sv-acoes > a { flex: 1 1 100%; }
+    .sv-rodape { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+}

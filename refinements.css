@@ -2688,3 +2688,56 @@ html[data-theme='dark'] .social-proof > h2 {
 
     .about-header { margin-bottom: 1.6rem; }
 }
+
+/* ── 26 · Links para as páginas de serviço (servicos/) ──────────────────────
+   Ajudam quem quer detalhes e ligam as páginas novas ao resto do site, o que
+   faz o Google encontrá-las e entender do que cada uma trata. */
+
+.servicos-mais {
+    margin: 1.4rem 0 0;
+    text-align: center;
+}
+
+.servicos-mais a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.6rem 1.1rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--theme-accent, #2d7a7a) 40%, transparent);
+    color: var(--theme-accent, #2d7a7a);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.servicos-mais a:hover { background: color-mix(in srgb, var(--theme-accent, #2d7a7a) 10%, transparent); }
+
+.footer-servicos {
+    max-width: 1120px;
+    margin: 2.2rem auto 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem 1.1rem;
+    text-align: left;
+}
+
+.footer-servicos h4 {
+    flex: 1 0 100%;
+    margin: 0 0 0.3rem;
+    font-size: var(--fs-label, 0.75rem);
+    letter-spacing: var(--tracking-label, 0.08em);
+    text-transform: uppercase;
+    font-weight: 700;
+    opacity: 0.85;
+}
+
+.footer-servicos a {
+    color: inherit;
+    opacity: 0.8;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.footer-servicos a:hover { opacity: 1; text-decoration: underline; }
+

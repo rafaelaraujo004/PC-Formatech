@@ -1,0 +1,7 @@
+# As páginas internas (painel, testes, guias) têm meta robots noindex.
+# Elas não são bloqueadas aqui para o Google conseguir ler esse noindex,
+# e /api/ fica liberado porque a loja e o banner carregam por ela.
+User-agent: *
+Allow: /
+
+Sitemap: https://pcformatech.vercel.app/sitemap.xml
