@@ -12,7 +12,7 @@
     const API = '/api/anuncios';
     const LOGO = '/images/loja/bird-tech-icone-176.webp';
     const VISTOS_KEY = 'pcft_anuncios_vistos';
-    const CSS = '/anuncios.css?v=1';
+    const CSS = '/anuncios.css?v=2';
 
     const moeda = (valor) => Number(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
