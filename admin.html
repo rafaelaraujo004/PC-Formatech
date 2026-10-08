@@ -1651,7 +1651,7 @@
     <link rel="stylesheet" href="theme-system.css?v=6">
     <script src="theme-system.js?v=4"></script>
     <!-- Camada de refinamento: por ultimo, para vencer o <style> embutido e o theme-system.css -->
-    <link rel="stylesheet" href="admin-refinements.css?v=8">
+    <link rel="stylesheet" href="admin-refinements.css?v=9">
     <link rel="stylesheet" href="anuncios.css?v=2">
     <script src="auth-system.secure.js" defer></script>
 </head>
@@ -1760,6 +1760,9 @@
             </button>
             <button type="button" class="tab-button" onclick="switchTab('anuncios')" title="Anúncios no banner">
                 <i class="fas fa-bullhorn" aria-hidden="true"></i><span>Anúncios</span>
+            </button>
+            <button type="button" class="tab-button" onclick="switchTab('divulgacao')" title="Artes de divulgação para compartilhar">
+                <i class="fas fa-share-alt" aria-hidden="true"></i><span>Divulgação</span>
             </button>
             <button type="button" class="tab-button" onclick="switchTab('themes')" title="Gerenciador de Temas">
                 <i class="fas fa-palette" aria-hidden="true"></i><span>Temas</span>
@@ -2572,6 +2575,82 @@
         </div>
     </div>
 
+    <!-- Artes de divulgação para compartilhar -->
+    <div id="tab-divulgacao" class="tab-content">
+        <div class="clients-container">
+            <div class="bl-cabecalho">
+                <span class="ad-cabecalho-icone dv-cabecalho-icone" aria-hidden="true"><i class="fas fa-share-alt"></i></span>
+                <div>
+                    <h2>Divulgação</h2>
+                    <p>Artes prontas para postar. Toque em Compartilhar e escolha WhatsApp, Instagram ou Status: a imagem vai com a legenda e o link.</p>
+                </div>
+                <button type="button" class="av-botao" id="dv-nova"><i class="fas fa-plus" aria-hidden="true"></i> Nova arte</button>
+            </div>
+
+            <div class="dv-filtros" role="group" aria-label="Filtrar artes">
+                <button type="button" class="is-ativo" data-dv-filtro="todas" aria-pressed="true">Todas</button>
+                <button type="button" data-dv-filtro="pcformatech" aria-pressed="false">PC Formatech</button>
+                <button type="button" data-dv-filtro="birdtech" aria-pressed="false">Bird Tech</button>
+                <button type="button" data-dv-filtro="apps" aria-pressed="false">Apps e sistemas</button>
+                <button type="button" data-dv-filtro="promocoes" aria-pressed="false">Promoções e datas</button>
+            </div>
+
+            <p class="av-status" id="dv-status" role="status" aria-live="polite"></p>
+            <div class="dv-grade" id="dv-grade"></div>
+        </div>
+    </div>
+
+    <dialog class="dv-dialogo" id="dv-dialogo" aria-labelledby="dv-dialogo-titulo">
+        <form id="dv-form" class="bl-form" method="dialog" novalidate>
+            <div class="dv-dialogo-topo">
+                <h3 class="bl-subtitulo" id="dv-dialogo-titulo">Nova arte</h3>
+                <button type="button" class="dv-fechar" id="dv-fechar" aria-label="Fechar"><i class="fas fa-times" aria-hidden="true"></i></button>
+            </div>
+            <div class="input-group">
+                <label for="dv-categoria">Para quê é esta arte?</label>
+                <select id="dv-categoria">
+                    <option value="pcformatech">PC Formatech (assistência técnica)</option>
+                    <option value="birdtech">Bird Tech (loja)</option>
+                    <option value="apps">Apps e sistemas</option>
+                    <option value="promocoes">Promoção ou data especial</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="dv-imagem">Imagem *</label>
+                <input type="file" id="dv-imagem" accept="image/*">
+                <img class="dv-previa" id="dv-previa" alt="" hidden>
+            </div>
+            <div class="dv-periodo" id="dv-periodo" hidden>
+                <div class="input-group">
+                    <label for="dv-inicio">Começa em</label>
+                    <input type="date" id="dv-inicio">
+                </div>
+                <div class="input-group">
+                    <label for="dv-fim">Termina em</label>
+                    <input type="date" id="dv-fim">
+                </div>
+                <small class="bl-dica">Opcional. Ex.: Dia das Crianças, Black Friday, Natal. Depois do fim, a arte fica marcada como encerrada.</small>
+            </div>
+            <div class="input-group">
+                <label for="dv-titulo">Nome da arte</label>
+                <input type="text" id="dv-titulo" maxlength="80" placeholder="Ex.: Promoção de formatação" autocomplete="off">
+            </div>
+            <div class="input-group">
+                <label for="dv-legenda">Legenda</label>
+                <textarea id="dv-legenda" rows="4" maxlength="1000"></textarea>
+            </div>
+            <div class="input-group">
+                <label for="dv-link">Link</label>
+                <input type="url" id="dv-link" maxlength="400" autocomplete="off">
+                <small class="bl-dica">Vai no fim da legenda. Já vem com o link certo de cada um.</small>
+            </div>
+            <div class="av-acoes">
+                <button type="submit" class="av-botao" id="dv-salvar"><i class="fas fa-save" aria-hidden="true"></i> Salvar arte</button>
+            </div>
+            <p class="av-status" id="dv-form-status" role="status" aria-live="polite"></p>
+        </form>
+    </dialog>
+
     <!-- Gestão de Imagens da Tela Inicial -->
     <div id="tab-slider" class="tab-content">
         <div class="clients-container">
@@ -3008,5 +3087,6 @@
         <script src="admin-loja.js?v=1"></script>
         <script src="anuncios.js?v=1"></script>
         <script src="admin-anuncios.js?v=1"></script>
+        <script src="admin-divulgacao.js?v=1"></script>
 </body>
 </html>

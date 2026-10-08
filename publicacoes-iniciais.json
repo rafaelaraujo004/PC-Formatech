@@ -1,0 +1,4 @@
+{
+    "_leia": "Artes de divulgação iniciais da aba Divulgação do painel. Imagens em /images/divulgacao/. Cada uma entra no Firestore (coleção publicacoes) uma vez; removida no painel, não volta. categoria: pcformatech, birdtech ou apps.",
+    "publicacoes": []
+}
