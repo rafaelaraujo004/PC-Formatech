@@ -9,8 +9,9 @@
 //        remover  → apaga { id }
 //        ordenar  → { ids: [...] } na ordem em que devem aparecer
 //
-// Há dois tipos: "produto" (um produto da loja Bird Tech, com nome, preço e foto
-// puxados do cadastro da loja) e "imagem" (uma arte própria, ex.: promoção).
+// Há três tipos: "produto" (um produto da loja Bird Tech, com nome, preço e foto
+// puxados do cadastro da loja), "imagem" (uma arte própria, ex.: promoção) e
+// "apps" (Criação de apps e sistemas, com a tela de demonstração de apps.html).
 
 const { iniciarAdmin } = require('./_push');
 const { ErroDeAcesso, exigirAdmin } = require('./_admin');
@@ -21,6 +22,11 @@ const PRODUTOS = 'lojaProdutos';
 const ESTILOS = ['bird', 'noite', 'ouro'];
 const MAX_IMAGEM = 900_000;
 const DATA_URL = /^data:image\/(webp|jpeg|png);base64,[A-Za-z0-9+/=]+$/;
+const TIPOS = ['produto', 'imagem', 'apps'];
+
+// Dados do anúncio de apps. O preço é o menor "a partir de" de apps.html
+// (bloco APPS em ferramentas/gerar-seo.js): se mudar lá, mude aqui.
+const APPS = { preco: 149.99, imagem: '/images/apps/demo-painel.webp', link: '/apps.html' };
 
 function safeJson(texto) {
     try { return JSON.parse(texto); } catch (e) { return {}; }
@@ -68,6 +74,36 @@ async function garantirAnunciosIniciais(db) {
     });
 }
 
+/** Uma vez: o anúncio de Apps e sistemas entra no carrossel junto com os da loja. */
+async function garantirAnuncioApps(db) {
+    const marcaRef = db.collection('lojaConfig').doc('estado');
+    await db.runTransaction(async (tx) => {
+        const marca = await tx.get(marcaRef);
+        if (marca.exists && marca.data().anuncioAppsSemeado) return;
+        const agora = Date.now();
+        tx.set(db.collection(COLECAO).doc(), {
+            tipo: 'apps',
+            produtoId: null,
+            selo: 'Novo serviço',
+            titulo: '',
+            chamada: '',
+            precoAntigo: null,
+            botaoTexto: '',
+            link: '',
+            estilo: 'noite',
+            ativo: true,
+            ordem: 3,
+            inicio: null,
+            fim: null,
+            vistos: 0,
+            cliques: 0,
+            criadoEm: agora,
+            atualizadoEm: agora
+        });
+        tx.set(marcaRef, { anuncioAppsSemeado: true }, { merge: true });
+    });
+}
+
 function situacao(d, agora) {
     if (d.ativo === false) return 'pausado';
     if (d.inicio && agora < d.inicio) return 'agendado';
@@ -80,7 +116,7 @@ function paraSaida(doc, produtosPorId, paraPainel, agora) {
     const d = doc.data();
     const base = {
         id: doc.id,
-        tipo: d.tipo === 'imagem' ? 'imagem' : 'produto',
+        tipo: TIPOS.includes(d.tipo) ? d.tipo : 'produto',
         selo: d.selo || '',
         titulo: d.titulo || '',
         chamada: d.chamada || '',
@@ -96,6 +132,8 @@ function paraSaida(doc, produtosPorId, paraPainel, agora) {
         if (!p && !paraPainel) return null;
         if (p && !p.ativo && !paraPainel) return null;
         base.produto = p ? { id: p.id, nome: p.nome, preco: p.preco, descricao: p.descricao, imagem: p.imagem, ativo: p.ativo } : null;
+    } else if (base.tipo === 'apps') {
+        base.apps = APPS;
     } else {
         base.imagem = d.imagemDados ? `/api/anuncios?img=${encodeURIComponent(doc.id)}&v=${d.atualizadoEm || 0}` : null;
         if (!base.imagem && !paraPainel) return null;
@@ -147,7 +185,7 @@ function validarLink(valor) {
 }
 
 async function validarAnuncio(db, entrada) {
-    const tipo = entrada.tipo === 'imagem' ? 'imagem' : 'produto';
+    const tipo = TIPOS.includes(entrada.tipo) ? entrada.tipo : 'produto';
     const saida = {
         tipo,
         selo: texto(entrada.selo, 24),
@@ -174,6 +212,8 @@ async function validarAnuncio(db, entrada) {
             if (antigo <= Number(produto.data().preco)) throw new ErroDeAcesso(400, 'O preço antigo precisa ser maior que o preço atual do produto.');
             saida.precoAntigo = antigo;
         }
+        saida.imagemDados = null;
+    } else if (tipo === 'apps') {
         saida.imagemDados = null;
     } else if (entrada.imagem !== undefined && entrada.imagem !== null) {
         const imagem = String(entrada.imagem);
@@ -218,6 +258,7 @@ module.exports = async function handler(req, res) {
         if (req.method === 'GET') {
             if (req.query && req.query.img) return servirImagem(db, req.query.img, res);
             await garantirAnunciosIniciais(db);
+            await garantirAnuncioApps(db);
             const { anuncios } = await carregar(db, false);
             res.setHeader('Cache-Control', 'public, s-maxage=30, stale-while-revalidate=300');
             return res.status(200).json({ ok: true, anuncios });
@@ -232,7 +273,8 @@ module.exports = async function handler(req, res) {
 
         if (corpo.acao === 'listar') {
             await garantirAnunciosIniciais(db);
-            return res.status(200).json({ ok: true, ...(await carregar(db, true)) });
+            await garantirAnuncioApps(db);
+            return res.status(200).json({ ok: true, apps: APPS, ...(await carregar(db, true)) });
         }
 
         if (corpo.acao === 'salvar') {

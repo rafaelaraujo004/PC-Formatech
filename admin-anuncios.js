@@ -13,6 +13,8 @@
 
     let anuncios = [];
     let produtos = [];
+    // Dados do anúncio de Apps e sistemas (preço e tela de demonstração), vindos da API.
+    let appsInfo = { preco: 149.99, imagem: '/images/apps/demo-painel.webp', link: '/apps.html' };
     let carregado = false;
 
     let editando = null;   // anúncio em edição (ou null para novo)
@@ -89,6 +91,8 @@
             a.produtoId = $('ad-produto').value;
             a.produto = produtoPorId(a.produtoId);
             a.precoAntigo = lerPreco($('ad-preco-antigo').value);
+        } else if (tipo === 'apps') {
+            a.apps = appsInfo;
         } else {
             a.imagem = arte || (editando && editando.tipo === 'imagem' ? editando.imagem : null);
         }
@@ -105,6 +109,12 @@
             $('ad-chamada').placeholder = p && p.descricao ? p.descricao.slice(0, 90) + '…' : 'Vazio: usa a descrição do produto.';
             $('ad-botao-texto').placeholder = 'Comprar agora';
             $('ad-link-dica').textContent = 'Vazio: o botão abre o WhatsApp já com o nome e o preço do produto.';
+        } else if (tipo === 'apps') {
+            $('ad-titulo').placeholder = 'Troque suas planilhas por um sistema';
+            $('ad-titulo-dica').textContent = 'Vazio: usa o título padrão. O preço "a partir de" vem da página de apps.';
+            $('ad-chamada').placeholder = 'Vazio: usa a frase padrão sobre sistemas sob medida.';
+            $('ad-botao-texto').placeholder = 'Ver os sistemas';
+            $('ad-link-dica').textContent = 'Vazio: o botão leva para a página de Apps e sistemas.';
         } else {
             $('ad-titulo').placeholder = 'Ex.: 10% de desconto no suporte remoto';
             $('ad-titulo-dica').textContent = 'Opcional. Se a arte já tem o texto, deixe vazio: só a arte aparece.';
@@ -119,7 +129,7 @@
     function desenharPrevia() {
         const moldura = $('ad-moldura');
         const a = lerFormulario();
-        const pronto = a.tipo === 'produto' ? Boolean(a.produto) : Boolean(a.imagem);
+        const pronto = a.tipo === 'produto' ? Boolean(a.produto) : (a.tipo === 'apps' ? true : Boolean(a.imagem));
         if (!pronto) {
             const vazio = document.createElement('div');
             vazio.className = 'ad-moldura-vazia';
@@ -422,7 +432,7 @@
             chip.textContent = texto;
             const tipo = document.createElement('span');
             tipo.className = 'ad-tipo';
-            tipo.textContent = a.tipo === 'produto' ? 'Produto' : 'Arte própria';
+            tipo.textContent = { produto: 'Produto', imagem: 'Arte própria', apps: 'Apps e sistemas' }[a.tipo] || 'Anúncio';
             topo.append(chip, tipo);
             if (a.tipo === 'produto' && (!a.produto || !a.produto.ativo)) {
                 const aviso = document.createElement('span');
@@ -432,7 +442,7 @@
             }
 
             const nome = document.createElement('strong');
-            nome.textContent = a.titulo || (a.produto ? a.produto.nome : 'Arte sem título');
+            nome.textContent = a.titulo || (a.produto ? a.produto.nome : (a.tipo === 'apps' ? 'Apps e sistemas' : 'Arte sem título'));
 
             const periodo = document.createElement('small');
             const partes = [];
@@ -478,6 +488,8 @@
             const json = await chamar('listar');
             anuncios = json.anuncios || [];
             produtos = (json.produtos || []).sort((a, b) => (a.ordem - b.ordem));
+            if (json.apps) appsInfo = json.apps;
+            anuncios.forEach((a) => { if (a.tipo === 'apps') a.apps = appsInfo; });
             preencherProdutos();
             desenharLista();
             if (!carregado && !editando) novo();
@@ -512,7 +524,7 @@
     }
 
     async function remover(a) {
-        const nome = a.titulo || (a.produto ? a.produto.nome : 'este anúncio');
+        const nome = a.titulo || (a.produto ? a.produto.nome : (a.tipo === 'apps' ? 'Apps e sistemas' : 'este anúncio'));
         if (!window.confirm(`Remover o anúncio "${nome}"? Isso não pode ser desfeito.`)) return;
         try {
             await chamar('remover', { id: a.id });
