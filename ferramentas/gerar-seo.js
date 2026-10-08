@@ -184,7 +184,7 @@ ${extras}
 }
 
 const topo = `<header class="sv-topo">
-        <a class="sv-marca" href="/site.html"><img src="/icon-192.png" alt="" width="36" height="36"><span>PC Formatech</span></a>
+        <a class="sv-marca" href="/site.html" aria-label="PC Formatech, página inicial"><img src="/icon-192.png" alt="" width="36" height="36"><span>PC Formatech</span></a>
         <nav class="sv-nav" aria-label="Principal">
             <a href="/servicos/">Serviços</a>
             <a href="/loja.html">Loja</a>
