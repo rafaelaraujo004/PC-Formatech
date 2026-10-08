@@ -474,17 +474,20 @@ function paginaApps() {
                     <a class="sv-cta ap-card-cta" href="${zap(s.preco === 'fale' ? 'Olá! Vim pelo site. Tenho uma ideia de sistema para o meu negócio e quero conversar.' : `Olá! Vim pelo site e quero ${s.pedido}.`)}" target="_blank" rel="noopener">${ico('zap', 'ap-ico-zap')} Pedir pelo WhatsApp</a>
                 </article>`).join('\n                ');
 
-    // Até 3 demonstrações: coloque a imagem em /images/apps/demo-N.webp
-    // (formato de celular, 9:19) e troque o bloco "ap-demo-vaga" por <img>.
-    const demos = ['Estoque e vendas', 'Agenda de clientes', 'Painel com gráficos'].map((nome, i) => `<figure class="ap-demo">
-                    <div class="ap-demo-tela ap-demo-vaga" aria-hidden="true">
-                        ${ico('celular', 'ap-demo-ico')}
-                        <span>Demonstração ${i + 1}</span>
+    // Telas de demonstração (dados fictícios), em formato de celular 9:19, em
+    // /images/apps/. Para trocar por prints reais, substitua os arquivos.
+    const demos = [
+        ['demo-estoque', 'Estoque e vendas', 'Produtos, vendas do dia e aviso de reposição'],
+        ['demo-agenda', 'Agenda de clientes', 'Horários do dia, confirmação e lembrete'],
+        ['demo-painel', 'Painel com gráficos', 'Faturamento, despesas e lucro do mês']
+    ].map(([arq, nome, texto]) => `<figure class="ap-demo">
+                    <div class="ap-demo-tela">
+                        <img src="/images/apps/${arq}.webp" alt="Tela de demonstração: ${esc(nome)}" width="720" height="1520" loading="lazy" decoding="async">
                     </div>
-                    <figcaption><strong>${esc(nome)}</strong><small>Prints em breve</small></figcaption>
+                    <figcaption><strong>${esc(nome)}</strong><small>${esc(texto)}</small></figcaption>
                 </figure>`).join('\n                ');
 
-    return `${cabeca({ titulo, descricao, url, extras: '    <link rel="stylesheet" href="/apps.css?v=2">\n    ' + jsonLd({ '@context': 'https://schema.org', '@graph': dados }) })}
+    return `${cabeca({ titulo, descricao, url, extras: '    <link rel="stylesheet" href="/apps.css?v=3">\n    ' + jsonLd({ '@context': 'https://schema.org', '@graph': dados }) })}
 <body>
     ${topo}
 
@@ -597,7 +600,7 @@ function paginaApps() {
 
             <section class="sv-bloco sv-bloco-largo" aria-labelledby="ap-exemplos-titulo">
                 <h2 id="ap-exemplos-titulo">Exemplos</h2>
-                <p class="ap-sub">Alguns sistemas que já mostram como o seu pode ficar.</p>
+                <p class="ap-sub">Telas de demonstração, com dados de exemplo: é assim que o seu sistema pode ficar no celular.</p>
                 <div class="ap-demos">
                 ${demos}
                 </div>
