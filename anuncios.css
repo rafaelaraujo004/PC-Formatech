@@ -577,6 +577,43 @@
     .an-painel .an-chamada { display: none; }
 }
 
+/* Arte pronta sem texto nosso: botão e prazo numa faixa embaixo, arte acima. */
+.an-compacto .an-arte { inset: 2cqh 0 calc(12cqh + 58px) 0; }
+
+.an-compacto .an-painel {
+    left: 0;
+    right: 0;
+    justify-content: center;
+    bottom: 12cqh;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    max-width: none;
+    padding: 0;
+    border: 0;
+    background: none;
+    box-shadow: none;
+    -webkit-backdrop-filter: none;
+            backdrop-filter: none;
+    white-space: nowrap;
+}
+
+.an-compacto .an-prazo {
+    margin: 0;
+    padding: 0.5rem 0.8rem;
+    border-radius: 999px;
+    background: rgba(4, 12, 14, 0.72);
+}
+
+.an-compacto .an-painel .an-cta { margin: 0; }
+
+@container anuncio (max-width: 600px) {
+    .an-compacto .an-painel { left: 0; right: 0; bottom: 14cqh; padding: 0; }
+    .an-compacto .an-prazo { display: none; }
+    .an-compacto .an-painel .an-cta { flex: 0 0 auto; }
+    .an-compacto .an-arte { bottom: calc(14cqh + 54px); }
+}
+
 /* ── Integração com o banner da página principal ─────────────────────────── */
 
 /* Enquanto o anúncio está na tela, o título do site sai de cima (celular).

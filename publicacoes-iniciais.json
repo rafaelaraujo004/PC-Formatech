@@ -1,5 +1,5 @@
 {
-    "_leia": "Artes de divulgação iniciais da aba Divulgação do painel. Imagens em /images/divulgacao/. Cada uma entra no Firestore (coleção publicacoes) uma vez; removida no painel, não volta. categoria: pcformatech, birdtech, apps ou promocoes.",
+    "_leia": "Artes de divulgação iniciais da aba Divulgação do painel. Imagens em /images/divulgacao/. Cada uma entra no Firestore (coleção publicacoes) uma vez; removida no painel, não volta. categoria: pcformatech, birdtech, apps ou promocoes. Promoções com \"banner\" também viram anúncio no carrossel do site (uma vez, no período delas).",
     "publicacoes": [
         {
             "id": "promo-2026-10-formatacao",
@@ -10,7 +10,12 @@
             "imagem": "/images/divulgacao/promo-formatacao.jpg",
             "inicio": 1791428400000,
             "fim": 1791687599000,
-            "ordem": 1
+            "ordem": 1,
+            "banner": {
+                "selo": "Promoção",
+                "botaoTexto": "Quero a promoção",
+                "link": "https://api.whatsapp.com/send?phone=5594984305772&text=Ol%C3%A1!%20Vi%20no%20site%20a%20promo%C3%A7%C3%A3o%20de%20formata%C3%A7%C3%A3o%20por%20R%24%2050%2C00%20e%20quero%20aproveitar."
+            }
         },
         {
             "id": "promo-2026-10-kit-office",
@@ -21,7 +26,12 @@
             "imagem": "/images/divulgacao/promo-kit-office.jpg",
             "inicio": 1791428400000,
             "fim": 1791687599000,
-            "ordem": 2
+            "ordem": 2,
+            "banner": {
+                "selo": "Promoção",
+                "botaoTexto": "Quero a promoção",
+                "link": "https://api.whatsapp.com/send?phone=5594984305772&text=Ol%C3%A1!%20Vi%20no%20site%20a%20promo%C3%A7%C3%A3o%20do%20Kit%20Office%20por%20R%24%2050%2C00%20e%20quero%20aproveitar."
+            }
         },
         {
             "id": "pcf-remoto-story",
