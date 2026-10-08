@@ -142,14 +142,14 @@
       "permanent": true
     },
     {
-      "source": "/servicos/:caminho*",
+      "source": "/servicos/:caminho(.*)",
       "has": [
         {
           "type": "host",
           "value": "pcformatech.vercel.app"
         }
       ],
-      "destination": "https://www.pcformatech.com.br/servicos/:caminho*",
+      "destination": "https://www.pcformatech.com.br/servicos/:caminho",
       "permanent": true
     },
     {
