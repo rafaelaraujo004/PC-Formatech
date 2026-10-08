@@ -161,11 +161,14 @@
     function desenhar() {
         const grade = $('dv-grade');
         const lista = publicacoes.filter((p) => filtro === 'todas' || p.categoria === filtro);
-        // Promoções: as em vigor primeiro, depois as agendadas e por último as encerradas.
-        if (filtro === 'promocoes') {
-            const peso = (p) => { const s = situacao(p); return s ? s.ordem : 0; };
-            lista.sort((a, b) => (peso(a) - peso(b)) || ((a.fim || Infinity) - (b.fim || Infinity)));
-        }
+        // Promoções em vigor no topo (o que mais vale divulgar agora), depois as
+        // artes fixas, as promoções agendadas e por último as encerradas.
+        const peso = (p) => {
+            if (p.categoria !== 'promocoes') return 1;
+            const sit = situacao(p);
+            return sit ? [0, 2, 3][sit.ordem] : 0;
+        };
+        lista.sort((a, b) => (peso(a) - peso(b)) || (a.ordem - b.ordem) || ((a.fim || Infinity) - (b.fim || Infinity)));
         if (!lista.length) {
             const vazio = document.createElement('div');
             vazio.className = 'dv-vazio';
