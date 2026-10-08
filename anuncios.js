@@ -12,7 +12,7 @@
     const API = '/api/anuncios';
     const LOGO = '/images/loja/bird-tech-icone-176.webp';
     const VISTOS_KEY = 'pcft_anuncios_vistos';
-    const CSS = '/anuncios.css?v=3';
+    const CSS = '/anuncios.css?v=4';
 
     const moeda = (valor) => Number(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
@@ -195,9 +195,15 @@
         arte.append(foto(a.imagem, a.titulo || '', imediato));
         slide.append(fundo, arte);
 
+        // Sem título nem frase, a arte já fala por si (ex.: uma promoção pronta):
+        // fica só uma faixa com o botão e o prazo, e a arte encolhe para nada
+        // ficar coberto.
+        const compacto = !a.titulo && !a.chamada && Boolean(a.link);
+        if (compacto) slide.classList.add('an-compacto');
+
         if (a.titulo || a.chamada || a.link) {
             const painel = el('div', 'an-painel');
-            if (a.selo) painel.append(el('span', 'an-selo', a.selo));
+            if (a.selo && !compacto) painel.append(el('span', 'an-selo', a.selo));
             if (a.titulo) painel.append(el('p', 'an-titulo', a.titulo));
             if (a.chamada) painel.append(el('p', 'an-chamada', a.chamada));
             const prazo = textoPrazo(a.fim);

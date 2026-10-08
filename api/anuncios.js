@@ -16,6 +16,7 @@
 const { iniciarAdmin } = require('./_push');
 const { ErroDeAcesso, exigirAdmin } = require('./_admin');
 const loja = require('./loja');
+const PUBLICACOES = require('../publicacoes-iniciais.json');
 
 const COLECAO = 'anuncios';
 const PRODUTOS = 'lojaProdutos';
@@ -75,6 +76,46 @@ async function garantirAnunciosIniciais(db) {
 }
 
 /** Uma vez: o anúncio de Apps e sistemas entra no carrossel junto com os da loja. */
+/**
+ * Promoções da aba Divulgação marcadas com "banner" viram anúncio de arte
+ * própria no carrossel, no mesmo período delas. Cada uma entra uma vez (o id
+ * do anúncio é fixo); removida no painel, não volta.
+ */
+async function garantirAnunciosDePromocoes(db) {
+    const lista = (PUBLICACOES.publicacoes || []).filter((p) => p.banner && p.imagem);
+    if (!lista.length) return;
+    const marcaRef = db.collection('lojaConfig').doc('estado');
+    const marca = await marcaRef.get();
+    const feitos = (marca.exists && marca.data().anunciosDePromocoes) || [];
+    const novos = lista.filter((p) => !feitos.includes(p.id));
+    if (!novos.length) return;
+    const agora = Date.now();
+    for (const p of novos) {
+        await db.collection(COLECAO).doc('promo-' + p.id).set({
+            tipo: 'imagem',
+            produtoId: null,
+            imagemDados: null,
+            imagem: p.imagem,
+            selo: p.banner.selo || '',
+            titulo: '',
+            chamada: '',
+            precoAntigo: null,
+            botaoTexto: p.banner.botaoTexto || '',
+            link: p.banner.link || '',
+            estilo: 'noite',
+            ativo: true,
+            ordem: 0,
+            inicio: p.inicio || null,
+            fim: p.fim || null,
+            vistos: 0,
+            cliques: 0,
+            criadoEm: agora,
+            atualizadoEm: agora
+        });
+    }
+    await marcaRef.set({ anunciosDePromocoes: [...feitos, ...novos.map((p) => p.id)] }, { merge: true });
+}
+
 async function garantirAnuncioApps(db) {
     const marcaRef = db.collection('lojaConfig').doc('estado');
     await db.runTransaction(async (tx) => {
@@ -135,7 +176,7 @@ function paraSaida(doc, produtosPorId, paraPainel, agora) {
     } else if (base.tipo === 'apps') {
         base.apps = APPS;
     } else {
-        base.imagem = d.imagemDados ? `/api/anuncios?img=${encodeURIComponent(doc.id)}&v=${d.atualizadoEm || 0}` : null;
+        base.imagem = d.imagemDados ? `/api/anuncios?img=${encodeURIComponent(doc.id)}&v=${d.atualizadoEm || 0}` : (d.imagem || null);
         if (!base.imagem && !paraPainel) return null;
     }
 
@@ -220,6 +261,10 @@ async function validarAnuncio(db, entrada) {
         if (DATA_URL.test(imagem)) {
             if (imagem.length > MAX_IMAGEM) throw new ErroDeAcesso(413, 'A imagem ficou grande demais. Tente outra.');
             saida.imagemDados = imagem;
+        } else if (/^\/images\/divulgacao\/[\w.-]+\.(jpe?g|png|webp)$/.test(imagem)) {
+            // Arte que já está no site (aba Divulgação).
+            saida.imagem = imagem;
+            saida.imagemDados = null;
         } else if (!imagem.startsWith('/api/anuncios?img=')) {
             // A URL /api/anuncios?img= é a arte atual voltando sem mudança: mantém.
             throw new ErroDeAcesso(400, 'Imagem inválida.');
@@ -259,6 +304,7 @@ module.exports = async function handler(req, res) {
             if (req.query && req.query.img) return servirImagem(db, req.query.img, res);
             await garantirAnunciosIniciais(db);
             await garantirAnuncioApps(db);
+            await garantirAnunciosDePromocoes(db);
             const { anuncios } = await carregar(db, false);
             res.setHeader('Cache-Control', 'public, s-maxage=30, stale-while-revalidate=300');
             return res.status(200).json({ ok: true, anuncios });
@@ -274,6 +320,7 @@ module.exports = async function handler(req, res) {
         if (corpo.acao === 'listar') {
             await garantirAnunciosIniciais(db);
             await garantirAnuncioApps(db);
+            await garantirAnunciosDePromocoes(db);
             return res.status(200).json({ ok: true, apps: APPS, ...(await carregar(db, true)) });
         }
 
