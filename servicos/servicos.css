@@ -426,3 +426,52 @@ h1, h2 {
 @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; }
 }
+
+/* ── Artigos (dicas/) ─────────────────────────────────────────────────── */
+
+.sv-hero-artigo h1 { max-width: 22ch; }
+
+.sv-artigo-data {
+    margin: 0;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.sv-artigo { font-size: 1.05rem; line-height: 1.75; }
+.sv-artigo > *:first-child { margin-top: 0; }
+.sv-artigo h2 { margin: 1.8rem 0 0.7rem; }
+.sv-artigo p { margin: 0 0 1rem; color: var(--sv-texto); max-width: 70ch; }
+.sv-artigo .sv-lista { margin: 0 0 1.2rem; }
+
+.sv-artigo-passos {
+    display: grid;
+    gap: 0.7rem;
+    margin: 0 0 1.2rem;
+    padding: 0;
+    list-style: none;
+    counter-reset: passo;
+}
+
+.sv-artigo-passos li {
+    position: relative;
+    padding-left: 2.6rem;
+    counter-increment: passo;
+}
+
+.sv-artigo-passos li::before {
+    content: counter(passo);
+    position: absolute;
+    left: 0;
+    top: 0.1rem;
+    display: grid;
+    place-items: center;
+    width: 1.8rem;
+    height: 1.8rem;
+    border-radius: 50%;
+    background: var(--sv-acento);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 800;
+}
+
+:root[data-theme="dark"] .sv-artigo-passos li::before { color: #032421; }

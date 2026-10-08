@@ -1,5 +1,6 @@
 // Gera as páginas de serviço (servicos/<slug>/index.html), a página
-// servicos/index.html, a página de apps e sistemas (apps.html) e o sitemap.xml.
+// servicos/index.html, a página de apps e sistemas (apps.html), os artigos de
+// /dicas/ (texto em ferramentas/dicas.js) e o sitemap.xml.
 //
 // Cada serviço tem uma página própria para o Google mostrar quando alguém
 // busca exatamente aquilo ("formatação de computador em Canaã dos Carajás").
@@ -11,6 +12,7 @@ const fs = require('fs');
 const path = require('path');
 
 const RAIZ = path.join(__dirname, '..');
+const DICAS = require('./dicas');
 const SITE = 'https://www.pcformatech.com.br';
 const WHATSAPP = '5594984305772';
 const CIDADE = 'Canaã dos Carajás';
@@ -143,7 +145,12 @@ const reais = (v) => 'R$ ' + v.toFixed(2).replace('.', ',');
 const jsonLd = (obj) => `<script type="application/ld+json">${JSON.stringify(obj).replace(/</g, '\\u003c')}</script>`;
 const precoDe = (s) => (s.preco ? `A partir de ${reais(s.preco)}` : s.precoTexto);
 
-function cabeca({ titulo, descricao, url, extras }) {
+/** Prévia para WhatsApp/redes: images/og/<nome>.jpg se existir, senão a geral. */
+function imagemPrevia(nome) {
+    return nome && fs.existsSync(path.join(RAIZ, 'images/og', nome + '.jpg')) ? `${SITE}/images/og/${nome}.jpg` : SITE + '/images/og-preview.jpg';
+}
+
+function cabeca({ titulo, descricao, url, extras, previa, tipo }) {
     return `<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -153,13 +160,15 @@ function cabeca({ titulo, descricao, url, extras }) {
     <title>${esc(titulo)} | PC Formatech</title>
     <meta name="description" content="${esc(descricao)}">
     <link rel="canonical" href="${url}">
-    <meta property="og:type" content="website">
+    <meta property="og:type" content="${tipo || 'website'}">
     <meta property="og:site_name" content="PC Formatech">
     <meta property="og:locale" content="pt_BR">
     <meta property="og:url" content="${url}">
     <meta property="og:title" content="${esc(titulo)}">
     <meta property="og:description" content="${esc(descricao)}">
-    <meta property="og:image" content="${SITE}/images/og-preview.jpg">
+    <meta property="og:image" content="${imagemPrevia(previa)}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="theme-color" content="#0b2b2c">
     <link rel="icon" type="image/svg+xml" href="/favicon-icon.svg">
@@ -169,7 +178,7 @@ function cabeca({ titulo, descricao, url, extras }) {
     <link rel="preload" href="/fonts/sora-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/fontes.css">
     <link rel="stylesheet" href="/icones.css">
-    <link rel="stylesheet" href="/servicos/servicos.css?v=1">
+    <link rel="stylesheet" href="/servicos/servicos.css?v=2">
 ${extras}
 </head>`;
 }
@@ -193,7 +202,7 @@ function rodape() {
         <nav aria-label="Serviços">
             ${SERVICOS.map((s) => `<a href="/servicos/${s.slug}/">${esc(s.nome)}</a>`).join('\n            ')}
         </nav>
-        <p class="sv-rodape-contato"><a href="${zap('Olá! Vim pelo site.')}" target="_blank" rel="noopener">(94) 98430-5772</a> · <a href="https://instagram.com/pcformatech" target="_blank" rel="noopener">@pcformatech</a></p>
+        <p class="sv-rodape-contato"><a href="/dicas/">Dicas para o seu computador</a> · <a href="${zap('Olá! Vim pelo site.')}" target="_blank" rel="noopener">(94) 98430-5772</a> · <a href="https://instagram.com/pcformatech" target="_blank" rel="noopener">@pcformatech</a></p>
     </footer>`;
 }
 
@@ -231,7 +240,7 @@ function paginaServico(s) {
     ];
     const passos = s.passos || ['Chame no WhatsApp e conte o que está acontecendo', 'Receba o diagnóstico e o valor antes de qualquer serviço', 'Atendimento presencial em ' + CIDADE + ' ou remoto, do jeito que for melhor para você'];
 
-    return `${cabeca({ titulo: s.titulo, descricao: s.descricao, url, extras: '    ' + jsonLd({ '@context': 'https://schema.org', '@graph': dados }) })}
+    return `${cabeca({ titulo: s.titulo, descricao: s.descricao, url, previa: 'servico-' + s.slug, extras: '    ' + jsonLd({ '@context': 'https://schema.org', '@graph': dados }) })}
 <body>
     ${topo}
 
@@ -315,7 +324,7 @@ function paginaIndice() {
             itemListElement: SERVICOS.map((s, i) => ({ '@type': 'ListItem', position: i + 1, url: `${SITE}/servicos/${s.slug}/`, name: s.titulo }))
         }
     ];
-    return `${cabeca({ titulo, descricao, url, extras: '    ' + jsonLd({ '@context': 'https://schema.org', '@graph': dados }) })}
+    return `${cabeca({ titulo, descricao, url, previa: 'servicos', extras: '    ' + jsonLd({ '@context': 'https://schema.org', '@graph': dados }) })}
 <body>
     ${topo}
 
@@ -487,7 +496,7 @@ function paginaApps() {
                     <figcaption><strong>${esc(nome)}</strong><small>${esc(texto)}</small></figcaption>
                 </figure>`).join('\n                ');
 
-    return `${cabeca({ titulo, descricao, url, extras: '    <link rel="stylesheet" href="/apps.css?v=3">\n    ' + jsonLd({ '@context': 'https://schema.org', '@graph': dados }) })}
+    return `${cabeca({ titulo, descricao, url, previa: 'apps', extras: '    <link rel="stylesheet" href="/apps.css?v=3">\n    ' + jsonLd({ '@context': 'https://schema.org', '@graph': dados }) })}
 <body>
     ${topo}
 
@@ -628,6 +637,129 @@ function paginaApps() {
 const faltando = APPS.sistemas.filter((s) => s.preco === null).map((s) => s.nome).concat(APPS.suporteMensal === null ? ['Suporte mensal'] : []);
 if (faltando.length) console.warn('ATENÇÃO apps.html: preço ainda não definido para: ' + faltando.join(', '));
 
+// ── Dicas (artigos) ───────────────────────────────────────────────────────
+
+const servicoPorSlug = (slug) => SERVICOS.find((x) => x.slug === slug);
+
+function blocoDica(b) {
+    return [
+        b.h2 ? `<h2>${esc(b.h2)}</h2>` : '',
+        ...(b.p || []).map((t) => `<p>${esc(t)}</p>`),
+        b.lista ? `<ul class="sv-lista">${b.lista.map((t) => `<li><i class="fas fa-check" aria-hidden="true"></i> ${esc(t)}</li>`).join('')}</ul>` : '',
+        b.passos ? `<ol class="sv-artigo-passos">${b.passos.map((t) => `<li>${esc(t)}</li>`).join('')}</ol>` : ''
+    ].filter(Boolean).join('\n                ');
+}
+
+function paginaDica(d) {
+    const url = `${SITE}/dicas/${d.slug}/`;
+    const outras = DICAS.filter((x) => x.slug !== d.slug);
+    const relacionados = d.servicos.map(servicoPorSlug).filter(Boolean);
+    const dados = [
+        EMPRESA,
+        {
+            '@type': 'Article',
+            '@id': url + '#artigo',
+            headline: d.titulo,
+            description: d.descricao,
+            url,
+            image: imagemPrevia('dica-' + d.slug),
+            datePublished: d.publicado,
+            dateModified: d.publicado,
+            inLanguage: 'pt-BR',
+            author: { '@id': EMPRESA['@id'] },
+            publisher: { '@id': EMPRESA['@id'] },
+            mainEntityOfPage: url
+        },
+        {
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+                { '@type': 'ListItem', position: 1, name: 'Início', item: SITE + '/site.html' },
+                { '@type': 'ListItem', position: 2, name: 'Dicas', item: SITE + '/dicas/' },
+                { '@type': 'ListItem', position: 3, name: d.titulo, item: url }
+            ]
+        }
+    ];
+    const data = new Date(d.publicado + 'T12:00:00').toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
+    return `${cabeca({ titulo: d.titulo, descricao: d.descricao, url, previa: 'dica-' + d.slug, tipo: 'article', extras: '    ' + jsonLd({ '@context': 'https://schema.org', '@graph': dados }) })}
+<body>
+    ${topo}
+
+    <main>
+        <section class="sv-hero sv-hero-artigo">
+            <nav class="sv-trilha" aria-label="Você está em"><a href="/site.html">Início</a> <span aria-hidden="true">/</span> <a href="/dicas/">Dicas</a></nav>
+            <h1>${esc(d.titulo)}</h1>
+            <p class="sv-hero-texto">${esc(d.resumo)}</p>
+            <p class="sv-artigo-data">PC Formatech · ${esc(data)}</p>
+        </section>
+
+        <div class="sv-conteudo">
+            <article class="sv-bloco sv-bloco-largo sv-artigo">
+                ${d.blocos.map(blocoDica).join('\n                ')}
+            </article>
+
+            <section class="sv-bloco sv-bloco-largo sv-chamada">
+                <h2>Quer ajuda com o seu computador?</h2>
+                <p>Conte o que está acontecendo. O diagnóstico pelo WhatsApp é grátis e você sabe o valor antes de qualquer serviço.</p>
+                <a class="sv-cta" href="${zap('Olá! Li a dica "' + d.titulo + '" no site e quero ajuda com o meu computador.')}" target="_blank" rel="noopener"><i class="fab fa-whatsapp" aria-hidden="true"></i> Chamar no WhatsApp</a>
+            </section>
+
+            <section class="sv-bloco sv-bloco-largo">
+                <h2>Serviços relacionados</h2>
+                <div class="sv-outros">
+                    ${relacionados.map((o) => `<a href="/servicos/${o.slug}/"><i class="fas ${o.icone}" aria-hidden="true"></i><span><strong>${esc(o.nome)}</strong><small>${esc(precoDe(o))}</small></span></a>`).join('\n                    ')}
+                </div>
+            </section>
+
+            <section class="sv-bloco sv-bloco-largo">
+                <h2>Outras dicas</h2>
+                <div class="sv-outros sv-outros-grande">
+                    ${outras.map((o) => `<a href="/dicas/${o.slug}/"><i class="fas fa-lightbulb" aria-hidden="true"></i><span><strong>${esc(o.titulo)}</strong><em>${esc(o.resumo)}</em></span></a>`).join('\n                    ')}
+                </div>
+            </section>
+        </div>
+    </main>
+
+    ${rodape()}
+</body>
+</html>
+`;
+}
+
+function paginaDicas() {
+    const url = SITE + '/dicas/';
+    const titulo = 'Dicas para o seu computador';
+    const descricao = 'Dicas simples sobre computador lento, vírus, formatação e manutenção, da PC Formatech, assistência técnica em Canaã dos Carajás.';
+    const dados = [
+        EMPRESA,
+        { '@type': 'ItemList', name: titulo, itemListElement: DICAS.map((d, i) => ({ '@type': 'ListItem', position: i + 1, url: `${SITE}/dicas/${d.slug}/`, name: d.titulo })) }
+    ];
+    return `${cabeca({ titulo, descricao, url, previa: 'dicas', extras: '    ' + jsonLd({ '@context': 'https://schema.org', '@graph': dados }) })}
+<body>
+    ${topo}
+
+    <main>
+        <section class="sv-hero">
+            <nav class="sv-trilha" aria-label="Você está em"><a href="/site.html">Início</a> <span aria-hidden="true">/</span> <span aria-current="page">Dicas</span></nav>
+            <h1>${esc(titulo)}</h1>
+            <p class="sv-hero-texto">Respostas rápidas para as dúvidas mais comuns sobre computador e notebook, de quem conserta todo dia.</p>
+        </section>
+
+        <div class="sv-conteudo">
+            <section class="sv-bloco sv-bloco-largo">
+                <h2>Artigos</h2>
+                <div class="sv-outros sv-outros-grande">
+                    ${DICAS.map((d) => `<a href="/dicas/${d.slug}/"><i class="fas fa-lightbulb" aria-hidden="true"></i><span><strong>${esc(d.titulo)}</strong><em>${esc(d.resumo)}</em></span></a>`).join('\n                    ')}
+                </div>
+            </section>
+        </div>
+    </main>
+
+    ${rodape()}
+</body>
+</html>
+`;
+}
+
 // ── sitemap.xml ───────────────────────────────────────────────────────────
 
 function sitemap() {
@@ -639,6 +771,8 @@ function sitemap() {
         ...SERVICOS.map((s) => [`/servicos/${s.slug}/`, '0.8']),
         ['/loja.html', '0.8'],
         ['/apps.html', '0.8'],
+        ['/dicas/', '0.7'],
+        ...DICAS.map((d) => [`/dicas/${d.slug}/`, '0.7']),
         ['/formulario-formatacao.html', '0.4']
     ];
     return `<?xml version="1.0" encoding="UTF-8"?>
@@ -660,4 +794,6 @@ function gravar(rel, conteudo) {
 SERVICOS.forEach((s) => gravar(`servicos/${s.slug}/index.html`, paginaServico(s)));
 gravar('servicos/index.html', paginaIndice());
 gravar('apps.html', paginaApps());
+DICAS.forEach((d) => gravar(`dicas/${d.slug}/index.html`, paginaDica(d)));
+gravar('dicas/index.html', paginaDicas());
 gravar('sitemap.xml', sitemap());
