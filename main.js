@@ -2,6 +2,9 @@
 // sem transições longas, sem contadores animados.
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
+// Desconto do atendimento remoto (AnyDesk). Os textos do site dizem 10%.
+const DESCONTO_REMOTO = 0.10;
+
 document.addEventListener('DOMContentLoaded', () => {
     // ── Carrossel Hero ──────────────────────────────────────────────────────
     let slides = [];
@@ -578,12 +581,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 total += cleaningPrice;
             }
             
-            // Aplicar desconto de 20% APENAS nos serviços (excluindo limpeza)
+            // Aplicar o desconto do remoto APENAS nos serviços (excluindo limpeza)
             const isRemote = attendanceTypeSelect && attendanceTypeSelect.value === 'Remoto (AnyDesk)';
             let discount = 0;
             
             if (isRemote && servicesTotal > 0) {
-                discount = servicesTotal * 0.20; // Desconto apenas sobre serviços
+                discount = servicesTotal * DESCONTO_REMOTO; // Desconto apenas sobre serviços
                 total = total - discount; // Subtrai desconto do total (que inclui limpeza sem desconto)
             }
             
@@ -598,7 +601,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     const badge = document.createElement('span');
                     badge.className = 'discount-badge';
-                    badge.textContent = `-20% (R$ ${discount.toFixed(2).replace('.', ',')})`;
+                    badge.textContent = `-10% (R$ ${discount.toFixed(2).replace('.', ',')})`;
                     totalValueDisplay.parentElement.appendChild(badge);
                 } else {
                     const existingBadge = totalValueDisplay.parentElement.querySelector('.discount-badge');
@@ -767,7 +770,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let finalValue = totalValue;
         
         if (isRemote) {
-            discount = totalValue * 0.20;
+            discount = totalValue * DESCONTO_REMOTO;
             finalValue = totalValue - discount;
         }
         
@@ -790,7 +793,7 @@ document.addEventListener('DOMContentLoaded', () => {
         message += `\n` + String.fromCodePoint(0x1F4B0) + ` *Subtotal:* R$ ${totalValue.toFixed(2).replace('.', ',')}\n`;
         
         if (isRemote && discount > 0) {
-            message += String.fromCodePoint(0x1F389) + ` *Desconto (20% Remoto):* -R$ ${discount.toFixed(2).replace('.', ',')}\n`;
+            message += String.fromCodePoint(0x1F389) + ` *Desconto (10% Remoto):* -R$ ${discount.toFixed(2).replace('.', ',')}\n`;
             message += String.fromCodePoint(0x1F4B5) + ` *VALOR TOTAL:* R$ ${finalValue.toFixed(2).replace('.', ',')}*\n\n`;
         } else {
             message += String.fromCodePoint(0x1F4B5) + ` *VALOR TOTAL:* R$ ${finalValue.toFixed(2).replace('.', ',')}*\n\n`;
@@ -1089,7 +1092,7 @@ document.addEventListener('DOMContentLoaded', () => {
             'manutencao': 'Manutenção Preventiva - R$ 70,00',
             'drivers': 'Instalação de Drivers - R$ 40,00',
             'backup': 'Backup de Dados - R$ 45,00',
-            'remoto': 'Atendimento Remoto (20% OFF)'
+            'remoto': 'Atendimento Remoto (10% OFF)'
         };
         
         // Verificar se atendimento remoto está selecionado
@@ -1107,10 +1110,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const subtotal = selectedServices.reduce((sum, service) => sum + service.price, 0);
         
         if (remoteSelected && subtotal > 0) {
-            const discount = subtotal * 0.20;
+            const discount = subtotal * DESCONTO_REMOTO;
             const total = subtotal - discount;
             message += `\n💰 *Subtotal:* R$ ${subtotal.toFixed(2).replace('.', ',')}\n`;
-            message += `🎉 *Desconto (20% Remoto):* -R$ ${discount.toFixed(2).replace('.', ',')}\n`;
+            message += `🎉 *Desconto (10% Remoto):* -R$ ${discount.toFixed(2).replace('.', ',')}\n`;
             message += `💵 *VALOR TOTAL:* R$ ${total.toFixed(2).replace('.', ',')}*\n\n`;
         } else {
             message += `\n💵 *VALOR TOTAL:* R$ ${subtotal.toFixed(2).replace('.', ',')}*\n\n`;

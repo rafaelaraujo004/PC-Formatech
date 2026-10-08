@@ -40,8 +40,8 @@
                 name: 'Atendimento Remoto',
                 price: 0,
                 discount: 20,
-                description: 'Desconto de 20% no atendimento remoto',
-                features: ['Via AnyDesk', 'Sem sair de casa', '20% OFF']
+                description: 'Desconto de 10% no atendimento remoto',
+                features: ['Via AnyDesk', 'Sem sair de casa', '10% OFF']
             }
         };
 
