@@ -1338,13 +1338,14 @@
     </button>
 
     <!-- Firebase SDK (compat) - necessário para rastreamento de presença -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-    <script src="firebase-config.js"></script>
-    <script>initFirebase();</script>
-    <script src="site-config.js"></script>
-    <script src="theme-system.js?v=4"></script>
-    <script src="main.js?v=4"></script>
+    <!-- Scripts com defer: rodam na mesma ordem, mas sem segurar a primeira pintura. -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js" defer></script>
+    <script src="firebase-config.js" defer></script>
+    <script src="firebase-iniciar.js" defer></script>
+    <script src="site-config.js" defer></script>
+    <script src="theme-system.js?v=4" defer></script>
+    <script src="main.js?v=4" defer></script>
     <script src="anuncios.js?v=2" defer></script>
     <script src="seasonal-badge.js" defer></script>
     <script>
