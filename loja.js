@@ -346,6 +346,53 @@
             .join('\n');
     }
 
+    // ── Pix depois de fechar a compra ──────────────────────────────────────
+    // Código do pedido: vai no Pix (aparece no extrato) e na mensagem do
+    // comprovante, para achar o pagamento no app do banco.
+    let codigoPedido = null;
+    let pixAberto = false;
+
+    function novoCodigo() {
+        return 'BT' + Date.now().toString(36).toUpperCase().slice(-6);
+    }
+
+    function mensagemComprovante() {
+        return mensagemPedido().replace('Ainda tem disponível?', `Pagamento: Pix de ${moeda(totalDoCarrinho())} (pedido ${codigoPedido}). Segue o comprovante.`)
+            .replace('Olá! Quero fazer este pedido na Bird Tech:', 'Olá! Fiz este pedido na Bird Tech e já paguei pelo Pix:');
+    }
+
+    function mostrarPix(aberto) {
+        pixAberto = aberto;
+        const temItens = itensDoCarrinho().length > 0;
+        $('bt-pix').hidden = !aberto || !temItens;
+        dialogoCarrinho.querySelector('.bt-carrinho-corpo').hidden = aberto && temItens;
+        $('bt-fechar-compra').hidden = aberto;
+        $('bt-pix-enviar').hidden = !aberto;
+        $('bt-pix-voltar').hidden = !aberto;
+        $('bt-enviar-pedido').hidden = aberto;
+        // Com o Pix aberto o valor já aparece grande em cima: o rodapé fica só com as ações.
+        dialogoCarrinho.querySelector('.bt-carrinho-total').hidden = aberto;
+        $('bt-limpar-carrinho').hidden = aberto;
+        $('bt-carrinho-nota').textContent = aberto
+            ? 'Se escolheu entrega, o valor da entrega é combinado no WhatsApp.'
+            : 'O pedido chega pronto no WhatsApp da PC Formatech.';
+        $('bt-carrinho-titulo').textContent = aberto ? 'Pagamento' : 'Seu pedido';
+        if (!aberto || !temItens) return;
+
+        const total = totalDoCarrinho();
+        if (!codigoPedido) codigoPedido = novoCodigo();
+        const pix = window.PCFTPix;
+        const codigo = pix.codigo(total, codigoPedido, 'Pedido ' + codigoPedido);
+        $('bt-pix-valor').textContent = moeda(total);
+        pix.desenhar($('bt-pix-qr'), codigo, 220);
+        $('bt-pix-qr').dataset.codigo = codigo;
+        $('bt-pix-titular').textContent = pix.dados.titular;
+        $('bt-pix-empresa').textContent = pix.dados.empresa;
+        $('bt-pix-chave').textContent = pix.dados.chaveTexto;
+        $('bt-pix-copiar-texto').textContent = 'Copiar código Pix (copia e cola)';
+        $('bt-pix-enviar').href = linkWhatsApp(mensagemComprovante());
+    }
+
     function desenharGaveta() {
         const itens = itensDoCarrinho();
         const lista = $('bt-carrinho-lista');
@@ -370,6 +417,8 @@
         dialogoCarrinho.querySelector('.bt-carrinho-rodape').hidden = vazioGaveta;
         $('bt-carrinho-total').textContent = moeda(totalDoCarrinho());
         $('bt-enviar-pedido').href = linkWhatsApp(mensagemPedido());
+        // Mudou o pedido com o Pix aberto: o código e o QR acompanham o total novo.
+        if (pixAberto) mostrarPix(true);
     }
 
     function atualizarCarrinho() {
@@ -399,6 +448,25 @@
         registrar('acao', 'carrinho:abrir');
     }
 
+    $('bt-fechar-compra').addEventListener('click', () => {
+        codigoPedido = novoCodigo();
+        mostrarPix(true);
+        registrar('acao', 'pix:loja-fechar');
+    });
+    $('bt-pix-voltar').addEventListener('click', () => mostrarPix(false));
+    $('bt-pix-copiar').addEventListener('click', async () => {
+        const codigo = $('bt-pix-qr').dataset.codigo;
+        let copiou = false;
+        try { await navigator.clipboard.writeText(codigo); copiou = true; } catch (e) { /* sem área de transferência */ }
+        $('bt-pix-copiar-texto').textContent = copiou ? 'Código copiado! Cole no app do banco' : 'Não deu para copiar: use o QR Code';
+        registrar('acao', 'pix:loja-copiar');
+    });
+    $('bt-pix-enviar').addEventListener('click', () => {
+        registrar('acao', 'whatsapp:loja-pix');
+        $('bt-limpar-carrinho').textContent = 'Pedido enviado? Esvaziar carrinho';
+    });
+    dialogoCarrinho.addEventListener('close', () => { if (pixAberto) mostrarPix(false); });
+
     function avisar(texto) {
         const aviso = $('bt-aviso');
         aviso.textContent = texto;
@@ -422,6 +490,7 @@
         if (!window.confirm('Tirar todos os produtos do carrinho?')) return;
         carrinho.clear();
         salvarCarrinho();
+        mostrarPix(false);
         atualizarCarrinho();
         $('bt-limpar-carrinho').textContent = 'Esvaziar carrinho';
         dialogoCarrinho.close();
