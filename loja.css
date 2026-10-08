@@ -1140,6 +1140,114 @@ body.bt-com-carrinho { padding-bottom: 90px; }
 }
 
 
+/* ── Pix depois de fechar a compra ───────────────────────────────────────── */
+
+/* Os botões têm display próprio: sem isto, o atributo hidden não os esconderia. */
+.bt-carrinho [hidden] { display: none !important; }
+
+.bt-pix {
+    flex: 1;
+    overflow-y: auto;
+    display: grid;
+    justify-items: center;
+    align-content: start;
+    gap: 0.75rem;
+    padding: 1.2rem 1.2rem 1rem;
+    text-align: center;
+}
+
+.bt-pix-rotulo {
+    margin: 0;
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--bt-suave);
+}
+
+.bt-pix-valor {
+    margin: -0.2rem 0 0.2rem;
+    font-family: var(--bt-fonte-titulo);
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+}
+
+.bt-pix-qr {
+    padding: 10px;
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 0 0 1px var(--bt-borda), 0 18px 36px -22px rgba(15, 29, 51, 0.6);
+}
+
+.bt-pix-qr canvas { display: block; }
+
+.bt-pix .bt-botao { max-width: 340px; }
+
+.bt-pix-passos {
+    display: grid;
+    gap: 0.4rem;
+    max-width: 340px;
+    margin: 0.2rem 0 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: passo;
+    text-align: left;
+    font-size: 0.86rem;
+    color: var(--bt-suave);
+}
+
+.bt-pix-passos li {
+    position: relative;
+    padding-left: 1.9rem;
+    counter-increment: passo;
+}
+
+.bt-pix-passos li::before {
+    content: counter(passo);
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: grid;
+    place-items: center;
+    width: 1.35rem;
+    height: 1.35rem;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--bt-azul-2) 16%, transparent);
+    color: var(--bt-azul);
+    font-size: 0.75rem;
+    font-weight: 800;
+}
+
+.bt-pix-passos strong { color: var(--bt-texto); }
+
+.bt-pix-recebedor {
+    max-width: 340px;
+    margin: 0;
+    padding: 0.7rem 0.9rem;
+    border-radius: 12px;
+    background: var(--bt-superficie-2);
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: var(--bt-suave);
+}
+
+.bt-pix-recebedor strong { color: var(--bt-texto); }
+
+.bt-fechar-compra svg,
+.bt-carrinho-rodape .bt-botao svg {
+    width: 1.15rem;
+    height: 1.15rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.bt-carrinho-rodape .bt-botao-contorno { min-height: 44px; font-size: 0.875rem; }
+
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { transition: none !important; animation: none !important; }
     html { scroll-behavior: auto; }
