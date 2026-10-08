@@ -1,4 +1,68 @@
 {
-    "_leia": "Artes de divulgação iniciais da aba Divulgação do painel. Imagens em /images/divulgacao/. Cada uma entra no Firestore (coleção publicacoes) uma vez; removida no painel, não volta. categoria: pcformatech, birdtech ou apps.",
-    "publicacoes": []
+    "_leia": "Artes de divulgação iniciais da aba Divulgação do painel. Imagens em /images/divulgacao/. Cada uma entra no Firestore (coleção publicacoes) uma vez; removida no painel, não volta. categoria: pcformatech, birdtech, apps ou promocoes.",
+    "publicacoes": [
+        {
+            "id": "pcf-remoto-story",
+            "categoria": "pcformatech",
+            "titulo": "Atendimento remoto (Status/Stories)",
+            "legenda": "Seu PC resolvido sem sair de casa. A gente acessa seu computador pela internet, com segurança, e você acompanha tudo pela tela. PC lento, vírus, programas, drivers e erros do Windows. Os serviços remotos têm desconto: chame no WhatsApp (94) 98430-5772.",
+            "link": "https://www.pcformatech.com.br/servicos/suporte-remoto/",
+            "imagem": "/images/divulgacao/remoto-story.webp",
+            "ordem": 1
+        },
+        {
+            "id": "pcf-remoto-feed",
+            "categoria": "pcformatech",
+            "titulo": "Atendimento remoto (feed)",
+            "legenda": "Seu PC resolvido sem sair de casa. Chame no WhatsApp, instale o AnyDesk e a gente resolve, com conexão segura e você acompanhando tudo. Os serviços remotos têm desconto.",
+            "link": "https://www.pcformatech.com.br/servicos/suporte-remoto/",
+            "imagem": "/images/divulgacao/remoto-feed.webp",
+            "ordem": 2
+        },
+        {
+            "id": "pcf-antes-depois",
+            "categoria": "pcformatech",
+            "titulo": "Antes e depois: alta performance",
+            "legenda": "De um computador travado para alta performance. Formatação, limpeza e otimização na PC Formatech, presencial em Canaã dos Carajás ou à distância. Diagnóstico grátis pelo WhatsApp.",
+            "link": "https://www.pcformatech.com.br/servicos/limpeza-e-otimizacao/",
+            "imagem": "/images/divulgacao/antes-depois.jpg",
+            "ordem": 3
+        },
+        {
+            "id": "pcf-computador-lento",
+            "categoria": "pcformatech",
+            "titulo": "Computador lento?",
+            "legenda": "Computador lento, travando na hora que você mais precisa? A PC Formatech deixa ele rápido de novo. Chame no WhatsApp e peça seu diagnóstico grátis.",
+            "link": "https://www.pcformatech.com.br/servicos/limpeza-e-otimizacao/",
+            "imagem": "/images/divulgacao/computador-lento.jpg",
+            "ordem": 4
+        },
+        {
+            "id": "pcf-virus-erros",
+            "categoria": "pcformatech",
+            "titulo": "Vírus, erros e problemas",
+            "legenda": "Vírus, erros de sistema e programas que não abrem podem custar tempo, dinheiro e segurança. A PC Formatech remove e deixa seu computador protegido.",
+            "link": "https://www.pcformatech.com.br/servicos/remocao-de-virus/",
+            "imagem": "/images/divulgacao/virus-erros.jpg",
+            "ordem": 5
+        },
+        {
+            "id": "pcf-nossos-servicos",
+            "categoria": "pcformatech",
+            "titulo": "Nossos serviços",
+            "legenda": "Formatação, instalação de programas, remoção de vírus, drivers, limpeza e otimização e suporte técnico. Tudo o que seu PC precisa, a PC Formatech resolve. Veja os serviços e os preços:",
+            "link": "https://www.pcformatech.com.br/servicos/",
+            "imagem": "/images/divulgacao/nossos-servicos.jpg",
+            "ordem": 6
+        },
+        {
+            "id": "pcf-nossa-missao",
+            "categoria": "pcformatech",
+            "titulo": "Seu PC. Nossa missão.",
+            "legenda": "Seu PC, nossa missão. Tecnologia, desempenho e confiança para você. Fale com a gente e agende seu serviço pelo WhatsApp.",
+            "link": "https://www.pcformatech.com.br/site.html",
+            "imagem": "/images/divulgacao/nossa-missao.jpg",
+            "ordem": 7
+        }
+    ]
 }
