@@ -86,19 +86,19 @@ const SERVICOS = [
     {
         slug: 'suporte-remoto',
         nome: 'Suporte técnico remoto',
-        titulo: 'Suporte Técnico Remoto para Computador, com 20% de Desconto',
-        descricao: 'Suporte técnico remoto pelo AnyDesk para todo o Brasil: instalação de programas, diagnóstico, otimização e correção de problemas, com 20% de desconto.',
+        titulo: 'Suporte Técnico Remoto para Computador, com 10% de Desconto',
+        descricao: 'Suporte técnico remoto pelo AnyDesk para todo o Brasil: instalação de programas, diagnóstico, otimização e correção de problemas, com 10% de desconto.',
         icone: 'fa-globe',
         preco: null,
-        precoTexto: '20% de desconto',
+        precoTexto: '10% de desconto',
         chamada: 'Resolva sem sair de casa. Pelo AnyDesk, o técnico acessa o seu computador com a sua permissão e você acompanha tudo pela tela.',
-        inclui: ['Atendimento sem sair de casa', 'Suporte técnico em tempo real', 'Instalação de programas', 'Diagnóstico e otimização do sistema', 'Conexão segura e criptografada', '20% de desconto em todos os serviços'],
+        inclui: ['Atendimento sem sair de casa', 'Suporte técnico em tempo real', 'Instalação de programas', 'Diagnóstico e otimização do sistema', 'Conexão segura e criptografada', '10% de desconto em todos os serviços'],
         quando: ['Você precisa instalar ou configurar um programa', 'O computador está lento ou dando erro', 'Você mora fora de Canaã dos Carajás', 'Você não tem tempo de levar o computador'],
-        passos: ['Baixe o AnyDesk no site oficial (anydesk.com)', 'Instale o programa; não precisa reiniciar', 'Chame no WhatsApp e passe o código que aparece no AnyDesk', 'Acompanhe o atendimento pela tela, com 20% de desconto'],
+        passos: ['Baixe o AnyDesk no site oficial (anydesk.com)', 'Instale o programa; não precisa reiniciar', 'Chame no WhatsApp e passe o código que aparece no AnyDesk', 'Acompanhe o atendimento pela tela, com 10% de desconto'],
         faq: [
             ['O atendimento remoto é seguro?', 'Sim. A conexão do AnyDesk é criptografada, só começa quando você aceita e você pode encerrar a qualquer momento.'],
             ['Atende fora de Canaã dos Carajás?', 'Sim. O suporte remoto atende qualquer cidade do Brasil, só precisa de internet.'],
-            ['O desconto vale para quais serviços?', 'Para todos os serviços feitos à distância: 20% de desconto.']
+            ['O desconto vale para quais serviços?', 'Para todos os serviços feitos à distância: 10% de desconto.']
         ]
     },
     {
@@ -129,7 +129,7 @@ const SERVICOS = [
         quando: ['A impressora, o som ou a internet pararam de funcionar', 'Você precisa do Office ou de um programa específico', 'O computador acabou de ser formatado', 'A tela ou os jogos estão com desempenho ruim'],
         faq: [
             ['Quanto custa instalar programas?', 'A partir de R$ 50 para programas e de R$ 40 para drivers. O valor final depende do que precisa ser instalado.'],
-            ['Dá para instalar à distância?', 'Sim, pelo suporte remoto, que tem 20% de desconto.'],
+            ['Dá para instalar à distância?', 'Sim, pelo suporte remoto, que tem 10% de desconto.'],
             ['Os drivers são oficiais?', 'Sim. São instalados a partir dos fabricantes, sem programas que vêm com propaganda.']
         ]
     }
