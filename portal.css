@@ -677,3 +677,37 @@ html[data-theme='dark'] .pt-loja-texto strong {
 @media (max-width: 760px) {
     .pt-loja { margin-inline: 1rem; }
 }
+
+/* ── Atalho para Apps e sistemas (apps.html) ──────────────────────────────── */
+
+.pt-apps { margin-top: -1.2rem; }
+.pt-apps:hover { border-color: #2d7a7a; }
+
+.pt-apps-ico {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    flex: 0 0 auto;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #0B3D3D, #2d7a7a);
+    color: #8ff1e3;
+}
+
+.pt-apps-ico svg {
+    width: 28px;
+    height: 28px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.pt-apps .pt-loja-texto strong {
+    background-image: linear-gradient(90deg, #0B3D3D, #2d9c90);
+}
+
+html[data-theme='dark'] .pt-apps .pt-loja-texto strong {
+    background-image: linear-gradient(90deg, #4fd1c0, #8ff1e3);
+}
