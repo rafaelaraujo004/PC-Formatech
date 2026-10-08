@@ -1651,7 +1651,7 @@
     <link rel="stylesheet" href="theme-system.css?v=6">
     <script src="theme-system.js?v=4"></script>
     <!-- Camada de refinamento: por ultimo, para vencer o <style> embutido e o theme-system.css -->
-    <link rel="stylesheet" href="admin-refinements.css?v=9">
+    <link rel="stylesheet" href="admin-refinements.css?v=10">
     <link rel="stylesheet" href="anuncios.css?v=4">
     <script src="auth-system.secure.js" defer></script>
 </head>
@@ -1754,6 +1754,9 @@
             </button>
             <button type="button" class="tab-button" onclick="switchTab('prices')">
                 <i class="fas fa-dollar-sign" aria-hidden="true"></i><span>Preços</span>
+            </button>
+            <button type="button" class="tab-button" onclick="switchTab('pedidos')" title="Pedidos da loja Bird Tech">
+                <i class="fas fa-receipt" aria-hidden="true"></i><span>Pedidos</span>
             </button>
             <button type="button" class="tab-button" onclick="switchTab('loja')" title="Loja Bird Tech">
                 <i class="fas fa-store" aria-hidden="true"></i><span>Loja</span>
@@ -2576,6 +2579,31 @@
         </div>
     </div>
 
+    <!-- Pedidos da loja Bird Tech -->
+    <div id="tab-pedidos" class="tab-content">
+        <div class="clients-container">
+            <div class="bl-cabecalho">
+                <span class="ad-cabecalho-icone pd-cabecalho-icone" aria-hidden="true"><i class="fas fa-receipt"></i></span>
+                <div>
+                    <h2>Pedidos da Bird Tech</h2>
+                    <p>Todo carrinho que chega ao fechamento aparece aqui: quem abriu o Pix, copiou o código, enviou o comprovante ou foi combinar no WhatsApp. Confira o Pix no app do banco e marque como pago.</p>
+                </div>
+                <button type="button" class="av-botao av-botao-secundario" id="pd-atualizar"><i class="fas fa-sync-alt" aria-hidden="true"></i> Atualizar</button>
+            </div>
+            <div class="ad-resumo" id="pd-resumo" aria-live="polite"></div>
+            <div class="dv-filtros" role="group" aria-label="Filtrar pedidos">
+                <button type="button" class="is-ativo" data-pd-filtro="abertos" aria-pressed="true">Aguardando</button>
+                <button type="button" data-pd-filtro="comprovante" aria-pressed="false">Com comprovante</button>
+                <button type="button" data-pd-filtro="pago" aria-pressed="false">Pagos</button>
+                <button type="button" data-pd-filtro="entregue" aria-pressed="false">Entregues</button>
+                <button type="button" data-pd-filtro="cancelado" aria-pressed="false">Cancelados</button>
+                <button type="button" data-pd-filtro="todos" aria-pressed="false">Todos</button>
+            </div>
+            <p class="av-status" id="pd-status" role="status" aria-live="polite"></p>
+            <div class="pd-lista" id="pd-lista"></div>
+        </div>
+    </div>
+
     <!-- Artes de divulgação para compartilhar -->
     <div id="tab-divulgacao" class="tab-content">
         <div class="clients-container">
@@ -3089,5 +3117,6 @@
         <script src="anuncios.js?v=4"></script>
         <script src="admin-anuncios.js?v=2"></script>
         <script src="admin-divulgacao.js?v=2"></script>
+        <script src="admin-pedidos.js?v=1"></script>
 </body>
 </html>

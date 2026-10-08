@@ -2270,3 +2270,98 @@ html[data-theme='dark'] .bl-aviso { color: #ffc46b; }
     .dv-filtros::-webkit-scrollbar { display: none; }
     .dv-filtros button { flex: 0 0 auto; white-space: nowrap; }
 }
+
+/* ── 19 · Pedidos da Bird Tech ────────────────────────────────────────────── */
+
+.pd-cabecalho-icone { background: linear-gradient(135deg, #1a47b8, #2f7fe0); color: #cfe2ff; }
+
+.pd-lista {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+    gap: 0.9rem;
+}
+
+.pd-card {
+    display: grid;
+    gap: 0.6rem;
+    padding: 1rem 1.05rem;
+    border: 1px solid var(--adm-borda);
+    border-left: 4px solid #d9922b;
+    border-radius: 14px;
+    background: var(--adm-superficie);
+    box-shadow: var(--adm-sombra);
+}
+
+.pd-card.pd-pago { border-left-color: var(--adm-ok); }
+.pd-card.pd-entregue { border-left-color: var(--adm-info); }
+.pd-card.pd-cancelado { border-left-color: var(--adm-borda-forte); opacity: 0.7; }
+.pd-card.is-esfriou { border-left-color: var(--adm-borda-forte); }
+
+.pd-topo {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 0.6rem;
+}
+
+.pd-codigo { font-family: 'JetBrains Mono', monospace; font-size: var(--adm-fs-base); color: var(--adm-texto); }
+.pd-quando { color: var(--adm-texto-suave); font-size: var(--adm-fs-xs); margin-right: auto; }
+
+.pd-itens {
+    display: grid;
+    gap: 0.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--adm-fs-sm);
+    color: var(--adm-texto);
+}
+
+.pd-itens li { display: flex; justify-content: space-between; gap: 0.6rem; }
+.pd-itens span { color: var(--adm-texto-suave); white-space: nowrap; }
+
+.pd-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin: 0;
+    padding-top: 0.45rem;
+    border-top: 1px dashed var(--adm-borda-forte);
+    color: var(--adm-texto-suave);
+    font-size: var(--adm-fs-sm);
+}
+
+.pd-total strong { color: var(--adm-texto); font-size: 1.3rem; font-variant-numeric: tabular-nums; }
+
+.pd-cliente { margin: 0; font-size: var(--adm-fs-sm); color: var(--adm-texto); }
+.pd-cliente em { color: var(--adm-texto-suave); }
+
+.pd-etapas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.pd-etapas li {
+    padding: 0.2rem 0.55rem;
+    border-radius: 8px;
+    background: var(--adm-info-suave);
+    color: var(--adm-info);
+    font-size: var(--adm-fs-xs);
+    font-weight: 700;
+}
+
+.pd-etapas .pd-etapa-comprovante { background: var(--adm-ok-suave); color: var(--adm-ok); }
+.pd-etapas .pd-etapa-whatsapp { background: var(--adm-alerta-suave); color: var(--adm-alerta); }
+
+.pd-acoes { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.pd-acoes .av-botao { min-height: 40px; padding: 0 0.8rem; font-size: var(--adm-fs-xs); }
+.pd-acoes .pd-pago { background: linear-gradient(135deg, #1f9e74, #157a58) !important; color: #fff !important; border: 0 !important; }
+
+/* 13 abas: 7 por linha em telas largas. */
+@media (min-width: 1200px) {
+    #adminPanel .admin-tabs { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+}
