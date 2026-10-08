@@ -69,16 +69,10 @@
     <!-- Google Fonts - Sora / Manrope -->
     <link rel="preload" href="/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/sora-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="fontes.css">
+    <!-- Todas as folhas da página num só arquivo (ferramentas/empacotar-css.js). -->
+    <link rel="stylesheet" href="/css/site-pacote.css?v=1">
     
-    <link rel="stylesheet" href="brand.css">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="mobile-desktop.css">
-    <link rel="stylesheet" href="styles2.css?v=3">
-    <link rel="stylesheet" href="theme-system.css?v=6">
-    <link rel="stylesheet" href="refinements.css?v=8">
     <link rel="preload" href="/fonts/fa-solid-subset-1.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="icones.css">
     
     <!-- Widget do WhatsApp -->
     <style>
@@ -408,120 +402,120 @@
             <div class="hero-slider">
                 <div class="hero-slide active">
                     <picture>
-                        <source type="image/avif" srcset="images/hero/optimized/slide-01-640.avif 640w, images/hero/optimized/slide-01-1280.avif 1280w, images/hero/optimized/slide-01-1920.avif 1920w" sizes="100vw">
-                        <source type="image/webp" srcset="images/hero/optimized/slide-01-640.webp 640w, images/hero/optimized/slide-01-1280.webp 1280w, images/hero/optimized/slide-01-1920.webp 1920w" sizes="100vw">
+                        <source type="image/avif" srcset="images/hero/optimized/slide-01-640.avif 640w, images/hero/optimized/slide-01-1280.avif 1280w, images/hero/optimized/slide-01-1920.avif 1920w" sizes="(min-width: 900px) 56vw, 100vw">
+                        <source type="image/webp" srcset="images/hero/optimized/slide-01-640.webp 640w, images/hero/optimized/slide-01-1280.webp 1280w, images/hero/optimized/slide-01-1920.webp 1920w" sizes="(min-width: 900px) 56vw, 100vw">
                         <img src="images/hero/slide-01.jpg" alt="Laptop em Manutenção" width="1920" height="1280" decoding="async" fetchpriority="high">
                     </picture>
                 </div>
                 <div class="hero-slide" data-lazy-slide>
                     <picture>
-                        <source type="image/avif" data-srcset="images/hero/optimized/slide-02-640.avif 640w, images/hero/optimized/slide-02-1280.avif 1280w, images/hero/optimized/slide-02-1920.avif 1920w" sizes="100vw">
-                        <source type="image/webp" data-srcset="images/hero/optimized/slide-02-640.webp 640w, images/hero/optimized/slide-02-1280.webp 1280w, images/hero/optimized/slide-02-1920.webp 1920w" sizes="100vw">
+                        <source type="image/avif" data-srcset="images/hero/optimized/slide-02-640.avif 640w, images/hero/optimized/slide-02-1280.avif 1280w, images/hero/optimized/slide-02-1920.avif 1920w" sizes="(min-width: 900px) 56vw, 100vw">
+                        <source type="image/webp" data-srcset="images/hero/optimized/slide-02-640.webp 640w, images/hero/optimized/slide-02-1280.webp 1280w, images/hero/optimized/slide-02-1920.webp 1920w" sizes="(min-width: 900px) 56vw, 100vw">
                         <img data-src="images/hero/slide-02.jpg" alt="Workspace com Laptop" width="1920" height="1324" decoding="async">
                     </picture>
                 </div>
                 <div class="hero-slide" data-lazy-slide>
                     <picture>
-                        <source type="image/avif" data-srcset="images/hero/optimized/slide-03-640.avif 640w, images/hero/optimized/slide-03-1280.avif 1280w, images/hero/optimized/slide-03-1920.avif 1920w" sizes="100vw">
-                        <source type="image/webp" data-srcset="images/hero/optimized/slide-03-640.webp 640w, images/hero/optimized/slide-03-1280.webp 1280w, images/hero/optimized/slide-03-1920.webp 1920w" sizes="100vw">
+                        <source type="image/avif" data-srcset="images/hero/optimized/slide-03-640.avif 640w, images/hero/optimized/slide-03-1280.avif 1280w, images/hero/optimized/slide-03-1920.avif 1920w" sizes="(min-width: 900px) 56vw, 100vw">
+                        <source type="image/webp" data-srcset="images/hero/optimized/slide-03-640.webp 640w, images/hero/optimized/slide-03-1280.webp 1280w, images/hero/optimized/slide-03-1920.webp 1920w" sizes="(min-width: 900px) 56vw, 100vw">
                         <img data-src="images/hero/slide-03.jpg" alt="Programação e Desenvolvimento" width="1920" height="1278" decoding="async">
                     </picture>
                 </div>
                 <div class="hero-slide" data-lazy-slide>
                     <picture>
-                        <source type="image/avif" data-srcset="images/hero/optimized/slide-04-640.avif 640w, images/hero/optimized/slide-04-1280.avif 1280w, images/hero/optimized/slide-04-1920.avif 1920w" sizes="100vw">
-                        <source type="image/webp" data-srcset="images/hero/optimized/slide-04-640.webp 640w, images/hero/optimized/slide-04-1280.webp 1280w, images/hero/optimized/slide-04-1920.webp 1920w" sizes="100vw">
+                        <source type="image/avif" data-srcset="images/hero/optimized/slide-04-640.avif 640w, images/hero/optimized/slide-04-1280.avif 1280w, images/hero/optimized/slide-04-1920.avif 1920w" sizes="(min-width: 900px) 56vw, 100vw">
+                        <source type="image/webp" data-srcset="images/hero/optimized/slide-04-640.webp 640w, images/hero/optimized/slide-04-1280.webp 1280w, images/hero/optimized/slide-04-1920.webp 1920w" sizes="(min-width: 900px) 56vw, 100vw">
                         <img data-src="images/hero/slide-04.jpg" alt="Computador Profissional" width="1920" height="1277" decoding="async">
                     </picture>
                 </div>
                 <div class="hero-slide" data-lazy-slide>
                     <picture>
-                        <source type="image/avif" data-srcset="images/hero/optimized/slide-05-640.avif 640w, images/hero/optimized/slide-05-1280.avif 1280w, images/hero/optimized/slide-05-1920.avif 1920w" sizes="100vw">
-                        <source type="image/webp" data-srcset="images/hero/optimized/slide-05-640.webp 640w, images/hero/optimized/slide-05-1280.webp 1280w, images/hero/optimized/slide-05-1920.webp 1920w" sizes="100vw">
+                        <source type="image/avif" data-srcset="images/hero/optimized/slide-05-640.avif 640w, images/hero/optimized/slide-05-1280.avif 1280w, images/hero/optimized/slide-05-1920.avif 1920w" sizes="(min-width: 900px) 56vw, 100vw">
+                        <source type="image/webp" data-srcset="images/hero/optimized/slide-05-640.webp 640w, images/hero/optimized/slide-05-1280.webp 1280w, images/hero/optimized/slide-05-1920.webp 1920w" sizes="(min-width: 900px) 56vw, 100vw">
                         <img data-src="images/hero/slide-05.jpg" alt="Laptop em Ambiente Profissional" width="1920" height="2880" decoding="async">
                     </picture>
                 </div>
                 <div class="hero-slide" data-lazy-slide>
                     <picture>
-                        <source type="image/avif" data-srcset="images/hero/optimized/slide-06-640.avif 640w, images/hero/optimized/slide-06-1280.avif 1280w, images/hero/optimized/slide-06-1920.avif 1920w" sizes="100vw">
-                        <source type="image/webp" data-srcset="images/hero/optimized/slide-06-640.webp 640w, images/hero/optimized/slide-06-1280.webp 1280w, images/hero/optimized/slide-06-1920.webp 1920w" sizes="100vw">
+                        <source type="image/avif" data-srcset="images/hero/optimized/slide-06-640.avif 640w, images/hero/optimized/slide-06-1280.avif 1280w, images/hero/optimized/slide-06-1920.avif 1920w" sizes="(min-width: 900px) 56vw, 100vw">
+                        <source type="image/webp" data-srcset="images/hero/optimized/slide-06-640.webp 640w, images/hero/optimized/slide-06-1280.webp 1280w, images/hero/optimized/slide-06-1920.webp 1920w" sizes="(min-width: 900px) 56vw, 100vw">
                         <img data-src="images/hero/slide-06.jpg" alt="Setup Moderno de Programação" width="1920" height="1280" decoding="async">
                     </picture>
                 </div>
                 <div class="hero-slide" data-lazy-slide>
                     <picture>
-                        <source type="image/avif" data-srcset="images/hero/optimized/slide-07-640.avif 640w, images/hero/optimized/slide-07-1280.avif 1280w, images/hero/optimized/slide-07-1920.avif 1920w" sizes="100vw">
-                        <source type="image/webp" data-srcset="images/hero/optimized/slide-07-640.webp 640w, images/hero/optimized/slide-07-1280.webp 1280w, images/hero/optimized/slide-07-1920.webp 1920w" sizes="100vw">
+                        <source type="image/avif" data-srcset="images/hero/optimized/slide-07-640.avif 640w, images/hero/optimized/slide-07-1280.avif 1280w, images/hero/optimized/slide-07-1920.avif 1920w" sizes="(min-width: 900px) 56vw, 100vw">
+                        <source type="image/webp" data-srcset="images/hero/optimized/slide-07-640.webp 640w, images/hero/optimized/slide-07-1280.webp 1280w, images/hero/optimized/slide-07-1920.webp 1920w" sizes="(min-width: 900px) 56vw, 100vw">
                         <img data-src="images/hero/slide-07.jpg" alt="Hardware e Componentes" width="1920" height="2400" decoding="async">
                     </picture>
                 </div>
                 <div class="hero-slide" data-lazy-slide>
                     <picture>
-                        <source type="image/avif" data-srcset="images/hero/optimized/slide-08-640.avif 640w, images/hero/optimized/slide-08-1280.avif 1280w, images/hero/optimized/slide-08-1920.avif 1920w" sizes="100vw">
-                        <source type="image/webp" data-srcset="images/hero/optimized/slide-08-640.webp 640w, images/hero/optimized/slide-08-1280.webp 1280w, images/hero/optimized/slide-08-1920.webp 1920w" sizes="100vw">
+                        <source type="image/avif" data-srcset="images/hero/optimized/slide-08-640.avif 640w, images/hero/optimized/slide-08-1280.avif 1280w, images/hero/optimized/slide-08-1920.avif 1920w" sizes="(min-width: 900px) 56vw, 100vw">
+                        <source type="image/webp" data-srcset="images/hero/optimized/slide-08-640.webp 640w, images/hero/optimized/slide-08-1280.webp 1280w, images/hero/optimized/slide-08-1920.webp 1920w" sizes="(min-width: 900px) 56vw, 100vw">
                         <img data-src="images/hero/slide-08.jpg" alt="MacBook Pro Workspace" width="1920" height="1195" decoding="async">
                     </picture>
                 </div>
                 <div class="hero-slide" data-lazy-slide>
                     <picture>
-                        <source type="image/avif" data-srcset="images/hero/optimized/slide-09-640.avif 640w, images/hero/optimized/slide-09-1280.avif 1280w, images/hero/optimized/slide-09-1920.avif 1920w" sizes="100vw">
-                        <source type="image/webp" data-srcset="images/hero/optimized/slide-09-640.webp 640w, images/hero/optimized/slide-09-1280.webp 1280w, images/hero/optimized/slide-09-1920.webp 1920w" sizes="100vw">
+                        <source type="image/avif" data-srcset="images/hero/optimized/slide-09-640.avif 640w, images/hero/optimized/slide-09-1280.avif 1280w, images/hero/optimized/slide-09-1920.avif 1920w" sizes="(min-width: 900px) 56vw, 100vw">
+                        <source type="image/webp" data-srcset="images/hero/optimized/slide-09-640.webp 640w, images/hero/optimized/slide-09-1280.webp 1280w, images/hero/optimized/slide-09-1920.webp 1920w" sizes="(min-width: 900px) 56vw, 100vw">
                         <img data-src="images/hero/slide-09.jpg" alt="Tech Workspace Minimalista" width="1920" height="1280" decoding="async">
                     </picture>
                 </div>
                 <div class="hero-slide" data-lazy-slide>
                     <picture>
-                        <source type="image/avif" data-srcset="images/hero/optimized/slide-10-640.avif 640w, images/hero/optimized/slide-10-1280.avif 1280w, images/hero/optimized/slide-10-1920.avif 1920w" sizes="100vw">
-                        <source type="image/webp" data-srcset="images/hero/optimized/slide-10-640.webp 640w, images/hero/optimized/slide-10-1280.webp 1280w, images/hero/optimized/slide-10-1920.webp 1920w" sizes="100vw">
+                        <source type="image/avif" data-srcset="images/hero/optimized/slide-10-640.avif 640w, images/hero/optimized/slide-10-1280.avif 1280w, images/hero/optimized/slide-10-1920.avif 1920w" sizes="(min-width: 900px) 56vw, 100vw">
+                        <source type="image/webp" data-srcset="images/hero/optimized/slide-10-640.webp 640w, images/hero/optimized/slide-10-1280.webp 1280w, images/hero/optimized/slide-10-1920.webp 1920w" sizes="(min-width: 900px) 56vw, 100vw">
                         <img data-src="images/hero/slide-10.jpg" alt="Gaming PC Setup" width="1920" height="1269" decoding="async">
                     </picture>
                 </div>
                 <div class="hero-slide" data-lazy-slide>
                     <picture>
-                        <source type="image/avif" data-srcset="images/hero/optimized/slide-11-640.avif 640w, images/hero/optimized/slide-11-1280.avif 1280w, images/hero/optimized/slide-11-1920.avif 1920w" sizes="100vw">
-                        <source type="image/webp" data-srcset="images/hero/optimized/slide-11-640.webp 640w, images/hero/optimized/slide-11-1280.webp 1280w, images/hero/optimized/slide-11-1920.webp 1920w" sizes="100vw">
+                        <source type="image/avif" data-srcset="images/hero/optimized/slide-11-640.avif 640w, images/hero/optimized/slide-11-1280.avif 1280w, images/hero/optimized/slide-11-1920.avif 1920w" sizes="(min-width: 900px) 56vw, 100vw">
+                        <source type="image/webp" data-srcset="images/hero/optimized/slide-11-640.webp 640w, images/hero/optimized/slide-11-1280.webp 1280w, images/hero/optimized/slide-11-1920.webp 1920w" sizes="(min-width: 900px) 56vw, 100vw">
                         <img data-src="images/hero/slide-11.jpg" alt="Setup Clean com Teclado Retroiluminado" width="1920" height="1536" decoding="async">
                     </picture>
                 </div>
                 <div class="hero-slide" data-lazy-slide>
                     <picture>
-                        <source type="image/avif" data-srcset="images/hero/optimized/slide-12-640.avif 640w, images/hero/optimized/slide-12-1280.avif 1280w, images/hero/optimized/slide-12-1920.avif 1920w" sizes="100vw">
-                        <source type="image/webp" data-srcset="images/hero/optimized/slide-12-640.webp 640w, images/hero/optimized/slide-12-1280.webp 1280w, images/hero/optimized/slide-12-1920.webp 1920w" sizes="100vw">
+                        <source type="image/avif" data-srcset="images/hero/optimized/slide-12-640.avif 640w, images/hero/optimized/slide-12-1280.avif 1280w, images/hero/optimized/slide-12-1920.avif 1920w" sizes="(min-width: 900px) 56vw, 100vw">
+                        <source type="image/webp" data-srcset="images/hero/optimized/slide-12-640.webp 640w, images/hero/optimized/slide-12-1280.webp 1280w, images/hero/optimized/slide-12-1920.webp 1920w" sizes="(min-width: 900px) 56vw, 100vw">
                         <img data-src="images/hero/slide-12.jpg" alt="Mesa com Múltiplos Monitores" width="1920" height="1282" decoding="async">
                     </picture>
                 </div>
                 <div class="hero-slide" data-lazy-slide>
                     <picture>
-                        <source type="image/avif" data-srcset="images/hero/optimized/slide-13-640.avif 640w, images/hero/optimized/slide-13-1280.avif 1280w, images/hero/optimized/slide-13-1920.avif 1920w" sizes="100vw">
-                        <source type="image/webp" data-srcset="images/hero/optimized/slide-13-640.webp 640w, images/hero/optimized/slide-13-1280.webp 1280w, images/hero/optimized/slide-13-1920.webp 1920w" sizes="100vw">
+                        <source type="image/avif" data-srcset="images/hero/optimized/slide-13-640.avif 640w, images/hero/optimized/slide-13-1280.avif 1280w, images/hero/optimized/slide-13-1920.avif 1920w" sizes="(min-width: 900px) 56vw, 100vw">
+                        <source type="image/webp" data-srcset="images/hero/optimized/slide-13-640.webp 640w, images/hero/optimized/slide-13-1280.webp 1280w, images/hero/optimized/slide-13-1920.webp 1920w" sizes="(min-width: 900px) 56vw, 100vw">
                         <img data-src="images/hero/slide-13.jpg" alt="Setup de Programação com Luzes LED" width="1920" height="1280" decoding="async">
                     </picture>
                 </div>
                 <div class="hero-slide" data-lazy-slide>
                     <picture>
-                        <source type="image/avif" data-srcset="images/hero/optimized/slide-19-640.avif 640w, images/hero/optimized/slide-19-1280.avif 1280w, images/hero/optimized/slide-19-1920.avif 1920w" sizes="100vw">
-                        <source type="image/webp" data-srcset="images/hero/optimized/slide-19-640.webp 640w, images/hero/optimized/slide-19-1280.webp 1280w, images/hero/optimized/slide-19-1920.webp 1920w" sizes="100vw">
+                        <source type="image/avif" data-srcset="images/hero/optimized/slide-19-640.avif 640w, images/hero/optimized/slide-19-1280.avif 1280w, images/hero/optimized/slide-19-1920.avif 1920w" sizes="(min-width: 900px) 56vw, 100vw">
+                        <source type="image/webp" data-srcset="images/hero/optimized/slide-19-640.webp 640w, images/hero/optimized/slide-19-1280.webp 1280w, images/hero/optimized/slide-19-1920.webp 1920w" sizes="(min-width: 900px) 56vw, 100vw">
                         <img data-src="images/hero/slide-19.jpg" alt="Espaço de Trabalho com Luz e Monitores" width="1920" height="2319" decoding="async">
                     </picture>
                 </div>
                 <div class="hero-slide" data-lazy-slide>
                     <picture>
-                        <source type="image/avif" data-srcset="images/hero/optimized/slide-20-640.avif 640w, images/hero/optimized/slide-20-1280.avif 1280w, images/hero/optimized/slide-20-1920.avif 1920w" sizes="100vw">
-                        <source type="image/webp" data-srcset="images/hero/optimized/slide-20-640.webp 640w, images/hero/optimized/slide-20-1280.webp 1280w, images/hero/optimized/slide-20-1920.webp 1920w" sizes="100vw">
+                        <source type="image/avif" data-srcset="images/hero/optimized/slide-20-640.avif 640w, images/hero/optimized/slide-20-1280.avif 1280w, images/hero/optimized/slide-20-1920.avif 1920w" sizes="(min-width: 900px) 56vw, 100vw">
+                        <source type="image/webp" data-srcset="images/hero/optimized/slide-20-640.webp 640w, images/hero/optimized/slide-20-1280.webp 1280w, images/hero/optimized/slide-20-1920.webp 1920w" sizes="(min-width: 900px) 56vw, 100vw">
                         <img data-src="images/hero/slide-20.jpg" alt="Interior de PC com Componentes Visíveis" width="1920" height="1260" decoding="async">
                     </picture>
                 </div>
                 <div class="hero-slide" data-lazy-slide>
                     <picture>
-                        <source type="image/avif" data-srcset="images/hero/optimized/slide-21-640.avif 640w, images/hero/optimized/slide-21-1280.avif 1280w, images/hero/optimized/slide-21-1920.avif 1920w" sizes="100vw">
-                        <source type="image/webp" data-srcset="images/hero/optimized/slide-21-640.webp 640w, images/hero/optimized/slide-21-1280.webp 1280w, images/hero/optimized/slide-21-1920.webp 1920w" sizes="100vw">
+                        <source type="image/avif" data-srcset="images/hero/optimized/slide-21-640.avif 640w, images/hero/optimized/slide-21-1280.avif 1280w, images/hero/optimized/slide-21-1920.avif 1920w" sizes="(min-width: 900px) 56vw, 100vw">
+                        <source type="image/webp" data-srcset="images/hero/optimized/slide-21-640.webp 640w, images/hero/optimized/slide-21-1280.webp 1280w, images/hero/optimized/slide-21-1920.webp 1920w" sizes="(min-width: 900px) 56vw, 100vw">
                         <img data-src="images/hero/slide-21.jpg" alt="Setup Gamer RGB Aesthetic" width="1920" height="1282" decoding="async">
                     </picture>
                 </div>
                 <div class="hero-slide" data-lazy-slide>
                     <picture>
-                        <source type="image/avif" data-srcset="images/hero/optimized/slide-23-640.avif 640w, images/hero/optimized/slide-23-1280.avif 1280w, images/hero/optimized/slide-23-1920.avif 1920w" sizes="100vw">
-                        <source type="image/webp" data-srcset="images/hero/optimized/slide-23-640.webp 640w, images/hero/optimized/slide-23-1280.webp 1280w, images/hero/optimized/slide-23-1920.webp 1920w" sizes="100vw">
+                        <source type="image/avif" data-srcset="images/hero/optimized/slide-23-640.avif 640w, images/hero/optimized/slide-23-1280.avif 1280w, images/hero/optimized/slide-23-1920.avif 1920w" sizes="(min-width: 900px) 56vw, 100vw">
+                        <source type="image/webp" data-srcset="images/hero/optimized/slide-23-640.webp 640w, images/hero/optimized/slide-23-1280.webp 1280w, images/hero/optimized/slide-23-1920.webp 1920w" sizes="(min-width: 900px) 56vw, 100vw">
                         <img data-src="images/hero/slide-23.jpg" alt="Setup Aesthetic com Monitor Ultrawide" width="1920" height="1280" decoding="async">
                     </picture>
                 </div>
