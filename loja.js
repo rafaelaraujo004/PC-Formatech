@@ -340,7 +340,10 @@
             ? 'Quero entrega em Canaã dos Carajás (combinar).'
             : 'Vou retirar com a PC Formatech.';
         const obs = $('bt-obs').value.trim();
+        const nome = $('bt-nome').value.trim();
         return ['Olá! Quero fazer este pedido na Bird Tech:', '', ...linhas, '', 'Total: ' + moeda(totalDoCarrinho()), entrega]
+            .concat(nome ? ['Nome: ' + nome] : [])
+            .concat(codigoPedido ? ['Pedido: ' + codigoPedido] : [])
             .concat(obs ? ['Observação: ' + obs] : [])
             .concat(['', 'Ainda tem disponível?'])
             .join('\n');
@@ -354,6 +357,33 @@
 
     function novoCodigo() {
         return 'BT' + Date.now().toString(36).toUpperCase().slice(-6);
+    }
+
+    /**
+     * Guarda o pedido no painel (aba Pedidos) a cada etapa: pix (abriu a tela
+     * de pagamento), copiou, comprovante e whatsapp. Preço e total são
+     * conferidos no servidor. O aparelho do dono vai marcado como teste.
+     */
+    function registrarPedido(etapa) {
+        if (!codigoPedido) return;
+        let teste = false;
+        try { teste = localStorage.getItem('pcft_dono') === '1'; } catch (e) { /* sem armazenamento */ }
+        const corpo = JSON.stringify({
+            acao: 'registrar',
+            pedido: {
+                codigo: codigoPedido,
+                etapa,
+                itens: [...carrinho].map(([id, qtd]) => ({ id, qtd })),
+                entrega: (document.querySelector('input[name="bt-entrega"]:checked') || {}).value,
+                obs: $('bt-obs').value.trim(),
+                nome: $('bt-nome').value.trim(),
+                telefone: $('bt-telefone').value.trim(),
+                teste
+            }
+        });
+        try {
+            fetch('/api/pedidos', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: corpo, keepalive: true }).catch(() => {});
+        } catch (e) { /* o pedido segue pelo WhatsApp de qualquer forma */ }
     }
 
     function mensagemComprovante() {
@@ -452,6 +482,7 @@
         codigoPedido = novoCodigo();
         mostrarPix(true);
         registrar('acao', 'pix:loja-fechar');
+        registrarPedido('pix');
     });
     $('bt-pix-voltar').addEventListener('click', () => mostrarPix(false));
     $('bt-pix-copiar').addEventListener('click', async () => {
@@ -460,9 +491,11 @@
         try { await navigator.clipboard.writeText(codigo); copiou = true; } catch (e) { /* sem área de transferência */ }
         $('bt-pix-copiar-texto').textContent = copiou ? 'Código copiado! Cole no app do banco' : 'Não deu para copiar: use o QR Code';
         registrar('acao', 'pix:loja-copiar');
+        registrarPedido('copiou');
     });
     $('bt-pix-enviar').addEventListener('click', () => {
         registrar('acao', 'whatsapp:loja-pix');
+        registrarPedido('comprovante');
         $('bt-limpar-carrinho').textContent = 'Pedido enviado? Esvaziar carrinho';
     });
     dialogoCarrinho.addEventListener('close', () => { if (pixAberto) mostrarPix(false); });
@@ -482,7 +515,9 @@
     $('bt-carrinho-form').addEventListener('input', () => { $('bt-enviar-pedido').href = linkWhatsApp(mensagemPedido()); });
     $('bt-carrinho-form').addEventListener('submit', (e) => e.preventDefault());
     $('bt-enviar-pedido').addEventListener('click', () => {
+        if (!codigoPedido) { codigoPedido = novoCodigo(); $('bt-enviar-pedido').href = linkWhatsApp(mensagemPedido()); }
         registrar('acao', 'whatsapp:loja-pedido');
+        registrarPedido('whatsapp');
         // Depois de enviar, oferece esvaziar o carrinho (o pedido já foi).
         $('bt-limpar-carrinho').textContent = 'Pedido enviado? Esvaziar carrinho';
     });
@@ -491,6 +526,7 @@
         carrinho.clear();
         salvarCarrinho();
         mostrarPix(false);
+        codigoPedido = null;
         atualizarCarrinho();
         $('bt-limpar-carrinho').textContent = 'Esvaziar carrinho';
         dialogoCarrinho.close();

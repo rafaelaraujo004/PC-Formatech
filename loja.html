@@ -35,7 +35,7 @@
     <link rel="preload" href="/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/sora-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="fontes.css">
-    <link rel="stylesheet" href="loja.css?v=4">
+    <link rel="stylesheet" href="loja.css?v=5">
 </head>
 <body>
     <a class="bt-pular" href="#vitrine">Pular para os produtos</a>
@@ -177,6 +177,16 @@
                     <label><input type="radio" name="bt-entrega" value="retirada" checked> <span>Retirar com a PC Formatech</span></label>
                     <label><input type="radio" name="bt-entrega" value="entrega"> <span>Entrega em Canaã (combinar)</span></label>
                 </fieldset>
+                <div class="bt-cliente">
+                    <div>
+                        <label class="bt-obs-rotulo" for="bt-nome">Seu nome <small>(opcional)</small></label>
+                        <input type="text" id="bt-nome" maxlength="80" autocomplete="name">
+                    </div>
+                    <div>
+                        <label class="bt-obs-rotulo" for="bt-telefone">Seu WhatsApp <small>(opcional)</small></label>
+                        <input type="tel" id="bt-telefone" maxlength="16" inputmode="tel" autocomplete="tel" placeholder="(94) 9 9999-9999">
+                    </div>
+                </div>
                 <label class="bt-obs-rotulo" for="bt-obs">Observação <small>(opcional)</small></label>
                 <textarea id="bt-obs" rows="2" maxlength="300" placeholder="Ex.: cor preferida, horário para retirar"></textarea>
             </form>
@@ -224,7 +234,7 @@
     <script src="site-config.js"></script>
     <script src="vendor/qrcode-generator.js" defer></script>
     <script src="pix.js?v=1" defer></script>
-    <script src="loja.js?v=4" defer></script>
+    <script src="loja.js?v=5" defer></script>
 
     <!-- Tema e contagem de visitantes do "Tempo Real", como nas outras páginas. -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>

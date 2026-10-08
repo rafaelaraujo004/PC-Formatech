@@ -1024,6 +1024,15 @@ body.bt-com-carrinho { padding-bottom: 90px; }
 
 .bt-obs-rotulo { display: block; }
 
+.bt-cliente {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
+    gap: 0.6rem;
+    margin-bottom: 0.8rem;
+}
+
+#bt-nome,
+#bt-telefone,
 #bt-obs {
     width: 100%;
     padding: 0.7rem 0.85rem;
