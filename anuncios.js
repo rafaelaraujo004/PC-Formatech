@@ -12,7 +12,7 @@
     const API = '/api/anuncios';
     const LOGO = '/images/loja/bird-tech-icone-176.webp';
     const VISTOS_KEY = 'pcft_anuncios_vistos';
-    const CSS = '/anuncios.css?v=2';
+    const CSS = '/anuncios.css?v=3';
 
     const moeda = (valor) => Number(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
@@ -57,16 +57,16 @@
         return p;
     }
 
-    function marca() {
+    function marca(nome, logoSrc) {
         const topo = el('div', 'an-topo');
         const logo = el('span', 'an-marca');
         const img = el('img');
-        img.src = LOGO;
+        img.src = logoSrc || LOGO;
         img.alt = '';
         img.width = 28;
         img.height = 28;
         img.decoding = 'async';
-        logo.append(img, el('span', 'an-marca-nome', 'Bird Tech'));
+        logo.append(img, el('span', 'an-marca-nome', nome || 'Bird Tech'));
         topo.append(logo);
         return topo;
     }
@@ -139,6 +139,50 @@
         slide.append(fundo, palco);
     }
 
+/** Apps e sistemas: celular com a tela de demonstração, "a partir de" e os botões. */
+    function montarApps(a, slide, imediato) {
+        const info = a.apps;
+        const titulo = a.titulo || 'Troque suas planilhas por um sistema';
+        const chamada = a.chamada || 'Sistema feito sob medida para o seu negócio, no celular e no computador. Pronto em 7 a 15 dias.';
+        slide.setAttribute('aria-label', 'Anúncio: ' + titulo + ', a partir de ' + moeda(info.preco));
+
+        const fundo = el('div', 'an-fundo');
+        fundo.setAttribute('aria-hidden', 'true');
+        fundo.append(el('span', 'an-brilho'), el('span', 'an-grade'), el('span', 'an-feixe'));
+
+        const palco = el('div', 'an-palco');
+        const topo = marca('PC Formatech', '/icon-192.png');
+        if (a.selo) topo.append(el('span', 'an-selo', a.selo));
+
+        const precos = el('div', 'an-precos');
+        precos.append(el('p', 'an-preco-de an-a-partir', 'A partir de'), blocoPreco(info.preco));
+        const prazo = textoPrazo(a.fim);
+        if (prazo) {
+            const aviso = el('p', 'an-prazo');
+            aviso.append(icone('fas fa-clock'), document.createTextNode(' ' + prazo));
+            precos.append(aviso);
+        }
+
+        const acoes = el('div', 'an-acoes');
+        const ver = el('a', 'an-cta');
+        ver.href = a.link || info.link;
+        ver.append(el('span', '', a.botaoTexto || 'Ver os sistemas'), icone('fas fa-arrow-right'));
+        const zap = el('a', 'an-cta-sec');
+        zap.href = linkWhatsApp('Olá! Vi no site e quero um sistema para o meu negócio. Posso mandar minha planilha?');
+        zap.target = '_blank';
+        zap.rel = 'noopener';
+        zap.append(icone('fab fa-whatsapp'), el('span', '', 'Mandar planilha'));
+        acoes.append(ver, zap);
+
+        const vitrine = el('figure', 'an-vitrine');
+        const celular = el('div', 'an-vitrine-moldura an-moldura-celular');
+        celular.append(foto(info.imagem, 'Tela de demonstração de um sistema', imediato));
+        vitrine.append(el('span', 'an-pedestal'), celular);
+
+        palco.append(topo, el('p', 'an-titulo', titulo), el('p', 'an-chamada', chamada), precos, acoes, vitrine);
+        slide.append(fundo, palco);
+    }
+
     function montarImagem(a, slide, imediato) {
         slide.setAttribute('aria-label', 'Anúncio: ' + (a.titulo || 'promoção'));
 
@@ -183,13 +227,14 @@
     function montar(a, opcoes) {
         const imediato = Boolean(opcoes && opcoes.previa);
         const slide = el('div', 'hero-slide hero-anuncio an-estilo-' + (a.estilo || 'bird'));
-        slide.classList.add(a.tipo === 'imagem' ? 'an-tipo-imagem' : 'an-tipo-produto');
+        slide.classList.add('an-tipo-' + (a.tipo || 'produto'));
         slide.dataset.anuncio = a.id || '';
         slide.setAttribute('role', 'group');
         slide.setAttribute('aria-roledescription', 'anúncio');
         if (!imediato) slide.setAttribute('data-lazy-slide', '');
 
         if (a.tipo === 'imagem') montarImagem(a, slide, imediato);
+        else if (a.tipo === 'apps' && a.apps) montarApps(a, slide, imediato);
         else if (a.produto) montarProduto(a, slide, imediato);
         else return null;
         return slide;

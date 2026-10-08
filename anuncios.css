@@ -477,6 +477,27 @@
     .an-palco { padding-top: 4cqh; }
 }
 
+/* Apps e sistemas: o "produto" é um celular com a tela de demonstração. */
+.an-moldura-celular {
+    width: auto;
+    height: 100%;
+    max-height: 84cqh;
+    aspect-ratio: 9 / 19;
+    border: 6px solid #0d1b1d;
+    border-radius: 13%/6%;
+    background: #0d1b1d;
+}
+
+.an-a-partir {
+    margin-bottom: 0.1rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.an-tipo-apps .an-marca img { border-radius: 8px; }
+
 /* ── Anúncio de arte própria ─────────────────────────────────────────────── */
 
 .an-arte-fundo,
