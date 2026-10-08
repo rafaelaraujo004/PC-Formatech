@@ -1,5 +1,5 @@
 // Gera as páginas de serviço (servicos/<slug>/index.html), a página
-// servicos/index.html e o sitemap.xml.
+// servicos/index.html, a página de apps e sistemas (apps.html) e o sitemap.xml.
 //
 // Cada serviço tem uma página própria para o Google mostrar quando alguém
 // busca exatamente aquilo ("formatação de computador em Canaã dos Carajás").
@@ -179,6 +179,7 @@ const topo = `<header class="sv-topo">
         <nav class="sv-nav" aria-label="Principal">
             <a href="/servicos/">Serviços</a>
             <a href="/loja.html">Loja</a>
+            <a href="/apps.html">Apps</a>
             <a class="sv-nav-zap" href="${zap('Olá! Vim pelo site e quero um orçamento.')}" target="_blank" rel="noopener"><i class="fab fa-whatsapp" aria-hidden="true"></i> WhatsApp</a>
         </nav>
     </header>`;
@@ -344,6 +345,281 @@ function paginaIndice() {
 `;
 }
 
+// ── Página de criação de apps e sistemas (apps.html) ──────────────────────
+//
+// PREÇOS: preencha os valores (em reais) e rode o script de novo. Enquanto um
+// preço estiver null, a página mostra "R$ [PREÇO]" e o script avisa.
+
+const APPS = {
+    prazo: '7 a 15 dias',
+    suporteMensal: null,
+    sistemas: [
+        {
+            id: 'estoque',
+            pedido: 'um sistema de controle de estoque e vendas',
+            nome: 'Controle de estoque e vendas',
+            texto: 'Saiba na hora o que tem na prateleira, o que vendeu e o que precisa repor.',
+            itens: ['Entrada e saída de produtos', 'Aviso de estoque baixo', 'Vendas do dia e do mês'],
+            icone: 'caixa',
+            preco: null
+        },
+        {
+            id: 'agenda',
+            pedido: 'um sistema de agendamento de clientes',
+            nome: 'Agendamento de clientes',
+            texto: 'Seus horários organizados, sem conflito e sem caderno perdido.',
+            itens: ['Agenda por dia e por profissional', 'Lembrete para o cliente', 'Histórico de cada cliente'],
+            icone: 'agenda',
+            preco: null
+        },
+        {
+            id: 'orcamentos',
+            pedido: 'um sistema de orçamentos e ordens de serviço',
+            nome: 'Orçamentos e ordens de serviço',
+            texto: 'Monte orçamentos em segundos e acompanhe cada serviço do início ao fim.',
+            itens: ['Orçamento pronto para enviar', 'Situação de cada serviço', 'Tudo guardado por cliente'],
+            icone: 'documento',
+            preco: null
+        },
+        {
+            id: 'financeiro',
+            pedido: 'um sistema de controle financeiro e de clientes',
+            nome: 'Controle financeiro e de clientes',
+            texto: 'Entradas, saídas, quem pagou e quem está devendo, num lugar só.',
+            itens: ['Contas a pagar e a receber', 'Cadastro de clientes', 'Resumo do mês'],
+            icone: 'carteira',
+            preco: null
+        },
+        {
+            id: 'painel',
+            pedido: 'um painel com gráficos automáticos do meu negócio',
+            nome: 'Painel com gráficos automáticos',
+            texto: 'Os números do seu negócio em gráficos que se atualizam sozinhos.',
+            itens: ['Gráficos de vendas e despesas', 'Comparação entre meses', 'Abre no celular'],
+            icone: 'grafico',
+            preco: null
+        },
+        {
+            id: 'outro',
+            nome: 'Outro sistema sob medida',
+            texto: 'Tem uma ideia ou um processo diferente? A gente conversa e monta do seu jeito.',
+            itens: ['Feito para o seu negócio', 'Você acompanha cada etapa', 'Ajustes até ficar certo'],
+            icone: 'ideia',
+            preco: 'fale'
+        }
+    ]
+};
+
+const ICONES_APPS = {
+    caixa: '<path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="m3 8 9 5 9-5M12 13v8"/>',
+    agenda: '<rect x="3" y="4.5" width="18" height="16.5" rx="2"/><path d="M16 2.5v4M8 2.5v4M3 10h18M8 14h3v3H8z"/>',
+    documento: '<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/>',
+    carteira: '<rect x="3" y="6" width="18" height="14" rx="2"/><path d="M16 13h.01M3 10h18M7 6V4h10v2"/>',
+    grafico: '<path d="M3 3v18h18"/><path d="M7 15v3M11 11v7M15 13v5M19 7v11"/>',
+    ideia: '<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.3 1 2.1h5c0-.8.4-1.6 1-2.1A6 6 0 0 0 12 3z"/>',
+    zap: '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
+    check: '<path d="M20 6 9 17l-5-5"/>',
+    x: '<path d="M18 6 6 18M6 6l12 12"/>',
+    relogio: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    celular: '<rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/>',
+    ferramenta: '<path d="M14.7 6.3a4 4 0 0 0 5 5L21 13l-8 8-3-3 8-8-1.3-1.3a4 4 0 0 0-5-5L13 5z"/><path d="m6 18-3 3"/>'
+};
+
+const ico = (nome, classe) => `<svg class="${classe || 'ap-ico'}" viewBox="0 0 24 24" aria-hidden="true">${ICONES_APPS[nome]}</svg>`;
+const precoApp = (v) => (v === 'fale' ? 'Fale com a gente' : `A partir de ${typeof v === 'number' ? reais(v) : 'R$ [PREÇO]'}`);
+
+function paginaApps() {
+    const url = SITE + '/apps.html';
+    const titulo = 'Criação de Apps e Sistemas para Empresas';
+    const descricao = 'Troque suas planilhas por um sistema feito sob medida: estoque, vendas, agenda, orçamentos e financeiro, no celular e no computador. Pronto em ' + APPS.prazo + '.';
+    const msgPlanilha = 'Olá! Vim pelo site. Quero mandar minha planilha para ver como ficaria num sistema.';
+    const faq = [
+        ['Preciso entender de tecnologia?', 'Não. O sistema é feito para ser simples: se você usa WhatsApp, consegue usar. E você recebe uma explicação de como mexer.'],
+        ['Dá para aproveitar a minha planilha?', 'Sim. Os dados que você já tem podem ir para o sistema novo, sem precisar digitar tudo de novo.'],
+        ['Funciona no celular?', 'Sim. O sistema abre no celular e no computador, e quem você autorizar vê a mesma informação ao mesmo tempo.'],
+        ['E se eu precisar mudar alguma coisa depois?', 'Com o suporte mensal, ajustes pequenos e dúvidas estão incluídos. Mudanças maiores são combinadas antes.']
+    ];
+    const dados = [
+        EMPRESA,
+        {
+            '@type': 'Service',
+            '@id': url + '#servico',
+            name: titulo,
+            serviceType: 'Criação de sistemas e aplicativos sob medida',
+            description: descricao,
+            url,
+            provider: { '@id': EMPRESA['@id'] },
+            areaServed: { '@type': 'Country', name: 'Brasil' }
+        },
+        {
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+                { '@type': 'ListItem', position: 1, name: 'Início', item: SITE + '/site.html' },
+                { '@type': 'ListItem', position: 2, name: 'Apps e sistemas', item: url }
+            ]
+        },
+        { '@type': 'FAQPage', mainEntity: faq.map(([q, r]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: r } })) }
+    ];
+
+    const cards = APPS.sistemas.map((s) => `<article class="ap-card">
+                    <span class="ap-card-ico">${ico(s.icone)}</span>
+                    <h3>${esc(s.nome)}</h3>
+                    <p>${esc(s.texto)}</p>
+                    <ul>
+                        ${s.itens.map((i) => `<li>${ico('check', 'ap-ico-mini')} ${esc(i)}</li>`).join('\n                        ')}
+                    </ul>
+                    <p class="ap-preco${s.preco === 'fale' ? ' ap-preco-fale' : ''}">${esc(precoApp(s.preco))}</p>
+                    <a class="sv-cta ap-card-cta" href="${zap(s.preco === 'fale' ? 'Olá! Vim pelo site. Tenho uma ideia de sistema para o meu negócio e quero conversar.' : `Olá! Vim pelo site e quero ${s.pedido}.`)}" target="_blank" rel="noopener">${ico('zap', 'ap-ico-zap')} Pedir pelo WhatsApp</a>
+                </article>`).join('\n                ');
+
+    // Até 3 demonstrações: coloque a imagem em /images/apps/demo-N.webp
+    // (formato de celular, 9:19) e troque o bloco "ap-demo-vaga" por <img>.
+    const demos = ['Estoque e vendas', 'Agenda de clientes', 'Painel com gráficos'].map((nome, i) => `<figure class="ap-demo">
+                    <div class="ap-demo-tela ap-demo-vaga" aria-hidden="true">
+                        ${ico('celular', 'ap-demo-ico')}
+                        <span>Demonstração ${i + 1}</span>
+                    </div>
+                    <figcaption><strong>${esc(nome)}</strong><small>Prints em breve</small></figcaption>
+                </figure>`).join('\n                ');
+
+    return `${cabeca({ titulo, descricao, url, extras: '    <link rel="stylesheet" href="/apps.css?v=1">\n    ' + jsonLd({ '@context': 'https://schema.org', '@graph': dados }) })}
+<body>
+    ${topo}
+
+    <main>
+        <section class="sv-hero ap-hero">
+            <nav class="sv-trilha" aria-label="Você está em"><a href="/site.html">Início</a> <span aria-hidden="true">/</span> <span aria-current="page">Apps e sistemas</span></nav>
+            <p class="ap-kicker">Criação de apps e sistemas</p>
+            <h1>Troque suas planilhas por um sistema feito sob medida</h1>
+            <p class="sv-hero-texto">Para empresas e negócios próprios que hoje se viram com planilhas. Um sistema simples, do seu jeito, que funciona no celular e no computador.</p>
+            <div class="sv-acoes">
+                <a class="sv-cta" href="${zap(msgPlanilha)}" target="_blank" rel="noopener">${ico('zap', 'ap-ico-zap')} Mandar minha planilha</a>
+                <a class="sv-cta-sec" href="#sistemas">Ver o que dá para fazer</a>
+            </div>
+            <ul class="sv-selos">
+                <li>${ico('relogio', 'ap-ico-selo')} Pronto em ${esc(APPS.prazo)}</li>
+                <li>${ico('celular', 'ap-ico-selo')} Funciona no celular</li>
+                <li>${ico('ferramenta', 'ap-ico-selo')} Suporte mensal</li>
+            </ul>
+        </section>
+
+        <div class="sv-conteudo ap-conteudo">
+            <section class="sv-bloco sv-bloco-largo ap-antes-depois" aria-labelledby="ap-ad-titulo">
+                <h2 id="ap-ad-titulo">Antes e depois</h2>
+                <div class="ap-comparar">
+                    <div class="ap-lado ap-antes">
+                        <p class="ap-rotulo">Antes: a planilha</p>
+                        <div class="ap-planilha" aria-hidden="true">
+                            <div class="ap-planilha-barra"><span></span><span></span><span></span><em>estoque_FINAL_v3 (2).xlsx</em></div>
+                            <table>
+                                <tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th></tr>
+                                <tr><th>1</th><td>Produto</td><td>Qtd</td><td>Preço</td><td>Total</td></tr>
+                                <tr><th>2</th><td>Fone EJ-40</td><td>12</td><td>14,99</td><td>179,88</td></tr>
+                                <tr><th>3</th><td>fone ej40</td><td class="ap-erro">??</td><td>14,99</td><td class="ap-erro">#VALOR!</td></tr>
+                                <tr><th>4</th><td>Mouse USB</td><td>-3</td><td></td><td class="ap-erro">#REF!</td></tr>
+                                <tr><th>5</th><td class="ap-amarelo">VER COM JOÃO</td><td></td><td>19,9</td><td></td></tr>
+                                <tr><th>6</th><td>Cabo HDMI</td><td>4</td><td>25</td><td>100</td></tr>
+                            </table>
+                        </div>
+                        <ul class="ap-lista ap-lista-antes">
+                            <li>${ico('x', 'ap-ico-mini')} Fórmulas que quebram e dados repetidos</li>
+                            <li>${ico('x', 'ap-ico-mini')} Só funciona direito no computador</li>
+                            <li>${ico('x', 'ap-ico-mini')} Ninguém sabe qual é a versão certa</li>
+                        </ul>
+                    </div>
+                    <div class="ap-seta" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+                    <div class="ap-lado ap-depois">
+                        <p class="ap-rotulo">Depois: o sistema</p>
+                        <div class="ap-celular" aria-hidden="true">
+                            <div class="ap-celular-tela">
+                                <div class="ap-app-topo"><strong>Estoque</strong><span>Hoje</span></div>
+                                <div class="ap-app-resumo">
+                                    <div><small>Vendas hoje</small><b>R$ 389</b></div>
+                                    <div><small>Em estoque</small><b>148</b></div>
+                                </div>
+                                <div class="ap-app-grafico"><i style="height:40%"></i><i style="height:65%"></i><i style="height:50%"></i><i style="height:85%"></i><i style="height:70%"></i><i style="height:95%"></i></div>
+                                <ul class="ap-app-lista">
+                                    <li><span>Fone EJ-40</span><em class="ok">12 un.</em></li>
+                                    <li><span>Mouse USB</span><em class="baixo">Repor</em></li>
+                                    <li><span>Cabo HDMI</span><em class="ok">4 un.</em></li>
+                                </ul>
+                                <div class="ap-app-botao">+ Nova venda</div>
+                            </div>
+                        </div>
+                        <ul class="ap-lista ap-lista-depois">
+                            <li>${ico('check', 'ap-ico-mini')} Contas certas, feitas sozinhas</li>
+                            <li>${ico('check', 'ap-ico-mini')} Abre no celular, de qualquer lugar</li>
+                            <li>${ico('check', 'ap-ico-mini')} Toda a equipe vê a mesma informação</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="sv-bloco sv-bloco-largo" id="sistemas" aria-labelledby="ap-sistemas-titulo">
+                <h2 id="ap-sistemas-titulo">O que dá para fazer</h2>
+                <div class="ap-cards">
+                ${cards}
+                </div>
+            </section>
+
+            <section class="sv-bloco sv-bloco-largo sv-chamada ap-destaque">
+                <h2>Mande sua planilha e eu mostro como ficaria</h2>
+                <p>Envie a planilha que você usa hoje pelo WhatsApp. Eu analiso e mostro, sem compromisso, como ela ficaria num sistema.</p>
+                <a class="sv-cta" href="${zap(msgPlanilha)}" target="_blank" rel="noopener">${ico('zap', 'ap-ico-zap')} Enviar minha planilha</a>
+            </section>
+
+            <section class="sv-bloco" aria-labelledby="ap-como-titulo">
+                <h2 id="ap-como-titulo">Como funciona</h2>
+                <ol class="sv-passos ap-passos">
+                    <li>Você conta como trabalha hoje (ou manda a planilha)</li>
+                    <li>Eu mostro como o sistema vai ficar, antes de começar</li>
+                    <li>O sistema fica pronto e você aprende a usar</li>
+                </ol>
+                <p class="ap-prazo">${ico('relogio', 'ap-ico-selo')} Pronto em <strong>${esc(APPS.prazo)}</strong></p>
+            </section>
+
+            <section class="sv-bloco ap-suporte" aria-labelledby="ap-suporte-titulo">
+                <h2 id="ap-suporte-titulo">Suporte e manutenção mensal</h2>
+                <p>Seu sistema sempre funcionando, com alguém para ajudar quando precisar.</p>
+                <ul class="sv-lista">
+                    <li><i class="fas fa-check" aria-hidden="true"></i> Ajuda pelo WhatsApp</li>
+                    <li><i class="fas fa-check" aria-hidden="true"></i> Pequenos ajustes e melhorias</li>
+                    <li><i class="fas fa-check" aria-hidden="true"></i> Cópia de segurança dos dados</li>
+                    <li><i class="fas fa-check" aria-hidden="true"></i> Correção de problemas</li>
+                </ul>
+                <p class="ap-mensal"><strong>${typeof APPS.suporteMensal === 'number' ? reais(APPS.suporteMensal) : 'R$ [PREÇO]'}</strong><span>/mês</span></p>
+            </section>
+
+            <section class="sv-bloco sv-bloco-largo" aria-labelledby="ap-exemplos-titulo">
+                <h2 id="ap-exemplos-titulo">Exemplos</h2>
+                <p class="ap-sub">Alguns sistemas que já mostram como o seu pode ficar.</p>
+                <div class="ap-demos">
+                ${demos}
+                </div>
+            </section>
+
+            <section class="sv-bloco sv-bloco-largo">
+                <h2>Perguntas frequentes</h2>
+                ${faq.map(([q, r]) => `<details class="sv-faq"><summary>${esc(q)}</summary><p>${esc(r)}</p></details>`).join('\n                ')}
+            </section>
+
+            <section class="sv-bloco sv-bloco-largo sv-chamada">
+                <h2>Vamos organizar o seu negócio?</h2>
+                <p>Conte como você trabalha hoje. A conversa é sem compromisso e você sabe o valor antes de começar.</p>
+                <a class="sv-cta" href="${zap('Olá! Vim pelo site e quero um sistema para o meu negócio.')}" target="_blank" rel="noopener">${ico('zap', 'ap-ico-zap')} Chamar no WhatsApp</a>
+            </section>
+        </div>
+    </main>
+
+    ${rodape()}
+</body>
+</html>
+`;
+}
+
+const faltando = APPS.sistemas.filter((s) => s.preco === null).map((s) => s.nome).concat(APPS.suporteMensal === null ? ['Suporte mensal'] : []);
+if (faltando.length) console.warn('ATENÇÃO apps.html: preço ainda não definido para: ' + faltando.join(', '));
+
 // ── sitemap.xml ───────────────────────────────────────────────────────────
 
 function sitemap() {
@@ -354,6 +630,7 @@ function sitemap() {
         ['/servicos/', '0.9'],
         ...SERVICOS.map((s) => [`/servicos/${s.slug}/`, '0.8']),
         ['/loja.html', '0.8'],
+        ['/apps.html', '0.8'],
         ['/formulario-formatacao.html', '0.4']
     ];
     return `<?xml version="1.0" encoding="UTF-8"?>
@@ -374,4 +651,5 @@ function gravar(rel, conteudo) {
 
 SERVICOS.forEach((s) => gravar(`servicos/${s.slug}/index.html`, paginaServico(s)));
 gravar('servicos/index.html', paginaIndice());
+gravar('apps.html', paginaApps());
 gravar('sitemap.xml', sitemap());

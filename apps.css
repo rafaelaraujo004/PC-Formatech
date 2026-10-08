@@ -1,0 +1,418 @@
+/* Página de criação de apps e sistemas (apps.html, gerada por
+   ferramentas/gerar-seo.js). Usa a base das páginas de serviço
+   (servicos/servicos.css) e acrescenta só o que é próprio desta página. */
+
+.ap-ico,
+.ap-ico-mini,
+.ap-ico-zap,
+.ap-ico-selo,
+.ap-demo-ico {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex: 0 0 auto;
+}
+
+.ap-ico { width: 24px; height: 24px; }
+.ap-ico-mini { width: 1em; height: 1em; }
+.ap-ico-zap { width: 1.15em; height: 1.15em; }
+.ap-ico-selo { width: 1.05em; height: 1.05em; color: #8ff1e3; vertical-align: -0.15em; margin-right: 0.25rem; }
+
+.ap-kicker {
+    display: inline-block;
+    margin: 0 0 0.9rem;
+    padding: 0.35rem 0.8rem;
+    border-radius: 999px;
+    border: 1px solid rgba(143, 241, 227, 0.35);
+    background: rgba(143, 241, 227, 0.1);
+    color: #8ff1e3;
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.ap-sub {
+    margin: -0.4rem 0 1.2rem;
+    color: var(--sv-suave);
+}
+
+/* ── Antes e depois ────────────────────────────────────────────────────── */
+
+.ap-comparar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: start;
+    gap: 1.2rem;
+}
+
+.ap-lado { min-width: 0; }
+
+.ap-rotulo {
+    margin: 0 0 0.8rem;
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.ap-antes .ap-rotulo { color: #c2410c; }
+.ap-depois .ap-rotulo { color: var(--sv-acento); }
+
+.ap-seta {
+    align-self: center;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--sv-acento);
+    color: #fff;
+}
+
+.ap-seta svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Planilha de mentira */
+.ap-planilha {
+    overflow: hidden;
+    border: 1px solid #c9d2cf;
+    border-radius: 10px;
+    background: #fff;
+    color: #1f2933;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 0.72rem;
+    box-shadow: var(--sv-sombra);
+    transform: rotate(-1.2deg);
+}
+
+.ap-planilha-barra {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0.4rem 0.6rem;
+    background: #1d6f42;
+    color: #fff;
+}
+
+.ap-planilha-barra span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.55);
+}
+
+.ap-planilha-barra em {
+    margin-left: 0.4rem;
+    font-style: normal;
+    font-size: 0.7rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ap-planilha table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.ap-planilha th,
+.ap-planilha td {
+    padding: 0.32rem 0.4rem;
+    border: 1px solid #e1e6e4;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ap-planilha th {
+    width: 1.8rem;
+    background: #f1f4f3;
+    color: #6b7a77;
+    font-weight: 600;
+    text-align: center;
+}
+
+.ap-planilha tr:first-child th { width: auto; }
+.ap-planilha tr:first-child th:first-child { width: 1.8rem; }
+.ap-planilha .ap-erro { background: #fde2e1; color: #b42318; font-weight: 700; }
+.ap-planilha .ap-amarelo { background: #fff4c2; font-weight: 700; }
+
+/* Celular com o sistema */
+.ap-celular {
+    width: min(250px, 100%);
+    margin: 0 auto;
+    padding: 9px;
+    border-radius: 34px;
+    background: #0d1b1d;
+    box-shadow: 0 30px 60px -28px rgba(0, 0, 0, 0.6), inset 0 0 0 2px rgba(255, 255, 255, 0.08);
+}
+
+.ap-celular-tela {
+    display: grid;
+    gap: 0.6rem;
+    padding: 0.9rem 0.8rem 0.8rem;
+    border-radius: 26px;
+    background: #f4f8f7;
+    color: #12263a;
+    font-size: 0.75rem;
+}
+
+.ap-app-topo {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+}
+
+.ap-app-topo strong { font-family: 'Sora', sans-serif; font-size: 1rem; }
+.ap-app-topo span { color: #536576; font-size: 0.7rem; }
+
+.ap-app-resumo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.45rem;
+}
+
+.ap-app-resumo div {
+    padding: 0.5rem 0.55rem;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(11, 61, 61, 0.08);
+}
+
+.ap-app-resumo small { display: block; color: #536576; font-size: 0.65rem; }
+.ap-app-resumo b { font-family: 'Sora', sans-serif; font-size: 0.95rem; color: #1d6a63; }
+
+.ap-app-grafico {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 58px;
+    padding: 0.5rem 0.6rem;
+    border-radius: 12px;
+    background: #fff;
+}
+
+.ap-app-grafico i {
+    flex: 1;
+    border-radius: 4px 4px 2px 2px;
+    background: linear-gradient(180deg, #4fd1c0, #2d7a7a);
+}
+
+.ap-app-lista {
+    display: grid;
+    gap: 0.3rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.ap-app-lista li {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.45rem 0.55rem;
+    border-radius: 10px;
+    background: #fff;
+}
+
+.ap-app-lista em { font-style: normal; font-weight: 700; }
+.ap-app-lista .ok { color: #1d6a63; }
+.ap-app-lista .baixo { color: #c2410c; }
+
+.ap-app-botao {
+    padding: 0.55rem;
+    border-radius: 12px;
+    background: #2d7a7a;
+    color: #fff;
+    font-weight: 800;
+    text-align: center;
+}
+
+.ap-lista {
+    display: grid;
+    gap: 0.5rem;
+    margin: 1.2rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.ap-lista li { display: flex; gap: 0.55rem; align-items: baseline; }
+.ap-lista-antes .ap-ico-mini { color: #c2410c; }
+.ap-lista-depois .ap-ico-mini { color: var(--sv-acento); }
+
+/* ── Cartões dos sistemas ──────────────────────────────────────────────── */
+
+.ap-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 290px), 1fr));
+    gap: 0.9rem;
+}
+
+.ap-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.2rem;
+    border: 1px solid var(--sv-borda);
+    border-radius: 16px;
+    background: var(--sv-superficie);
+    transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.ap-card:hover { border-color: var(--sv-acento); transform: translateY(-2px); }
+
+.ap-card-ico {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 13px;
+    background: color-mix(in srgb, var(--sv-acento) 14%, transparent);
+    color: var(--sv-acento);
+}
+
+.ap-card h3 {
+    margin: 0.2rem 0 0;
+    font-family: 'Sora', 'Manrope', sans-serif;
+    font-size: 1.08rem;
+    letter-spacing: -0.01em;
+}
+
+.ap-card > p { margin: 0; color: var(--sv-suave); font-size: 0.93rem; }
+
+.ap-card ul {
+    display: grid;
+    gap: 0.3rem;
+    margin: 0.2rem 0 0.4rem;
+    padding: 0;
+    list-style: none;
+    font-size: 0.9rem;
+}
+
+.ap-card li { display: flex; gap: 0.45rem; align-items: baseline; }
+.ap-card li .ap-ico-mini { color: var(--sv-acento); }
+
+.ap-preco {
+    margin: auto 0 0.2rem !important;
+    color: var(--sv-texto) !important;
+    font-family: 'Sora', sans-serif;
+    font-size: 1.05rem !important;
+    font-weight: 800;
+}
+
+.ap-preco-fale { color: var(--sv-acento) !important; }
+
+.ap-card-cta {
+    min-height: 46px !important;
+    padding: 0.65rem 1rem !important;
+    font-size: 0.92rem;
+}
+
+/* ── Destaque, prazo e suporte ─────────────────────────────────────────── */
+
+.ap-destaque h2 { font-size: clamp(1.35rem, 3vw, 1.8rem); }
+
+.ap-prazo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 1rem 0 0;
+    padding: 0.55rem 0.9rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--sv-acento) 12%, transparent);
+    font-weight: 600;
+}
+
+.ap-prazo .ap-ico-selo { color: var(--sv-acento); }
+
+.ap-suporte > p:first-of-type { margin: -0.4rem 0 1rem; color: var(--sv-suave); }
+
+.ap-mensal {
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+    margin: 1.2rem 0 0;
+}
+
+.ap-mensal strong {
+    font-family: 'Sora', sans-serif;
+    font-size: 1.9rem;
+    letter-spacing: -0.02em;
+    color: var(--sv-acento);
+}
+
+.ap-mensal span { color: var(--sv-suave); font-weight: 700; }
+
+/* ── Exemplos (vagas para os prints) ───────────────────────────────────── */
+
+.ap-demos {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.ap-demo { margin: 0; text-align: center; }
+
+.ap-demo-tela {
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 0.5rem;
+    width: min(220px, 100%);
+    aspect-ratio: 9 / 19;
+    margin: 0 auto;
+    border-radius: 28px;
+    border: 8px solid #0d1b1d;
+    overflow: hidden;
+}
+
+.ap-demo-tela img { width: 100%; height: 100%; object-fit: cover; }
+
+.ap-demo-vaga {
+    background:
+        repeating-linear-gradient(135deg, transparent 0 12px, color-mix(in srgb, var(--sv-acento) 7%, transparent) 12px 24px),
+        var(--sv-fundo);
+    color: var(--sv-suave);
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.ap-demo-ico { width: 34px; height: 34px; color: var(--sv-acento); }
+
+.ap-demo figcaption { display: grid; gap: 0.1rem; margin-top: 0.7rem; }
+.ap-demo figcaption small { color: var(--sv-suave); }
+
+/* ── Celular ───────────────────────────────────────────────────────────── */
+
+@media (max-width: 760px) {
+    .ap-comparar { grid-template-columns: minmax(0, 1fr); }
+    .ap-seta { justify-self: center; transform: rotate(90deg); }
+    .ap-planilha { transform: none; }
+
+    /* Exemplos lado a lado, roláveis, para não virar uma coluna enorme. */
+    .ap-demos {
+        grid-template-columns: none;
+        grid-auto-flow: column;
+        grid-auto-columns: 62%;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        padding-bottom: 0.4rem;
+    }
+
+    .ap-demo { scroll-snap-align: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ap-card { transition: none; }
+}
