@@ -206,13 +206,31 @@
         if (abertoAgora) registrar('acao', 'whatsapp:loja-' + abertoAgora.id);
     });
 
+    /** Foto do produto em JPEG (alguns apps recusam WebP ao receber um compartilhamento). */
+    async function fotoParaCompartilhar(p) {
+        const blob = await (await fetch(p.imagem)).blob();
+        const bitmap = await createImageBitmap(blob);
+        const tela = document.createElement('canvas');
+        tela.width = bitmap.width;
+        tela.height = bitmap.height;
+        tela.getContext('2d').drawImage(bitmap, 0, 0);
+        const jpeg = await new Promise((r) => tela.toBlob(r, 'image/jpeg', 0.9));
+        return new File([jpeg], 'bird-tech-' + p.id + '.jpg', { type: 'image/jpeg' });
+    }
+
     $('bt-detalhe-compartilhar').addEventListener('click', async () => {
         if (!abertoAgora) return;
         const url = location.origin + location.pathname + '#' + encodeURIComponent(abertoAgora.id);
         const dados = { title: abertoAgora.nome + ' | Bird Tech', text: `${abertoAgora.nome} por ${moeda(abertoAgora.preco)} na Bird Tech`, url };
         const botao = $('bt-detalhe-compartilhar');
+        registrar('acao', 'compartilhar:loja-' + abertoAgora.id);
         try {
-            if (navigator.share) {
+            // Com foto quando o aparelho permite (WhatsApp recebe imagem + texto + link).
+            let arquivo = null;
+            try { arquivo = await fotoParaCompartilhar(abertoAgora); } catch (e) { arquivo = null; }
+            if (arquivo && navigator.canShare && navigator.canShare({ files: [arquivo] })) {
+                await navigator.share({ files: [arquivo], title: dados.title, text: dados.text + '\n' + url });
+            } else if (navigator.share) {
                 await navigator.share(dados);
             } else {
                 await navigator.clipboard.writeText(url);

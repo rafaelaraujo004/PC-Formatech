@@ -2180,6 +2180,7 @@ html[data-theme='dark'] .bl-aviso { color: #ffc46b; }
 }
 
 .dv-acoes .bl-remover { grid-column: 1 / -1; }
+.dv-acoes .dv-largo { grid-column: 1 / -1; }
 
 .dv-vazio {
     grid-column: 1 / -1;

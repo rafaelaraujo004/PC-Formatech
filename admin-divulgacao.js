@@ -59,6 +59,23 @@
     }
 
     let publicacoes = [];
+    // Produtos da loja: entram sozinhos no filtro Bird Tech, prontos para
+    // compartilhar (não ficam salvos como arte; mudam junto com o cadastro).
+    let produtosLoja = [];
+
+    const moeda = (v) => Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    function comoArte(p) {
+        return {
+            id: 'loja-' + p.id,
+            produto: true,
+            categoria: 'birdtech',
+            titulo: p.nome,
+            legenda: `${p.nome} por apenas ${moeda(p.preco)} na Bird Tech, a loja de periféricos da PC Formatech em Canaã dos Carajás. Peça pelo WhatsApp ou veja na loja:`,
+            link: SITE + '/loja.html#' + encodeURIComponent(p.id),
+            imagem: p.imagem,
+            ordem: 100 + (Number(p.ordem) || 0)
+        };
+    }
     let filtro = 'todas';
     let carregado = false;
     let editando = null;
@@ -160,7 +177,8 @@
 
     function desenhar() {
         const grade = $('dv-grade');
-        const lista = publicacoes.filter((p) => filtro === 'todas' || p.categoria === filtro);
+        const todas = publicacoes.concat(produtosLoja);
+        const lista = todas.filter((p) => filtro === 'todas' || p.categoria === filtro);
         // Promoções em vigor no topo (o que mais vale divulgar agora), depois as
         // artes fixas, as promoções agendadas e por último as encerradas.
         const peso = (p) => {
@@ -174,7 +192,7 @@
             vazio.className = 'dv-vazio';
             vazio.innerHTML = '<i class="fas fa-images" aria-hidden="true"></i>';
             const t = document.createElement('p');
-            t.textContent = publicacoes.length ? 'Nenhuma arte nesta categoria ainda.' : 'Nenhuma arte ainda. Toque em "Nova arte" para adicionar.';
+            t.textContent = todas.length ? 'Nenhuma arte nesta categoria ainda.' : 'Nenhuma arte ainda. Toque em "Nova arte" para adicionar.';
             vazio.appendChild(t);
             grade.replaceChildren(vazio);
             return;
@@ -195,7 +213,7 @@
             info.className = 'dv-info';
             const marca = document.createElement('span');
             marca.className = 'dv-marca';
-            marca.textContent = MARCAS[p.categoria].nome;
+            marca.textContent = p.produto ? 'Bird Tech · produto' : MARCAS[p.categoria].nome;
             const titulo = document.createElement('strong');
             titulo.textContent = p.titulo || 'Arte sem nome';
             const legenda = document.createElement('p');
@@ -224,8 +242,9 @@
                 botao('fa-share-alt', 'Compartilhar', 'dv-compartilhar', (b) => compartilhar(p, b)),
                 botao('fa-copy', 'Copiar legenda', null, async () => status(await copiar(textoParaCompartilhar(p)) ? 'Legenda e link copiados.' : 'Não foi possível copiar.')),
                 botao('fa-download', 'Baixar', null, async () => { baixarArquivo(await arquivoDaImagem(p)); status('Imagem baixada.'); }),
-                botao('fa-pen', 'Editar', null, () => abrirEditor(p)),
-                botao('fa-trash-alt', 'Remover', 'av-botao-secundario bl-remover', () => remover(p))
+                ...(p.produto
+                    ? [botao('fa-store', 'Editar na Loja', 'av-botao-secundario dv-largo', () => window.switchTab('loja'))]
+                    : [botao('fa-pen', 'Editar', null, () => abrirEditor(p)), botao('fa-trash-alt', 'Remover', 'av-botao-secundario bl-remover', () => remover(p))])
             );
 
             card.append(foto, info, acoes);
@@ -236,8 +255,12 @@
     async function listar() {
         status('Carregando…');
         try {
-            const json = await chamar('listar');
+            const [json, loja] = await Promise.all([
+                chamar('listar'),
+                fetch('/api/loja', { headers: { Accept: 'application/json' } }).then((r) => r.json()).catch(() => ({}))
+            ]);
             publicacoes = json.publicacoes || [];
+            produtosLoja = (loja.produtos || []).map(comoArte);
             carregado = true;
             status('');
             desenhar();
