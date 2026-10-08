@@ -170,6 +170,8 @@
             if (!aba || !document.getElementById(`tab-${aba}`)) {
                 try { aba = localStorage.getItem('pcformatech_admin_tab'); } catch (e) { return; }
             }
+            // A aba antiga de imagens do banner deu lugar à de Anúncios.
+            if (aba === 'slider') aba = 'anuncios';
             if (!aba || aba === 'dashboard') return;
             if (!document.getElementById(`tab-${aba}`)) return;
             switchTab(aba);

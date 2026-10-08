@@ -1478,54 +1478,5 @@
     })();
     /* ───────────────────────────────────────────────────────────────────── */
     </script>
-    <script>
-        // Slides personalizados vindos do painel administrativo.
-        // Os indicadores NÃO são criados aqui: initHeroCarousel() os gera a partir
-        // do número real de slides, o que evita a dessincronia entre as duas listas.
-        document.addEventListener('DOMContentLoaded', () => {
-            let savedSlides;
-            try {
-                savedSlides = JSON.parse(localStorage.getItem('pcformatech_hero_slides') || 'null');
-            } catch (e) {
-                savedSlides = null;
-            }
-
-            if (!Array.isArray(savedSlides) || !savedSlides.length) return;
-
-            const heroSlider = document.querySelector('.hero-slider');
-            if (!heroSlider) return;
-
-            heroSlider.innerHTML = '';
-
-            savedSlides.forEach((slide, index) => {
-                const slideDiv = document.createElement('div');
-                slideDiv.className = 'hero-slide' + (index === 0 ? ' active' : '');
-
-                const img = document.createElement('img');
-                img.alt = slide.alt || '';
-                img.setAttribute('decoding', 'async');
-                if (index === 0) {
-                    img.setAttribute('fetchpriority', 'high');
-                } else {
-                    img.setAttribute('loading', 'lazy');
-                }
-
-                // Slide quebrado sai da lista e o carrossel é reconstruído.
-                img.addEventListener('error', function onImgError() {
-                    img.removeEventListener('error', onImgError);
-                    slideDiv.remove();
-                    const remaining = heroSlider.querySelectorAll('.hero-slide');
-                    remaining.forEach((s, i) => s.classList.toggle('active', i === 0));
-                    if (typeof window.initHeroCarousel === 'function') window.initHeroCarousel();
-                });
-
-                img.src = slide.url;
-                slideDiv.appendChild(img);
-                heroSlider.appendChild(slideDiv);
-            });
-
-            if (typeof window.initHeroCarousel === 'function') window.initHeroCarousel();
-        });
-    </script>
 </body>
 </html>
