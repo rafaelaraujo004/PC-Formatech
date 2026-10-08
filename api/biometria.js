@@ -24,7 +24,7 @@ const {
 const { iniciarAdmin } = require('./_push');
 const { EMAILS_ADMIN, ErroDeAcesso, exigirAdmin: exigirAdminBase } = require('./_admin');
 
-const ORIGENS = (process.env.PASSKEY_ORIGINS || 'https://pcformatech.vercel.app')
+const ORIGENS = (process.env.PASSKEY_ORIGINS || 'https://www.pcformatech.com.br,https://pcformatech.com.br,https://pcformatech.vercel.app')
     .split(',').map((o) => o.trim()).filter(Boolean);
 const VALIDADE_DESAFIO_MS = 2 * 60 * 1000;
 const COLECAO = 'adminPasskeys';

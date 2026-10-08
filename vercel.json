@@ -95,5 +95,84 @@
         }
       ]
     }
+  ],
+  "redirects": [
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "pcformatech.vercel.app"
+        }
+      ],
+      "destination": "https://www.pcformatech.com.br/",
+      "permanent": true
+    },
+    {
+      "source": "/site.html",
+      "has": [
+        {
+          "type": "host",
+          "value": "pcformatech.vercel.app"
+        }
+      ],
+      "destination": "https://www.pcformatech.com.br/site.html",
+      "permanent": true
+    },
+    {
+      "source": "/loja.html",
+      "has": [
+        {
+          "type": "host",
+          "value": "pcformatech.vercel.app"
+        }
+      ],
+      "destination": "https://www.pcformatech.com.br/loja.html",
+      "permanent": true
+    },
+    {
+      "source": "/formulario-formatacao.html",
+      "has": [
+        {
+          "type": "host",
+          "value": "pcformatech.vercel.app"
+        }
+      ],
+      "destination": "https://www.pcformatech.com.br/formulario-formatacao.html",
+      "permanent": true
+    },
+    {
+      "source": "/servicos/:caminho*",
+      "has": [
+        {
+          "type": "host",
+          "value": "pcformatech.vercel.app"
+        }
+      ],
+      "destination": "https://www.pcformatech.com.br/servicos/:caminho*",
+      "permanent": true
+    },
+    {
+      "source": "/sitemap.xml",
+      "has": [
+        {
+          "type": "host",
+          "value": "pcformatech.vercel.app"
+        }
+      ],
+      "destination": "https://www.pcformatech.com.br/sitemap.xml",
+      "permanent": true
+    },
+    {
+      "source": "/robots.txt",
+      "has": [
+        {
+          "type": "host",
+          "value": "pcformatech.vercel.app"
+        }
+      ],
+      "destination": "https://www.pcformatech.com.br/robots.txt",
+      "permanent": true
+    }
   ]
 }
