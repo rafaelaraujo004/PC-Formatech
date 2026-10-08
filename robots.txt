@@ -4,4 +4,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://pcformatech.vercel.app/sitemap.xml
+Sitemap: https://www.pcformatech.com.br/sitemap.xml

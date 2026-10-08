@@ -496,7 +496,7 @@ service cloud.firestore {
                 .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 30);
             if (!slug) { nome.focus(); return; }
             nome.value = slug;
-            const base = /localhost|127\.0\.0\.1/.test(location.hostname) ? 'https://pcformatech.vercel.app' : location.origin;
+            const base = /localhost|127\.0\.0\.1/.test(location.hostname) ? 'https://www.pcformatech.com.br' : location.origin;
             const url = base + '/?origem=' + slug;
             $('av-link-url').textContent = url;
             $('av-link-whatsapp').href = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(url);

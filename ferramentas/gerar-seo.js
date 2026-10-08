@@ -11,7 +11,7 @@ const fs = require('fs');
 const path = require('path');
 
 const RAIZ = path.join(__dirname, '..');
-const SITE = 'https://pcformatech.vercel.app';
+const SITE = 'https://www.pcformatech.com.br';
 const WHATSAPP = '5594984305772';
 const CIDADE = 'Canaã dos Carajás';
 
