@@ -352,7 +352,8 @@ function paginaIndice() {
 
 const APPS = {
     prazo: '7 a 15 dias',
-    suporteMensal: null,
+    // Suporte e manutenção: incluso nos sistemas que têm mensalidade.
+    suporteMensal: 'incluso',
     sistemas: [
         {
             id: 'estoque',
@@ -361,7 +362,7 @@ const APPS = {
             texto: 'Saiba na hora o que tem na prateleira, o que vendeu e o que precisa repor.',
             itens: ['Entrada e saída de produtos', 'Aviso de estoque baixo', 'Vendas do dia e do mês'],
             icone: 'caixa',
-            preco: null
+            preco: 299.99
         },
         {
             id: 'agenda',
@@ -370,7 +371,7 @@ const APPS = {
             texto: 'Seus horários organizados, sem conflito e sem caderno perdido.',
             itens: ['Agenda por dia e por profissional', 'Lembrete para o cliente', 'Histórico de cada cliente'],
             icone: 'agenda',
-            preco: null
+            preco: 149.99
         },
         {
             id: 'orcamentos',
@@ -379,7 +380,7 @@ const APPS = {
             texto: 'Monte orçamentos em segundos e acompanhe cada serviço do início ao fim.',
             itens: ['Orçamento pronto para enviar', 'Situação de cada serviço', 'Tudo guardado por cliente'],
             icone: 'documento',
-            preco: null
+            preco: 199.99
         },
         {
             id: 'financeiro',
@@ -388,7 +389,7 @@ const APPS = {
             texto: 'Entradas, saídas, quem pagou e quem está devendo, num lugar só.',
             itens: ['Contas a pagar e a receber', 'Cadastro de clientes', 'Resumo do mês'],
             icone: 'carteira',
-            preco: null
+            preco: 249.99
         },
         {
             id: 'painel',
@@ -397,7 +398,7 @@ const APPS = {
             texto: 'Os números do seu negócio em gráficos que se atualizam sozinhos.',
             itens: ['Gráficos de vendas e despesas', 'Comparação entre meses', 'Abre no celular'],
             icone: 'grafico',
-            preco: null
+            preco: 149.99
         },
         {
             id: 'outro',
@@ -437,7 +438,8 @@ function paginaApps() {
         ['Preciso entender de tecnologia?', 'Não. O sistema é feito para ser simples: se você usa WhatsApp, consegue usar. E você recebe uma explicação de como mexer.'],
         ['Dá para aproveitar a minha planilha?', 'Sim. Os dados que você já tem podem ir para o sistema novo, sem precisar digitar tudo de novo.'],
         ['Funciona no celular?', 'Sim. O sistema abre no celular e no computador, e quem você autorizar vê a mesma informação ao mesmo tempo.'],
-        ['E se eu precisar mudar alguma coisa depois?', 'Com o suporte mensal, ajustes pequenos e dúvidas estão incluídos. Mudanças maiores são combinadas antes.']
+        ['Tem mensalidade?', 'Depende do sistema. O preço mostrado é o da implementação. Quando o sistema tem mensalidade, ela já inclui suporte e manutenção, e você sabe o valor antes de começar.'],
+        ['E se eu precisar mudar alguma coisa depois?', 'Nos sistemas com mensalidade, ajustes pequenos e dúvidas estão incluídos. Mudanças maiores são combinadas antes.']
     ];
     const dados = [
         EMPRESA,
@@ -482,7 +484,7 @@ function paginaApps() {
                     <figcaption><strong>${esc(nome)}</strong><small>Prints em breve</small></figcaption>
                 </figure>`).join('\n                ');
 
-    return `${cabeca({ titulo, descricao, url, extras: '    <link rel="stylesheet" href="/apps.css?v=1">\n    ' + jsonLd({ '@context': 'https://schema.org', '@graph': dados }) })}
+    return `${cabeca({ titulo, descricao, url, extras: '    <link rel="stylesheet" href="/apps.css?v=2">\n    ' + jsonLd({ '@context': 'https://schema.org', '@graph': dados }) })}
 <body>
     ${topo}
 
@@ -560,6 +562,7 @@ function paginaApps() {
                 <div class="ap-cards">
                 ${cards}
                 </div>
+                <p class="ap-nota">Valores da implementação do sistema. Dependendo do sistema, pode haver uma mensalidade, que já inclui suporte e manutenção.</p>
             </section>
 
             <section class="sv-bloco sv-bloco-largo sv-chamada ap-destaque">
@@ -587,7 +590,9 @@ function paginaApps() {
                     <li><i class="fas fa-check" aria-hidden="true"></i> Cópia de segurança dos dados</li>
                     <li><i class="fas fa-check" aria-hidden="true"></i> Correção de problemas</li>
                 </ul>
-                <p class="ap-mensal"><strong>${typeof APPS.suporteMensal === 'number' ? reais(APPS.suporteMensal) : 'R$ [PREÇO]'}</strong><span>/mês</span></p>
+                ${APPS.suporteMensal === 'incluso'
+                    ? '<p class="ap-incluso"><strong>Incluso</strong> nos sistemas com mensalidade, sem custo à parte.</p>'
+                    : `<p class="ap-mensal"><strong>${typeof APPS.suporteMensal === 'number' ? reais(APPS.suporteMensal) : 'R$ [PREÇO]'}</strong><span>/mês</span></p>`}
             </section>
 
             <section class="sv-bloco sv-bloco-largo" aria-labelledby="ap-exemplos-titulo">

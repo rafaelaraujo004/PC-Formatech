@@ -354,6 +354,28 @@
 
 .ap-mensal span { color: var(--sv-suave); font-weight: 700; }
 
+.ap-nota {
+    margin: 1rem 0 0;
+    font-size: 0.85rem;
+    color: var(--sv-suave);
+}
+
+.ap-incluso {
+    margin: 1.2rem 0 0;
+    padding: 0.8rem 1rem;
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--sv-acento) 10%, transparent);
+    color: var(--sv-suave);
+}
+
+.ap-incluso strong {
+    display: block;
+    font-family: 'Sora', sans-serif;
+    font-size: 1.5rem;
+    color: var(--sv-acento);
+}
+
+
 /* ── Exemplos (vagas para os prints) ───────────────────────────────────── */
 
 .ap-demos {
