@@ -625,8 +625,8 @@
     // texto e dos botões. Agora:
     //  - os que se movem (sobem ou caem) passam uma vez só, em ondas, e somem;
     //  - os que ficam parados (piscam ou pulam) só aparecem colados nas bordas
-    //    da janela, fora do conteúdo; no celular e no tablet não há essa folga,
-    //    então eles não aparecem;
+    //    da janela, fora do conteúdo, em telas largas; nas menores não há
+    //    essa folga, então eles não aparecem;
     //  - no celular vão menos ícones e menores;
     //  - quem pediu menos movimento ao sistema não vê nenhum.
     function applyDecorations(theme) {
@@ -644,9 +644,10 @@
 
             var largura = window.innerWidth || document.documentElement.clientWidth || 1024;
             var celular = largura < 768;
-            // Os parados ficam colados nas bordas da janela (8 a 34 px), onde o
-            // conteúdo não chega no computador. Abaixo de 1024 px não há folga.
-            var temLateral = largura >= 1024;
+            // Os parados ficam colados nas bordas da janela (8 a 28 px), onde o
+            // conteúdo não chega. Abaixo de 1440 px (notebook comum, tablet,
+            // celular) os cartões vão quase até a borda: lá eles não aparecem.
+            var temLateral = largura >= 1440;
 
             var container = document.createElement('div');
             container.id = DECO_CONTAINER_ID;
@@ -692,7 +693,7 @@
                     } else {
                         // Parados: só nas laterais livres, alternando esquerda e direita.
                         var esquerda = i % 2 === 0;
-                        var x = 8 + Math.random() * 26;
+                        var x = 8 + Math.random() * 20;
                         span.style.animationDuration       = (baseDur * (0.8 + Math.random() * 0.4)).toFixed(2) + 's';
                         span.style.animationDelay          = '-' + (Math.random() * baseDur).toFixed(2) + 's';
                         span.style.animationIterationCount = 'infinite';
@@ -1702,6 +1703,33 @@
         }
 
         updateButton(manager.getCurrentTheme());
+        esconderAoDescer(button);
+    }
+
+    // No site, o botão do tema some enquanto a pessoa desce a página e volta
+    // quando ela sobe (ou chega ao fim): assim ele não fica por cima de textos e
+    // botões durante a leitura. No painel administrativo ele fica sempre visível.
+    function esconderAoDescer(button) {
+        if (button.dataset.esconderAoDescer === '1') return;
+        if (/admin/i.test(window.location.pathname)) return;
+        button.dataset.esconderAoDescer = '1';
+        let ultimoY = window.pageYOffset || 0;
+        let agendado = false;
+        function atualizar() {
+            agendado = false;
+            const y = window.pageYOffset || 0;
+            const fim = window.innerHeight + y >= document.documentElement.scrollHeight - 40;
+            const descendo = y > ultimoY + 2;
+            const subindo = y < ultimoY - 2;
+            if (y < 100 || fim || subindo) button.classList.remove('pcft-toggle-oculto');
+            else if (descendo) button.classList.add('pcft-toggle-oculto');
+            ultimoY = y;
+        }
+        window.addEventListener('scroll', function () {
+            if (agendado) return;
+            agendado = true;
+            window.requestAnimationFrame(atualizar);
+        }, { passive: true });
     }
 
     window.PCFormatechThemeManager = window.PCFormatechThemeManager || createThemeManager();

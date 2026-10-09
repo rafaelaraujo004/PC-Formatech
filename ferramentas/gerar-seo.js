@@ -514,7 +514,7 @@ function paginaApps() {
             <ul class="sv-selos">
                 <li>${ico('relogio', 'ap-ico-selo')} Pronto em ${esc(APPS.prazo)}</li>
                 <li>${ico('celular', 'ap-ico-selo')} Funciona no celular</li>
-                <li>${ico('ferramenta', 'ap-ico-selo')} Suporte mensal</li>
+                <li>${ico('ferramenta', 'ap-ico-selo')} Suporte incluso</li>
             </ul>
         </section>
 

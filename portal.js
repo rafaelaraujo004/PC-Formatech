@@ -189,11 +189,26 @@
         return 'https://api.whatsapp.com/send?phone=5594984305772&text=' + encodeURIComponent(mensagem);
     }
 
-    // Preços saem da mesma configuração que o site principal usa.
+    // Preços saem da mesma configuração que o site principal usa, inclusive
+    // as promoções com data (o preço normal fica riscado ao lado).
     if (cfg && cfg.servicoPorId) {
         document.querySelectorAll('[data-preco]').forEach((el) => {
             const servico = cfg.servicoPorId(el.dataset.preco);
-            if (servico && servico.preco) el.textContent = cfg.formatarPreco(servico.preco);
+            if (!servico || !servico.preco) return;
+            const promocao = cfg.promocaoDe ? cfg.promocaoDe(servico.id) : null;
+            if (!promocao) {
+                el.textContent = cfg.formatarPreco(servico.preco);
+                return;
+            }
+            const antigo = document.createElement('span');
+            antigo.className = 'preco-antigo';
+            antigo.textContent = cfg.formatarPreco(servico.preco);
+            el.textContent = '';
+            el.append(antigo, document.createTextNode(cfg.formatarPreco(promocao.preco)));
+            const linha = el.closest('.pt-price');
+            const legenda = linha && linha.querySelector(':scope > span');
+            if (linha) linha.classList.add('em-promocao');
+            if (legenda) legenda.textContent = 'promoção ' + cfg.textoFimPromocao(promocao);
         });
     }
 

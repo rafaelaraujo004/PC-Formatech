@@ -3018,3 +3018,294 @@ html[data-theme='dark'] .frente .frente-icone i { color: var(--frente-cor) !impo
     .footer-autor { display: block; margin-top: 0.3rem; }
     .footer-autor::before { content: none; }
 }
+
+
+/* ── 29 · Ajustes vistos por um cliente novo no celular ─────────────────────
+   Revisão feita como um visitante crítico, do zero, num iPhone. */
+
+/* Menu: com 7 itens, "Agendar" ficava cortado na beirada da tela. No celular
+   saem "Home" (o logo já leva ao início) e "Sobre"; os 5 restantes cabem. */
+@media (max-width: 560px) {
+    /* !important: styles.css força display: inline-block !important nos itens. */
+    .nav-links li.nav-so-largo { display: none !important; }
+}
+
+/* Botões flutuantes: no celular eram três (tema, voltar ao topo e WhatsApp)
+   por cima dos textos e botões. "Voltar ao topo" sai no celular (o menu volta
+   a aparecer ao rolar para cima); o do tema some enquanto a pessoa desce a
+   página (theme-system.js). Fica o do WhatsApp, que é o que importa. */
+@media (max-width: 899px) {
+    .scroll-to-top { display: none; }
+}
+
+#themeToggleBtn.pcft-toggle-oculto {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+#themeToggleBtn {
+    transition:
+        opacity 0.25s ease,
+        visibility 0.25s ease,
+        transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 0.22s ease,
+        background 0.25s ease;
+}
+
+/* Cartões de serviço: a etiqueta de preço (no canto) ficava por cima do
+   ícone, e a descrição era cortada com "…" no meio da frase. */
+@media (max-width: 600px) {
+    .service-card { padding-top: 3.6rem; }
+
+    .service-card p {
+        display: block;
+        -webkit-line-clamp: unset;
+        overflow: visible;
+    }
+}
+
+/* Fonte: preços, números e selos estavam em fonte de "máquina de escrever"
+   (monoespaçada), destoando do resto do site. Agora usam a fonte dos títulos
+   (números) e a do texto (selos), com algarismos alinhados. */
+.proof-card strong,
+.transform-boot,
+.price-tag span:last-child,
+.price,
+.summary-total,
+.total-price-display .total-value {
+    font-family: var(--pcft-font-heading, 'Sora', 'Segoe UI', system-ui, sans-serif);
+    font-variant-numeric: tabular-nums;
+}
+
+.price-tag,
+.metric-item small,
+.hero-trust-strip span,
+.diagnostic-chipline {
+    font-family: inherit;
+    font-variant-numeric: tabular-nums;
+}
+
+.hero-trust-strip span { letter-spacing: 0; font-weight: 600; }
+.diagnostic-chipline { letter-spacing: 0; }
+
+/* Promoção em vigor (site-config.js): a etiqueta do cartão vira "Promoção". */
+.price-tag.em-promocao {
+    background: linear-gradient(135deg, #e11d48 0%, #f97316 100%);
+}
+
+.price-tag .preco-antigo,
+.price .preco-antigo {
+    margin-right: 0.3em;
+    font-weight: 500;
+    opacity: 0.75;
+    text-decoration: line-through;
+}
+
+/* Depoimentos no celular: bolinhas mostram que há mais cartões ao lado. */
+.depo-pontos {
+    display: none;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 0.4rem;
+}
+
+.depo-pontos button {
+    width: 10px;
+    height: 10px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--brand-400, #40998F) 30%, transparent);
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.depo-pontos button[aria-current='true'] {
+    background: var(--brand-400, #40998F);
+    transform: scale(1.25);
+}
+
+/* Área de toque confortável sem aumentar a bolinha. */
+.depo-pontos button { position: relative; }
+.depo-pontos button::before { content: ''; position: absolute; inset: -12px; }
+
+@media (max-width: 760px) {
+    .depo-pontos { display: flex; }
+}
+
+/* Linha da promoção no card: preço normal riscado e o prazo.
+   !important: theme-system.css pinta todo .service-card p com !important. */
+html .service-card p.promo-prazo {
+    margin: 0;
+    color: #e11d48 !important;
+    font-size: 0.82rem;
+    font-weight: 800;
+}
+
+html[data-theme='dark'] .service-card p.promo-prazo { color: #fb7185 !important; }
+
+.service-card .promo-prazo .preco-antigo {
+    margin-right: 0.35em;
+    font-weight: 600;
+    opacity: 0.7;
+    text-decoration: line-through;
+}
+
+/* Botão do tema no celular: no canto do cabeçalho, à esquerda do logo, em vez
+   de flutuar por cima dos selos e botões. Some e volta junto com o cabeçalho
+   (os dois somem ao descer a página e voltam ao subir). */
+@media (max-width: 899px) {
+    #themeToggleBtn,
+    html[data-theme='dark'] #themeToggleBtn {
+        top: calc(0.6rem + env(safe-area-inset-top));
+        bottom: auto;
+        left: 0.6rem;
+        width: 38px;
+        height: 38px;
+        background: rgba(255, 255, 255, 0.14);
+        border: 1px solid rgba(255, 255, 255, 0.32);
+        box-shadow: none;
+    }
+}
+
+
+/* ── 30 · Depoimentos no estilo WhatsApp ────────────────────────────────────
+   Os depoimentos (reais, recebidos pelo WhatsApp) aparecem como uma conversa:
+   cabeçalho com o cliente, fundo de chat e o balão com a mensagem. É um
+   desenho do site, não um print: sem moldura de celular, horário ou "online".
+   As 5 estrelas saíram (no WhatsApp ninguém dá nota) e o resultado fica fora
+   do balão, para não parecer palavra do cliente. */
+
+#depoimentos .depo-zap-aviso {
+    max-width: 40rem;
+    margin: -0.4rem auto 1.4rem;
+    text-align: center;
+    color: var(--premium-muted, #4a6664);
+    font-size: 0.95rem;
+}
+
+#depoimentos .depo-zap {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    margin: 0;
+    overflow: hidden;
+    border-radius: 18px;
+    background: #efeae2;
+    border: 1px solid rgba(17, 27, 33, 0.08);
+    box-shadow: 0 16px 34px -20px rgba(11, 61, 61, 0.5);
+}
+
+#depoimentos .depo-zap-topo {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.7rem 0.9rem;
+    background: #075e54;
+}
+
+#depoimentos .depo-zap-avatar {
+    flex: none;
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--depo-cor, #128c7e);
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 800;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.25);
+}
+
+#depoimentos .depo-zap-quem { min-width: 0; text-align: left; }
+
+#depoimentos .depo-zap-quem strong {
+    display: block;
+    color: #fff !important;
+    font-size: 0.95rem;
+    line-height: 1.2;
+}
+
+#depoimentos .depo-zap-quem small {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.1rem;
+    color: rgba(255, 255, 255, 0.82) !important;
+    font-size: 0.74rem;
+}
+
+/* Fundo de conversa: bege do WhatsApp com uma trama leve de pontos. */
+#depoimentos .depo-zap-conversa {
+    flex: 1;
+    padding: 1rem 0.9rem 1.15rem 1.1rem;
+    background-color: #efeae2;
+    background-image: radial-gradient(rgba(17, 27, 33, 0.06) 1px, transparent 1.3px);
+    background-size: 14px 14px;
+}
+
+#depoimentos .depo-zap-balao {
+    position: relative;
+    max-width: 94%;
+    margin: 0;
+    padding: 0.55rem 0.75rem 0.6rem;
+    border-radius: 0 10px 10px 10px;
+    background: #fff;
+    box-shadow: 0 1px 1px rgba(17, 27, 33, 0.13);
+}
+
+/* Biquinho do balão, no canto de cima à esquerda (mensagem recebida). */
+#depoimentos .depo-zap-balao::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -8px;
+    border-style: solid;
+    border-width: 0 8px 10px 0;
+    border-color: transparent #fff transparent transparent;
+}
+
+#depoimentos .depo-zap-balao p {
+    margin: 0;
+    color: #111b21 !important;
+    font-size: 0.95rem;
+    line-height: 1.45;
+    text-align: left;
+}
+
+#depoimentos .depo-zap-resultado {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin: 0;
+    padding: 0.65rem 0.9rem;
+    background: #fff;
+    border-top: 1px solid rgba(17, 27, 33, 0.07);
+    color: #3b5250 !important;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+#depoimentos .depo-zap-resultado i { color: #25d366; }
+
+/* Tema escuro: as cores do WhatsApp no modo escuro. */
+html[data-theme='dark'] #depoimentos .depo-zap { background: #0b141a; border-color: rgba(255, 255, 255, 0.08); }
+html[data-theme='dark'] #depoimentos .depo-zap-topo { background: #202c33; }
+html[data-theme='dark'] #depoimentos .depo-zap-conversa {
+    background-color: #0b141a;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1.3px);
+}
+html[data-theme='dark'] #depoimentos .depo-zap-balao { background: #202c33; }
+html[data-theme='dark'] #depoimentos .depo-zap-balao::before { border-right-color: #202c33; }
+html[data-theme='dark'] #depoimentos .depo-zap-balao p { color: #e9edef !important; }
+html[data-theme='dark'] #depoimentos .depo-zap-resultado { background: #111b21; border-top-color: rgba(255, 255, 255, 0.06); color: #aebac1 !important; }
+
+/* Celular: faixa que desliza, como os cartões anteriores. */
+@media (max-width: 760px) {
+    #depoimentos .depo-zap {
+        flex: 0 0 82%;
+        scroll-snap-align: center;
+    }
+}

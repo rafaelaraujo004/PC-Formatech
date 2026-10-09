@@ -18,6 +18,8 @@
    • Número de WhatsApp   → CONTATO.whatsapp (só dígitos, com DDI 55)
    • Novo serviço         → acrescente um item em SERVICOS e crie o card e o
                             modal correspondentes no index.html com o mesmo id
+   • Promoção com data    → acrescente um item em PROMOCOES (serviço, preço,
+                            início e fim); fora do período ela some sozinha
    ═══════════════════════════════════════════════════════════════════════════ */
 
 window.PCFT_CONFIG = (function () {
@@ -55,6 +57,33 @@ window.PCFT_CONFIG = (function () {
         { id: 'limpeza-completa', nome: 'Limpeza Completa', preco: 45, noCard: false }
     ];
 
+    /**
+     * Promoções com data marcada. Durante o período, o preço promocional entra
+     * no lugar do normal em todo o site (cartões, detalhes, formulário de
+     * agendamento e página inicial), com o normal riscado ao lado. Antes do
+     * início e depois do fim, nada muda: não precisa lembrar de tirar.
+     *
+     * servico — id em SERVICOS
+     * preco   — preço promocional em reais
+     * inicio, fim — data e hora no horário de Brasília (-03:00)
+     */
+    const PROMOCOES = [
+        // Formatação por R$ 50 (arte "promo-formatacao" da aba Divulgação).
+        { servico: 'formatacao', preco: 50, inicio: '2026-10-08T00:00:00-03:00', fim: '2026-10-10T23:59:59-03:00' }
+    ];
+
+    /** Promoção em vigor para o serviço agora, ou null. */
+    function promocaoDe(id, agora) {
+        const t = (agora || new Date()).getTime();
+        return PROMOCOES.find((p) => p.servico === id && t >= Date.parse(p.inicio) && t <= Date.parse(p.fim)) || null;
+    }
+
+    /** "até 10/10": último dia da promoção, no horário de Brasília. */
+    function textoFimPromocao(promocao) {
+        const d = new Date(Date.parse(promocao.fim) - 3 * 3600 * 1000);
+        return 'até ' + String(d.getUTCDate()).padStart(2, '0') + '/' + String(d.getUTCMonth() + 1).padStart(2, '0');
+    }
+
     /** "R$ 80,00" — ou "Sob consulta" quando o preço é 0. */
     function formatarPreco(valor) {
         if (!valor) return 'Sob consulta';
@@ -84,6 +113,9 @@ window.PCFT_CONFIG = (function () {
     return {
         CONTATO,
         SERVICOS,
+        PROMOCOES,
+        promocaoDe,
+        textoFimPromocao,
         formatarPreco,
         linkWhatsApp,
         servicoPorId,
@@ -110,29 +142,68 @@ window.PCFT_CONFIG = (function () {
         let links = 0;
 
         cfg.SERVICOS.forEach((servico) => {
-            const precoTexto = cfg.formatarPreco(servico.preco);
+            const promocao = cfg.promocaoDe(servico.id);
+            const preco = promocao ? promocao.preco : servico.preco;
+            const precoTexto = cfg.formatarPreco(preco);
             const rotulo = servico.preco ? 'A partir de ' : '';
+            const fimPromocao = promocao ? cfg.textoFimPromocao(promocao) : '';
+
+            // Preço normal riscado, antes do promocional.
+            function riscado(el) {
+                const antigo = document.createElement('span');
+                antigo.className = 'preco-antigo';
+                antigo.textContent = cfg.formatarPreco(servico.preco);
+                el.textContent = '';
+                el.append(antigo, document.createTextNode(precoTexto));
+            }
 
             // 1 · Card da vitrine: data-price e etiqueta visível.
             const checkbox = document.querySelector('.service-checkbox[data-service="' + servico.id + '"]');
             if (checkbox) {
-                checkbox.dataset.price = String(servico.preco);
+                checkbox.dataset.price = String(preco);
                 const card = checkbox.closest('.service-card');
-                const etiqueta = card && card.querySelector('.price-tag span:last-child');
+                const tag = card && card.querySelector('.price-tag');
+                const etiqueta = tag && tag.querySelector('span:last-child');
                 if (etiqueta) { etiqueta.textContent = precoTexto; cards++; }
+                if (promocao && tag) {
+                    // Na etiqueta só "Promoção" (cabe no canto); o preço antigo e
+                    // o prazo vão numa linha própria, antes do botão do card.
+                    tag.classList.add('em-promocao');
+                    const legenda = tag.querySelector('span:first-child');
+                    if (legenda && legenda !== etiqueta) legenda.textContent = 'Promoção';
+                    if (!card.querySelector('.promo-prazo')) {
+                        const prazo = document.createElement('p');
+                        prazo.className = 'promo-prazo';
+                        riscado(prazo);
+                        prazo.lastChild.textContent = 'só ' + fimPromocao;
+                        const botao = card.querySelector('.service-details-btn');
+                        card.insertBefore(prazo, botao || null);
+                    }
+                }
             }
 
             // 2 · Modal de detalhes.
             const modal = document.getElementById('modal-' + servico.id);
             const precoModal = modal && modal.querySelector('.price');
-            if (precoModal) { precoModal.textContent = rotulo + precoTexto; modais++; }
+            if (precoModal) {
+                if (promocao) {
+                    riscado(precoModal);
+                    precoModal.append(document.createTextNode(' · promoção ' + fimPromocao));
+                } else {
+                    precoModal.textContent = rotulo + precoTexto;
+                }
+                modais++;
+            }
 
             // 3 · Opção do formulário de agendamento.
             const opcao = document.querySelector('.services-checkbox-group input[value="' + servico.nome + '"]');
             if (opcao) {
-                opcao.dataset.price = String(servico.preco);
+                opcao.dataset.price = String(preco);
                 const texto = opcao.parentElement && opcao.parentElement.querySelector('span');
-                if (texto) { texto.textContent = servico.nome + ' - ' + precoTexto; opcoes++; }
+                if (texto) {
+                    texto.textContent = servico.nome + ' - ' + precoTexto + (promocao ? ' (promoção ' + fimPromocao + ')' : '');
+                    opcoes++;
+                }
             }
         });
 

@@ -749,3 +749,12 @@ html[data-theme='dark'] .pt-apps .pt-loja-texto strong {
 }
 
 .pt-autor { width: 100%; margin: 0.4rem 0 0; font-size: 0.8rem; opacity: 0.7; }
+
+/* O botão do tema some enquanto a pessoa desce a página (theme-system.js),
+   para não ficar por cima dos botões "Pedir pelo WhatsApp". */
+#themeToggleBtn { transition: opacity 0.25s ease, visibility 0.25s ease; }
+#themeToggleBtn.pcft-toggle-oculto { opacity: 0; visibility: hidden; pointer-events: none; }
+
+/* Promoção em vigor (site-config.js). */
+.pt-price.em-promocao > span { color: #e11d48; font-weight: 800; }
+.pt-price .preco-antigo { margin-right: 0.35em; font-size: 0.85em; font-weight: 600; color: var(--pt-muted); text-decoration: line-through; }
