@@ -157,6 +157,48 @@ const SERVICOS = [
     }
 ];
 
+// Perguntas rápidas de cada serviço (pedido-rapido.js): a pessoa responde 3
+// perguntas e a mensagem chega no WhatsApp com tudo o que precisa para dar o
+// valor. As duas primeiras são iguais para todos; a terceira é de cada um.
+const PERGUNTA_APARELHO = { nome: 'aparelho', rotulo: 'Aparelho', pergunta: 'É notebook ou computador de mesa?', opcoes: [{ texto: 'Notebook' }, { texto: 'Computador de mesa' }, { texto: 'Mais de um aparelho' }] };
+const PERGUNTA_ONDE = {
+    nome: 'onde', rotulo: 'Atendimento', pergunta: 'Como prefere ser atendido?',
+    opcoes: [{ texto: `Presencial em ${CIDADE}` }, { texto: 'À distância (10% de desconto)', nota: 'À distância, 10% de desconto.' }, { texto: 'Tanto faz' }]
+};
+const PERGUNTAS_SERVICO = {
+    'formatacao-de-computador': [PERGUNTA_APARELHO, PERGUNTA_ONDE, {
+        nome: 'arquivos', rotulo: 'Arquivos', pergunta: 'Precisa guardar seus arquivos antes?',
+        opcoes: [{ texto: 'Sim, quero o backup', nota: 'O backup é combinado junto.' }, { texto: 'Não precisa' }, { texto: 'Não sei' }]
+    }],
+    'manutencao-de-computador': [PERGUNTA_APARELHO, PERGUNTA_ONDE, {
+        nome: 'problema', rotulo: 'O que incomoda', pergunta: 'O que mais incomoda hoje?',
+        opcoes: [{ texto: 'Está lento' }, { texto: 'Trava ou dá erro' }, { texto: 'Faz tempo que não cuido' }, { texto: 'Outra coisa' }]
+    }],
+    'limpeza-e-otimizacao': [PERGUNTA_APARELHO, PERGUNTA_ONDE, {
+        nome: 'desde', rotulo: 'Lento desde', pergunta: 'Há quanto tempo está lento?',
+        opcoes: [{ texto: 'Começou agora' }, { texto: 'Algumas semanas' }, { texto: 'Meses ou mais' }]
+    }],
+    'remocao-de-virus': [PERGUNTA_APARELHO, PERGUNTA_ONDE, {
+        nome: 'sinal', rotulo: 'O que acontece', pergunta: 'O que está acontecendo?',
+        opcoes: [{ texto: 'Propagandas e janelas sozinhas' }, { texto: 'Navegador estranho' }, { texto: 'Arquivos sumindo ou travados' }, { texto: 'Outra coisa' }]
+    }],
+    'backup-de-dados': [PERGUNTA_APARELHO, PERGUNTA_ONDE, {
+        nome: 'quanto', rotulo: 'Para guardar', pergunta: 'Quanto tem para guardar, mais ou menos?',
+        opcoes: [{ texto: 'Documentos e fotos' }, { texto: 'Muita coisa (vídeos, trabalhos)' }, { texto: 'Não sei' }]
+    }],
+    'instalacao-de-programas-e-drivers': [PERGUNTA_APARELHO, PERGUNTA_ONDE, {
+        nome: 'instalar', rotulo: 'Instalar', pergunta: 'O que precisa instalar?', tipo: 'checkbox', dica: 'Pode marcar mais de um.',
+        opcoes: [{ texto: 'Office' }, { texto: 'Programas do trabalho' }, { texto: 'Driver (impressora, som, Wi-Fi)' }, { texto: 'Outra coisa' }]
+    }],
+    'suporte-remoto': [PERGUNTA_APARELHO, {
+        nome: 'anydesk', rotulo: 'AnyDesk', pergunta: 'Já tem o AnyDesk instalado?',
+        opcoes: [{ texto: 'Sim, já tenho' }, { texto: 'Ainda não' }, { texto: 'Não sei o que é', extra: 'Preciso de ajuda para instalar o AnyDesk.' }]
+    }, {
+        nome: 'resolver', rotulo: 'Resolver', pergunta: 'O que precisa resolver?',
+        opcoes: [{ texto: 'Instalar ou configurar programa' }, { texto: 'Lento ou com erro' }, { texto: 'Vírus' }, { texto: 'Outra coisa' }]
+    }]
+};
+
 // ── Utilidades ────────────────────────────────────────────────────────────
 
 const esc = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -200,7 +242,7 @@ function cabeca({ titulo, descricao, url, extras, previa, tipo }) {
     <link rel="preload" href="/fonts/sora-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/fontes.css">
     <link rel="stylesheet" href="/icones.css">
-    <link rel="stylesheet" href="/servicos/servicos.css?v=3">
+    <link rel="stylesheet" href="/servicos/servicos.css?v=4">
 ${extras}
 </head>`;
 }
@@ -275,8 +317,8 @@ function paginaServico(s) {
             <p class="sv-hero-texto">${esc(s.chamada)}</p>
             <p class="sv-preco">${esc(precoDe(s))}</p>
             <div class="sv-acoes">
-                <a class="sv-cta" href="${zap(msg)}" target="_blank" rel="noopener"><i class="fab fa-whatsapp" aria-hidden="true"></i> Pedir orçamento no WhatsApp</a>
-                <a class="sv-cta-sec" href="/site.html#diagnostico">Fazer diagnóstico grátis</a>
+                <a class="sv-cta" href="#pedido">Pedir orçamento (3 perguntas)</a>
+                <a class="sv-cta-sec" href="${zap(msg)}" target="_blank" rel="noopener"><i class="fab fa-whatsapp" aria-hidden="true"></i> Falar direto no WhatsApp</a>
             </div>
             <ul class="sv-selos">
                 <li><i class="fas fa-check-circle" aria-hidden="true"></i> +500 PCs atendidos</li>
@@ -286,6 +328,15 @@ function paginaServico(s) {
         </section>
 
         <div class="sv-conteudo">
+            ${blocoPedido({
+                titulo: 'Peça o orçamento em 3 perguntas',
+                sub: 'No fim, a mensagem vai pronta para o WhatsApp e você recebe o valor sem precisar explicar tudo de novo.',
+                intro: msg,
+                preco: s.preco,
+                precoTexto: s.preco ? '' : s.precoTexto + ' em todos os serviços à distância.',
+                perguntas: PERGUNTAS_SERVICO[s.slug]
+            })}
+
             <section class="sv-bloco">
                 <h2>O que está incluso</h2>
                 <ul class="sv-lista">
@@ -314,8 +365,11 @@ function paginaServico(s) {
 
             <section class="sv-bloco sv-bloco-largo sv-chamada">
                 <h2>Pronto para resolver?</h2>
-                <p>Mande uma mensagem contando o problema. O diagnóstico pelo WhatsApp é grátis e você sabe o valor antes de qualquer serviço.</p>
-                <a class="sv-cta" href="${zap(msg)}" target="_blank" rel="noopener"><i class="fab fa-whatsapp" aria-hidden="true"></i> Chamar no WhatsApp</a>
+                <p>Responda as 3 perguntas e mande pelo WhatsApp. O diagnóstico é grátis e você sabe o valor antes de qualquer serviço.</p>
+                <div class="sv-acoes sv-acoes-centro">
+                    <a class="sv-cta" href="#pedido">Pedir orçamento (3 perguntas)</a>
+                    <a class="sv-cta-sec" href="${zap(msg)}" target="_blank" rel="noopener"><i class="fab fa-whatsapp" aria-hidden="true"></i> Falar direto</a>
+                </div>
             </section>
 
             <section class="sv-bloco sv-bloco-largo">
@@ -328,6 +382,7 @@ function paginaServico(s) {
     </main>
 
     ${rodape()}
+    <script src="/pedido-rapido.js?v=1" defer></script>
 </body>
 </html>
 `;
@@ -481,6 +536,65 @@ const ICONES_APPS = {
 
 const ico = (nome, classe) => `<svg class="${classe || 'ap-ico'}" viewBox="0 0 24 24" aria-hidden="true">${ICONES_APPS[nome]}</svg>`;
 const precoApp = (v) => (v === 'fale' ? 'Fale com a gente' : `A partir de ${typeof v === 'number' ? reais(v) : 'R$ [PREÇO]'}`);
+/**
+ * Perguntas rápidas antes do WhatsApp (pedido-rapido.js): até 3 perguntas,
+ * uma por vez; no fim, resumo, valor e a mensagem pronta para o WhatsApp.
+ * Sem JavaScript, aparecem todas e o botão do WhatsApp funciona assim mesmo.
+ *   cfg.perguntas: [{ nome, rotulo, pergunta, tipo ('radio'|'checkbox'),
+ *                     dica, resumo, opcoes: [{ texto, valor, icone, preco,
+ *                     mensal, nota, extra }] }]
+ *   nota  = frase que entra no valor (ex.: desconto à distância)
+ *   extra = linha que entra no fim da mensagem (ex.: "Posso mandar a planilha")
+ */
+function blocoPedido(cfg) {
+    const atributos = (o) => [
+        typeof o.preco === 'number' ? ` data-preco="${o.preco}"` : '',
+        typeof o.mensal === 'number' ? ` data-mensal="${o.mensal}"` : '',
+        o.nota ? ` data-nota="${esc(o.nota)}"` : '',
+        o.extra ? ` data-extra="${esc(o.extra)}"` : ''
+    ].join('');
+    const perguntas = cfg.perguntas.map((q, i) => {
+        const tipo = q.tipo || 'radio';
+        const opcoes = q.opcoes.map((o) => `<label class="pr-opcao"><input type="${tipo}" name="${q.nome}" value="${esc(o.valor || o.texto)}"${atributos(o)}><span>${o.icone ? ico(o.icone, 'pr-ico') + ' ' : ''}${esc(o.texto)}</span></label>`);
+        return `<fieldset class="pr-pergunta" data-passo="${i + 1}" data-rotulo="${esc(q.rotulo)}">
+                        <legend><span>${i + 1}</span> ${esc(q.pergunta)}</legend>
+                        ${q.dica ? `<p class="pr-dica">${esc(q.dica)}</p>` : ''}
+                        <div class="pr-opcoes${tipo === 'radio' ? ' pr-opcoes-lista' : ''}">
+                            ${opcoes.join('\n                            ')}
+                        </div>
+                        <p class="pr-aviso" role="alert" hidden>Escolha pelo menos uma opção.</p>
+                        <div class="pr-acoes">${i ? '<button type="button" class="pr-voltar">Voltar</button>' : ''}<button type="button" class="sv-cta pr-avancar"${tipo === 'radio' ? ' hidden' : ''}>Próxima</button></div>
+                    </fieldset>`;
+    });
+    const dados = [
+        ` data-intro="${esc(cfg.intro)}"`,
+        typeof cfg.preco === 'number' ? ` data-preco-base="${cfg.preco}"` : '',
+        cfg.precoTexto ? ` data-preco-texto="${esc(cfg.precoTexto)}"` : '',
+        cfg.precoRotulo ? ` data-preco-rotulo="${esc(cfg.precoRotulo)}"` : '',
+        cfg.semPreco ? ` data-sem-preco="${esc(cfg.semPreco)}"` : ''
+    ].join('');
+    return `<section class="sv-bloco sv-bloco-largo pr-pedido" id="pedido" aria-labelledby="pr-titulo">
+                <div class="pr-topo">
+                    <p class="pr-selo">${ico('relogio', 'pr-ico-mini')} Menos de 1 minuto</p>
+                    <h2 id="pr-titulo">${esc(cfg.titulo)}</h2>
+                    <p class="pr-sub">${esc(cfg.sub)}</p>
+                </div>
+                <form class="pr-form" novalidate${dados}>
+                    <ol class="pr-progresso" aria-hidden="true">${cfg.perguntas.map((q, i) => `<li>${i + 1}</li>`).join('')}</ol>
+                    ${perguntas.join('\n                    ')}
+                    <div class="pr-resultado" data-passo="${cfg.perguntas.length + 1}" aria-live="polite">
+                        <h3>Seu pedido está pronto</h3>
+                        <dl class="pr-resumo">
+                            ${cfg.perguntas.map((q) => `<div><dt>${esc(q.resumo || q.rotulo)}</dt><dd data-resumo="${q.nome}">—</dd></div>`).join('\n                            ')}
+                        </dl>
+                        <p class="pr-estimativa" data-estimativa hidden></p>
+                        <a class="sv-cta pr-enviar" href="${zap(cfg.intro)}" target="_blank" rel="noopener">${ico('zap', 'pr-ico-zap')} Enviar pelo WhatsApp</a>
+                        <button type="button" class="pr-voltar pr-refazer">Mudar as respostas</button>
+                    </div>
+                </form>
+            </section>`;
+}
+
 /** "+ R$ 49,90/mês" quando a mensalidade já foi definida; senão, nada. */
 const mensalApp = (s) => (typeof s.mensalidade === 'number' ? `+ ${reais(s.mensalidade)}/mês` : '');
 const menorMensalidade = () => {
@@ -556,56 +670,24 @@ function paginaApps() {
                         ${s.itens.map((i) => `<li>${ico('check', 'ap-ico-mini')} ${esc(i)}</li>`).join('\n                        ')}
                     </ul>
                     <p class="ap-preco${s.preco === 'fale' ? ' ap-preco-fale' : ''}">${esc(precoApp(s.preco))}${mensalApp(s) ? ` <small class="ap-preco-mensal">${esc(mensalApp(s))}</small>` : ''}</p>
-                    <a class="sv-cta ap-card-cta" data-sistema="${s.id}" href="${zap(s.preco === 'fale' ? 'Olá! Vim pelo site. Tenho uma ideia de sistema para o meu negócio e quero conversar.' : `Olá! Vim pelo site e quero ${s.pedido}.`)}" target="_blank" rel="noopener">${ico('zap', 'ap-ico-zap')} Quero este</a>
+                    <a class="sv-cta ap-card-cta" data-pedido-marcar="${s.id}" href="${zap(s.preco === 'fale' ? 'Olá! Vim pelo site. Tenho uma ideia de sistema para o meu negócio e quero conversar.' : `Olá! Vim pelo site e quero ${s.pedido}.`)}" target="_blank" rel="noopener">${ico('zap', 'ap-ico-zap')} Quero este</a>
                 </article>`).join('\n                ');
 
-    // "Monte seu pedido em 3 perguntas" (apps-pedido.js). Sem JavaScript, as
-    // perguntas aparecem todas e o botão do WhatsApp fica no fim.
-    const opcao = (tipo, nome, valor, rotulo, extra) => `<label class="ap-opcao"><input type="${tipo}" name="${nome}" value="${esc(valor)}"${extra || ''}><span>${rotulo}</span></label>`;
-    const pedido = `<section class="sv-bloco sv-bloco-largo ap-pedido" id="pedido" aria-labelledby="ap-pedido-titulo">
-                <div class="ap-pedido-topo">
-                    <p class="ap-pedido-selo">${ico('relogio', 'ap-ico-mini')} Menos de 1 minuto</p>
-                    <h2 id="ap-pedido-titulo">Monte seu pedido em 3 perguntas</h2>
-                    <p class="ap-sub">No fim, a mensagem vai pronta para o WhatsApp e eu já respondo sabendo o que você precisa.</p>
-                </div>
-                <form class="ap-pedido-form" id="ap-pedido-form" novalidate>
-                    <ol class="ap-pedido-progresso" aria-hidden="true"><li>1</li><li>2</li><li>3</li></ol>
-                    <fieldset class="ap-pergunta" data-passo="1">
-                        <legend><span>1</span> O que você quer organizar?</legend>
-                        <p class="ap-pergunta-dica">Pode marcar mais de um.</p>
-                        <div class="ap-opcoes">
-                            ${APPS.sistemas.map((s) => opcao('checkbox', 'o-que', s.id, `${ico(s.icone, 'ap-ico-opcao')} ${esc(s.curto)}`, ` data-preco="${typeof s.preco === 'number' ? s.preco : ''}" data-mensal="${typeof s.mensalidade === 'number' ? s.mensalidade : ''}"`)).join('\n                            ')}
-                        </div>
-                        <p class="ap-pergunta-aviso" role="alert" hidden>Marque pelo menos uma opção.</p>
-                        <div class="ap-pergunta-acoes"><button type="button" class="sv-cta ap-avancar">Próxima</button></div>
-                    </fieldset>
-                    <fieldset class="ap-pergunta" data-passo="2">
-                        <legend><span>2</span> Quantas pessoas vão usar?</legend>
-                        <div class="ap-opcoes ap-opcoes-lista">
-                            ${APPS.perguntas.pessoas.map((p) => opcao('radio', 'pessoas', p, esc(p))).join('\n                            ')}
-                        </div>
-                        <div class="ap-pergunta-acoes"><button type="button" class="ap-voltar">Voltar</button><button type="button" class="sv-cta ap-avancar" hidden>Próxima</button></div>
-                    </fieldset>
-                    <fieldset class="ap-pergunta" data-passo="3">
-                        <legend><span>3</span> Como você controla isso hoje?</legend>
-                        <div class="ap-opcoes ap-opcoes-lista">
-                            ${APPS.perguntas.hoje.map((p) => opcao('radio', 'hoje', p, esc(p))).join('\n                            ')}
-                        </div>
-                        <div class="ap-pergunta-acoes"><button type="button" class="ap-voltar">Voltar</button><button type="button" class="sv-cta ap-avancar" hidden>Próxima</button></div>
-                    </fieldset>
-                    <div class="ap-resultado" data-passo="4" aria-live="polite">
-                        <h3>Seu pedido está pronto</h3>
-                        <dl class="ap-resumo">
-                            <div><dt>Organizar</dt><dd data-resumo="o-que">—</dd></div>
-                            <div><dt>Quem usa</dt><dd data-resumo="pessoas">—</dd></div>
-                            <div><dt>Hoje</dt><dd data-resumo="hoje">—</dd></div>
-                        </dl>
-                        <p class="ap-estimativa" data-estimativa hidden></p>
-                        <a class="sv-cta ap-enviar" id="ap-pedido-enviar" href="${zap('Olá! Vim pelo site e quero um sistema para o meu negócio.')}" target="_blank" rel="noopener">${ico('zap', 'ap-ico-zap')} Enviar pelo WhatsApp</a>
-                        <button type="button" class="ap-voltar ap-refazer">Mudar as respostas</button>
-                    </div>
-                </form>
-            </section>`;
+    // As 3 perguntas antes do WhatsApp (ver blocoPedido e pedido-rapido.js).
+    const pedido = blocoPedido({
+        titulo: 'Monte seu pedido em 3 perguntas',
+        sub: 'No fim, a mensagem vai pronta para o WhatsApp e eu já respondo sabendo o que você precisa.',
+        intro: 'Olá! Vim pelo site e respondi as 3 perguntas sobre o sistema:',
+        precoRotulo: 'Criação a partir de',
+        semPreco: 'O valor você recebe depois de contar a sua ideia.',
+        perguntas: [
+            { nome: 'o-que', rotulo: 'Quero organizar', resumo: 'Organizar', pergunta: 'O que você quer organizar?', tipo: 'checkbox', dica: 'Pode marcar mais de um.',
+                opcoes: APPS.sistemas.map((s) => ({ valor: s.id, texto: s.curto, icone: s.icone, preco: s.preco, mensal: s.mensalidade })) },
+            { nome: 'pessoas', rotulo: 'Quem vai usar', resumo: 'Quem usa', pergunta: 'Quantas pessoas vão usar?', opcoes: APPS.perguntas.pessoas.map((t) => ({ texto: t })) },
+            { nome: 'hoje', rotulo: 'Hoje eu controlo', resumo: 'Hoje', pergunta: 'Como você controla isso hoje?',
+                opcoes: APPS.perguntas.hoje.map((t) => ({ texto: t, extra: /planilha/i.test(t) ? 'Posso mandar a minha planilha.' : '' })) }
+        ]
+    });
 
     const portfolio = PORTFOLIO.map((p) => `<article class="ap-projeto">
                     <div class="ap-demo-tela ap-projeto-tela">
@@ -784,7 +866,7 @@ function paginaApps() {
     </main>
 
     ${rodape()}
-    <script src="/apps-pedido.js?v=1" defer></script>
+    <script src="/pedido-rapido.js?v=1" defer></script>
 </body>
 </html>
 `;
