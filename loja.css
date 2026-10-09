@@ -1267,3 +1267,10 @@ body.bt-com-carrinho { padding-bottom: 90px; }
 /* O botão do tema some enquanto a pessoa desce a página (theme-system.js). */
 #themeToggleBtn { transition: opacity 0.25s ease, visibility 0.25s ease; }
 #themeToggleBtn.pcft-toggle-oculto { opacity: 0; visibility: hidden; pointer-events: none; }
+
+/* Celular estreito (360px): o cartão fica com ~88px para o botão e "Adicionar"
+   não cabia junto com a sacola. Abaixo de 381px, o botão do cartão fica só com o texto. */
+@media (max-width: 380px) {
+    .bt-card .bt-card-carrinho .bt-botao > svg { display: none; }
+    .bt-card .bt-card-carrinho .bt-botao { padding: 0 0.4rem; }
+}

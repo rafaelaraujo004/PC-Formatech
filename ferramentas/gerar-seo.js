@@ -381,64 +381,85 @@ function paginaIndice() {
 //
 // PREÇOS: preencha os valores (em reais) e rode o script de novo. Enquanto um
 // preço estiver null, a página mostra "R$ [PREÇO]" e o script avisa.
+// Cada sistema tem a criação (preco) e a mensalidade, mais barata, que cobre
+// hospedagem, cópia de segurança, suporte e pequenos ajustes. Mensalidade
+// null = ainda não definida: a página não mostra valor (diz que vem junto
+// com o orçamento).
 
 const APPS = {
     prazo: '7 a 15 dias',
     // Suporte e manutenção: incluso nos sistemas que têm mensalidade.
     suporteMensal: 'incluso',
+    // As 3 perguntas do "Monte seu pedido" (a 1ª são os próprios sistemas).
+    perguntas: {
+        pessoas: ['Só eu', '2 a 5 pessoas', '6 ou mais'],
+        hoje: ['No caderno ou papel', 'Em planilha (Excel)', 'Pelo WhatsApp', 'Em outro sistema', 'Ainda não controlo']
+    },
     sistemas: [
         {
             id: 'estoque',
+            curto: 'Estoque e vendas',
             pedido: 'um sistema de controle de estoque e vendas',
             nome: 'Controle de estoque e vendas',
             texto: 'Saiba na hora o que tem na prateleira, o que vendeu e o que precisa repor.',
             itens: ['Entrada e saída de produtos', 'Aviso de estoque baixo', 'Vendas do dia e do mês'],
             icone: 'caixa',
-            preco: 299.99
+            preco: 299.99,
+            mensalidade: null
         },
         {
             id: 'agenda',
+            curto: 'Agenda de clientes',
             pedido: 'um sistema de agendamento de clientes',
             nome: 'Agendamento de clientes',
             texto: 'Seus horários organizados, sem conflito e sem caderno perdido.',
             itens: ['Agenda por dia e por profissional', 'Lembrete para o cliente', 'Histórico de cada cliente'],
             icone: 'agenda',
-            preco: 149.99
+            preco: 149.99,
+            mensalidade: null
         },
         {
             id: 'orcamentos',
+            curto: 'Orçamentos e serviços',
             pedido: 'um sistema de orçamentos e ordens de serviço',
             nome: 'Orçamentos e ordens de serviço',
             texto: 'Monte orçamentos em segundos e acompanhe cada serviço do início ao fim.',
             itens: ['Orçamento pronto para enviar', 'Situação de cada serviço', 'Tudo guardado por cliente'],
             icone: 'documento',
-            preco: 199.99
+            preco: 199.99,
+            mensalidade: null
         },
         {
             id: 'financeiro',
+            curto: 'Financeiro e clientes',
             pedido: 'um sistema de controle financeiro e de clientes',
             nome: 'Controle financeiro e de clientes',
             texto: 'Entradas, saídas, quem pagou e quem está devendo, num lugar só.',
             itens: ['Contas a pagar e a receber', 'Cadastro de clientes', 'Resumo do mês'],
             icone: 'carteira',
-            preco: 249.99
+            preco: 249.99,
+            mensalidade: null
         },
         {
             id: 'painel',
+            curto: 'Gráficos do negócio',
             pedido: 'um painel com gráficos automáticos do meu negócio',
             nome: 'Painel com gráficos automáticos',
             texto: 'Os números do seu negócio em gráficos que se atualizam sozinhos.',
             itens: ['Gráficos de vendas e despesas', 'Comparação entre meses', 'Abre no celular'],
             icone: 'grafico',
-            preco: 149.99
+            preco: 149.99,
+            mensalidade: null
         },
         {
             id: 'outro',
+            curto: 'Outra coisa',
             nome: 'Outro sistema sob medida',
             texto: 'Tem uma ideia ou um processo diferente? A gente conversa e monta do seu jeito.',
             itens: ['Feito para o seu negócio', 'Você acompanha cada etapa', 'Ajustes até ficar certo'],
             icone: 'ideia',
-            preco: 'fale'
+            preco: 'fale',
+            mensalidade: null
         }
     ]
 };
@@ -460,6 +481,38 @@ const ICONES_APPS = {
 
 const ico = (nome, classe) => `<svg class="${classe || 'ap-ico'}" viewBox="0 0 24 24" aria-hidden="true">${ICONES_APPS[nome]}</svg>`;
 const precoApp = (v) => (v === 'fale' ? 'Fale com a gente' : `A partir de ${typeof v === 'number' ? reais(v) : 'R$ [PREÇO]'}`);
+/** "+ R$ 49,90/mês" quando a mensalidade já foi definida; senão, nada. */
+const mensalApp = (s) => (typeof s.mensalidade === 'number' ? `+ ${reais(s.mensalidade)}/mês` : '');
+const menorMensalidade = () => {
+    const valores = APPS.sistemas.map((s) => s.mensalidade).filter((v) => typeof v === 'number');
+    return valores.length ? Math.min(...valores) : null;
+};
+
+// Projetos reais (portfólio): sistemas em uso na própria PC Formatech. Prints
+// em /images/apps/ (celular 9:19). "ver" = endereço público para abrir ao vivo.
+const PORTFOLIO = [
+    {
+        arq: 'projeto-portal',
+        nome: 'Site com orçamento na hora',
+        texto: 'A pessoa escreve o problema do computador e vê na hora o serviço certo e o preço, com o botão do WhatsApp já com a mensagem pronta.',
+        itens: ['Busca que entende o problema', 'Preços e promoções do painel', 'Funciona no celular'],
+        ver: '/'
+    },
+    {
+        arq: 'projeto-loja',
+        nome: 'Loja virtual com Pix',
+        texto: 'Catálogo da Bird Tech com carrinho, pedido pelo WhatsApp e QR Code do Pix com o valor exato. Os produtos são cadastrados pelo painel.',
+        itens: ['Carrinho e pedido pelo WhatsApp', 'Pix com o valor certo', 'Fotos com fundo automático'],
+        ver: '/loja.html'
+    },
+    {
+        arq: 'projeto-painel',
+        nome: 'Painel de gestão',
+        texto: 'Clientes, orçamentos, parcelas e as visitas do site em tempo real, com aviso no celular. Entra com a digital e também funciona como app.',
+        itens: ['De onde vêm os clientes', 'Lembretes no celular', 'Entrada com biometria'],
+        ver: null
+    }
+];
 
 function paginaApps() {
     const url = SITE + '/apps.html';
@@ -470,7 +523,7 @@ function paginaApps() {
         ['Preciso entender de tecnologia?', 'Não. O sistema é feito para ser simples: se você usa WhatsApp, consegue usar. E você recebe uma explicação de como mexer.'],
         ['Dá para aproveitar a minha planilha?', 'Sim. Os dados que você já tem podem ir para o sistema novo, sem precisar digitar tudo de novo.'],
         ['Funciona no celular?', 'Sim. O sistema abre no celular e no computador, e quem você autorizar vê a mesma informação ao mesmo tempo.'],
-        ['Tem mensalidade?', 'Depende do sistema. O preço mostrado é o da implementação. Quando o sistema tem mensalidade, ela já inclui suporte e manutenção, e você sabe o valor antes de começar.'],
+        ['Tem mensalidade?', 'Na maioria dos sistemas, sim: um valor de criação e uma mensalidade mais barata, que cobre hospedagem, cópia de segurança, suporte e pequenos ajustes. Você sabe os dois valores antes de começar.'],
         ['E se eu precisar mudar alguma coisa depois?', 'Nos sistemas com mensalidade, ajustes pequenos e dúvidas estão incluídos. Mudanças maiores são combinadas antes.']
     ];
     const dados = [
@@ -502,8 +555,70 @@ function paginaApps() {
                     <ul>
                         ${s.itens.map((i) => `<li>${ico('check', 'ap-ico-mini')} ${esc(i)}</li>`).join('\n                        ')}
                     </ul>
-                    <p class="ap-preco${s.preco === 'fale' ? ' ap-preco-fale' : ''}">${esc(precoApp(s.preco))}</p>
-                    <a class="sv-cta ap-card-cta" href="${zap(s.preco === 'fale' ? 'Olá! Vim pelo site. Tenho uma ideia de sistema para o meu negócio e quero conversar.' : `Olá! Vim pelo site e quero ${s.pedido}.`)}" target="_blank" rel="noopener">${ico('zap', 'ap-ico-zap')} Pedir pelo WhatsApp</a>
+                    <p class="ap-preco${s.preco === 'fale' ? ' ap-preco-fale' : ''}">${esc(precoApp(s.preco))}${mensalApp(s) ? ` <small class="ap-preco-mensal">${esc(mensalApp(s))}</small>` : ''}</p>
+                    <a class="sv-cta ap-card-cta" data-sistema="${s.id}" href="${zap(s.preco === 'fale' ? 'Olá! Vim pelo site. Tenho uma ideia de sistema para o meu negócio e quero conversar.' : `Olá! Vim pelo site e quero ${s.pedido}.`)}" target="_blank" rel="noopener">${ico('zap', 'ap-ico-zap')} Quero este</a>
+                </article>`).join('\n                ');
+
+    // "Monte seu pedido em 3 perguntas" (apps-pedido.js). Sem JavaScript, as
+    // perguntas aparecem todas e o botão do WhatsApp fica no fim.
+    const opcao = (tipo, nome, valor, rotulo, extra) => `<label class="ap-opcao"><input type="${tipo}" name="${nome}" value="${esc(valor)}"${extra || ''}><span>${rotulo}</span></label>`;
+    const pedido = `<section class="sv-bloco sv-bloco-largo ap-pedido" id="pedido" aria-labelledby="ap-pedido-titulo">
+                <div class="ap-pedido-topo">
+                    <p class="ap-pedido-selo">${ico('relogio', 'ap-ico-mini')} Menos de 1 minuto</p>
+                    <h2 id="ap-pedido-titulo">Monte seu pedido em 3 perguntas</h2>
+                    <p class="ap-sub">No fim, a mensagem vai pronta para o WhatsApp e eu já respondo sabendo o que você precisa.</p>
+                </div>
+                <form class="ap-pedido-form" id="ap-pedido-form" novalidate>
+                    <ol class="ap-pedido-progresso" aria-hidden="true"><li>1</li><li>2</li><li>3</li></ol>
+                    <fieldset class="ap-pergunta" data-passo="1">
+                        <legend><span>1</span> O que você quer organizar?</legend>
+                        <p class="ap-pergunta-dica">Pode marcar mais de um.</p>
+                        <div class="ap-opcoes">
+                            ${APPS.sistemas.map((s) => opcao('checkbox', 'o-que', s.id, `${ico(s.icone, 'ap-ico-opcao')} ${esc(s.curto)}`, ` data-preco="${typeof s.preco === 'number' ? s.preco : ''}" data-mensal="${typeof s.mensalidade === 'number' ? s.mensalidade : ''}"`)).join('\n                            ')}
+                        </div>
+                        <p class="ap-pergunta-aviso" role="alert" hidden>Marque pelo menos uma opção.</p>
+                        <div class="ap-pergunta-acoes"><button type="button" class="sv-cta ap-avancar">Próxima</button></div>
+                    </fieldset>
+                    <fieldset class="ap-pergunta" data-passo="2">
+                        <legend><span>2</span> Quantas pessoas vão usar?</legend>
+                        <div class="ap-opcoes ap-opcoes-lista">
+                            ${APPS.perguntas.pessoas.map((p) => opcao('radio', 'pessoas', p, esc(p))).join('\n                            ')}
+                        </div>
+                        <div class="ap-pergunta-acoes"><button type="button" class="ap-voltar">Voltar</button><button type="button" class="sv-cta ap-avancar" hidden>Próxima</button></div>
+                    </fieldset>
+                    <fieldset class="ap-pergunta" data-passo="3">
+                        <legend><span>3</span> Como você controla isso hoje?</legend>
+                        <div class="ap-opcoes ap-opcoes-lista">
+                            ${APPS.perguntas.hoje.map((p) => opcao('radio', 'hoje', p, esc(p))).join('\n                            ')}
+                        </div>
+                        <div class="ap-pergunta-acoes"><button type="button" class="ap-voltar">Voltar</button><button type="button" class="sv-cta ap-avancar" hidden>Próxima</button></div>
+                    </fieldset>
+                    <div class="ap-resultado" data-passo="4" aria-live="polite">
+                        <h3>Seu pedido está pronto</h3>
+                        <dl class="ap-resumo">
+                            <div><dt>Organizar</dt><dd data-resumo="o-que">—</dd></div>
+                            <div><dt>Quem usa</dt><dd data-resumo="pessoas">—</dd></div>
+                            <div><dt>Hoje</dt><dd data-resumo="hoje">—</dd></div>
+                        </dl>
+                        <p class="ap-estimativa" data-estimativa hidden></p>
+                        <a class="sv-cta ap-enviar" id="ap-pedido-enviar" href="${zap('Olá! Vim pelo site e quero um sistema para o meu negócio.')}" target="_blank" rel="noopener">${ico('zap', 'ap-ico-zap')} Enviar pelo WhatsApp</a>
+                        <button type="button" class="ap-voltar ap-refazer">Mudar as respostas</button>
+                    </div>
+                </form>
+            </section>`;
+
+    const portfolio = PORTFOLIO.map((p) => `<article class="ap-projeto">
+                    <div class="ap-demo-tela ap-projeto-tela">
+                        <img src="/images/apps/${p.arq}.webp" alt="${esc(p.nome)}: tela no celular" width="720" height="1520" loading="lazy" decoding="async">
+                    </div>
+                    <div class="ap-projeto-texto">
+                        <h3>${esc(p.nome)}</h3>
+                        <p>${esc(p.texto)}</p>
+                        <ul>
+                            ${p.itens.map((i) => `<li>${ico('check', 'ap-ico-mini')} ${esc(i)}</li>`).join('\n                            ')}
+                        </ul>
+                        ${p.ver ? `<a class="sv-cta-sec ap-projeto-ver" href="${p.ver}">Ver ao vivo</a>` : '<p class="ap-projeto-interno">Uso interno</p>'}
+                    </div>
                 </article>`).join('\n                ');
 
     // Telas de demonstração (dados fictícios), em formato de celular 9:19, em
@@ -519,7 +634,9 @@ function paginaApps() {
                     <figcaption><strong>${esc(nome)}</strong><small>${esc(texto)}</small></figcaption>
                 </figure>`).join('\n                ');
 
-    return `${cabeca({ titulo, descricao, url, previa: 'apps', extras: '    <link rel="stylesheet" href="/apps.css?v=3">\n    ' + jsonLd({ '@context': 'https://schema.org', '@graph': dados }) })}
+    const mensalMin = menorMensalidade();
+
+    return `${cabeca({ titulo, descricao, url, previa: 'apps', extras: '    <link rel="stylesheet" href="/apps.css?v=4">\n    ' + jsonLd({ '@context': 'https://schema.org', '@graph': dados }) })}
 <body>
     ${topo}
 
@@ -530,7 +647,7 @@ function paginaApps() {
             <h1>Troque suas planilhas por um sistema feito sob medida</h1>
             <p class="sv-hero-texto">Para empresas e negócios próprios que hoje se viram com planilhas. Um sistema simples, do seu jeito, que funciona no celular e no computador.</p>
             <div class="sv-acoes">
-                <a class="sv-cta" href="${zap(msgPlanilha)}" target="_blank" rel="noopener">${ico('zap', 'ap-ico-zap')} Mandar minha planilha</a>
+                <a class="sv-cta" href="#pedido">Montar meu pedido (3 perguntas)</a>
                 <a class="sv-cta-sec" href="#sistemas">Ver o que dá para fazer</a>
             </div>
             <ul class="sv-selos">
@@ -541,6 +658,8 @@ function paginaApps() {
         </section>
 
         <div class="sv-conteudo ap-conteudo">
+            ${pedido}
+
             <section class="sv-bloco sv-bloco-largo ap-antes-depois" aria-labelledby="ap-ad-titulo">
                 <h2 id="ap-ad-titulo">Antes e depois</h2>
                 <div class="ap-comparar">
@@ -597,7 +716,15 @@ function paginaApps() {
                 <div class="ap-cards">
                 ${cards}
                 </div>
-                <p class="ap-nota">Valores da implementação do sistema. Dependendo do sistema, pode haver uma mensalidade, que já inclui suporte e manutenção.</p>
+                <p class="ap-nota">Valores da criação do sistema. A maioria tem também uma mensalidade, mais barata, que cobre hospedagem, cópia de segurança, suporte e pequenos ajustes. Você recebe os dois valores antes de começar.</p>
+            </section>
+
+            <section class="sv-bloco sv-bloco-largo ap-portfolio" id="projetos" aria-labelledby="ap-projetos-titulo">
+                <h2 id="ap-projetos-titulo">Projetos que eu já fiz</h2>
+                <p class="ap-sub">Sistemas reais, em uso todo dia na própria PC Formatech. O mesmo cuidado vai para o seu.</p>
+                <div class="ap-projetos">
+                ${portfolio}
+                </div>
             </section>
 
             <section class="sv-bloco sv-bloco-largo sv-chamada ap-destaque">
@@ -620,14 +747,16 @@ function paginaApps() {
                 <h2 id="ap-suporte-titulo">Suporte e manutenção mensal</h2>
                 <p>Seu sistema sempre funcionando, com alguém para ajudar quando precisar.</p>
                 <ul class="sv-lista">
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Ajuda pelo WhatsApp</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Pequenos ajustes e melhorias</li>
+                    <li><i class="fas fa-check" aria-hidden="true"></i> Sistema no ar (hospedagem)</li>
                     <li><i class="fas fa-check" aria-hidden="true"></i> Cópia de segurança dos dados</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Correção de problemas</li>
+                    <li><i class="fas fa-check" aria-hidden="true"></i> Ajuda pelo WhatsApp</li>
+                    <li><i class="fas fa-check" aria-hidden="true"></i> Pequenos ajustes e correções</li>
                 </ul>
-                ${APPS.suporteMensal === 'incluso'
-                    ? '<p class="ap-incluso"><strong>Incluso</strong> nos sistemas com mensalidade, sem custo à parte.</p>'
-                    : `<p class="ap-mensal"><strong>${typeof APPS.suporteMensal === 'number' ? reais(APPS.suporteMensal) : 'R$ [PREÇO]'}</strong><span>/mês</span></p>`}
+                ${mensalMin !== null
+                    ? `<p class="ap-mensal"><span>a partir de</span> <strong>${reais(mensalMin)}</strong><span>/mês</span></p>`
+                    : APPS.suporteMensal === 'incluso'
+                        ? '<p class="ap-incluso"><strong>Tudo isso na mensalidade</strong>, que é mais barata que a criação. O valor vem junto com o orçamento.</p>'
+                        : `<p class="ap-mensal"><strong>${typeof APPS.suporteMensal === 'number' ? reais(APPS.suporteMensal) : 'R$ [PREÇO]'}</strong><span>/mês</span></p>`}
             </section>
 
             <section class="sv-bloco sv-bloco-largo" aria-labelledby="ap-exemplos-titulo">
@@ -645,13 +774,17 @@ function paginaApps() {
 
             <section class="sv-bloco sv-bloco-largo sv-chamada">
                 <h2>Vamos organizar o seu negócio?</h2>
-                <p>Conte como você trabalha hoje. A conversa é sem compromisso e você sabe o valor antes de começar.</p>
-                <a class="sv-cta" href="${zap('Olá! Vim pelo site e quero um sistema para o meu negócio.')}" target="_blank" rel="noopener">${ico('zap', 'ap-ico-zap')} Chamar no WhatsApp</a>
+                <p>Responda as 3 perguntas e mande pelo WhatsApp. A conversa é sem compromisso e você sabe o valor antes de começar.</p>
+                <div class="sv-acoes ap-acoes-centro">
+                    <a class="sv-cta" href="#pedido">Montar meu pedido</a>
+                    <a class="sv-cta-sec" href="${zap('Olá! Vim pelo site e quero um sistema para o meu negócio.')}" target="_blank" rel="noopener">Prefiro conversar direto</a>
+                </div>
             </section>
         </div>
     </main>
 
     ${rodape()}
+    <script src="/apps-pedido.js?v=1" defer></script>
 </body>
 </html>
 `;
