@@ -13,7 +13,8 @@ node_modules
 # Exceção: guia-orcamentos.html linka para este arquivo ("Documentação
 # Completa"). Sem a exceção, o botão dá 404 em produção.
 !ORCAMENTOS-LAUDOS.md
-firestore-rules.txt
+firestore.rules
+firebase-config.example.js
 
 # Páginas de teste e demonstração — ficavam publicamente acessíveis no domínio
 teste-upload.html

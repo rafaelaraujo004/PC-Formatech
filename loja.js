@@ -373,8 +373,14 @@
     let codigoPedido = null;
     let pixAberto = false;
 
+    // Código do pedido: 8 caracteres sorteados (sem 0/O e 1/I, que confundem).
+    // Antes vinha do relógio e dava para adivinhar o de um pedido recente e
+    // alterar os dados dele.
     function novoCodigo() {
-        return 'BT' + Date.now().toString(36).toUpperCase().slice(-6);
+        const letras = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        const sorteio = new Uint8Array(8);
+        crypto.getRandomValues(sorteio);
+        return 'BT' + Array.from(sorteio, (n) => letras[n % letras.length]).join('');
     }
 
     /**

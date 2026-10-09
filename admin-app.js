@@ -3923,6 +3923,17 @@ function updateChartTheme() {
             return Uint8Array.from([...raw].map(c => c.charCodeAt(0)));
         }
 
+        /** Usuário do Firebase Auth; espera até 10 s se o login ainda está carregando. */
+        function _usuarioLogado() {
+            const auth = window.firebase && firebase.auth ? firebase.auth() : null;
+            if (!auth) return Promise.resolve(null);
+            if (auth.currentUser) return Promise.resolve(auth.currentUser);
+            return new Promise((resolve) => {
+                const desligar = auth.onAuthStateChanged((u) => { if (u) { desligar(); resolve(u); } });
+                setTimeout(() => { desligar(); resolve(auth.currentUser || null); }, 10000);
+            });
+        }
+
         async function _registrarWebPush(registration) {
             if (!('PushManager' in window)) return;
             try {
@@ -3940,11 +3951,18 @@ function updateChartTheme() {
                     return;
                 }
 
-                // Enviar subscription ao backend para armazenar
+                // Enviar subscription ao backend para armazenar. A rota só aceita
+                // o administrador logado: sem o idToken, ela recusa (401).
+                const usuario = await _usuarioLogado();
+                if (!usuario) {
+                    console.warn('Web Push: entre no painel para ativar os avisos neste aparelho.');
+                    return;
+                }
+                const idToken = await usuario.getIdToken();
                 const response = await fetch('/api/subscribe', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ subscription: sub.toJSON() })
+                    body: JSON.stringify({ idToken, subscription: sub.toJSON() })
                 });
 
                 if (!response.ok) {
