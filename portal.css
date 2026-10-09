@@ -758,3 +758,9 @@ html[data-theme='dark'] .pt-apps .pt-loja-texto strong {
 /* Promoção em vigor (site-config.js). */
 .pt-price.em-promocao > span { color: #e11d48; font-weight: 800; }
 .pt-price .preco-antigo { margin-right: 0.35em; font-size: 0.85em; font-weight: 600; color: var(--pt-muted); text-decoration: line-through; }
+
+/* Links para as páginas de serviço no rodapé (ajudam o Google a achar cada uma). */
+.pt-foot-servicos { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.3rem 0.85rem; width: 100%; padding-top: 0.75rem; border-top: 1px solid rgba(255, 255, 255, 0.14); font-size: 0.85rem; }
+.pt-foot-servicos span { opacity: 0.7; font-weight: 600; }
+.pt-foot-servicos a { font-weight: 600; text-decoration: none; opacity: 0.9; }
+.pt-foot-servicos a:hover { text-decoration: underline; opacity: 1; }
