@@ -27,7 +27,7 @@
     <link rel="preload" href="/fonts/sora-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/fontes.css">
     <link rel="stylesheet" href="/icones.css">
-    <link rel="stylesheet" href="/servicos/servicos.css?v=3">
+    <link rel="stylesheet" href="/servicos/servicos.css?v=4">
     <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LocalBusiness","@id":"https://www.pcformatech.com.br/#empresa","name":"PC Formatech","description":"Assistência técnica de computadores e notebooks (só programas, sem conserto de peças): formatação, manutenção, limpeza e otimização, remoção de vírus, backup e suporte remoto.","url":"https://www.pcformatech.com.br/site.html","image":"https://www.pcformatech.com.br/images/og/pc-formatech.jpg","logo":"https://www.pcformatech.com.br/icon-512.png","telephone":"+55 94 98430-5772","priceRange":"R$ 40 a R$ 80","address":{"@type":"PostalAddress","addressLocality":"Canaã dos Carajás","addressRegion":"PA","addressCountry":"BR"},"areaServed":[{"@type":"City","name":"Canaã dos Carajás"},{"@type":"Country","name":"Brasil"}],"sameAs":["https://instagram.com/pcformatech"]},{"@type":"Service","@id":"https://www.pcformatech.com.br/servicos/limpeza-e-otimizacao/#servico","name":"Computador Lento? Limpeza e Otimização em Canaã dos Carajás","serviceType":"Limpeza e otimização","description":"Computador ou notebook lento em Canaã dos Carajás? Limpeza do sistema, otimização do Windows, drivers atualizados e relatório de desempenho. A partir de R$ 70.","url":"https://www.pcformatech.com.br/servicos/limpeza-e-otimizacao/","provider":{"@id":"https://www.pcformatech.com.br/#empresa"},"areaServed":{"@type":"City","name":"Canaã dos Carajás"},"offers":{"@type":"Offer","price":"70.00","priceCurrency":"BRL","description":"Preço a partir de"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Início","item":"https://www.pcformatech.com.br/site.html"},{"@type":"ListItem","position":2,"name":"Serviços","item":"https://www.pcformatech.com.br/servicos/"},{"@type":"ListItem","position":3,"name":"Limpeza e otimização","item":"https://www.pcformatech.com.br/servicos/limpeza-e-otimizacao/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Limpeza resolve computador lento sem formatar?","acceptedAnswer":{"@type":"Answer","text":"Muitas vezes, sim. A otimização tira o que pesa na inicialização e no uso do dia a dia sem apagar seus programas e arquivos."}},{"@type":"Question","name":"De quanto em quanto tempo devo fazer manutenção?","acceptedAnswer":{"@type":"Answer","text":"Uma vez por ano é um bom ritmo para a maioria dos computadores de casa e de trabalho."}},{"@type":"Question","name":"Meus arquivos continuam no computador?","acceptedAnswer":{"@type":"Answer","text":"Sim. A manutenção não apaga seus arquivos nem seus programas."}}]}]}</script>
 </head>
 <body>
@@ -49,8 +49,8 @@
             <p class="sv-hero-texto">Programas escondidos, arquivos acumulados e inicialização pesada roubam desempenho todo dia. A manutenção encontra e corrige.</p>
             <p class="sv-preco">A partir de R$ 70,00</p>
             <div class="sv-acoes">
-                <a class="sv-cta" href="https://api.whatsapp.com/send?phone=5594984305772&amp;text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20quero%20limpeza%20e%20otimiza%C3%A7%C3%A3o." target="_blank" rel="noopener"><i class="fab fa-whatsapp" aria-hidden="true"></i> Pedir orçamento no WhatsApp</a>
-                <a class="sv-cta-sec" href="/site.html#diagnostico">Fazer diagnóstico grátis</a>
+                <a class="sv-cta" href="#pedido">Pedir orçamento (3 perguntas)</a>
+                <a class="sv-cta-sec" href="https://api.whatsapp.com/send?phone=5594984305772&amp;text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20quero%20limpeza%20e%20otimiza%C3%A7%C3%A3o." target="_blank" rel="noopener"><i class="fab fa-whatsapp" aria-hidden="true"></i> Falar direto no WhatsApp</a>
             </div>
             <ul class="sv-selos">
                 <li><i class="fas fa-check-circle" aria-hidden="true"></i> +500 PCs atendidos</li>
@@ -60,6 +60,61 @@
         </section>
 
         <div class="sv-conteudo">
+            <section class="sv-bloco sv-bloco-largo pr-pedido" id="pedido" aria-labelledby="pr-titulo">
+                <div class="pr-topo">
+                    <p class="pr-selo"><svg class="pr-ico-mini" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> Menos de 1 minuto</p>
+                    <h2 id="pr-titulo">Peça o orçamento em 3 perguntas</h2>
+                    <p class="pr-sub">No fim, a mensagem vai pronta para o WhatsApp e você recebe o valor sem precisar explicar tudo de novo.</p>
+                </div>
+                <form class="pr-form" novalidate data-intro="Olá! Vim pelo site e quero limpeza e otimização." data-preco-base="70">
+                    <ol class="pr-progresso" aria-hidden="true"><li>1</li><li>2</li><li>3</li></ol>
+                    <fieldset class="pr-pergunta" data-passo="1" data-rotulo="Aparelho">
+                        <legend><span>1</span> É notebook ou computador de mesa?</legend>
+                        
+                        <div class="pr-opcoes pr-opcoes-lista">
+                            <label class="pr-opcao"><input type="radio" name="aparelho" value="Notebook"><span>Notebook</span></label>
+                            <label class="pr-opcao"><input type="radio" name="aparelho" value="Computador de mesa"><span>Computador de mesa</span></label>
+                            <label class="pr-opcao"><input type="radio" name="aparelho" value="Mais de um aparelho"><span>Mais de um aparelho</span></label>
+                        </div>
+                        <p class="pr-aviso" role="alert" hidden>Escolha pelo menos uma opção.</p>
+                        <div class="pr-acoes"><button type="button" class="sv-cta pr-avancar" hidden>Próxima</button></div>
+                    </fieldset>
+                    <fieldset class="pr-pergunta" data-passo="2" data-rotulo="Atendimento">
+                        <legend><span>2</span> Como prefere ser atendido?</legend>
+                        
+                        <div class="pr-opcoes pr-opcoes-lista">
+                            <label class="pr-opcao"><input type="radio" name="onde" value="Presencial em Canaã dos Carajás"><span>Presencial em Canaã dos Carajás</span></label>
+                            <label class="pr-opcao"><input type="radio" name="onde" value="À distância (10% de desconto)" data-nota="À distância, 10% de desconto."><span>À distância (10% de desconto)</span></label>
+                            <label class="pr-opcao"><input type="radio" name="onde" value="Tanto faz"><span>Tanto faz</span></label>
+                        </div>
+                        <p class="pr-aviso" role="alert" hidden>Escolha pelo menos uma opção.</p>
+                        <div class="pr-acoes"><button type="button" class="pr-voltar">Voltar</button><button type="button" class="sv-cta pr-avancar" hidden>Próxima</button></div>
+                    </fieldset>
+                    <fieldset class="pr-pergunta" data-passo="3" data-rotulo="Lento desde">
+                        <legend><span>3</span> Há quanto tempo está lento?</legend>
+                        
+                        <div class="pr-opcoes pr-opcoes-lista">
+                            <label class="pr-opcao"><input type="radio" name="desde" value="Começou agora"><span>Começou agora</span></label>
+                            <label class="pr-opcao"><input type="radio" name="desde" value="Algumas semanas"><span>Algumas semanas</span></label>
+                            <label class="pr-opcao"><input type="radio" name="desde" value="Meses ou mais"><span>Meses ou mais</span></label>
+                        </div>
+                        <p class="pr-aviso" role="alert" hidden>Escolha pelo menos uma opção.</p>
+                        <div class="pr-acoes"><button type="button" class="pr-voltar">Voltar</button><button type="button" class="sv-cta pr-avancar" hidden>Próxima</button></div>
+                    </fieldset>
+                    <div class="pr-resultado" data-passo="4" aria-live="polite">
+                        <h3>Seu pedido está pronto</h3>
+                        <dl class="pr-resumo">
+                            <div><dt>Aparelho</dt><dd data-resumo="aparelho">—</dd></div>
+                            <div><dt>Atendimento</dt><dd data-resumo="onde">—</dd></div>
+                            <div><dt>Lento desde</dt><dd data-resumo="desde">—</dd></div>
+                        </dl>
+                        <p class="pr-estimativa" data-estimativa hidden></p>
+                        <a class="sv-cta pr-enviar" href="https://api.whatsapp.com/send?phone=5594984305772&amp;text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20quero%20limpeza%20e%20otimiza%C3%A7%C3%A3o." target="_blank" rel="noopener"><svg class="pr-ico-zap" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg> Enviar pelo WhatsApp</a>
+                        <button type="button" class="pr-voltar pr-refazer">Mudar as respostas</button>
+                    </div>
+                </form>
+            </section>
+
             <section class="sv-bloco">
                 <h2>O que está incluso</h2>
                 <ul class="sv-lista">
@@ -100,8 +155,11 @@
 
             <section class="sv-bloco sv-bloco-largo sv-chamada">
                 <h2>Pronto para resolver?</h2>
-                <p>Mande uma mensagem contando o problema. O diagnóstico pelo WhatsApp é grátis e você sabe o valor antes de qualquer serviço.</p>
-                <a class="sv-cta" href="https://api.whatsapp.com/send?phone=5594984305772&amp;text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20quero%20limpeza%20e%20otimiza%C3%A7%C3%A3o." target="_blank" rel="noopener"><i class="fab fa-whatsapp" aria-hidden="true"></i> Chamar no WhatsApp</a>
+                <p>Responda as 3 perguntas e mande pelo WhatsApp. O diagnóstico é grátis e você sabe o valor antes de qualquer serviço.</p>
+                <div class="sv-acoes sv-acoes-centro">
+                    <a class="sv-cta" href="#pedido">Pedir orçamento (3 perguntas)</a>
+                    <a class="sv-cta-sec" href="https://api.whatsapp.com/send?phone=5594984305772&amp;text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20quero%20limpeza%20e%20otimiza%C3%A7%C3%A3o." target="_blank" rel="noopener"><i class="fab fa-whatsapp" aria-hidden="true"></i> Falar direto</a>
+                </div>
             </section>
 
             <section class="sv-bloco sv-bloco-largo">
@@ -135,5 +193,6 @@
         <p class="sv-rodape-contato"><a href="/dicas/">Dicas para o seu computador</a> · <a href="https://api.whatsapp.com/send?phone=5594984305772&amp;text=Ol%C3%A1!%20Vim%20pelo%20site." target="_blank" rel="noopener">(94) 98430-5772</a> · <a href="https://instagram.com/pcformatech" target="_blank" rel="noopener">@pcformatech</a></p>
         <p class="sv-rodape-autor">Site feito por Rafael Araújo</p>
     </footer>
+    <script src="/pedido-rapido.js?v=1" defer></script>
 </body>
 </html>

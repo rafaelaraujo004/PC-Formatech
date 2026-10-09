@@ -438,3 +438,39 @@
 @media (prefers-reduced-motion: reduce) {
     .ap-card { transition: none; }
 }
+
+
+/* ── Projetos (portfólio) ──────────────────────────────────────────────── */
+
+.ap-projetos {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.2rem;
+}
+
+.ap-projeto { display: grid; align-content: start; gap: 1rem; }
+.ap-projeto-tela { width: min(200px, 100%); }
+.ap-projeto-texto h3 { margin: 0 0 0.35rem; font-size: 1.08rem; }
+.ap-projeto-texto > p { margin: 0 0 0.6rem; color: var(--sv-suave); font-size: 0.93rem; }
+.ap-projeto-texto ul { display: grid; gap: 0.3rem; margin: 0 0 0.9rem; padding: 0; list-style: none; font-size: 0.9rem; }
+.ap-projeto-texto li .ap-ico-mini { color: var(--sv-acento); vertical-align: -0.12em; }
+
+.ap-projeto .ap-projeto-ver {
+    min-height: 42px;
+    padding: 0.5rem 1.1rem;
+    border: 1.5px solid var(--sv-acento);
+    color: var(--sv-acento);
+    font-size: 0.92rem;
+}
+
+.ap-projeto-interno { display: inline-block; margin: 0; padding: 0.3rem 0.7rem; border-radius: 999px; background: var(--sv-fundo); color: var(--sv-suave); font-size: 0.82rem; font-weight: 700; }
+
+.ap-preco-mensal { display: block; margin-top: 0.15rem; color: var(--sv-suave); font-size: 0.85rem; font-weight: 700; }
+.ap-acoes-centro { justify-content: center; }
+
+@media (max-width: 760px) {
+    /* Projetos: o celular à esquerda, o texto à direita. */
+    .ap-projetos { grid-template-columns: minmax(0, 1fr); gap: 1.6rem; }
+    .ap-projeto { grid-template-columns: 110px minmax(0, 1fr); align-items: start; gap: 0.9rem; }
+    .ap-projeto-tela { width: 110px; border-width: 5px; border-radius: 18px; }
+}

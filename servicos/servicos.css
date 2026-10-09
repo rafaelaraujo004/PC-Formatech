@@ -477,3 +477,241 @@ h1, h2 {
 :root[data-theme="dark"] .sv-artigo-passos li::before { color: #032421; }
 
 .sv-rodape-autor { grid-column: 1 / -1; font-size: 0.8rem; opacity: 0.7; }
+
+
+/* ── Perguntas rápidas antes do WhatsApp (pedido-rapido.js) ───────────── */
+/* apps.html e páginas de serviço: até 3 perguntas, uma por vez. */
+
+.pr-pedido {
+    border: 2px solid color-mix(in srgb, var(--sv-acento) 45%, transparent);
+    background:
+        radial-gradient(600px 260px at 50% 0%, color-mix(in srgb, var(--sv-acento) 10%, transparent), transparent 70%),
+        var(--sv-superficie);
+}
+
+.pr-topo { text-align: center; }
+.pr-topo h2 { margin: 0.5rem 0 0.3rem; }
+.pr-topo .pr-sub { max-width: 46ch; margin: 0 auto; }
+
+.pr-selo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 0;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--sv-acento) 12%, transparent);
+    color: var(--sv-acento);
+    font-size: 0.8rem;
+    font-weight: 800;
+}
+
+.pr-form { max-width: 720px; margin: 1.4rem auto 0; }
+
+/* Progresso: 1 — 2 — 3 */
+.pr-progresso {
+    display: flex;
+    justify-content: center;
+    gap: 2.4rem;
+    margin: 0 0 1.4rem;
+    padding: 0;
+    list-style: none;
+    counter-reset: none;
+}
+
+.pr-progresso li {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border: 2px solid var(--sv-borda);
+    border-radius: 50%;
+    background: var(--sv-superficie);
+    color: var(--sv-suave);
+    font-weight: 800;
+    font-size: 0.9rem;
+}
+
+.pr-progresso li + li::before {
+    content: "";
+    position: absolute;
+    right: calc(100% + 2px);
+    width: 2.4rem;
+    height: 2px;
+    background: var(--sv-borda);
+}
+
+.pr-progresso li.is-atual { border-color: var(--sv-acento); color: var(--sv-acento); box-shadow: 0 0 0 4px color-mix(in srgb, var(--sv-acento) 15%, transparent); }
+.pr-progresso li.is-feito { border-color: var(--sv-acento); background: var(--sv-acento); color: var(--sv-superficie); }
+.pr-progresso li.is-feito::before,
+.pr-progresso li.is-atual::before { background: var(--sv-acento); }
+
+/* Uma pergunta por vez (com JavaScript). Sem ele, aparecem todas. */
+.pr-form.is-js [data-passo]:not(.is-atual) { display: none; }
+.pr-form:not(.is-js) .pr-progresso,
+.pr-form:not(.is-js) .pr-acoes,
+.pr-form:not(.is-js) .pr-resultado h3,
+.pr-form:not(.is-js) .pr-resumo,
+.pr-form:not(.is-js) .pr-refazer { display: none; }
+.pr-form:not(.is-js) .pr-pergunta { margin-bottom: 1.4rem; }
+
+.pr-pergunta { min-width: 0; margin: 0; padding: 0; border: 0; }
+
+.pr-pergunta legend {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0 0 0.9rem;
+    padding: 0;
+    color: var(--sv-texto);
+    font-family: var(--pcft-font-heading, 'Sora', system-ui, sans-serif);
+    font-size: clamp(1.1rem, 2.6vw, 1.3rem);
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    outline: none;
+}
+
+.pr-pergunta legend span {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--sv-acento);
+    color: var(--sv-superficie);
+    font-size: 0.9rem;
+}
+
+.pr-dica { margin: -0.5rem 0 0.8rem; color: var(--sv-suave); font-size: 0.9rem; }
+.pr-aviso { margin: 0.7rem 0 0; color: #c2410c; font-size: 0.9rem; font-weight: 700; }
+
+.pr-opcoes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
+    gap: 0.55rem;
+}
+
+.pr-opcao { position: relative; display: block; cursor: pointer; }
+
+/* A caixa/bolinha some, mas continua acessível (teclado e leitor de tela). */
+.pr-opcao input { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+
+.pr-opcao span {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 54px;
+    padding: 0.7rem 2.4rem 0.7rem 0.9rem;
+    border: 1.5px solid var(--sv-borda);
+    border-radius: 14px;
+    background: var(--sv-superficie);
+    color: var(--sv-texto);
+    font-weight: 700;
+    line-height: 1.25;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.pr-opcao span::after {
+    content: "";
+    position: absolute;
+    right: 0.85rem;
+    top: 50%;
+    width: 20px;
+    height: 20px;
+    margin-top: -10px;
+    border: 2px solid var(--sv-borda);
+    border-radius: 6px;
+    background: var(--sv-superficie) no-repeat center / 14px;
+}
+
+.pr-opcao input[type="radio"] + span::after { border-radius: 50%; }
+.pr-opcao:hover span { border-color: color-mix(in srgb, var(--sv-acento) 55%, transparent); }
+
+.pr-opcao input:checked + span {
+    border-color: var(--sv-acento);
+    background: color-mix(in srgb, var(--sv-acento) 11%, var(--sv-superficie));
+}
+
+.pr-opcao input:checked + span::after {
+    border-color: var(--sv-acento);
+    background-color: var(--sv-acento);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
+}
+
+.pr-opcao input:focus-visible + span { outline: 3px solid color-mix(in srgb, var(--sv-acento) 55%, transparent); outline-offset: 2px; }
+
+.pr-ico { flex: 0 0 auto; width: 22px; height: 22px; color: var(--sv-acento); }
+
+.pr-opcoes-lista { grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr)); }
+
+.pr-acoes { display: flex; justify-content: space-between; align-items: center; gap: 0.7rem; margin-top: 1.1rem; }
+.pr-acoes .sv-cta { margin-left: auto; min-width: 160px; }
+
+.pr-voltar {
+    min-height: 44px;
+    padding: 0 0.4rem;
+    border: 0;
+    background: none;
+    color: var(--sv-suave);
+    font: inherit;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+}
+
+/* Resultado */
+.pr-resultado { text-align: center; }
+.pr-resultado h3 { margin: 0 0 1rem; font-size: 1.25rem; outline: none; }
+
+.pr-resumo {
+    display: grid;
+    gap: 0.45rem;
+    max-width: 520px;
+    margin: 0 auto 1rem;
+    text-align: left;
+}
+
+.pr-resumo div {
+    display: grid;
+    grid-template-columns: 6.5rem minmax(0, 1fr);
+    gap: 0.6rem;
+    padding: 0.6rem 0.8rem;
+    border-radius: 12px;
+    background: var(--sv-fundo);
+}
+
+.pr-resumo dt { color: var(--sv-suave); font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; }
+.pr-resumo dd { margin: 0; color: var(--sv-texto); font-weight: 700; }
+
+.pr-estimativa { margin: 0 auto 1.1rem; max-width: 52ch; color: var(--sv-suave); }
+.pr-estimativa strong { color: var(--sv-texto); }
+
+.pr-resultado .pr-enviar { min-width: min(100%, 280px); }
+.pr-resultado .pr-refazer { display: block; margin: 0.6rem auto 0; }
+
+.pr-ico,
+.pr-ico-mini,
+.pr-ico-zap {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex: 0 0 auto;
+}
+
+.pr-ico-mini { width: 1em; height: 1em; }
+.pr-ico-zap { width: 1.15em; height: 1.15em; }
+.pr-sub { margin: 0 auto; max-width: 46ch; color: var(--sv-suave); }
+.pr-form button.sv-cta { border: 0; font: inherit; font-weight: 800; cursor: pointer; }
+.pr-form button.sv-cta[hidden] { display: none; }
+.sv-acoes-centro { justify-content: center; }
+
+@media (max-width: 760px) {
+    .pr-progresso { gap: 1.8rem; }
+    .pr-progresso li + li::before { width: 1.8rem; }
+    .pr-acoes .sv-cta { flex: 1 1 auto; }
+}
