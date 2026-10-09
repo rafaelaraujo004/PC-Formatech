@@ -460,7 +460,7 @@ const APPS = {
             itens: ['Entrada e saída de produtos', 'Aviso de estoque baixo', 'Vendas do dia e do mês'],
             icone: 'caixa',
             preco: 299.99,
-            mensalidade: null
+            mensalidade: 69.90
         },
         {
             id: 'agenda',
@@ -471,7 +471,7 @@ const APPS = {
             itens: ['Agenda por dia e por profissional', 'Lembrete para o cliente', 'Histórico de cada cliente'],
             icone: 'agenda',
             preco: 149.99,
-            mensalidade: null
+            mensalidade: 39.90
         },
         {
             id: 'orcamentos',
@@ -482,7 +482,7 @@ const APPS = {
             itens: ['Orçamento pronto para enviar', 'Situação de cada serviço', 'Tudo guardado por cliente'],
             icone: 'documento',
             preco: 199.99,
-            mensalidade: null
+            mensalidade: 49.90
         },
         {
             id: 'financeiro',
@@ -493,7 +493,7 @@ const APPS = {
             itens: ['Contas a pagar e a receber', 'Cadastro de clientes', 'Resumo do mês'],
             icone: 'carteira',
             preco: 249.99,
-            mensalidade: null
+            mensalidade: 59.90
         },
         {
             id: 'painel',
@@ -504,7 +504,7 @@ const APPS = {
             itens: ['Gráficos de vendas e despesas', 'Comparação entre meses', 'Abre no celular'],
             icone: 'grafico',
             preco: 149.99,
-            mensalidade: null
+            mensalidade: 39.90
         },
         {
             id: 'outro',

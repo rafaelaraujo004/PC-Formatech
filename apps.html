@@ -72,11 +72,11 @@
                         <legend><span>1</span> O que você quer organizar?</legend>
                         <p class="pr-dica">Pode marcar mais de um.</p>
                         <div class="pr-opcoes">
-                            <label class="pr-opcao"><input type="checkbox" name="o-que" value="estoque" data-preco="299.99"><span><svg class="pr-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="m3 8 9 5 9-5M12 13v8"/></svg> Estoque e vendas</span></label>
-                            <label class="pr-opcao"><input type="checkbox" name="o-que" value="agenda" data-preco="149.99"><span><svg class="pr-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16.5" rx="2"/><path d="M16 2.5v4M8 2.5v4M3 10h18M8 14h3v3H8z"/></svg> Agenda de clientes</span></label>
-                            <label class="pr-opcao"><input type="checkbox" name="o-que" value="orcamentos" data-preco="199.99"><span><svg class="pr-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg> Orçamentos e serviços</span></label>
-                            <label class="pr-opcao"><input type="checkbox" name="o-que" value="financeiro" data-preco="249.99"><span><svg class="pr-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M16 13h.01M3 10h18M7 6V4h10v2"/></svg> Financeiro e clientes</span></label>
-                            <label class="pr-opcao"><input type="checkbox" name="o-que" value="painel" data-preco="149.99"><span><svg class="pr-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15v3M11 11v7M15 13v5M19 7v11"/></svg> Gráficos do negócio</span></label>
+                            <label class="pr-opcao"><input type="checkbox" name="o-que" value="estoque" data-preco="299.99" data-mensal="69.9"><span><svg class="pr-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="m3 8 9 5 9-5M12 13v8"/></svg> Estoque e vendas</span></label>
+                            <label class="pr-opcao"><input type="checkbox" name="o-que" value="agenda" data-preco="149.99" data-mensal="39.9"><span><svg class="pr-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16.5" rx="2"/><path d="M16 2.5v4M8 2.5v4M3 10h18M8 14h3v3H8z"/></svg> Agenda de clientes</span></label>
+                            <label class="pr-opcao"><input type="checkbox" name="o-que" value="orcamentos" data-preco="199.99" data-mensal="49.9"><span><svg class="pr-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg> Orçamentos e serviços</span></label>
+                            <label class="pr-opcao"><input type="checkbox" name="o-que" value="financeiro" data-preco="249.99" data-mensal="59.9"><span><svg class="pr-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M16 13h.01M3 10h18M7 6V4h10v2"/></svg> Financeiro e clientes</span></label>
+                            <label class="pr-opcao"><input type="checkbox" name="o-que" value="painel" data-preco="149.99" data-mensal="39.9"><span><svg class="pr-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15v3M11 11v7M15 13v5M19 7v11"/></svg> Gráficos do negócio</span></label>
                             <label class="pr-opcao"><input type="checkbox" name="o-que" value="outro"><span><svg class="pr-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.3 1 2.1h5c0-.8.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg> Outra coisa</span></label>
                         </div>
                         <p class="pr-aviso" role="alert" hidden>Escolha pelo menos uma opção.</p>
@@ -183,7 +183,7 @@
                         <li><svg class="ap-ico-mini" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Aviso de estoque baixo</li>
                         <li><svg class="ap-ico-mini" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Vendas do dia e do mês</li>
                     </ul>
-                    <p class="ap-preco">A partir de R$ 299,99</p>
+                    <p class="ap-preco">A partir de R$ 299,99 <small class="ap-preco-mensal">+ R$ 69,90/mês</small></p>
                     <a class="sv-cta ap-card-cta" data-pedido-marcar="estoque" href="https://api.whatsapp.com/send?phone=5594984305772&amp;text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20quero%20um%20sistema%20de%20controle%20de%20estoque%20e%20vendas." target="_blank" rel="noopener"><svg class="ap-ico-zap" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg> Quero este</a>
                 </article>
                 <article class="ap-card">
@@ -195,7 +195,7 @@
                         <li><svg class="ap-ico-mini" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Lembrete para o cliente</li>
                         <li><svg class="ap-ico-mini" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Histórico de cada cliente</li>
                     </ul>
-                    <p class="ap-preco">A partir de R$ 149,99</p>
+                    <p class="ap-preco">A partir de R$ 149,99 <small class="ap-preco-mensal">+ R$ 39,90/mês</small></p>
                     <a class="sv-cta ap-card-cta" data-pedido-marcar="agenda" href="https://api.whatsapp.com/send?phone=5594984305772&amp;text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20quero%20um%20sistema%20de%20agendamento%20de%20clientes." target="_blank" rel="noopener"><svg class="ap-ico-zap" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg> Quero este</a>
                 </article>
                 <article class="ap-card">
@@ -207,7 +207,7 @@
                         <li><svg class="ap-ico-mini" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Situação de cada serviço</li>
                         <li><svg class="ap-ico-mini" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Tudo guardado por cliente</li>
                     </ul>
-                    <p class="ap-preco">A partir de R$ 199,99</p>
+                    <p class="ap-preco">A partir de R$ 199,99 <small class="ap-preco-mensal">+ R$ 49,90/mês</small></p>
                     <a class="sv-cta ap-card-cta" data-pedido-marcar="orcamentos" href="https://api.whatsapp.com/send?phone=5594984305772&amp;text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20quero%20um%20sistema%20de%20or%C3%A7amentos%20e%20ordens%20de%20servi%C3%A7o." target="_blank" rel="noopener"><svg class="ap-ico-zap" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg> Quero este</a>
                 </article>
                 <article class="ap-card">
@@ -219,7 +219,7 @@
                         <li><svg class="ap-ico-mini" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Cadastro de clientes</li>
                         <li><svg class="ap-ico-mini" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Resumo do mês</li>
                     </ul>
-                    <p class="ap-preco">A partir de R$ 249,99</p>
+                    <p class="ap-preco">A partir de R$ 249,99 <small class="ap-preco-mensal">+ R$ 59,90/mês</small></p>
                     <a class="sv-cta ap-card-cta" data-pedido-marcar="financeiro" href="https://api.whatsapp.com/send?phone=5594984305772&amp;text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20quero%20um%20sistema%20de%20controle%20financeiro%20e%20de%20clientes." target="_blank" rel="noopener"><svg class="ap-ico-zap" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg> Quero este</a>
                 </article>
                 <article class="ap-card">
@@ -231,7 +231,7 @@
                         <li><svg class="ap-ico-mini" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Comparação entre meses</li>
                         <li><svg class="ap-ico-mini" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Abre no celular</li>
                     </ul>
-                    <p class="ap-preco">A partir de R$ 149,99</p>
+                    <p class="ap-preco">A partir de R$ 149,99 <small class="ap-preco-mensal">+ R$ 39,90/mês</small></p>
                     <a class="sv-cta ap-card-cta" data-pedido-marcar="painel" href="https://api.whatsapp.com/send?phone=5594984305772&amp;text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20quero%20um%20painel%20com%20gr%C3%A1ficos%20autom%C3%A1ticos%20do%20meu%20neg%C3%B3cio." target="_blank" rel="noopener"><svg class="ap-ico-zap" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg> Quero este</a>
                 </article>
                 <article class="ap-card">
@@ -327,7 +327,7 @@
                     <li><i class="fas fa-check" aria-hidden="true"></i> Ajuda pelo WhatsApp</li>
                     <li><i class="fas fa-check" aria-hidden="true"></i> Pequenos ajustes e correções</li>
                 </ul>
-                <p class="ap-incluso"><strong>Tudo isso na mensalidade</strong>, que é mais barata que a criação. O valor vem junto com o orçamento.</p>
+                <p class="ap-mensal"><span>a partir de</span> <strong>R$ 39,90</strong><span>/mês</span></p>
             </section>
 
             <section class="sv-bloco sv-bloco-largo" aria-labelledby="ap-exemplos-titulo">
