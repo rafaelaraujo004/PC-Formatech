@@ -21,7 +21,7 @@
         } catch(e) {}
     })();
     </script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulário de Formatação - PC Formatech</title>
     <link rel="icon" type="image/svg+xml" href="/favicon-icon.svg">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -31,10 +31,10 @@
     
     <!-- Open Graph / Facebook / WhatsApp -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://pcformatech.com/formulario-formatacao.html">
+    <meta property="og:url" content="https://www.pcformatech.com.br/formulario-formatacao.html">
     <meta property="og:title" content="💻 Formulário de Formatação - PC Formatech">
-    <meta property="og:description" content="Soluções Profissionais em Formatação e Instalação de Software. Serviço profissional e confiável para seu computador. Preencha o formulário agora!">
-    <meta property="og:image" content="https://pcformatech.com/preview-formulario.jpg">
+    <meta property="og:description" content="Responda em 3 minutos o que precisa na formatação (backup, programas e senhas) e envie pelo WhatsApp da PC Formatech.">
+    <meta property="og:image" content="https://www.pcformatech.com.br/images/og/servico-formatacao-de-computador.jpg">
     <meta property="og:image:alt" content="PC Formatech - Especialistas em Tecnologia - Soluções Profissionais em Formatação">
     <meta property="og:image:type" content="image/jpeg">
     <meta property="og:image:width" content="1200">
@@ -44,10 +44,10 @@
     
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="https://pcformatech.com/formulario-formatacao.html">
+    <meta name="twitter:url" content="https://www.pcformatech.com.br/formulario-formatacao.html">
     <meta name="twitter:title" content="💻 Formulário de Formatação - PC Formatech">
-    <meta name="twitter:description" content="Soluções Profissionais em Formatação e Instalação de Software. Serviço profissional e confiável para seu computador. Preencha o formulário agora!">
-    <meta name="twitter:image" content="https://pcformatech.com/preview-formulario.jpg">
+    <meta name="twitter:description" content="Responda em 3 minutos o que precisa na formatação (backup, programas e senhas) e envie pelo WhatsApp da PC Formatech.">
+    <meta name="twitter:image" content="https://www.pcformatech.com.br/images/og/servico-formatacao-de-computador.jpg">
     <meta name="twitter:image:alt" content="PC Formatech - Especialistas em Tecnologia">
     
     <!-- Google Fonts - Inter -->
@@ -133,33 +133,88 @@
                 font-size: 1rem;
             }
         }
+        /* ── Revisão do formulário ─────────────────────────────────────────
+           Título uma vez só, avisos curtos (sem caixa dentro de caixa) e o
+           botão do tema no topo da página, longe dos campos. */
+        .form-page-header { margin-bottom: 0.5rem; }
+        .form-page-marca {
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            margin: 0; color: var(--primary-color); font-family: 'Sora', sans-serif;
+            font-size: 1.05rem; font-weight: 800;
+        }
+        .form-page-marca img { width: 32px; height: 32px; border-radius: 8px; }
+        .client-form-container .form-header h1 { margin: 0.4rem 0 0.5rem; font-size: clamp(1.45rem, 4vw, 2rem); line-height: 1.2; color: #fff; }
+        .form-tempo {
+            display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 0.8rem;
+            padding: 0.35rem 0.8rem; border-radius: 999px; background: rgba(255, 255, 255, 0.16);
+            font-size: 0.85rem; font-weight: 700;
+        }
+        /* O ícone do topo do cartão é grande (3rem); o do relógio, não. */
+        .client-form-container .form-header .form-tempo i {
+            font-size: 0.95rem; width: auto; height: auto; margin: 0; padding: 0;
+            background: none; box-shadow: none; display: inline-block;
+        }
+
+        #themeToggleBtn,
+        html[data-theme='dark'] #themeToggleBtn {
+            position: absolute; top: 1rem; right: 1rem; left: auto; bottom: auto;
+            width: 42px; height: 42px;
+        }
+
+        .aviso-form {
+            display: flex; gap: 0.75rem; align-items: flex-start;
+            margin: 0 0 1.25rem; padding: 0.9rem 1rem; border-radius: 12px;
+            line-height: 1.5; font-size: 0.95rem;
+        }
+        .aviso-form[hidden] { display: none; }
+        .aviso-form i { margin-top: 0.2rem; font-size: 1.1rem; }
+        .aviso-form p { margin: 0; }
+        .aviso-form strong { display: block; margin-bottom: 0.2rem; }
+        .aviso-backup { background: #fff4e5; border: 1px solid #f5b971; color: #5c3a00; }
+        .aviso-backup i { color: #d9822b; }
+        .aviso-peca { background: #fdecef; border: 1px solid #f2a7b5; color: #6b1626; }
+        .aviso-peca i { color: #d6336c; }
+        html[data-theme='dark'] .aviso-backup { background: rgba(217, 130, 43, 0.14); border-color: rgba(245, 185, 113, 0.45); color: #fde2bf; }
+        html[data-theme='dark'] .aviso-peca { background: rgba(214, 51, 108, 0.14); border-color: rgba(242, 167, 181, 0.45); color: #fbd0da; }
+
+        .envio-nota { margin: 0 0 1rem; text-align: center; font-size: 0.9rem; color: var(--text-light, #5f6b6d); }
+        .form-enviado {
+            margin-top: 1.25rem; padding: 1.1rem 1.2rem; border-radius: 14px;
+            background: #e8f8ee; border: 1px solid #8fd6a8; color: #12452a; text-align: center;
+        }
+        .form-enviado[hidden] { display: none; }
+        .form-enviado strong { display: block; font-size: 1.1rem; margin-bottom: 0.3rem; }
+        .form-enviado p { margin: 0 0 0.8rem; }
+        .form-enviado a { font-weight: 800; color: #0b6b3a; }
+        html[data-theme='dark'] .form-enviado { background: rgba(37, 211, 102, 0.12); border-color: rgba(143, 214, 168, 0.4); color: #d4f5df; }
+        html[data-theme='dark'] .form-enviado a { color: #8ff1b8; }
     </style>
 </head>
 <body>
     <div class="form-page-header">
         <a href="site.html" class="back-to-home">
-            <i class="fas fa-arrow-left"></i> Voltar para o Site
+            <i class="fas fa-arrow-left"></i> Voltar para o site
         </a>
-        <h1><i class="fas fa-laptop-code"></i> PC Formatech</h1>
-        <p>Formulário de Formatação de Computador</p>
+        <p class="form-page-marca"><img src="/icon-192.png" alt="" width="32" height="32"> PC Formatech</p>
     </div>
 
     <section id="formulario-formatacao" class="client-form-section">
         <div class="client-form-container">
             <div class="form-header">
-                <i class="fas fa-laptop-code"></i>
-                <h2>Formulário de Formatação de Computador</h2>
-                <p>Preencha todas as informações para que possamos realizar o melhor serviço</p>
+                <i class="fas fa-laptop-code" aria-hidden="true"></i>
+                <h1>Formulário de formatação</h1>
+                <p>Conte o que você precisa antes da formatação. No fim, as respostas vão prontas para o nosso WhatsApp e a gente confirma o valor e o horário.</p>
+                <span class="form-tempo"><i class="fas fa-clock" aria-hidden="true"></i> Leva cerca de 3 minutos</span>
             </div>
 
             <form id="formatacao-form" class="client-form">
                 <!-- 1. Dados do Cliente -->
                 <div class="form-section">
-                    <h3><i class="fas fa-user"></i> 1. Dados do Cliente</h3>
+                    <h3><i class="fas fa-user"></i> 1. Seus dados</h3>
                     
                     <div class="form-group">
                         <label for="cliente-nome">
-                            <i class="fas fa-user"></i> Nome Completo *
+                            <i class="fas fa-user"></i> Nome completo *
                         </label>
                         <input type="text" id="cliente-nome" name="cliente-nome" required placeholder="Digite seu nome completo">
                     </div>
@@ -183,16 +238,16 @@
 
                 <!-- 2. Informações do Computador -->
                 <div class="form-section">
-                    <h3><i class="fas fa-laptop"></i> 2. Informações do Computador</h3>
+                    <h3><i class="fas fa-laptop"></i> 2. Sobre o computador</h3>
                     
                     <div class="form-row">
                         <div class="form-group">
                             <label for="tipo-computador">
-                                <i class="fas fa-desktop"></i> Tipo de Computador *
+                                <i class="fas fa-desktop"></i> Tipo de computador *
                             </label>
                             <select id="tipo-computador" name="tipo-computador" required>
                                 <option value="">Selecione</option>
-                                <option value="Desktop">Desktop</option>
+                                <option value="Desktop">Computador de mesa</option>
                                 <option value="Notebook">Notebook</option>
                             </select>
                         </div>
@@ -210,9 +265,14 @@
                         </div>
                     </div>
 
+                    <div class="aviso-form aviso-peca" id="aviso-nao-liga" role="status" hidden>
+                        <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                        <p><strong>Computador que não liga costuma ser problema de peça.</strong>Trabalhamos só com a parte de programas (software) e não consertamos peças. Pode enviar mesmo assim: a gente olha e diz se dá para resolver por programa.</p>
+                    </div>
+
                     <div class="form-group">
                         <label for="sistema-atual">
-                            <i class="fab fa-windows"></i> Sistema Operacional Atual *
+                            <i class="fab fa-windows"></i> Windows que está instalado hoje *
                         </label>
                         <select id="sistema-atual" name="sistema-atual" required>
                             <option value="">Selecione</option>
@@ -226,11 +286,11 @@
 
                 <!-- 3. Motivo da Formatação -->
                 <div class="form-section">
-                    <h3><i class="fas fa-exclamation-triangle"></i> 3. Motivo da Formatação</h3>
+                    <h3><i class="fas fa-exclamation-triangle"></i> 3. Por que formatar</h3>
                     
                     <div class="form-group">
                         <label>
-                            <i class="fas fa-bug"></i> Problemas Apresentados * (Selecione todos que se aplicam)
+                            <i class="fas fa-bug"></i> O que está acontecendo? * (marque todos que valem)
                         </label>
                         <div class="checkbox-group">
                             <label class="checkbox-label">
@@ -269,7 +329,7 @@
 
                     <div class="form-group">
                         <label for="tempo-problema">
-                            <i class="fas fa-clock"></i> Tempo Aproximado do Problema *
+                            <i class="fas fa-clock"></i> Há quanto tempo? *
                         </label>
                         <select id="tempo-problema" name="tempo-problema" required>
                             <option value="">Selecione</option>
@@ -282,55 +342,16 @@
 
                 <!-- 4. Backup de Arquivos -->
                 <div class="form-section critical-section">
-                    <h3><i class="fas fa-database"></i> 4. Backup de Arquivos</h3>
+                    <h3><i class="fas fa-database"></i> 4. Seus arquivos (backup)</h3>
                     
-                    <div class="alert-warning">
-                        <div class="alert-warning-row">
-                            <div class="alert-warning-emoji">
-                                ⚠️
-                            </div>
-                            <div class="alert-warning-body">
-                                <div class="alert-warning-title">
-                                    ATENÇÃO - Campo Crítico!
-                                </div>
-
-                                <div class="alert-warning-danger-box">
-                                    <p>
-                                        Durante a formatação, <strong class="alert-warning-danger-text">TODOS os arquivos serão apagados PERMANENTEMENTE!</strong>
-                                    </p>
-                                </div>
-
-                                <div class="alert-warning-tip-box">
-                                    <div class="alert-warning-row">
-                                        <div class="alert-warning-tip-emoji">
-                                            🛡️
-                                        </div>
-                                        <div>
-                                            <strong class="alert-warning-tip-title">
-                                                Proteção Essencial:
-                                            </strong>
-                                            <p class="alert-warning-tip-text">
-                                                É <strong>FUNDAMENTAL</strong> fazer backup dos arquivos importantes.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="alert-warning-note-box">
-                                    <div class="alert-warning-row">
-                                        <i class="fas fa-info-circle" aria-hidden="true"></i>
-                                        <p class="alert-warning-note-text">
-                                            Nossa equipe pode auxiliar com o backup.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="aviso-form aviso-backup">
+                        <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                        <p><strong>A formatação apaga tudo o que está no computador.</strong>Fotos, documentos e arquivos somem. Se quiser guardar alguma coisa, marque abaixo que a gente faz a cópia (backup) antes de começar.</p>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="tem-arquivos">
-                            <i class="fas fa-folder-open"></i> Existem Arquivos Importantes? *
+                            <i class="fas fa-folder-open"></i> Tem arquivos que você quer guardar? *
                         </label>
                         <div class="radio-group">
                             <label class="radio-label">
@@ -347,7 +368,7 @@
                     <div id="backup-detalhes" style="display: none;">
                         <div class="form-group">
                             <label>
-                                <i class="fas fa-file"></i> Tipos de Arquivos para Backup (Selecione todos que se aplicam)
+                                <i class="fas fa-file"></i> O que precisa guardar? (marque todos que valem)
                             </label>
                             <div class="checkbox-group">
                                 <label class="checkbox-label">
@@ -375,7 +396,7 @@
 
                         <div class="form-group">
                             <label for="local-backup">
-                                <i class="fas fa-save"></i> Onde Deseja Salvar o Backup? *
+                                <i class="fas fa-save"></i> Onde guardar? *
                             </label>
                             <select id="local-backup" name="local-backup">
                                 <option value="">Selecione</option>
@@ -390,11 +411,11 @@
 
                 <!-- 5. Programas Necessários Após Formatação -->
                 <div class="form-section">
-                    <h3><i class="fas fa-download"></i> 5. Programas Necessários Após Formatação</h3>
+                    <h3><i class="fas fa-download"></i> 5. Programas para instalar</h3>
                     
                     <div class="form-group">
                         <label>
-                            <i class="fas fa-laptop-code"></i> Programas Desejados (Selecione todos que se aplicam)
+                            <i class="fas fa-laptop-code"></i> Quais programas você usa? (marque todos que valem)
                         </label>
                         <div class="checkbox-group">
                             <label class="checkbox-label">
@@ -403,16 +424,15 @@
                             </label>
                             <label class="checkbox-label">
                                 <input type="checkbox" name="programa[]" value="Navegadores">
-                                <span><i class="fas fa-globe"></i> Progrmas Essenciais (Navegadores, Antivírus, etc.)</span>
+                                <span><i class="fas fa-globe"></i> Programas essenciais (navegador, leitor de PDF, antivírus)</span>
                             </label>
                             <label class="checkbox-label">
                                 <input type="checkbox" name="programa[]" value="WhatsApp">
                                 <span><i class="fab fa-whatsapp"></i> WhatsApp</span>
                             </label>
-                            </label>
                             <label class="checkbox-label">
                                 <input type="checkbox" name="programa[]" value="Outros" id="programas-outros-check">
-                                <span><i class="fas fa-plus"></i> Programas de trabalho (Específicos)</span>
+                                <span><i class="fas fa-plus"></i> Programas de trabalho ou outros</span>
                             </label>
                         </div>
                     </div>
@@ -427,7 +447,7 @@
 
                 <!-- 6. Contas e Acessos -->
                 <div class="form-section">
-                    <h3><i class="fas fa-key"></i> 6. Contas e Acessos</h3>
+                    <h3><i class="fas fa-key"></i> 6. Contas e senhas</h3>
                     <div class="alert-info">
                         <i class="fas fa-info-circle"></i>
                         <div>
@@ -447,7 +467,7 @@
                     
                     <div class="form-group">
                         <label for="possui-senhas">
-                            <i class="fas fa-lock"></i> Possui as Senhas de E-mail e Contas Importantes? *
+                            <i class="fas fa-lock"></i> Você tem as senhas do e-mail e das contas importantes? *
                         </label>
                         <select id="possui-senhas" name="possui-senhas" required>
                             <option value="">Selecione</option>
@@ -463,11 +483,11 @@
 
                 <!-- 7. Expectativa do Cliente -->
                 <div class="form-section">
-                    <h3><i class="fas fa-bullseye"></i> 7. Expectativa do Cliente</h3>
+                    <h3><i class="fas fa-bullseye"></i> 7. Como quer o computador</h3>
                     
                     <div class="form-group">
                         <label>
-                            <i class="fas fa-star"></i> O Que Espera Após a Formatação? (Selecione todos que se aplicam)
+                            <i class="fas fa-star"></i> O que espera depois da formatação? (marque todos que valem)
                         </label>
                         <div class="checkbox-group">
                             <label class="checkbox-label">
@@ -494,45 +514,9 @@
                     </div>
                 </div>
 
-                <!-- 8. Sugestões Técnicas -->
-                <div class="form-section">
-                    <h3><i class="fas fa-tools"></i> 8. Sugestões Técnicas</h3>
-                    <div class="alert-info">
-                        <i class="fas fa-info-circle"></i>
-                        <div>
-                            <strong>Melhore o desempenho do seu computador:</strong>
-                            <p style="margin: 0.5rem 0;">Durante a avaliação, podemos sugerir melhorias como:</p>
-                            <ul>
-                                <li><strong>Instalação de SSD</strong> - Deixa o computador até 10x mais rápido</li>
-                                <li><strong>Upgrade de memória RAM</strong> - Mais capacidade para multitarefas</li>
-                                <li><strong>Limpeza preventiva</strong> - Remove poeira e melhora refrigeração</li>
-                            </ul>
-                            <p style="margin-top: 1rem; padding-top: 0.8rem; border-top: 1px solid rgba(23, 162, 184, 0.2);">
-                                <strong>💡 Importante:</strong> Todas as sugestões serão apresentadas com orçamento detalhado e só serão realizadas com sua aprovação prévia.
-                            </p>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="autoriza-avaliacao">
-                            <i class="fas fa-clipboard-check"></i> Autoriza Avaliação para Possíveis Melhorias? *
-                        </label>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="autoriza-avaliacao" value="Sim" required>
-                                <span>Sim, gostaria de receber sugestões</span>
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="autoriza-avaliacao" value="Não" required>
-                                <span>Não, apenas formatar</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 9. Autorização Final -->
+                <!-- 8. Autorização -->
                 <div class="form-section critical-section">
-                    <h3><i class="fas fa-file-signature"></i> 9. Autorização Final</h3>
+                    <h3><i class="fas fa-file-signature"></i> 8. Autorização</h3>
                     
                     <div class="form-group">
                         <label class="checkbox-label authorization-checkbox">
@@ -545,15 +529,22 @@
                     </div>
                 </div>
 
+                <p class="envio-nota"><i class="fab fa-whatsapp" aria-hidden="true"></i> Ao tocar em "Enviar", o WhatsApp abre com as suas respostas. É só confirmar o envio lá.</p>
                 <div class="form-actions">
                     <button type="reset" class="btn-reset">
-                        <i class="fas fa-undo"></i> Limpar Formulário
+                        <i class="fas fa-undo"></i> Limpar formulário
                     </button>
                     <button type="submit" class="btn-submit">
                         <i class="fab fa-whatsapp"></i> Enviar via WhatsApp
                     </button>
                 </div>
             </form>
+
+            <div class="form-enviado" id="form-enviado" role="status" hidden>
+                <strong><i class="fas fa-check-circle" aria-hidden="true"></i> Pronto!</strong>
+                <p>Abrimos o WhatsApp com as suas respostas. Confira e toque em enviar: a gente responde com o valor e o horário.</p>
+                <a id="form-enviado-link" href="#" target="_blank" rel="noopener">O WhatsApp não abriu? Toque aqui</a>
+            </div>
         </div>
     </section>
 
@@ -563,6 +554,6 @@
     <script src="firebase-config.js"></script>
     <script>initFirebase();</script>
     <script src="theme-system.js?v=6"></script>
-    <script src="formatacao-form.js"></script>
+    <script src="formatacao-form.js?v=2"></script>
 </body>
 </html>
