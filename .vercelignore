@@ -28,6 +28,7 @@ test-image.svg
 # firebase-config.secure.js NÃO entram nesta lista — o admin.html depende dos
 # dois, e excluí-los derruba o painel em produção.
 admin-app.secure.js
+main -.js
 formatacao-form.secure.js
 index-app.secure.js
 main.secure.js

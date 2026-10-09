@@ -422,8 +422,16 @@ document.addEventListener('DOMContentLoaded', () => {
             diagnosticQuizResult.hidden = false;
             diagnosticQuizResult.textContent = feedback;
             diagnosticQuizWhatsapp.hidden = false;
-            diagnosticQuizWhatsapp.href = PCFT_CONFIG.linkWhatsApp(`Olá, fiz o diagnóstico guiado e obtive pontuação ${score}/3. Quero receber o plano de otimização.`);
-            diagnosticQuizWhatsapp.dataset.whatsMessage = `Olá, fiz o diagnóstico guiado e obtive pontuação ${score}/3. Quero receber o plano de otimização.`;
+            // A mensagem leva as respostas (e não só "pontuação 2/3"), para
+            // quem recebe saber na hora o que está acontecendo.
+            const respostas = ['q1', 'q2', 'q3'].map((q) => {
+                const campo = diagnosticQuizForm.querySelector(`input[name="${q}"]`);
+                const pergunta = campo ? campo.closest('.diagnostic-quiz-question').querySelector('p').textContent.trim() : q;
+                return `• ${pergunta} ${formData.get(q) === '1' ? 'Sim' : 'Não'}`;
+            }).join('\n');
+            const mensagemQuiz = `Olá! Fiz o diagnóstico guiado no site:\n${respostas}\nQuero ajuda com o meu computador.`;
+            diagnosticQuizWhatsapp.href = PCFT_CONFIG.linkWhatsApp(mensagemQuiz);
+            diagnosticQuizWhatsapp.dataset.whatsMessage = mensagemQuiz;
         });
     }
 
@@ -865,9 +873,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (isRemote && discount > 0) {
             message += String.fromCodePoint(0x1F389) + ` *Desconto (10% Remoto):* -R$ ${discount.toFixed(2).replace('.', ',')}\n`;
-            message += String.fromCodePoint(0x1F4B5) + ` *VALOR TOTAL:* R$ ${finalValue.toFixed(2).replace('.', ',')}*\n\n`;
+            message += String.fromCodePoint(0x1F4B5) + ` *VALOR TOTAL: R$ ${finalValue.toFixed(2).replace('.', ',')}*\n\n`;
         } else {
-            message += String.fromCodePoint(0x1F4B5) + ` *VALOR TOTAL:* R$ ${finalValue.toFixed(2).replace('.', ',')}*\n\n`;
+            message += String.fromCodePoint(0x1F4B5) + ` *VALOR TOTAL: R$ ${finalValue.toFixed(2).replace('.', ',')}*\n\n`;
         }
         
         message += String.fromCodePoint(0x1F527) + ` *Tipo de Atendimento:* ${attendanceType}\n`;
@@ -1156,26 +1164,28 @@ document.addEventListener('DOMContentLoaded', () => {
             'remoto': '🌐'
         };
         
-        const serviceMap = {
-            'formatacao': 'Formatação de Computadores - R$ 80,00',
-            'programas': 'Instalação de Programas - R$ 50,00',
-            'seguranca': 'Proteção e Segurança - R$ 60,00',
-            'manutencao': 'Manutenção Preventiva - R$ 70,00',
-            'drivers': 'Instalação de Drivers - R$ 40,00',
-            'backup': 'Backup de Dados - R$ 45,00',
-            'remoto': 'Atendimento Remoto (10% OFF)'
+        // Nome e preço de cada linha saem da mesma configuração dos cartões
+        // (site-config.js), com o preço que entrou no total: antes os preços
+        // eram fixos aqui e, numa promoção, a linha dizia R$ 80 e o total R$ 50.
+        const cfg = window.PCFT_CONFIG;
+        const linhaDoServico = (s) => {
+            const servico = cfg && cfg.servicoPorId ? cfg.servicoPorId(s.name) : null;
+            const nome = servico ? (servico.nomeCard || servico.nome) : s.name;
+            if (s.name === 'remoto') return nome + ' (10% de desconto)';
+            const preco = s.price ? 'R$ ' + s.price.toFixed(2).replace('.', ',') : 'sob consulta';
+            const promocao = cfg && cfg.promocaoDe && cfg.promocaoDe(s.name) ? ' (promoção)' : '';
+            return nome + ' - ' + preco + promocao;
         };
-        
+
         // Verificar se atendimento remoto está selecionado
         const remoteSelected = selectedServices.some(s => s.name === 'remoto');
-        
+
         let message = '📋 *SOLICITAÇÃO DE ORÇAMENTO*\n\n';
         message += '💼 *Serviços Solicitados:*\n';
-        
+
         selectedServices.forEach((s, index) => {
             const emoji = emojiMap[s.name] || '•';
-            const serviceName = serviceMap[s.name] || s.name;
-            message += `   ${index + 1}. ${emoji} ${serviceName}\n`;
+            message += `   ${index + 1}. ${emoji} ${linhaDoServico(s)}\n`;
         });
         
         const subtotal = selectedServices.reduce((sum, service) => sum + service.price, 0);
@@ -1185,9 +1195,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const total = subtotal - discount;
             message += `\n💰 *Subtotal:* R$ ${subtotal.toFixed(2).replace('.', ',')}\n`;
             message += `🎉 *Desconto (10% Remoto):* -R$ ${discount.toFixed(2).replace('.', ',')}\n`;
-            message += `💵 *VALOR TOTAL:* R$ ${total.toFixed(2).replace('.', ',')}*\n\n`;
+            message += `💵 *VALOR TOTAL: R$ ${total.toFixed(2).replace('.', ',')}*\n\n`;
         } else {
-            message += `\n💵 *VALOR TOTAL:* R$ ${subtotal.toFixed(2).replace('.', ',')}*\n\n`;
+            message += `\n💵 *VALOR TOTAL: R$ ${subtotal.toFixed(2).replace('.', ',')}*\n\n`;
         }
         
         message += `Poderia me passar mais informações?`;
