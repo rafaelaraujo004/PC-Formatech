@@ -1,18 +1,20 @@
 # Lembretes da programação de Status e Stories (aba Divulgação do painel).
 #
 # O plano gratuito da Vercel só roda tarefa agendada uma vez por dia; esta
-# chama o site de hora em hora. A rota só manda o lembrete do que já está na
-# hora, e uma vez só (api/publicacoes.js → lembrar), então não precisa de senha.
+# chama o site a cada 15 minutos. A rota só manda o lembrete do que já está na
+# hora, e uma vez só (api/_lembretes.js), então não precisa de senha.
 #
-# O GitHub pode atrasar alguns minutos a execução agendada; por isso ela roda
-# alguns minutos depois da hora cheia, e a rota ainda pega horários de até
-# 2 h atrás caso uma execução seja pulada.
+# O GitHub atrasa e às vezes PULA execuções agendadas, principalmente perto
+# da hora cheia (em 09/10/2026 as três primeiras não rodaram). Por isso:
+#   • roda 4 vezes por hora, em minutos longe da hora cheia;
+#   • a rota aceita horários de até 2 h atrás;
+#   • as visitas ao site e o painel aberto também chamam a mesma rota.
 
 name: Lembretes da Divulgação
 
 on:
   schedule:
-    - cron: '3 * * * *'
+    - cron: '7,22,37,52 * * * *'
   workflow_dispatch:
 
 permissions: {}

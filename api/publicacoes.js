@@ -5,8 +5,8 @@
 //
 //   GET  /api/publicacoes?img=<id>&v=… → a imagem (cache longo, versionada)
 //   GET  /api/publicacoes?lembrar=1    → manda os lembretes da programação que
-//        venceram (chamado de hora em hora pelo GitHub Actions; ver
-//        .github/workflows/lembretes-divulgacao.yml)
+//        venceram (GitHub Actions a cada 15 min e o painel aberto; as visitas
+//        também verificam — ver api/_lembretes.js)
 //   POST /api/publicacoes { acao, idToken, … } — só administrador:
 //        listar         → todas as artes
 //        salvar         → cria ou atualiza { publicacao }
@@ -19,16 +19,14 @@
 // /images/divulgacao/). Cada uma entra uma vez; se for removida no painel,
 // não volta.
 
-const { iniciarAdmin, enviarParaTodos } = require('./_push');
+const { iniciarAdmin } = require('./_push');
 const { ErroDeAcesso, exigirAdmin } = require('./_admin');
 const Agenda = require('../agenda-divulgacao.js');
+const { AGENDA, lembrar, _reiniciar } = require('./_lembretes');
 const INICIAIS = require('../publicacoes-iniciais.json');
 
 const COLECAO = 'publicacoes';
-// divulgacaoAgenda/config        → { entradas, atualizadoEm }
-// divulgacaoAgenda/dia-AAAA-MM-DD → { registros: { <chave>: { arteId, titulo,
-//                                    hora, onde, lembradoEm, postados, pulado } } }
-const AGENDA = 'divulgacaoAgenda';
+// Os dados da programação ficam em divulgacaoAgenda (ver api/_lembretes.js).
 const CHAVE_HORARIO = /^\d{4}-\d{2}-\d{2}_[\w-]{1,30}$/;
 const CATEGORIAS = ['pcformatech', 'birdtech', 'apps', 'promocoes'];
 const MAX_IMAGEM = 900_000;
@@ -118,63 +116,6 @@ async function servirImagem(db, id, res) {
 }
 
 // ── Programação (Status e Stories) ──────────────────────────────────────
-
-/** Artes no formato que a regra da programação usa (sem a imagem pesada). */
-async function artesDaAgenda(db) {
-    const snap = await db.collection(COLECAO).select('titulo', 'categoria', 'inicio', 'fim', 'ordem').get();
-    return snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-}
-
-const registroFeito = (r, onde) => r && (r.pulado || (onde || []).every((o) => r.postados && r.postados[o]));
-
-let ultimaVerificacao = 0;
-
-/**
- * Manda o lembrete de cada horário que já chegou (até 2 h de atraso, se uma
- * chamada falhar) e ainda não foi lembrado, feito ou pulado. Pode ser chamada
- * por qualquer um: só lembra o que já está na hora, e uma vez só — a marca de
- * "lembrado" é gravada numa transação antes do envio.
- */
-async function lembrar(db, agora = Date.now()) {
-    if (agora - ultimaVerificacao < 30_000) return { lembretes: 0, cedo: true };
-    ultimaVerificacao = agora;
-
-    const config = await db.collection(AGENDA).doc('config').get();
-    const entradas = (config.exists && config.data().entradas) || [];
-    if (!entradas.length) return { lembretes: 0 };
-
-    const quando = Agenda.momento(agora);
-    const vencidos = Agenda.slotsDoDia(entradas, quando, await artesDaAgenda(db))
-        .filter((s) => s.arte && s.hora <= quando.hora && s.hora >= quando.hora - 2);
-    if (!vencidos.length) return { lembretes: 0 };
-
-    const ref = db.collection(AGENDA).doc('dia-' + quando.dia);
-    const novos = await db.runTransaction(async (tx) => {
-        const doc = await tx.get(ref);
-        const registros = (doc.exists && doc.data().registros) || {};
-        const lista = vencidos.filter((s) => !(registros[s.chave] && registros[s.chave].lembradoEm) && !registroFeito(registros[s.chave], s.onde));
-        if (!lista.length) return [];
-        const marcas = {};
-        lista.forEach((s) => {
-            marcas[s.chave] = { arteId: s.arte.id, titulo: Agenda.limparTitulo(s.arte.titulo).slice(0, 80), hora: s.hora, onde: s.onde, lembradoEm: agora };
-        });
-        tx.set(ref, { dia: quando.dia, registros: marcas }, { merge: true });
-        return lista;
-    });
-
-    let enviados = 0;
-    for (const s of novos) {
-        const titulo = Agenda.limparTitulo(s.arte.titulo) || 'Arte da Divulgação';
-        const r = await enviarParaTodos(db, {
-            title: '📣 Hora de postar',
-            body: `${titulo} · ${Agenda.nomesOnde(s.onde)}. Toque para postar.`,
-            tag: 'dv-' + s.chave,
-            data: { url: '/admin.html?postar=' + encodeURIComponent(s.chave) + '#divulgacao' }
-        });
-        enviados += r.enviados;
-    }
-    return { lembretes: novos.length, enviados };
-}
 
 async function lerAgenda(db) {
     const quando = Agenda.momento(Date.now());
@@ -292,4 +233,4 @@ module.exports = async function handler(req, res) {
 
 // Para os testes.
 module.exports.lembrar = lembrar;
-module.exports._reiniciar = () => { ultimaVerificacao = 0; };
+module.exports._reiniciar = _reiniciar;

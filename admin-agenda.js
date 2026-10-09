@@ -545,6 +545,19 @@
             const aba = $('tab-divulgacao');
             if (carregada && aba && aba.classList.contains('active') && !document.hidden) desenhar();
         }, 60e3);
+
+        // Com o painel aberto, ele mesmo confere os lembretes a cada 5 min — um
+        // gatilho a mais além do GitHub e das visitas (o lembrete nunca sai
+        // duas vezes). Se mandou algum, atualiza a lista do dia.
+        const cutucar = () => {
+            if (document.hidden) return;
+            fetch('/api/publicacoes?lembrar=1', { cache: 'no-store' })
+                .then((r) => (r.ok ? r.json() : {}))
+                .then((r) => { if (r && r.lembretes > 0 && carregada) carregar(); })
+                .catch(() => {});
+        };
+        cutucar();
+        setInterval(cutucar, 5 * 60e3);
         desenhar();
     }
 
