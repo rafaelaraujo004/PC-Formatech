@@ -103,10 +103,12 @@
     }
 
     // ── Link rastreado de cada arte ─────────────────────────────────────────
-    // O link que vai junto com a arte leva ?origem=<canal>-arte-<código>: quem
-    // entra por ele aparece na aba Visitas como "WhatsApp · Arte “título”",
-    // e dá para ver qual publicação trouxe cada cliente. O canal é o que o
-    // Rafael escolhe no topo da aba (onde vai postar), e fica lembrado.
+    // O link que vai junto com a arte é curto, /a/<canal>-<código> (api/arte.js):
+    // a prévia no WhatsApp/Instagram mostra a própria arte, e quem toca vai
+    // para o link da arte com ?origem=<canal>-arte-<código>. Na aba Visitas
+    // aparece como "WhatsApp · Arte “título”", e dá para ver qual publicação
+    // trouxe cada cliente. O canal é o que o Rafael escolhe no topo da aba
+    // (onde vai postar), e fica lembrado.
     const CANAIS_POST = ['whatsapp', 'instagram', 'facebook'];
     let canalPost = 'whatsapp';
     try { if (CANAIS_POST.includes(localStorage.getItem('pcft_dv_canal'))) canalPost = localStorage.getItem('pcft_dv_canal'); } catch (e) { /* sem armazenamento */ }
@@ -121,8 +123,7 @@
             const url = new URL(p.link, SITE);
             // Só marca links do próprio site (um link de fora não registra visita).
             if (!/(^|\.)pcformatech\.com\.br$/.test(url.hostname)) return p.link;
-            url.searchParams.set('origem', canalPost + '-arte-' + codigo);
-            return url.toString();
+            return SITE + '/a/' + canalPost + '-' + codigo;
         } catch (e) { return p.link; }
     }
 
@@ -258,7 +259,9 @@
             link.target = '_blank';
             link.rel = 'noopener';
             link.textContent = rastreado.replace(/^https:\/\//, '');
-            link.title = 'Link rastreado: quem entrar por ele aparece em Visitas com o nome desta arte';
+            link.title = rastreado === p.link
+                ? 'Link de fora do site: não aparece em Visitas'
+                : 'Mostra esta arte na prévia e leva para ' + p.link.replace(/^https:\/\/(www\.)?/, '') + '. Quem entrar aparece em Visitas com o nome desta arte.';
             info.append(marca, titulo);
             const sit = p.categoria === 'promocoes' ? situacao(p) : null;
             if (sit) {
