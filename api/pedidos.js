@@ -49,7 +49,16 @@ async function registrar(admin, db, entrada, req, res) {
     const agora = Date.now();
     const atual = await ref.get();
     const novo = !atual.exists;
-    if (!novo && agora - (atual.data().criadoEm || 0) > 3 * 864e5) return res.status(409).json({ error: 'Pedido antigo.' });
+    const anterior = novo ? {} : atual.data();
+    if (!novo && agora - (anterior.criadoEm || 0) > 3 * 864e5) return res.status(409).json({ error: 'Pedido antigo.' });
+
+    // Pedido que o dono já marcou (pago, entregue, cancelado): quem tem o
+    // código não troca mais itens, total nem dados — antes dava para pagar um
+    // produto barato e, depois de marcado como pago, trocar pelo caro.
+    if (!novo && anterior.situacao && anterior.situacao !== 'aguardando') {
+        await ref.update({ [`etapas.${etapa}`]: agora, ultimaEtapa: etapa, atualizadoEm: agora });
+        return res.status(200).json({ ok: true, total: anterior.total });
+    }
 
     // Pedido novo: no máximo 10 por hora do mesmo endereço. Sem isso, alguém
     // podia criar centenas de pedidos falsos e lotar o celular de avisos.
@@ -83,8 +92,11 @@ async function registrar(admin, db, entrada, req, res) {
         await ref.update(dados);
     }
 
-    // Avisa no celular do dono quando um pedido chega ao Pix ou o comprovante é enviado.
-    const avisar = !dados.teste && (etapa === 'comprovante' || (novo && (etapa === 'pix' || etapa === 'whatsapp')));
+    // Avisa no celular do dono quando um pedido chega ao Pix ou o comprovante é
+    // enviado. O do comprovante sai uma vez por pedido: repetir a chamada não
+    // pode virar uma enxurrada de avisos falsos de Pix.
+    const comprovanteNovo = etapa === 'comprovante' && !(anterior.etapas && anterior.etapas.comprovante);
+    const avisar = !dados.teste && (comprovanteNovo || (novo && (etapa === 'pix' || etapa === 'whatsapp')));
     if (avisar) {
         const itensTexto = itens.map((i) => i.qtd + 'x ' + i.nome).join(', ');
         const titulos = {

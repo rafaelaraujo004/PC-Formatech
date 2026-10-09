@@ -590,17 +590,9 @@
                     throw new Error('Informe o usuário de acesso (e-mail).');
                 }
 
-                const useFirebase = typeof isFirebaseConfigured === 'function' && isFirebaseConfigured();
-                let result = null;
-
-                if (useFirebase) {
-                    result = await window.authSystem.loginWithFirebase(email, password);
-                    if (!result || !result.success) {
-                        result = await window.authSystem.loginLocal(email, password);
-                    }
-                } else {
-                    result = await window.authSystem.loginLocal(email, password);
-                }
+                // Só o Firebase: o antigo login local (senha no próprio código)
+                // saiu, porque o código do painel é público.
+                const result = await window.authSystem.loginWithFirebase(email, password);
 
                 if (!result || !result.success) {
                     throw new Error(result?.error || 'Credenciais inválidas');
