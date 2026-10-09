@@ -616,72 +616,112 @@
     }
 
     const DECO_CONTAINER_ID = 'pcft-decorations';
+    // O tema é reaplicado algumas vezes no carregamento (padrão, depois o do
+    // painel): as decorações de um mesmo tema passam uma vez só por visita.
+    let temaDecorado = null;
 
+    // Decorações das datas comemorativas (balões, estrelas, confetes).
+    // Antes eram ~24 ícones espalhados pela tela inteira, parados por cima do
+    // texto e dos botões. Agora:
+    //  - os que se movem (sobem ou caem) passam uma vez só, em ondas, e somem;
+    //  - os que ficam parados (piscam ou pulam) só aparecem colados nas bordas
+    //    da janela, fora do conteúdo; no celular e no tablet não há essa folga,
+    //    então eles não aparecem;
+    //  - no celular vão menos ícones e menores;
+    //  - quem pediu menos movimento ao sistema não vê nenhum.
     function applyDecorations(theme) {
         function render() {
+            var idTema = theme ? theme.id : null;
+            if (idTema === temaDecorado) return;
+            temaDecorado = idTema;
             var existing = document.getElementById(DECO_CONTAINER_ID);
             if (existing && existing.parentNode) {
                 existing.parentNode.removeChild(existing);
             }
             var items = theme && Array.isArray(theme.decorations) ? theme.decorations : [];
             if (!items.length || !document.body) return;
+            if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+            var largura = window.innerWidth || document.documentElement.clientWidth || 1024;
+            var celular = largura < 768;
+            // Os parados ficam colados nas bordas da janela (8 a 34 px), onde o
+            // conteúdo não chega no computador. Abaixo de 1024 px não há folga.
+            var temLateral = largura >= 1024;
 
             var container = document.createElement('div');
             container.id = DECO_CONTAINER_ID;
             container.setAttribute('aria-hidden', 'true');
 
+            var duracaoTotal = 0;
+
             items.forEach(function (item) {
                 var icon    = String(item.icon || '');
-                var count   = Math.min(Math.max(Number(item.count) || 5, 1), 15);
                 var anim    = item.animation || 'pcft-fall';
+                var movel   = anim === 'pcft-fall' || anim === 'pcft-float-up';
+                if (!movel && !temLateral) return;
+
+                var maximo  = celular ? 4 : 8;
+                var count   = Math.min(Math.max(Number(item.count) || 5, 1), maximo);
                 var size    = item.size || '1.4rem';
                 var opacity = Number.isFinite(Number(item.opacity)) ? Number(item.opacity) : 0.75;
                 var baseDur = Number(item.duration) || 9;
-                var timing  = (anim === 'pcft-fall' || anim === 'pcft-float-up') ? 'linear' : 'ease-in-out';
 
                 for (var i = 0; i < count; i++) {
                     var span = document.createElement('span');
                     span.className   = 'pcft-deco-icon';
                     span.textContent = icon;
                     span.setAttribute('aria-hidden', 'true');
-                    span.style.fontSize = size;
-                    span.style.opacity  = String(opacity);
+                    span.style.fontSize = celular ? 'calc(' + size + ' * 0.85)' : size;
+                    span.style.setProperty('--deco-opacidade', String(opacity));
+                    span.style.animationName = anim;
 
-                    var dur   = (baseDur * 0.7 + Math.random() * baseDur * 0.6).toFixed(2) + 's';
-                    var delay = '-' + (Math.random() * baseDur).toFixed(2) + 's';
-
-                    span.style.animationName           = anim;
-                    span.style.animationDuration       = dur;
-                    span.style.animationDelay          = delay;
-                    span.style.animationIterationCount = 'infinite';
-                    span.style.animationTimingFunction = timing;
-                    span.style.animationFillMode       = 'both';
-
-                    if (anim === 'pcft-fall') {
-                        span.style.left = (Math.random() * 94).toFixed(1) + '%';
-                        span.style.top  = '-60px';
-                    } else if (anim === 'pcft-float-up') {
-                        span.style.left   = (Math.random() * 94).toFixed(1) + '%';
-                        span.style.bottom = '-60px';
+                    if (movel) {
+                        // Uma passada só, em ondas: cada ícone sai um pouco depois do outro.
+                        var dur   = baseDur * (0.85 + Math.random() * 0.3);
+                        var delay = (i / count) * 3.2 + Math.random() * 0.6;
+                        duracaoTotal = Math.max(duracaoTotal, dur + delay);
+                        span.style.animationDuration       = dur.toFixed(2) + 's';
+                        span.style.animationDelay          = delay.toFixed(2) + 's';
+                        span.style.animationIterationCount = '1';
+                        span.style.animationTimingFunction = 'linear';
+                        span.style.animationFillMode       = 'both';
+                        // Espalhados por faixas da largura, sem se amontoar.
+                        span.style.left = (((i + 0.15 + Math.random() * 0.7) / count) * 94 + 1).toFixed(1) + '%';
+                        if (anim === 'pcft-fall') span.style.top = '-60px';
+                        else span.style.bottom = '-60px';
                     } else {
-                        span.style.left = (Math.random() * 90).toFixed(1) + '%';
-                        span.style.top  = (10 + Math.random() * 75).toFixed(1) + '%';
+                        // Parados: só nas laterais livres, alternando esquerda e direita.
+                        var esquerda = i % 2 === 0;
+                        var x = 8 + Math.random() * 26;
+                        span.style.animationDuration       = (baseDur * (0.8 + Math.random() * 0.4)).toFixed(2) + 's';
+                        span.style.animationDelay          = '-' + (Math.random() * baseDur).toFixed(2) + 's';
+                        span.style.animationIterationCount = 'infinite';
+                        span.style.animationTimingFunction = 'ease-in-out';
+                        span.style[esquerda ? 'left' : 'right'] = x.toFixed(0) + 'px';
+                        span.style.top  = (14 + ((i + Math.random()) / count) * 72).toFixed(1) + '%';
                     }
 
                     container.appendChild(span);
                 }
             });
 
+            if (!container.children.length) return;
             document.body.appendChild(container);
+            // Páginas sem theme-system.css (página inicial, loja) não têm o estilo
+            // das decorações: lá os ícones ficariam soltos no fim da página.
+            if (window.getComputedStyle(container).position !== 'fixed') {
+                container.parentNode.removeChild(container);
+                return;
+            }
 
-            // Fade-out após 10s — some apenas as decorações, não o badge de texto
+            // Some com suavidade depois que a última onda passa (entre 9 e 14 s).
+            var tempo = Math.min(Math.max(duracaoTotal, 9), 14) * 1000;
             setTimeout(function () {
-                container.style.transition = 'opacity 1s ease-out';
-                container.style.opacity = '0';
+                container.classList.add('pcft-decorations-saindo');
                 setTimeout(function () {
                     if (container.parentNode) container.parentNode.removeChild(container);
-                }, 1000);
-            }, 10000);
+                }, 1200);
+            }, tempo);
         }
 
         if (document.body) {

@@ -193,11 +193,28 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             revealElements.forEach((el) => el.classList.add('reveal-ready'));
 
+            // Cartões lado a lado entram em cascata (90 ms entre um e outro).
+            revealElements.forEach((el) => {
+                const irmaos = Array.from(el.parentElement ? el.parentElement.children : []).filter((x) => x.hasAttribute('data-reveal'));
+                const posicao = irmaos.indexOf(el);
+                if (posicao > 0) el.style.transitionDelay = Math.min(posicao, 4) * 90 + 'ms';
+            });
+
+            // Terminada a entrada, o bloco volta ao estado normal: assim o atraso
+            // da cascata e o transform da animação não travam o efeito de hover.
+            const concluir = (el) => {
+                el.classList.remove('reveal-ready');
+                el.style.transitionDelay = '';
+            };
+
             const revealObserver = new IntersectionObserver((entries, obs) => {
                 entries.forEach((entry) => {
                     if (!entry.isIntersecting) return;
-                    entry.target.classList.add('is-visible');
-                    obs.unobserve(entry.target);
+                    const el = entry.target;
+                    el.classList.add('is-visible');
+                    obs.unobserve(el);
+                    const atraso = parseFloat(el.style.transitionDelay) || 0;
+                    setTimeout(() => concluir(el), atraso + 900);
                 });
             }, {
                 // threshold 0 + margem inferior: um bloco mais alto que a viewport

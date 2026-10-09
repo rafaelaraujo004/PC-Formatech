@@ -106,6 +106,8 @@
     }
   ],
   "redirects": [
+    { "source": "/apps", "destination": "/apps.html", "permanent": true },
+    { "source": "/loja", "destination": "/loja.html", "permanent": true },
     {
       "source": "/",
       "has": [

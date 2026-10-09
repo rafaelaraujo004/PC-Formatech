@@ -711,3 +711,41 @@ html[data-theme='dark'] .pt-loja-texto strong {
 html[data-theme='dark'] .pt-apps .pt-loja-texto strong {
     background-image: linear-gradient(90deg, #4fd1c0, #8ff1e3);
 }
+
+/* Loja e apps logo abaixo da busca: quem chega vê que não é só conserto. */
+.pt-frentes {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.9rem;
+}
+
+.pt-frentes-label { font-size: 0.88rem; opacity: 0.85; }
+
+.pt-frente {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 40px;
+    padding: 0.35rem 0.95rem 0.35rem 0.5rem;
+    border-radius: 999px;
+    background: #fff;
+    color: #12302f;
+    font-size: 0.9rem;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.pt-frente:hover { filter: brightness(0.95); }
+.pt-frente img { width: 26px; height: 26px; border-radius: 50%; }
+.pt-frente svg { width: 26px; height: 26px; padding: 4px; border-radius: 50%; background: #5b21b6; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; }
+.pt-hero .pt-frente { color: #12302f !important; }
+
+@media (max-width: 640px) {
+    .pt-frentes { justify-content: flex-start; }
+    .pt-frentes-label { flex-basis: 100%; }
+}
+
+.pt-autor { width: 100%; margin: 0.4rem 0 0; font-size: 0.8rem; opacity: 0.7; }

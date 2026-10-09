@@ -178,7 +178,7 @@ function cabeca({ titulo, descricao, url, extras, previa, tipo }) {
     <link rel="preload" href="/fonts/sora-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/fontes.css">
     <link rel="stylesheet" href="/icones.css">
-    <link rel="stylesheet" href="/servicos/servicos.css?v=2">
+    <link rel="stylesheet" href="/servicos/servicos.css?v=3">
 ${extras}
 </head>`;
 }
@@ -197,12 +197,13 @@ function rodape() {
     return `<footer class="sv-rodape">
         <div>
             <strong>PC Formatech</strong>
-            <p>Assistência técnica de computadores e notebooks em ${CIDADE}, PA, e suporte remoto para todo o Brasil.</p>
+            <p>Assistência técnica de computadores e notebooks em ${CIDADE}, PA, e suporte remoto para todo o Brasil. Também loja de periféricos Bird Tech e criação de apps e sistemas.</p>
         </div>
         <nav aria-label="Serviços">
             ${SERVICOS.map((s) => `<a href="/servicos/${s.slug}/">${esc(s.nome)}</a>`).join('\n            ')}
         </nav>
         <p class="sv-rodape-contato"><a href="/dicas/">Dicas para o seu computador</a> · <a href="${zap('Olá! Vim pelo site.')}" target="_blank" rel="noopener">(94) 98430-5772</a> · <a href="https://instagram.com/pcformatech" target="_blank" rel="noopener">@pcformatech</a></p>
+        <p class="sv-rodape-autor">Site feito por Rafael Araújo</p>
     </footer>`;
 }
 

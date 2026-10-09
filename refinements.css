@@ -2741,3 +2741,280 @@ html[data-theme='dark'] .social-proof > h2 {
 
 .footer-servicos a:hover { opacity: 1; text-decoration: underline; }
 
+
+
+/* ── 26 · O que a PC Formatech faz ──────────────────────────────────────────
+   Três cartões logo depois do carrossel: assistência, loja Bird Tech e apps.
+   Assim quem chega já vê tudo o que oferecemos, e não só a formatação. */
+
+.frentes {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 3rem 1.25rem 1rem;
+    text-align: center;
+}
+
+.frentes h2 {
+    margin: 0 0 0.4rem;
+    color: var(--premium-text);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+.frentes .frentes-sub { margin: 0 0 1.6rem; color: var(--premium-muted); }
+
+.frentes-grade {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.1rem;
+    text-align: left;
+}
+
+.frente {
+    --frente-cor: var(--brand-400, #40998F);
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    padding: 1.4rem;
+    border-radius: 20px;
+    background: var(--premium-card);
+    border: 1px solid var(--premium-card-border);
+    border-top: 4px solid var(--frente-cor);
+    box-shadow: var(--premium-shadow-soft);
+    text-decoration: none;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.frente:hover { transform: translateY(-4px); box-shadow: 0 16px 36px rgba(15, 23, 42, 0.18); }
+.frente-loja { --frente-cor: #2f7fe0; }
+.frente-apps { --frente-cor: #8b5cf6; }
+
+.frente .frente-icone {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--frente-cor) 15%, transparent);
+    color: var(--frente-cor);
+    font-size: 1.3rem;
+}
+
+.frente strong { color: var(--premium-text); font-size: 1.15rem; }
+.frente > span:not(.frente-icone) { color: var(--premium-muted); line-height: 1.5; }
+
+.frente em {
+    margin-top: auto;
+    padding-top: 0.4rem;
+    color: var(--frente-cor);
+    font-style: normal;
+    font-weight: 800;
+}
+
+@media (max-width: 860px) {
+    .frentes { padding-top: 2.2rem; }
+    .frentes-grade { grid-template-columns: 1fr; }
+}
+
+/* Faixa de apps: mesma estrutura da faixa da Bird Tech, em tom roxo. */
+.bird-tech-faixa.apps-faixa {
+    background: linear-gradient(120deg, #2e1065 0%, #5b21b6 55%, #8b5cf6 100%);
+    box-shadow: 0 24px 48px -28px rgba(91, 33, 182, 0.8);
+}
+
+.apps-faixa-icone {
+    width: 84px;
+    height: 84px;
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    border-radius: 20px;
+    background: #fff;
+    color: #5b21b6;
+    font-size: 2.2rem;
+}
+
+.apps-faixa .bird-tech-botao { color: #5b21b6 !important; }
+
+@media (max-width: 760px) {
+    .apps-faixa-icone { width: 64px; height: 64px; border-radius: 16px; font-size: 1.7rem; }
+}
+
+/* Links da loja e dos apps na faixa de confiança do carrossel. */
+.hero-trust-strip a { color: inherit !important; text-decoration: underline; text-underline-offset: 3px; }
+
+/* No tema escuro, regras gerais clareiam ícones e ênfases: mantém a cor de cada frente. */
+html[data-theme='dark'] .frente { --frente-cor: #5ec8b8; }
+html[data-theme='dark'] .frente-loja { --frente-cor: #6aa8ff; }
+html[data-theme='dark'] .frente-apps { --frente-cor: #b39dff; }
+html[data-theme='dark'] .frente em,
+html[data-theme='dark'] .frente .frente-icone,
+html[data-theme='dark'] .frente .frente-icone i { color: var(--frente-cor) !important; }
+
+
+/* ── 27 · Selo de data comemorativa ("Feliz Dia das Crianças!") ─────────────
+   Antes: tudo em maiúsculas com espaçamento largo, o nome quebrava em duas
+   linhas desalinhadas no computador e os ícones ficavam soltos. Agora: uma
+   linha só, fonte dos títulos, "Feliz" mais leve e o nome da data em degradê
+   com as cores da ocasião, contorno colorido e um brilho que passa de vez em
+   quando. As cores vêm de data-ocasiao (seasonal-badge.js). */
+
+#pcft-seasonal-badge {
+    --selo-cores: #8ff1e3, #ffffff, #fbbf24;
+}
+
+#pcft-seasonal-badge[data-ocasiao='dia-das-criancas'] { --selo-cores: #fde047, #f472b6, #38bdf8; }
+#pcft-seasonal-badge[data-ocasiao='natal']            { --selo-cores: #f87171, #fde68a, #4ade80; }
+#pcft-seasonal-badge[data-ocasiao='ano-novo']         { --selo-cores: #fde68a, #ffffff, #fbbf24; }
+#pcft-seasonal-badge[data-ocasiao='pascoa']           { --selo-cores: #f9a8d4, #fde68a, #86efac; }
+#pcft-seasonal-badge[data-ocasiao='dia-das-maes']     { --selo-cores: #f9a8d4, #fecdd3, #f472b6; }
+#pcft-seasonal-badge[data-ocasiao='festa-junina']     { --selo-cores: #fde047, #fb923c, #f87171; }
+#pcft-seasonal-badge[data-ocasiao='dia-dos-pais']     { --selo-cores: #93c5fd, #ffffff, #fbbf24; }
+#pcft-seasonal-badge[data-ocasiao='halloween']        { --selo-cores: #fb923c, #fde047, #c084fc; }
+
+#home #pcft-seasonal-badge {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55em;
+    max-width: 100%;
+    margin-bottom: 1.2rem;
+    padding: 0.5em 1.1em 0.5em 0.85em;
+    border: 2px solid transparent;
+    border-radius: 999px;
+    background:
+        linear-gradient(rgba(5, 14, 20, 0.86), rgba(5, 14, 20, 0.86)) padding-box,
+        linear-gradient(100deg, var(--selo-cores)) border-box;
+    -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+    box-shadow: 0 12px 30px -14px rgba(0, 0, 0, 0.7);
+    font-family: 'Sora', 'Segoe UI', system-ui, sans-serif;
+    font-size: clamp(0.95rem, 1.5vw, 1.12rem);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0;
+    text-transform: none;
+    text-shadow: none;
+    white-space: nowrap;
+    animation: selo-entrada 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+#home #pcft-seasonal-badge[hidden] { display: none; }
+#home #pcft-seasonal-badge * { text-shadow: none; }
+
+#home .pcft-seasonal-greeting {
+    font-weight: 500;
+    letter-spacing: 0;
+    opacity: 0.9;
+}
+
+/* O nome da data em degradê: o texto fica transparente e mostra o fundo. */
+#home .pcft-seasonal-name {
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    background: linear-gradient(90deg, var(--selo-cores));
+    -webkit-background-clip: text;
+            background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+#home .pcft-seasonal-icon-left,
+#home .pcft-seasonal-icon-right {
+    display: inline-block;
+    font-size: 1.25em;
+    line-height: 1;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.45));
+    transform-origin: 50% 90%;
+    animation: selo-icone 2.8s ease-in-out infinite;
+}
+
+#home .pcft-seasonal-icon-right { animation-delay: -1.4s; }
+
+/* Brilho que atravessa o selo a cada 7 s. */
+#home #pcft-seasonal-badge::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.16) 50%, transparent 65%);
+    transform: translateX(-120%);
+    animation: selo-brilho 7s ease-in-out 1.2s infinite;
+    pointer-events: none;
+}
+
+@keyframes selo-entrada {
+    from { opacity: 0; transform: translateY(-8px) scale(0.96); }
+    to   { opacity: 1; transform: none; }
+}
+
+@keyframes selo-icone {
+    0%, 100% { transform: rotate(-8deg) translateY(0); }
+    50%      { transform: rotate(8deg) translateY(-2px); }
+}
+
+@keyframes selo-brilho {
+    0%, 70% { transform: translateX(-120%); }
+    100%    { transform: translateX(120%); }
+}
+
+@media (max-width: 899px) {
+    #home #pcft-seasonal-badge { font-size: 0.9rem; margin-bottom: 0; }
+}
+
+@media (max-width: 360px) {
+    #home #pcft-seasonal-badge { font-size: 0.8rem; padding: 0.45em 0.9em 0.45em 0.7em; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #home #pcft-seasonal-badge,
+    #home #pcft-seasonal-badge::after,
+    #home .pcft-seasonal-icon-left,
+    #home .pcft-seasonal-icon-right { animation: none; }
+}
+
+
+/* ── 28 · Animações mais suaves ─────────────────────────────────────────────
+   Entrada dos blocos ao rolar: curva que desacelera no fim (sem "parada
+   seca"), um pouco mais de distância e leve escala. A cascata entre cartões
+   lado a lado vem de main.js.
+   Fotos do carrossel: aproximação lenta (efeito "Ken Burns") enquanto a foto
+   está na tela; os anúncios ficam parados para a arte não ser cortada. */
+
+[data-reveal] {
+    transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-reveal].reveal-ready {
+    transform: translateY(28px) scale(0.985);
+}
+
+[data-reveal].reveal-ready.is-visible {
+    transform: none;
+}
+
+#home .hero-slide {
+    transition: opacity 1.1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    #home .hero-slide:not(.hero-anuncio) img {
+        transform: scale(1.07);
+        transition: transform 10s cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+
+    #home .hero-slide.active:not(.hero-anuncio) img {
+        transform: scale(1);
+    }
+}
+
+/* Assinatura do site no rodapé. */
+.footer-autor { white-space: nowrap; }
+.footer-autor::before { content: '·'; margin: 0 0.45em; opacity: 0.6; }
+
+@media (max-width: 560px) {
+    .footer-autor { display: block; margin-top: 0.3rem; }
+    .footer-autor::before { content: none; }
+}

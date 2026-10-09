@@ -2474,9 +2474,13 @@ html[data-theme='dark'] .services-summary {
     pointer-events: none;
     overflow: hidden;
     z-index: 1;
+    transition: opacity 1.2s ease-out;
 }
 
+#pcft-decorations.pcft-decorations-saindo { opacity: 0; }
+
 .pcft-deco-icon {
+    --deco-opacidade: 0.75;
     position: absolute;
     display: block;
     line-height: 1;
@@ -2484,45 +2488,49 @@ html[data-theme='dark'] .services-summary {
     user-select: none;
     -webkit-user-select: none;
     will-change: transform, opacity;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.18));
 }
 
-/* Ícone cai do topo ao fundo com leve rotação */
+/* Confete cai balançando de um lado para o outro, girando devagar. */
 @keyframes pcft-fall {
-    0%   { transform: translateY(0)      rotate(0deg)   scale(0.85); opacity: 0; }
-    6%   {                                                             opacity: 1; }
-    90%  {                                                             opacity: 0.85; }
-    100% { transform: translateY(110vh)  rotate(300deg) scale(1.05); opacity: 0; }
+    0%   { transform: translate3d(0, 0, 0)          rotate(0deg);   opacity: 0; }
+    8%   {                                                           opacity: var(--deco-opacidade); }
+    25%  { transform: translate3d(22px, 27vh, 0)    rotate(70deg); }
+    50%  { transform: translate3d(-18px, 55vh, 0)   rotate(150deg); }
+    75%  { transform: translate3d(16px, 82vh, 0)    rotate(230deg); }
+    88%  {                                                           opacity: var(--deco-opacidade); }
+    100% { transform: translate3d(-6px, 110vh, 0)   rotate(300deg); opacity: 0; }
 }
 
-/* Ícone sobe do fundo ao topo */
+/* Balão sobe oscilando, como se o vento o levasse. */
 @keyframes pcft-float-up {
-    0%   { transform: translateY(0)      scale(0.90); opacity: 0; }
-    8%   {                                             opacity: 1; }
-    90%  {                                             opacity: 0.75; }
-    100% { transform: translateY(-110vh) scale(1.10); opacity: 0; }
+    0%   { transform: translate3d(0, 0, 0)          rotate(-5deg) scale(0.9); opacity: 0; }
+    8%   {                                                                     opacity: var(--deco-opacidade); }
+    30%  { transform: translate3d(16px, -33vh, 0)   rotate(5deg)  scale(1); }
+    60%  { transform: translate3d(-14px, -68vh, 0)  rotate(-4deg) scale(1.03); }
+    88%  {                                                                     opacity: var(--deco-opacidade); }
+    100% { transform: translate3d(8px, -112vh, 0)   rotate(3deg)  scale(1.06); opacity: 0; }
 }
 
-/* Ícone balança suavemente de um lado para o outro */
+/* Balança suavemente de um lado para o outro. */
 @keyframes pcft-sway {
-    0%   { transform: translateX(0)     rotate(-10deg); opacity: 0.50; }
-    25%  { transform: translateX(18px)  rotate(  8deg); opacity: 0.90; }
-    50%  { transform: translateX(0)     rotate( -6deg); opacity: 0.60; }
-    75%  { transform: translateX(-18px) rotate(  9deg); opacity: 0.90; }
-    100% { transform: translateX(0)     rotate(-10deg); opacity: 0.50; }
+    0%, 100% { transform: translateX(0)     rotate(-8deg); opacity: calc(var(--deco-opacidade) * 0.6); }
+    25%      { transform: translateX(12px)  rotate(6deg);  opacity: var(--deco-opacidade); }
+    75%      { transform: translateX(-12px) rotate(7deg);  opacity: var(--deco-opacidade); }
 }
 
-/* Ícone pisca como uma estrela */
+/* Pisca como uma estrela. */
 @keyframes pcft-twinkle {
-    0%, 100% { transform: scale(0.80); opacity: 0.20; }
-    50%       { transform: scale(1.35); opacity: 1.00; }
+    0%, 100% { transform: scale(0.8) rotate(0deg);   opacity: calc(var(--deco-opacidade) * 0.3); }
+    50%      { transform: scale(1.2) rotate(18deg);  opacity: var(--deco-opacidade); }
 }
 
-/* Ícone pula no lugar */
+/* Pula no lugar, com pouso macio. */
 @keyframes pcft-bounce {
-    0%, 100% { transform: translateY(0)     scale(1.00); }
-    35%       { transform: translateY(-20px) scale(1.12); }
-    55%       { transform: translateY(-12px) scale(1.06); }
-    70%       { transform: translateY(-18px) scale(1.09); }
+    0%, 100% { transform: translateY(0)     scale(1, 1);       opacity: var(--deco-opacidade); }
+    12%      { transform: translateY(0)     scale(1.06, 0.94); }
+    40%      { transform: translateY(-16px) scale(0.97, 1.03); }
+    70%      { transform: translateY(0)     scale(1.04, 0.96); }
 }
 
 
