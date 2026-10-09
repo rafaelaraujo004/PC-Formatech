@@ -187,6 +187,131 @@
 
     // ── Renderização ─────────────────────────────────────────────────────────
 
+    let ultimoRender = null;
+    let pediuArtes = false;
+
+    function icone(classes) {
+        const i = document.createElement('i');
+        i.className = classes;
+        i.setAttribute('aria-hidden', 'true');
+        return i;
+    }
+
+    /**
+     * "De onde vieram": primeiro o total por canal (WhatsApp, Instagram…,
+     * somando quem veio pelo app e quem clicou num link marcado), depois o
+     * detalhe de cada origem com a cor do canal.
+     */
+    function desenharOrigens(r, periodo) {
+        const box = $('av-canais');
+        if (box) {
+            box.textContent = '';
+            (r.canais || []).forEach((c) => {
+                const item = document.createElement('div');
+                item.className = 'av-canal';
+                item.style.setProperty('--av-cor', c.cor);
+                item.style.setProperty('--av-pct', Math.max(3, c.pct) + '%');
+                item.title = c.nome + ': ' + c.total + (c.total === 1 ? ' visita' : ' visitas') + ' ' + periodo;
+                const marca = document.createElement('span');
+                marca.className = 'av-canal-icone';
+                marca.appendChild(icone(c.icone));
+                const nome = document.createElement('span');
+                nome.className = 'av-canal-nome';
+                nome.textContent = c.nome;
+                const total = document.createElement('strong');
+                total.className = 'av-canal-total';
+                total.textContent = c.total;
+                const pct = document.createElement('span');
+                pct.className = 'av-canal-pct';
+                pct.textContent = c.pct + '%';
+                item.append(marca, nome, total, pct);
+                box.appendChild(item);
+            });
+        }
+
+        const ol = $('av-origens');
+        if (ol) {
+            ol.textContent = '';
+            if (!r.origens.length) {
+                const li = document.createElement('li');
+                li.className = 'av-vazio';
+                li.textContent = 'Sem visitas no período.';
+                ol.appendChild(li);
+            } else {
+                const maior = r.origens[0].total || 1;
+                const canal = (id) => (PCFTResumo.CANAIS || []).find((c) => c.id === id) || {};
+                r.origens.forEach((o) => {
+                    const c = canal(o.canal);
+                    const li = document.createElement('li');
+                    li.className = 'av-origem';
+                    li.style.setProperty('--av-largura', Math.max(4, Math.round((o.total / maior) * 100)) + '%');
+                    if (c.cor) li.style.setProperty('--av-cor', c.cor);
+                    const nome = document.createElement('span');
+                    nome.className = 'av-barra-nome';
+                    if (c.icone) nome.appendChild(icone(c.icone));
+                    nome.appendChild(document.createTextNode(' ' + o.nome));
+                    const total = document.createElement('span');
+                    total.className = 'av-barra-total';
+                    total.textContent = o.total;
+                    li.append(nome, total);
+                    ol.appendChild(li);
+                });
+            }
+        }
+
+        // Muita gente em "Acesso direto" quase sempre é WhatsApp sem link marcado.
+        const dica = $('av-dica-direto');
+        if (dica) {
+            const direto = (r.canais || []).find((c) => c.id === 'direto');
+            dica.hidden = !(direto && direto.pct >= 30 && r.visitas >= 5);
+        }
+    }
+
+    /** Ranking das artes da Divulgação que trouxeram visitas (somando os canais). */
+    function desenharArtes(r) {
+        const cartao = $('av-artes-cartao');
+        const ol = $('av-artes');
+        if (!cartao || !ol) return;
+        const artes = r.artes || [];
+        cartao.hidden = !artes.length;
+        if (!artes.length) return;
+        // Sem os títulos ainda (aba Divulgação não aberta): busca uma vez.
+        if (artes.some((a) => !a.nome) && !pediuArtes && window.PCFTDivulgacao && window.PCFTDivulgacao.obterArtes) {
+            pediuArtes = true;
+            window.PCFTDivulgacao.obterArtes().then(() => { if (ultimoRender) renderizar(ultimoRender[0], ultimoRender[1]); }).catch(() => {});
+        }
+        ol.textContent = '';
+        const maior = artes[0].total || 1;
+        artes.slice(0, 8).forEach((a, i) => {
+            const li = document.createElement('li');
+            li.className = 'av-arte';
+            li.style.setProperty('--av-largura', Math.max(4, Math.round((a.total / maior) * 100)) + '%');
+            const pos = document.createElement('span');
+            pos.className = 'av-arte-pos';
+            pos.textContent = (i + 1) + 'º';
+            const corpo = document.createElement('div');
+            corpo.className = 'av-arte-corpo';
+            const nome = document.createElement('strong');
+            nome.textContent = a.nome || 'Arte ' + a.codigo;
+            const canais = document.createElement('span');
+            canais.className = 'av-arte-canais';
+            a.canais.forEach((c) => {
+                const chip = document.createElement('span');
+                chip.className = 'av-arte-canal';
+                chip.style.setProperty('--av-cor', c.cor);
+                chip.title = c.nome;
+                chip.append(icone(c.icone), document.createTextNode(' ' + c.total));
+                canais.appendChild(chip);
+            });
+            corpo.append(nome, canais);
+            const total = document.createElement('span');
+            total.className = 'av-arte-total';
+            total.textContent = a.total;
+            li.append(pos, corpo, total);
+            ol.appendChild(li);
+        });
+    }
+
     function barras(lista, idLista, vazio) {
         const ol = $(idLista);
         if (!ol) return;
@@ -241,7 +366,10 @@
         $('av-agendamentos').textContent = r.agendamentos || 0;
 
         barras(r.servicos, 'av-servicos', 'Ainda ninguém procurou um serviço neste período.');
-        barras(r.origens, 'av-origens', 'Sem visitas no período.');
+        desenharOrigens(r, periodo);
+        desenharArtes(r);
+        ultimoRender = [registros, opcoes];
+        if (window.PCFTLinks) window.PCFTLinks.atualizarContagens(r.origensMapa, periodo);
         barras(r.buscas, 'av-buscas', 'Nenhuma busca na página de entrada ainda.');
 
         const horas = $('av-horas');
@@ -556,48 +684,6 @@ service cloud.firestore {
         });
     }
 
-    // ── Links rastreáveis ─────────────────────────────────────────────────────
-
-    function ligarLinks() {
-        const nome = $('av-link-nome');
-        const gerar = $('av-link-gerar');
-        if (!nome || !gerar) return;
-
-        const montar = () => {
-            const slug = nome.value.toLowerCase()
-                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-                .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 30);
-            if (!slug) { nome.focus(); return; }
-            nome.value = slug;
-            const base = /localhost|127\.0\.0\.1/.test(location.hostname) ? 'https://www.pcformatech.com.br' : location.origin;
-            const url = base + '/?origem=' + slug;
-            $('av-link-url').textContent = url;
-            $('av-link-whatsapp').href = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(url);
-            $('av-link-resultado').hidden = false;
-        };
-
-        gerar.addEventListener('click', montar);
-        nome.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); montar(); } });
-        document.querySelectorAll('.av-link-sugestoes [data-link]').forEach((b) => {
-            b.addEventListener('click', () => { nome.value = b.dataset.link; montar(); });
-        });
-
-        $('av-link-copiar').addEventListener('click', async () => {
-            const texto = $('av-link-url').textContent;
-            try {
-                await navigator.clipboard.writeText(texto);
-                $('av-link-copiar').innerHTML = '<i class="fas fa-check"></i> Copiado';
-            } catch (e) {
-                const faixa = document.createRange();
-                faixa.selectNodeContents($('av-link-url'));
-                const sel = getSelection();
-                sel.removeAllRanges();
-                sel.addRange(faixa);
-            }
-            setTimeout(() => { $('av-link-copiar').innerHTML = '<i class="fas fa-copy"></i> Copiar'; }, 2000);
-        });
-    }
-
     // ── Integração com o painel ─────────────────────────────────────────────
 
     function iniciar() {
@@ -605,7 +691,6 @@ service cloud.firestore {
         iniciado = true;
         ligarBotoes();
         ligarBotaoRegras();
-        ligarLinks();
         ligarAparelhoDoDono();
         carregarPreferencias();
         mostrarEstadoDoPush();

@@ -102,7 +102,39 @@
         return json;
     }
 
-    const textoParaCompartilhar = (p) => [p.legenda, p.link].filter(Boolean).join('\n\n');
+    // ── Link rastreado de cada arte ─────────────────────────────────────────
+    // O link que vai junto com a arte leva ?origem=<canal>-arte-<código>: quem
+    // entra por ele aparece na aba Visitas como "WhatsApp · Arte “título”",
+    // e dá para ver qual publicação trouxe cada cliente. O canal é o que o
+    // Rafael escolhe no topo da aba (onde vai postar), e fica lembrado.
+    const CANAIS_POST = ['whatsapp', 'instagram', 'facebook'];
+    let canalPost = 'whatsapp';
+    try { if (CANAIS_POST.includes(localStorage.getItem('pcft_dv_canal'))) canalPost = localStorage.getItem('pcft_dv_canal'); } catch (e) { /* sem armazenamento */ }
+
+    const codigoDaArte = (id) => (window.PCFTResumo && window.PCFTResumo.codigoDaArte ? window.PCFTResumo.codigoDaArte(id) : '');
+
+    function linkDaArte(p) {
+        if (!p.link) return '';
+        const codigo = codigoDaArte(p.id);
+        if (!codigo) return p.link;
+        try {
+            const url = new URL(p.link, SITE);
+            // Só marca links do próprio site (um link de fora não registra visita).
+            if (!/(^|\.)pcformatech\.com\.br$/.test(url.hostname)) return p.link;
+            url.searchParams.set('origem', canalPost + '-arte-' + codigo);
+            return url.toString();
+        } catch (e) { return p.link; }
+    }
+
+    /** Títulos das artes para o painel de Visitas trocar o código pelo nome. */
+    function registrarNomes() {
+        if (!window.PCFTResumo || !window.PCFTResumo.registrarArtes) return;
+        const mapa = {};
+        publicacoes.concat(produtosLoja).forEach((p) => { mapa[codigoDaArte(p.id)] = p.titulo || MARCAS[p.categoria].nome; });
+        window.PCFTResumo.registrarArtes(mapa);
+    }
+
+    const textoParaCompartilhar = (p) => [p.legenda, linkDaArte(p)].filter(Boolean).join('\n\n');
 
     /**
      * A imagem vai como JPEG: WebP é recusado por alguns apps (o Instagram,
@@ -221,10 +253,12 @@
             legenda.textContent = p.legenda;
             const link = document.createElement('a');
             link.className = 'dv-link';
-            link.href = p.link;
+            const rastreado = linkDaArte(p);
+            link.href = rastreado;
             link.target = '_blank';
             link.rel = 'noopener';
-            link.textContent = p.link.replace(/^https:\/\//, '');
+            link.textContent = rastreado.replace(/^https:\/\//, '');
+            link.title = 'Link rastreado: quem entrar por ele aparece em Visitas com o nome desta arte';
             info.append(marca, titulo);
             const sit = p.categoria === 'promocoes' ? situacao(p) : null;
             if (sit) {
@@ -262,6 +296,7 @@
             publicacoes = json.publicacoes || [];
             produtosLoja = (loja.produtos || []).map(comoArte);
             carregado = true;
+            registrarNomes();
             status('');
             desenhar();
         } catch (erro) {
@@ -385,6 +420,19 @@
         $('dv-form').addEventListener('submit', salvar);
         $('dv-categoria').addEventListener('change', aoTrocarCategoria);
         $('dv-imagem').addEventListener('change', aoEscolherImagem);
+        // "Vou postar no": define o canal que vai nos links das artes.
+        const marcarCanal = () => document.querySelectorAll('[data-dv-canal]').forEach((x) => {
+            x.classList.toggle('is-ativo', x.dataset.dvCanal === canalPost);
+            x.setAttribute('aria-checked', String(x.dataset.dvCanal === canalPost));
+        });
+        document.querySelectorAll('[data-dv-canal]').forEach((b) => b.addEventListener('click', () => {
+            canalPost = b.dataset.dvCanal;
+            try { localStorage.setItem('pcft_dv_canal', canalPost); } catch (e) { /* sem armazenamento */ }
+            marcarCanal();
+            desenhar();
+        }));
+        marcarCanal();
+
         document.querySelectorAll('[data-dv-filtro]').forEach((b) => b.addEventListener('click', () => {
             filtro = b.dataset.dvFiltro;
             document.querySelectorAll('[data-dv-filtro]').forEach((x) => {
@@ -407,5 +455,21 @@
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar);
     else iniciar();
 
-    window.PCFTDivulgacao = { listar };
+    /** Para a aba Visitas: carrega as artes (se ainda não) e registra os nomes. */
+    async function obterArtes() {
+        if (!carregado) {
+            const [json, loja] = await Promise.all([
+                chamar('listar'),
+                fetch('/api/loja', { headers: { Accept: 'application/json' } }).then((r) => r.json()).catch(() => ({}))
+            ]);
+            publicacoes = json.publicacoes || [];
+            produtosLoja = (loja.produtos || []).map(comoArte);
+            carregado = true;
+            if ($('dv-grade')) desenhar();
+        }
+        registrarNomes();
+        return publicacoes.concat(produtosLoja);
+    }
+
+    window.PCFTDivulgacao = { listar, obterArtes, linkDaArte };
 })();

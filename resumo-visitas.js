@@ -37,8 +37,105 @@
         google: 'Google',
         busca: 'Outros buscadores',
         youtube: 'YouTube',
-        tiktok: 'TikTok'
+        tiktok: 'TikTok',
+        email: 'E-mail',
+        telegram: 'Telegram'
     };
+
+    /*
+     * Canais: toda origem cai num deles, inclusive os links marcados
+     * (?origem=whatsapp-status). Assim o painel soma "WhatsApp" de verdade:
+     * quem chegou pelo app (referência) + quem clicou num link marcado.
+     * "palavras" são os pedaços de nome de link que indicam o canal (vale
+     * para os links antigos também, como "status-whatsapp").
+     */
+    const CANAIS = [
+        { id: 'whatsapp', nome: 'WhatsApp', cor: '#25D366', icone: 'fab fa-whatsapp', palavras: ['whatsapp', 'wpp', 'zap', 'wa'] },
+        { id: 'instagram', nome: 'Instagram', cor: '#E1306C', icone: 'fab fa-instagram', palavras: ['instagram', 'insta', 'ig'] },
+        { id: 'facebook', nome: 'Facebook', cor: '#1877F2', icone: 'fab fa-facebook', palavras: ['facebook', 'face', 'fb', 'messenger'] },
+        { id: 'google', nome: 'Google', cor: '#4285F4', icone: 'fab fa-google', palavras: ['google', 'gmn', 'maps'] },
+        { id: 'impresso', nome: 'Impresso e QR', cor: '#8D6E63', icone: 'fas fa-qrcode', palavras: ['impresso', 'panfleto', 'cartao', 'qr', 'qrcode', 'adesivo', 'folder', 'flyer', 'banner'] },
+        { id: 'indicacao', nome: 'Indicações', cor: '#F59E0B', icone: 'fas fa-share-alt', palavras: ['indicacao', 'indicou', 'compartilhado'] },
+        { id: 'direto', nome: 'Acesso direto', cor: '#90A4AE', icone: 'fas fa-keyboard', palavras: [] },
+        { id: 'outros', nome: 'Outros', cor: '#7E57C2', icone: 'fas fa-globe', palavras: [] }
+    ];
+    const CANAL_POR_ID = {};
+    CANAIS.forEach((c) => { CANAL_POR_ID[c.id] = c; });
+
+    // Nome legível do "lugar" dentro do canal (o pedaço depois do canal no link).
+    const LUGARES = {
+        status: 'Status', grupo: 'Grupos', grupos: 'Grupos', conversa: 'Conversas', conversas: 'Conversas',
+        privado: 'Conversas', lista: 'Lista de transmissão', transmissao: 'Lista de transmissão',
+        bio: 'Link da bio', stories: 'Stories', story: 'Stories', direct: 'Direct', dm: 'Direct',
+        post: 'Post', feed: 'Post', reels: 'Reels', pagina: 'Página', marketplace: 'Marketplace',
+        perfil: 'Perfil da Empresa', postagem: 'Postagem', maps: 'Maps', panfleto: 'Panfleto',
+        cartao: 'Cartão de visita', balcao: 'QR no balcão', loja: 'QR na loja', adesivo: 'Adesivo',
+        divulgacao: 'Artes da Divulgação', produto: 'Produto da loja', anuncio: 'Anúncio', bairro: 'Grupo do bairro',
+        arte: 'Arte'
+    };
+
+    /*
+     * Artes da aba Divulgação: cada uma tem um código curto e fixo (6 letras),
+     * calculado do id dela. O link compartilhado leva "<canal>-arte-<código>",
+     * e o painel troca o código pelo título da arte (registrarArtes).
+     */
+    function codigoDaArte(id) {
+        let h = 0x811c9dc5;
+        const t = String(id || '');
+        for (let i = 0; i < t.length; i++) {
+            h ^= t.charCodeAt(i);
+            h = Math.imul(h, 0x01000193) >>> 0;
+        }
+        return ('000000' + h.toString(36)).slice(-6);
+    }
+
+    const NOMES_ARTES = {};
+    /** { código: título } — o painel chama ao carregar a Divulgação. */
+    function registrarArtes(mapa) {
+        Object.keys(mapa || {}).forEach((k) => { if (mapa[k]) NOMES_ARTES[k] = String(mapa[k]); });
+    }
+
+    function nomeDaArte(codigo) {
+        return NOMES_ARTES[codigo] ? 'Arte “' + NOMES_ARTES[codigo] + '”' : 'Arte ' + codigo;
+    }
+
+    function pedacosDoLink(slug) {
+        return String(slug || '').split(/[-_]+/).filter(Boolean);
+    }
+
+    /** Canal (id) de uma origem gravada: "whatsapp", "link:whatsapp-status", "site:x"… */
+    function canalDaOrigem(origem) {
+        const o = String(origem || 'direto');
+        if (o === 'direto') return 'direto';
+        if (o === 'busca') return 'google';
+        if (CANAL_POR_ID[o]) return o;
+        if (o.indexOf('link:') === 0) {
+            const pedacos = pedacosDoLink(o.slice(5));
+            const canal = CANAIS.find((c) => c.palavras.some((p) => pedacos.indexOf(p) >= 0));
+            return canal ? canal.id : 'outros';
+        }
+        return 'outros';
+    }
+
+    /** "link:whatsapp-status-promo-outubro" → "WhatsApp · Status · promo outubro". */
+    function nomeDoLink(slug) {
+        const pedacos = pedacosDoLink(slug);
+        const canal = CANAIS.find((c) => c.palavras.some((p) => pedacos.indexOf(p) >= 0));
+        if (!canal) return 'Link “' + slug + '”';
+        // Tira só o pedaço que disse o canal; o resto é o lugar e a campanha.
+        const marca = pedacos.findIndex((p) => canal.palavras.indexOf(p) >= 0);
+        const resto = pedacos.filter((p, i) => i !== marca);
+        // "panfleto", "cartao"… dizem o canal (Impresso) e o lugar ao mesmo tempo.
+        if (!resto.length) return canal.nome + ' · ' + (LUGARES[pedacos[marca]] || 'link marcado');
+        // "whatsapp-arte-x7k2pq": o código vira o título da arte.
+        if (resto[0] === 'arte' && resto[1]) return [canal.nome, nomeDaArte(resto[1])].concat(resto.slice(2)).join(' · ');
+        const lugar = LUGARES[resto[0]];
+        const partes = [canal.nome];
+        if (lugar) partes.push(lugar);
+        const campanha = (lugar ? resto.slice(1) : resto).join(' ');
+        if (campanha) partes.push(campanha);
+        return partes.join(' · ');
+    }
 
     // Uma visita sem batida nova por mais que isto é considerada encerrada.
     // O histórico é gravado no máximo a cada 60 s, então a última batida pode
@@ -53,7 +150,7 @@
     function nomeOrigem(origem) {
         const o = String(origem || 'direto');
         if (NOMES_ORIGEM[o]) return NOMES_ORIGEM[o];
-        if (o.indexOf('link:') === 0) return 'Link “' + o.slice(5) + '”';
+        if (o.indexOf('link:') === 0) return nomeDoLink(o.slice(5));
         if (o.indexOf('site:') === 0) return o.slice(5);
         return o;
     }
@@ -68,6 +165,19 @@
     function contar(mapa, chave, quanto) {
         if (!chave) return;
         mapa[chave] = (mapa[chave] || 0) + (quanto || 1);
+    }
+
+    /** Como ordenar(), mas chaves com o mesmo nome viram uma linha só. */
+    function ordenarPorNome(mapa, nomear, limite) {
+        const porNome = {};
+        Object.keys(mapa).forEach((chave) => {
+            const nome = nomear(chave);
+            if (!porNome[nome]) porNome[nome] = { chave, nome, canal: canalDaOrigem(chave), total: 0 };
+            porNome[nome].total += mapa[chave];
+        });
+        return Object.keys(porNome).map((n) => porNome[n])
+            .sort((a, b) => b.total - a.total || a.nome.localeCompare(b.nome))
+            .slice(0, limite || 10);
     }
 
     function ordenar(mapa, nomear, limite) {
@@ -181,12 +291,48 @@
             whatsapp,
             agendamentos,
             dispositivos,
-            origens: ordenar(origens, nomeOrigem, 8),
+            origens: ordenarPorNome(origens, nomeOrigem, 8),
+            origensMapa: origens,
+            canais: somarCanais(origens),
+            artes: somarArtes(origens),
             servicos: ordenar(servicos, nomeServico, 10),
             buscas: ordenar(buscas, null, 10),
             porHora,
             dias
         };
+    }
+
+    /** Visitas por arte da Divulgação, somando os canais (WhatsApp, Instagram…). */
+    function somarArtes(origens) {
+        const porArte = {};
+        Object.keys(origens).forEach((k) => {
+            if (k.indexOf('link:') !== 0) return;
+            const pedacos = pedacosDoLink(k.slice(5));
+            const i = pedacos.indexOf('arte');
+            if (i < 0 || !pedacos[i + 1]) return;
+            const codigo = pedacos[i + 1];
+            const canal = canalDaOrigem(k);
+            const a = porArte[codigo] || (porArte[codigo] = { codigo, total: 0, canais: {} });
+            a.total += origens[k];
+            a.canais[canal] = (a.canais[canal] || 0) + origens[k];
+        });
+        return Object.keys(porArte).map((c) => Object.assign(porArte[c], {
+            nome: NOMES_ARTES[c] || null,
+            canais: CANAIS.filter((x) => porArte[c].canais[x.id]).map((x) => ({ id: x.id, nome: x.nome, cor: x.cor, icone: x.icone, total: porArte[c].canais[x.id] }))
+        })).sort((a, b) => b.total - a.total);
+    }
+
+    /** Total de visitas por canal, do maior para o menor (só canais com visita). */
+    function somarCanais(origens) {
+        const total = Object.keys(origens).reduce((t, k) => t + origens[k], 0);
+        const porCanal = {};
+        Object.keys(origens).forEach((k) => {
+            const id = canalDaOrigem(k);
+            porCanal[id] = (porCanal[id] || 0) + origens[k];
+        });
+        return CANAIS.filter((c) => porCanal[c.id])
+            .map((c) => ({ id: c.id, nome: c.nome, cor: c.cor, icone: c.icone, total: porCanal[c.id], pct: total ? Math.round((porCanal[c.id] / total) * 100) : 0 }))
+            .sort((a, b) => b.total - a.total);
     }
 
     /** "20260923" no fuso informado (padrão: horário de Belém, o da loja). */
@@ -197,5 +343,5 @@
         return partes.replace(/-/g, '');
     }
 
-    return { calcular, chaveDoDia, nomeServico, nomeOrigem, calcularPico };
+    return { calcular, chaveDoDia, nomeServico, nomeOrigem, calcularPico, canalDaOrigem, nomeDoLink, codigoDaArte, registrarArtes, CANAIS, LUGARES };
 });

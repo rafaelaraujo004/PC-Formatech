@@ -104,12 +104,17 @@ const NOMES_ORIGEM = {
     tiktok: 'TikTok'
 };
 
+/** Mesmo nome do painel ("WhatsApp · Status"), via resumo-visitas.js. */
 function nomeDaOrigem(origem) {
     const o = String(origem || 'direto');
     if (NOMES_ORIGEM[o]) return NOMES_ORIGEM[o];
-    if (o.startsWith('link:')) return 'link "' + o.slice(5) + '"';
-    if (o.startsWith('site:')) return o.slice(5);
-    return o;
+    try {
+        return require('../resumo-visitas.js').nomeOrigem(o);
+    } catch (e) {
+        if (o.startsWith('link:')) return 'link "' + o.slice(5) + '"';
+        if (o.startsWith('site:')) return o.slice(5);
+        return o;
+    }
 }
 
 const NOMES_DISPOSITIVO = { mobile: 'celular', tablet: 'tablet', desktop: 'computador' };
