@@ -1,5 +1,5 @@
 // Service Worker - PC Formatech Notifications
-const SW_VERSION = '1.1.0';
+const SW_VERSION = '1.2.0';
 
 self.addEventListener('install', event => {
     self.skipWaiting();
@@ -60,7 +60,9 @@ self.addEventListener('notificationclick', event => {
         self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clientList => {
             for (const client of clientList) {
                 if (client.url.includes('admin') && 'focus' in client) {
-                    if (aba) client.postMessage({ type: 'ABRIR_ABA', aba });
+                    // O endereço inteiro vai junto: o lembrete da Divulgação
+                    // leva ?postar=<horário> para abrir a tela de postar.
+                    if (aba) client.postMessage({ type: 'ABRIR_ABA', aba, url: destino });
                     return client.focus();
                 }
             }

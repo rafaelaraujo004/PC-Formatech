@@ -208,6 +208,10 @@
       "destination": "/api/arte?img=:codigo"
     },
     {
+      "source": "/a/story/:codigo",
+      "destination": "/api/arte?story=:codigo"
+    },
+    {
       "source": "/a/:slug",
       "destination": "/api/arte?s=:slug"
     }

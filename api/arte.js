@@ -6,6 +6,8 @@
 //                                    ?origem=<canal>-arte-<código>
 //   GET /a/imagem/<código>?v=…     → a prévia: 1200×630 JPEG, a arte inteira
 //                                    no centro sobre um fundo desfocado dela
+//   GET /a/story/<código>?v=…      → versão 1080×1920 para Status e Stories
+//                                    (a aba Divulgação compartilha esta)
 //
 // O robô da prévia não roda JavaScript: lê as tags e para aí. Quem toca no
 // link é levado na hora para a página da arte. A resposta é a mesma para
@@ -165,29 +167,46 @@ async function bytesDaArte(db, arte) {
 
 /**
  * A arte inteira no centro (cantos arredondados e sombra) sobre ela mesma
- * ampliada e desfocada: vale para feed, story e foto quadrada de produto.
+ * ampliada e desfocada, numa tela largura×altura; a arte cabe em caixaL×caixaA.
  */
-async function montarPrevia(bytes) {
+async function montarSobreFundo(bytes, largura, altura, caixaL, caixaA) {
     const sharp = require('sharp');
     // Um resize por pipeline (o sharp usa só o último): primeiro reduz bem,
     // depois amplia e desfoca — fica só a cor da arte, sem texto legível.
-    const miniatura = await sharp(bytes).resize(48, 26, { fit: 'cover' }).toBuffer();
-    const fundo = await sharp(miniatura).resize(LARGURA, ALTURA, { kernel: 'cubic' }).blur(18)
+    const miniatura = await sharp(bytes).resize(Math.round(largura / 25), Math.round(altura / 25), { fit: 'cover' }).toBuffer();
+    const fundo = await sharp(miniatura).resize(largura, altura, { kernel: 'cubic' }).blur(18)
         .modulate({ brightness: 0.55, saturation: 1.2 })
         .toBuffer();
-    const frente = await sharp(bytes).resize({ width: LARGURA - 120, height: ALTURA - 64, fit: 'inside' })
+    const frente = await sharp(bytes).resize({ width: caixaL, height: caixaA, fit: 'inside' })
         .toBuffer({ resolveWithObject: true });
     const { width: w, height: h } = frente.info;
     const raio = Math.round(Math.min(w, h) * 0.04);
-    const x = Math.round((LARGURA - w) / 2);
-    const y = Math.round((ALTURA - h) / 2);
+    const x = Math.round((largura - w) / 2);
+    const y = Math.round((altura - h) / 2);
     const mascara = Buffer.from(`<svg width="${w}" height="${h}"><rect width="${w}" height="${h}" rx="${raio}" ry="${raio}"/></svg>`);
     const arredondada = await sharp(frente.data).ensureAlpha().composite([{ input: mascara, blend: 'dest-in' }]).png().toBuffer();
-    const sombra = Buffer.from(`<svg width="${LARGURA}" height="${ALTURA}"><defs><filter id="s" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="16"/></filter></defs><rect x="${x}" y="${y + 12}" width="${w}" height="${h}" rx="${raio}" fill="#000" fill-opacity=".5" filter="url(#s)"/></svg>`);
+    const sombra = Buffer.from(`<svg width="${largura}" height="${altura}"><defs><filter id="s" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="16"/></filter></defs><rect x="${x}" y="${y + 12}" width="${w}" height="${h}" rx="${raio}" fill="#000" fill-opacity=".5" filter="url(#s)"/></svg>`);
     return sharp(fundo)
         .composite([{ input: sombra, left: 0, top: 0 }, { input: arredondada, left: x, top: y }])
         .jpeg({ quality: 84, mozjpeg: true })
         .toBuffer();
+}
+
+/** Prévia de link: 1200×630, para feed, story e foto quadrada de produto. */
+const montarPrevia = (bytes) => montarSobreFundo(bytes, LARGURA, ALTURA, LARGURA - 120, ALTURA - 64);
+
+/**
+ * Versão para Status e Stories: 1080×1920. Arte que já é vertical ocupa a
+ * tela toda; a de feed fica no centro, longe das bordas de cima e de baixo,
+ * onde o Instagram e o WhatsApp põem nome, barra e botões.
+ */
+async function montarStory(bytes) {
+    const sharp = require('sharp');
+    const { width, height } = await sharp(bytes).metadata();
+    if (height / width >= 1.7) {
+        return sharp(bytes).resize(1080, 1920, { fit: 'cover' }).jpeg({ quality: 86, mozjpeg: true }).toBuffer();
+    }
+    return montarSobreFundo(bytes, 1080, 1920, 960, 1440);
 }
 
 // ── Rota ──────────────────────────────────────────────────────────────────
@@ -197,8 +216,10 @@ async function handler(req, res, db) {
     const consulta = req.query || {};
     db = db || iniciarAdmin().firestore();
 
-    if (consulta.img !== undefined) {
-        const codigo = String(consulta.img);
+    // /a/imagem/<código> (prévia do link) e /a/story/<código> (Status e Stories).
+    const formato = consulta.img !== undefined ? 'imagem' : consulta.story !== undefined ? 'story' : null;
+    if (formato) {
+        const codigo = String(formato === 'imagem' ? consulta.img : consulta.story);
         if (!CODIGO.test(codigo)) return res.status(404).end();
         const arte = await acharArte(db, codigo, String(consulta.v || ''));
         if (!arte) {
@@ -208,12 +229,12 @@ async function handler(req, res, db) {
         // Só a versão atual é montada (e guardada pela CDN); outra vai para ela.
         if (String(consulta.v || '') !== String(arte.versao)) {
             res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=60');
-            res.setHeader('Location', `/a/imagem/${codigo}?v=${arte.versao}`);
+            res.setHeader('Location', `/a/${formato}/${codigo}?v=${arte.versao}`);
             return res.status(302).end();
         }
         const bytes = await bytesDaArte(db, arte);
         if (!bytes) return res.status(404).end();
-        const jpeg = await montarPrevia(bytes);
+        const jpeg = formato === 'story' ? await montarStory(bytes) : await montarPrevia(bytes);
         res.setHeader('Content-Type', 'image/jpeg');
         res.setHeader('Cache-Control', 'public, max-age=86400, s-maxage=31536000, immutable');
         return res.status(200).send(jpeg);
@@ -244,12 +265,13 @@ module.exports = async function (req, res) {
         return await handler(req, res);
     } catch (erro) {
         console.error('arte:', erro);
-        if (req.query && req.query.img !== undefined) return res.status(500).end();
+        if (req.query && (req.query.img !== undefined || req.query.story !== undefined)) return res.status(500).end();
         res.setHeader('Location', SITE + '/site.html');
         return res.status(302).end();
     }
 };
 module.exports.handler = handler;
 module.exports.montarPrevia = montarPrevia;
+module.exports.montarStory = montarStory;
 module.exports.limparTitulo = limparTitulo;
 module.exports._envelhecerIndice = (ms) => { indiceEm -= ms; };

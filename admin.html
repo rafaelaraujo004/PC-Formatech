@@ -1653,7 +1653,7 @@
     <link rel="stylesheet" href="theme-system.css?v=7">
     <script src="theme-system.js?v=7"></script>
     <!-- Camada de refinamento: por ultimo, para vencer o <style> embutido e o theme-system.css -->
-    <link rel="stylesheet" href="admin-refinements.css?v=12">
+    <link rel="stylesheet" href="admin-refinements.css?v=13">
     <link rel="stylesheet" href="anuncios.css?v=4">
     <script src="auth-system.secure.js" defer></script>
 </head>
@@ -2618,6 +2618,20 @@
                 <button type="button" class="av-botao" id="dv-nova"><i class="fas fa-plus" aria-hidden="true"></i> Nova arte</button>
             </div>
 
+            <!-- Programação de Status e Stories (admin-agenda.js) -->
+            <section class="dv-agenda" id="dv-agenda" aria-labelledby="dv-agenda-titulo">
+                <div class="dv-agenda-topo">
+                    <span class="dv-agenda-icone" aria-hidden="true"><i class="fas fa-calendar-check"></i></span>
+                    <div class="dv-agenda-cabeca">
+                        <h3 id="dv-agenda-titulo">Programação de hoje</h3>
+                        <p id="dv-agenda-resumo">No horário marcado chega um lembrete no celular: é só tocar e postar.</p>
+                    </div>
+                    <button type="button" class="av-botao av-botao-secundario" id="dv-agenda-editar"><i class="fas fa-clock" aria-hidden="true"></i> Programar</button>
+                </div>
+                <div class="dv-agenda-aviso" id="dv-agenda-aviso" hidden></div>
+                <ol class="dv-hoje" id="dv-hoje"></ol>
+            </section>
+
             <div class="dv-canal" role="radiogroup" aria-label="Onde vai postar">
                 <span class="dv-canal-rotulo"><i class="fas fa-route" aria-hidden="true"></i> Vou postar no</span>
                 <button type="button" role="radio" data-dv-canal="whatsapp" style="--dv-cor:#25D366"><i class="fab fa-whatsapp" aria-hidden="true"></i> WhatsApp</button>
@@ -2687,6 +2701,46 @@
                 <button type="submit" class="av-botao" id="dv-salvar"><i class="fas fa-save" aria-hidden="true"></i> Salvar arte</button>
             </div>
             <p class="av-status" id="dv-form-status" role="status" aria-live="polite"></p>
+        </form>
+    </dialog>
+
+    <!-- "Hora de postar": aberta pelo lembrete ou pela Programação de hoje -->
+    <dialog class="dv-dialogo dv-postar" id="dv-postar" aria-labelledby="dv-postar-titulo">
+        <div class="dv-dialogo-topo">
+            <h3 class="bl-subtitulo" id="dv-postar-titulo">Hora de postar</h3>
+            <button type="button" class="dv-fechar" data-fechar aria-label="Fechar"><i class="fas fa-times" aria-hidden="true"></i></button>
+        </div>
+        <div class="dv-postar-corpo">
+            <img class="dv-postar-img" id="dv-postar-img" alt="">
+            <div class="dv-postar-info">
+                <span class="dv-postar-hora" id="dv-postar-hora"></span>
+                <strong id="dv-postar-arte"></strong>
+                <small id="dv-postar-origem"></small>
+            </div>
+        </div>
+        <div class="dv-postar-botoes" id="dv-postar-botoes"></div>
+        <p class="av-status" id="dv-postar-status" role="status" aria-live="polite"></p>
+        <div class="dv-postar-rodape">
+            <button type="button" class="av-botao av-botao-secundario" id="dv-postar-pular"><i class="fas fa-forward" aria-hidden="true"></i> Pular hoje</button>
+            <button type="button" class="av-botao av-botao-secundario" id="dv-postar-feito"><i class="fas fa-check" aria-hidden="true"></i> Já postei</button>
+        </div>
+    </dialog>
+
+    <!-- Editor da programação -->
+    <dialog class="dv-dialogo dv-agenda-dialogo" id="dv-agenda-dialogo" aria-labelledby="dv-agenda-dialogo-titulo">
+        <form id="dv-agenda-form" method="dialog" novalidate>
+            <div class="dv-dialogo-topo">
+                <h3 class="bl-subtitulo" id="dv-agenda-dialogo-titulo">Programar Status e Stories</h3>
+                <button type="button" class="dv-fechar" data-fechar aria-label="Fechar"><i class="fas fa-times" aria-hidden="true"></i></button>
+            </div>
+            <p class="dv-agenda-explica">Escolha a hora, os dias e onde postar. Na hora marcada chega o lembrete no celular. No <strong>rodízio</strong>, cada horário pega uma arte diferente da aba (promoção só entra dentro do período).</p>
+            <div class="dv-entradas" id="dv-entradas"></div>
+            <div class="dv-agenda-acoes">
+                <button type="button" class="av-botao av-botao-secundario" id="dv-agenda-adicionar"><i class="fas fa-plus" aria-hidden="true"></i> Adicionar horário</button>
+                <button type="button" class="av-botao av-botao-secundario" id="dv-agenda-sugestao"><i class="fas fa-magic" aria-hidden="true"></i> Usar sugestão</button>
+            </div>
+            <p class="av-status" id="dv-agenda-status" role="status" aria-live="polite"></p>
+            <button type="submit" class="av-botao dv-agenda-salvar" id="dv-agenda-salvar"><i class="fas fa-save" aria-hidden="true"></i> Salvar programação</button>
         </form>
     </dialog>
 
@@ -3165,7 +3219,9 @@
         <script src="admin-loja.js?v=1"></script>
         <script src="anuncios.js?v=4"></script>
         <script src="admin-anuncios.js?v=2"></script>
-        <script src="admin-divulgacao.js?v=5"></script>
+        <script src="admin-divulgacao.js?v=6"></script>
+        <script src="agenda-divulgacao.js?v=1"></script>
+        <script src="admin-agenda.js?v=1"></script>
         <script src="admin-pedidos.js?v=1"></script>
 </body>
 </html>

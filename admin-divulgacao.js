@@ -115,7 +115,8 @@
 
     const codigoDaArte = (id) => (window.PCFTResumo && window.PCFTResumo.codigoDaArte ? window.PCFTResumo.codigoDaArte(id) : '');
 
-    function linkDaArte(p) {
+    /** Link curto da arte; o canal padrão é o de "Vou postar no". */
+    function linkDaArte(p, canal) {
         if (!p.link) return '';
         const codigo = codigoDaArte(p.id);
         if (!codigo) return p.link;
@@ -123,7 +124,7 @@
             const url = new URL(p.link, SITE);
             // Só marca links do próprio site (um link de fora não registra visita).
             if (!/(^|\.)pcformatech\.com\.br$/.test(url.hostname)) return p.link;
-            return SITE + '/a/' + canalPost + '-' + codigo;
+            return SITE + '/a/' + (canal || canalPost) + '-' + codigo;
         } catch (e) { return p.link; }
     }
 
@@ -135,7 +136,12 @@
         window.PCFTResumo.registrarArtes(mapa);
     }
 
-    const textoParaCompartilhar = (p) => [p.legenda, linkDaArte(p)].filter(Boolean).join('\n\n');
+    const textoParaCompartilhar = (p, canal) => [p.legenda, linkDaArte(p, canal)].filter(Boolean).join('\n\n');
+
+    /** "Seu PC. Nossa missão." → "seu-pc-nossa-missao" (sem acento, sem símbolo). */
+    const nomeDoArquivo = (p) => (p.titulo || MARCAS[p.categoria].nome).toLowerCase()
+        .normalize('NFD').replace(/[̀-ͯ]/g, '')
+        .replace(/[^\w]+/g, '-').replace(/^-|-$/g, '') || 'arte';
 
     /**
      * A imagem vai como JPEG: WebP é recusado por alguns apps (o Instagram,
@@ -152,28 +158,70 @@
         ctx.fillRect(0, 0, tela.width, tela.height);
         ctx.drawImage(bitmap, 0, 0);
         const jpeg = await new Promise((r) => tela.toBlob(r, 'image/jpeg', 0.92));
-        const nome = (p.titulo || MARCAS[p.categoria].nome).toLowerCase().normalize('NFD').replace(/[^\w]+/g, '-').replace(/^-|-$/g, '') || 'arte';
-        return new File([jpeg], nome + '.jpg', { type: 'image/jpeg' });
+        return new File([jpeg], nomeDoArquivo(p) + '.jpg', { type: 'image/jpeg' });
+    }
+
+    /**
+     * Versão 1080×1920 para Status e Stories (api/arte.js monta). Se não
+     * vier, vai a arte original mesmo.
+     */
+    async function arquivoStory(p) {
+        try {
+            const resposta = await fetch('/a/story/' + codigoDaArte(p.id));
+            const blob = resposta.ok ? await resposta.blob() : null;
+            if (!blob || !/^image\//.test(blob.type)) throw new Error('sem story');
+            return new File([blob], nomeDoArquivo(p) + '-story.jpg', { type: 'image/jpeg' });
+        } catch (e) {
+            return arquivoDaImagem(p);
+        }
+    }
+
+    // O celular só abre o menu de compartilhar logo depois de um toque: a
+    // imagem do Story é preparada antes (quando a tela de postar abre), para
+    // o toque em "Postar" já compartilhar na hora.
+    const storiesProntos = new Map();
+    function prepararStory(p) {
+        if (!storiesProntos.has(p.id)) {
+            const pronto = arquivoStory(p);
+            storiesProntos.set(p.id, pronto);
+            pronto.catch(() => storiesProntos.delete(p.id));
+            setTimeout(() => storiesProntos.delete(p.id), 10 * 60e3);
+        }
+        return storiesProntos.get(p.id);
     }
 
     async function copiar(texto) {
         try { await navigator.clipboard.writeText(texto); return true; } catch (e) { return false; }
     }
 
+    /**
+     * Abre o menu do celular com a imagem e a legenda (com o link do canal).
+     * Sem menu (computador), baixa a imagem. A legenda fica sempre copiada:
+     * alguns apps ignoram o texto que vem junto com a imagem.
+     * Devolve { como: 'compartilhado' | 'baixado', copiou }; se a pessoa
+     * fechar o menu, o erro AbortError sobe.
+     */
+    async function enviarArte(p, opcoes) {
+        const o = opcoes || {};
+        const texto = textoParaCompartilhar(p, o.canal);
+        const arquivo = await (o.story ? prepararStory(p) : arquivoDaImagem(p));
+        const copiou = await copiar(texto);
+        if (navigator.canShare && navigator.canShare({ files: [arquivo] })) {
+            await navigator.share({ files: [arquivo], text: texto, title: p.titulo || MARCAS[p.categoria].nome });
+            return { como: 'compartilhado', copiou };
+        }
+        baixarArquivo(arquivo);
+        return { como: 'baixado', copiou };
+    }
+
     async function compartilhar(p, botao) {
-        const texto = textoParaCompartilhar(p);
         botao.disabled = true;
         try {
-            const arquivo = await arquivoDaImagem(p);
-            // Alguns apps ignoram o texto junto com a imagem: a legenda já fica
-            // copiada para colar, se precisar.
-            const copiou = await copiar(texto);
-            if (navigator.canShare && navigator.canShare({ files: [arquivo] })) {
-                await navigator.share({ files: [arquivo], text: texto, title: p.titulo || MARCAS[p.categoria].nome });
-                status(copiou ? 'Compartilhado. A legenda também ficou copiada, caso o app não a tenha colado.' : 'Compartilhado.');
+            const r = await enviarArte(p);
+            if (r.como === 'compartilhado') {
+                status(r.copiou ? 'Compartilhado. A legenda também ficou copiada, caso o app não a tenha colado.' : 'Compartilhado.');
             } else {
-                baixarArquivo(arquivo);
-                status(copiou
+                status(r.copiou
                     ? 'Este navegador não compartilha imagens direto: a imagem foi baixada e a legenda com o link foi copiada. É só colar ao postar.'
                     : 'A imagem foi baixada. Use "Copiar legenda" para levar o texto junto.');
             }
@@ -302,6 +350,7 @@
             registrarNomes();
             status('');
             desenhar();
+            avisarArtes();
         } catch (erro) {
             status(erro.message, true);
         }
@@ -469,10 +518,21 @@
             produtosLoja = (loja.produtos || []).map(comoArte);
             carregado = true;
             if ($('dv-grade')) desenhar();
+            avisarArtes();
         }
         registrarNomes();
         return publicacoes.concat(produtosLoja);
     }
 
-    window.PCFTDivulgacao = { listar, obterArtes, linkDaArte };
+    /** Avisa a programação (admin-agenda.js) que a lista de artes mudou. */
+    function avisarArtes() {
+        document.dispatchEvent(new CustomEvent('pcft:artes', { detail: publicacoes.concat(produtosLoja) }));
+    }
+
+    window.PCFTDivulgacao = {
+        listar, obterArtes, linkDaArte, chamar, prepararStory, enviarArte, codigoDaArte,
+        artes: () => publicacoes.concat(produtosLoja),
+        carregado: () => carregado,
+        marca: (categoria) => (MARCAS[categoria] || MARCAS.pcformatech).nome
+    };
 })();
