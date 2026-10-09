@@ -1,0 +1,28 @@
+# Lembretes da programação de Status e Stories (aba Divulgação do painel).
+#
+# O plano gratuito da Vercel só roda tarefa agendada uma vez por dia; esta
+# chama o site de hora em hora. A rota só manda o lembrete do que já está na
+# hora, e uma vez só (api/publicacoes.js → lembrar), então não precisa de senha.
+#
+# O GitHub pode atrasar alguns minutos a execução agendada; por isso ela roda
+# alguns minutos depois da hora cheia, e a rota ainda pega horários de até
+# 2 h atrás caso uma execução seja pulada.
+
+name: Lembretes da Divulgação
+
+on:
+  schedule:
+    - cron: '3 * * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  lembrar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Mandar os lembretes que chegaram na hora
+        run: |
+          curl --fail --silent --show-error --max-time 90 --retry 2 --retry-delay 20 \
+            "https://www.pcformatech.com.br/api/publicacoes?lembrar=1"
