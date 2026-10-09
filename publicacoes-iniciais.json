@@ -95,6 +95,29 @@
             "link": "https://www.pcformatech.com.br/site.html",
             "imagem": "/images/divulgacao/nossa-missao.jpg",
             "ordem": 7
+        },
+        {
+            "id": "apps-feed",
+            "categoria": "apps",
+            "titulo": "Criação de apps (feed)",
+            "legenda": "Seu negócio ainda depende de planilhas? A PC Formatech cria o app do seu negócio: controle de estoque, agendamento de clientes, orçamentos e pedidos, financeiro e painel. Simples de usar, funciona no celular e no computador. A partir de R$ 149,99, pronto em 7 a 15 dias. Fale com a gente pelo WhatsApp (94) 98430-5772.",
+            "link": "https://www.pcformatech.com.br/apps.html",
+            "imagem": "/images/divulgacao/apps-feed.jpg",
+            "ordem": 1,
+            "banner": {
+                "selo": "Novo serviço",
+                "botaoTexto": "Ver apps e preços",
+                "link": "/apps.html"
+            }
+        },
+        {
+            "id": "apps-story",
+            "categoria": "apps",
+            "titulo": "Criação de apps (Status/Stories)",
+            "legenda": "Seu negócio ainda depende de planilhas? A PC Formatech cria o app do seu negócio: controle de estoque, agendamento de clientes, orçamentos e pedidos, financeiro e painel. Simples de usar, funciona no celular e no computador. A partir de R$ 149,99, pronto em 7 a 15 dias. Fale com a gente pelo WhatsApp (94) 98430-5772.",
+            "link": "https://www.pcformatech.com.br/apps.html",
+            "imagem": "/images/divulgacao/apps-story.jpg",
+            "ordem": 2
         }
     ]
 }

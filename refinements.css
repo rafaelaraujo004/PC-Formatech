@@ -2741,3 +2741,111 @@ html[data-theme='dark'] .social-proof > h2 {
 
 .footer-servicos a:hover { opacity: 1; text-decoration: underline; }
 
+
+
+/* ── 26 · O que a PC Formatech faz ──────────────────────────────────────────
+   Três cartões logo depois do carrossel: assistência, loja Bird Tech e apps.
+   Assim quem chega já vê tudo o que oferecemos, e não só a formatação. */
+
+.frentes {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 3rem 1.25rem 1rem;
+    text-align: center;
+}
+
+.frentes h2 {
+    margin: 0 0 0.4rem;
+    color: var(--premium-text);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+.frentes .frentes-sub { margin: 0 0 1.6rem; color: var(--premium-muted); }
+
+.frentes-grade {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.1rem;
+    text-align: left;
+}
+
+.frente {
+    --frente-cor: var(--brand-400, #40998F);
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    padding: 1.4rem;
+    border-radius: 20px;
+    background: var(--premium-card);
+    border: 1px solid var(--premium-card-border);
+    border-top: 4px solid var(--frente-cor);
+    box-shadow: var(--premium-shadow-soft);
+    text-decoration: none;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.frente:hover { transform: translateY(-4px); box-shadow: 0 16px 36px rgba(15, 23, 42, 0.18); }
+.frente-loja { --frente-cor: #2f7fe0; }
+.frente-apps { --frente-cor: #8b5cf6; }
+
+.frente .frente-icone {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--frente-cor) 15%, transparent);
+    color: var(--frente-cor);
+    font-size: 1.3rem;
+}
+
+.frente strong { color: var(--premium-text); font-size: 1.15rem; }
+.frente > span:not(.frente-icone) { color: var(--premium-muted); line-height: 1.5; }
+
+.frente em {
+    margin-top: auto;
+    padding-top: 0.4rem;
+    color: var(--frente-cor);
+    font-style: normal;
+    font-weight: 800;
+}
+
+@media (max-width: 860px) {
+    .frentes { padding-top: 2.2rem; }
+    .frentes-grade { grid-template-columns: 1fr; }
+}
+
+/* Faixa de apps: mesma estrutura da faixa da Bird Tech, em tom roxo. */
+.bird-tech-faixa.apps-faixa {
+    background: linear-gradient(120deg, #2e1065 0%, #5b21b6 55%, #8b5cf6 100%);
+    box-shadow: 0 24px 48px -28px rgba(91, 33, 182, 0.8);
+}
+
+.apps-faixa-icone {
+    width: 84px;
+    height: 84px;
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    border-radius: 20px;
+    background: #fff;
+    color: #5b21b6;
+    font-size: 2.2rem;
+}
+
+.apps-faixa .bird-tech-botao { color: #5b21b6 !important; }
+
+@media (max-width: 760px) {
+    .apps-faixa-icone { width: 64px; height: 64px; border-radius: 16px; font-size: 1.7rem; }
+}
+
+/* Links da loja e dos apps na faixa de confiança do carrossel. */
+.hero-trust-strip a { color: inherit !important; text-decoration: underline; text-underline-offset: 3px; }
+
+/* No tema escuro, regras gerais clareiam ícones e ênfases: mantém a cor de cada frente. */
+html[data-theme='dark'] .frente { --frente-cor: #5ec8b8; }
+html[data-theme='dark'] .frente-loja { --frente-cor: #6aa8ff; }
+html[data-theme='dark'] .frente-apps { --frente-cor: #b39dff; }
+html[data-theme='dark'] .frente em,
+html[data-theme='dark'] .frente .frente-icone,
+html[data-theme='dark'] .frente .frente-icone i { color: var(--frente-cor) !important; }
