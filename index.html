@@ -55,7 +55,7 @@
     <link rel="preload" href="/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/sora-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="fontes.css">
-    <link rel="stylesheet" href="portal.css?v=6">
+    <link rel="stylesheet" href="portal.css?v=7">
 </head>
 <body class="pt">
     <a class="pt-skip" href="#busca">Ir para a busca</a>
@@ -142,6 +142,15 @@
                        href="https://api.whatsapp.com/send?phone=5594984305772&amp;text=Ol%C3%A1!%20Preciso%20de%20ajuda%20com%20meu%20computador.">
                         <svg class="pt-ico" aria-hidden="true"><use href="#i-chat"/></svg> Descrever no WhatsApp
                     </a>
+                </div>
+            </div>
+
+            <!-- Aparece quando a busca fala de peça (tela, bateria, "não liga"…). -->
+            <div class="pt-empty pt-aviso-peca" id="pt-aviso-peca" hidden>
+                <svg class="pt-empty-ico" aria-hidden="true"><use href="#i-help"/></svg>
+                <div>
+                    <p class="pt-empty-title">Isso parece ser problema de peça.</p>
+                    <p class="pt-empty-text">A PC Formatech trabalha só com a parte de programas (software): formatação, vírus, lentidão, programas, drivers e backup. Não consertamos peças, como tela, placa, bateria, carregador ou teclado. Na dúvida, descreva no WhatsApp que a gente diz se dá para resolver por programa.</p>
                 </div>
             </div>
 
@@ -257,6 +266,7 @@
                 <li><svg class="pt-ico" aria-hidden="true"><use href="#i-pin"/></svg> Presencial em Canaã dos Carajás, PA</li>
                 <li><svg class="pt-ico" aria-hidden="true"><use href="#i-home"/></svg> À distância para qualquer cidade</li>
                 <li><svg class="pt-ico" aria-hidden="true"><use href="#i-check"/></svg> Garantia de 30 dias na formatação</li>
+                <li><svg class="pt-ico" aria-hidden="true"><use href="#i-check"/></svg> Só programas (software), sem conserto de peças</li>
             </ul>
         </section>
 
@@ -293,7 +303,7 @@
     </footer>
 
     <script src="site-config.js?v=2"></script>
-    <script src="portal.js?v=2"></script>
+    <script src="portal.js?v=3"></script>
 
     <!-- Tema escolhido no painel e contagem de visitantes do "Tempo Real".
          Vêm por último: a busca já funciona antes de o Firebase carregar. -->

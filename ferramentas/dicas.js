@@ -66,8 +66,8 @@ module.exports = [
                     'Vírus ou programas que vieram escondidos junto com outros downloads.',
                     'Windows ou drivers desatualizados.',
                     'Navegador com dezenas de abas e extensões.',
-                    'Sujeira e poeira, que esquentam o computador e fazem ele trabalhar mais devagar.',
-                    'HD antigo: trocar por um SSD costuma deixar o computador várias vezes mais rápido.'
+                    'Sujeira e poeira, que esquentam o computador e fazem ele trabalhar mais devagar (limpeza interna é serviço de peça, que não fazemos).',
+                    'HD antigo: trocar por um SSD costuma deixar o computador várias vezes mais rápido (troca de peça também não é com a gente, mas depois da troca podemos instalar o Windows e passar seus arquivos).'
                 ]
             },
             {
@@ -82,7 +82,7 @@ module.exports = [
             },
             {
                 h2: 'Quando chamar um técnico',
-                p: ['Se mesmo assim continuar lento, ou se aparecerem propagandas e janelas sozinhas, vale uma limpeza e otimização completa. Ela tira o que pesa na inicialização, atualiza os drivers e verifica o hardware, sem apagar seus arquivos. Pode ser feita presencialmente em Canaã dos Carajás ou à distância.']
+                p: ['Se mesmo assim continuar lento, ou se aparecerem propagandas e janelas sozinhas, vale uma limpeza e otimização completa. Ela tira o que pesa na inicialização, atualiza os drivers e verifica o sistema e o disco, sem apagar seus arquivos. Pode ser feita presencialmente em Canaã dos Carajás ou à distância.']
             }
         ]
     },

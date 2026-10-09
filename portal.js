@@ -25,8 +25,7 @@
         manutencao: [
             'lento', 'lenta', 'lentidao', 'devagar', 'travando', 'trava', 'travado', 'travada', 'congelando',
             'demora', 'demorando', 'demorado', 'pesado', 'pesada', 'otimizar', 'otimizacao', 'acelerar',
-            'rapido', 'desempenho', 'performance', 'limpeza', 'limpar', 'poeira', 'esquentando', 'esquenta',
-            'quente', 'superaquecendo', 'barulho', 'barulhento', 'ventoinha', 'cooler', 'manutencao',
+            'rapido', 'desempenho', 'performance', 'limpeza', 'limpar', 'manutencao',
             'preventiva', 'nao responde', 'nao ta respondendo', 'demora para ligar', 'demora pra ligar',
             'demora para abrir', 'arquivos temporarios', 'memoria cheia', 'disco cheio', 'hd cheio'
         ],
@@ -64,9 +63,30 @@
             'nao sei', 'nao liga', 'nao ligou', 'desliga sozinho', 'desligando sozinho', 'desligou', 'apagou',
             'queimou', 'quebrou', 'quebrado', 'defeito', 'estragou', 'estragado', 'conserto', 'consertar',
             'arrumar', 'tela preta', 'bipando', 'apitando', 'orcamento', 'quanto custa', 'preco', 'duvida',
-            'ajuda', 'problema', 'caiu agua', 'molhou', 'tela quebrada', 'carregador', 'bateria'
+            'ajuda', 'problema', 'caiu agua', 'molhou', 'tela quebrada', 'carregador', 'bateria',
+            'poeira', 'esquentando', 'esquenta', 'superaquecendo', 'barulho', 'barulhento', 'ventoinha', 'cooler'
         ]
     };
+
+    // Sinais de problema de peça (hardware). A PC Formatech só trabalha com
+    // programas (software): nesses casos a busca avisa antes de qualquer card.
+    const PECA = [
+        'nao liga', 'nao ligou', 'nao da sinal', 'sem imagem', 'tela quebrada', 'tela trincada', 'tela rachada',
+        'tela quebrou', 'quebrou', 'quebrado', 'quebrada', 'queimou', 'queimado', 'queimada', 'caiu agua',
+        'caiu no chao', 'molhou', 'derramei', 'carregador', 'bateria', 'nao carrega', 'conector', 'dobradica',
+        'carcaca', 'placa mae', 'placa queimada', 'trocar ssd', 'colocar ssd', 'trocar hd', 'memoria ram',
+        'aumentar memoria', 'trocar peca', 'peca', 'pecas', 'tecla quebrada', 'teclas soltas', 'tecla solta',
+        'poeira', 'cooler', 'ventoinha', 'barulho', 'barulhento', 'superaquecendo', 'esquentando', 'esquenta',
+        'pasta termica', 'fonte queimada', 'solda', 'soldar', 'hardware'
+    ];
+
+    // Palavrinhas que não mudam o sentido ("trocar o ssd" = "trocar ssd").
+    const LIGACAO = new Set(['o', 'a', 'os', 'as', 'um', 'uma', 'de', 'do', 'da', 'dos', 'das', 'no', 'na', 'meu', 'minha', 'seu', 'sua', 'esse', 'essa']);
+
+    function falaDePeca(texto) {
+        const t = ' ' + normalizar(texto).split(' ').filter((p) => !LIGACAO.has(p)).join(' ') + ' ';
+        return PECA.some((termo) => t.includes(' ' + termo + ' '));
+    }
 
     // Palavras que não dizem nada sobre o problema.
     const VAZIAS = new Set([
@@ -171,6 +191,7 @@
     const status = document.getElementById('pt-status');
     const vazio = document.getElementById('pt-empty');
     const linkVazio = document.getElementById('pt-empty-wa');
+    const avisoPeca = document.getElementById('pt-aviso-peca');
     const limpar = document.getElementById('pt-clear');
     if (!form || !campo || !grade) return;
 
@@ -222,6 +243,7 @@
             if (wa && hrefOriginal.has(card)) wa.setAttribute('href', hrefOriginal.get(card));
         });
         vazio.hidden = true;
+        if (avisoPeca) avisoPeca.hidden = true;
         limpar.hidden = true;
         titulo.textContent = 'Principais serviços';
         status.textContent = '';
@@ -236,6 +258,8 @@
 
         const resultado = pontuar(texto);
         const encontrados = resultado.filter((r) => r.pontos > 0);
+        const peca = falaDePeca(texto);
+        if (avisoPeca) avisoPeca.hidden = !peca;
         const porId = new Map(cards.map((c) => [c.dataset.id, c]));
 
         grade.classList.add('is-searching');
@@ -247,7 +271,7 @@
             // sugestão, na ordem de sempre.
             grade.classList.remove('is-searching');
             ordemOriginal.forEach((card) => { card.hidden = false; grade.appendChild(card); });
-            vazio.hidden = false;
+            vazio.hidden = peca;
             linkVazio.href = linkWhatsApp('Olá! Meu computador: ' + texto);
             titulo.textContent = 'Talvez seja um destes';
             status.textContent = 'Nenhum serviço com “' + texto + '”. Veja as opções abaixo ou fale com a gente.';
