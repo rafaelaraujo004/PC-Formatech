@@ -12,6 +12,7 @@
 
 const { iniciarAdmin, enviarParaTodos } = require('./_push');
 const { ErroDeAcesso, exigirAdmin } = require('./_admin');
+const { dentroDoLimite } = require('./_limite');
 
 const COLECAO = 'pedidos';
 const PRODUTOS = 'lojaProdutos';
@@ -26,7 +27,7 @@ function safeJson(texto) {
 
 const texto = (valor, max) => String(valor || '').trim().replace(/\s+/g, ' ').slice(0, max);
 
-async function registrar(admin, db, entrada, res) {
+async function registrar(admin, db, entrada, req, res) {
     const codigo = String(entrada.codigo || '');
     if (!CODIGO.test(codigo)) return res.status(400).json({ error: 'Código inválido.' });
     const etapa = ETAPAS.includes(entrada.etapa) ? entrada.etapa : null;
@@ -49,6 +50,13 @@ async function registrar(admin, db, entrada, res) {
     const atual = await ref.get();
     const novo = !atual.exists;
     if (!novo && agora - (atual.data().criadoEm || 0) > 3 * 864e5) return res.status(409).json({ error: 'Pedido antigo.' });
+
+    // Pedido novo: no máximo 10 por hora do mesmo endereço. Sem isso, alguém
+    // podia criar centenas de pedidos falsos e lotar o celular de avisos.
+    // (O cliente de verdade não é afetado: o pedido segue pelo WhatsApp.)
+    if (novo && !(await dentroDoLimite(db, req, 'pedido', 10, 3600 * 1000))) {
+        return res.status(429).json({ error: 'Muitos pedidos em pouco tempo. Chame a gente no WhatsApp.' });
+    }
 
     const dados = {
         itens,
@@ -124,7 +132,7 @@ module.exports = async function handler(req, res) {
         const db = admin.firestore();
         const corpo = typeof req.body === 'string' ? safeJson(req.body) : (req.body || {});
 
-        if (corpo.acao === 'registrar') return registrar(admin, db, corpo.pedido || {}, res);
+        if (corpo.acao === 'registrar') return registrar(admin, db, corpo.pedido || {}, req, res);
 
         await exigirAdmin(admin, corpo.idToken);
 

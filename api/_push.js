@@ -75,14 +75,22 @@ async function lerPreferencias(db) {
     }
 }
 
-/** Aceita o cabeçalho que a própria Vercel manda no cron e os formatos antigos. */
+/**
+ * Aceita o cabeçalho que a própria Vercel manda no cron. O segredo na URL
+ * (?secret=) não é mais aceito: endereço fica gravado em logs e históricos.
+ */
 function autorizadoComoCron(req) {
     const segredo = process.env.CRON_SECRET;
     if (!segredo) return false;
     const auth = req.headers.authorization || '';
-    return auth === 'Bearer ' + segredo
-        || req.headers['x-cron-secret'] === segredo
-        || (req.query && req.query.secret === segredo);
+    return iguais(auth, 'Bearer ' + segredo) || iguais(req.headers['x-cron-secret'] || '', segredo);
+}
+
+/** Compara sem vazar, pelo tempo de resposta, quantos caracteres batem. */
+function iguais(a, b) {
+    const x = Buffer.from(String(a));
+    const y = Buffer.from(String(b));
+    return x.length === y.length && require('crypto').timingSafeEqual(x, y);
 }
 
 const NOMES_ORIGEM = {

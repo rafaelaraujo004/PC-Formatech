@@ -354,48 +354,121 @@
 
     // ── Regras Firebase (copiar para colar no console) ───────────────────────
 
-    // O e-mail do dono muda de instalação para instalação. Este JS lê o
-    // e-mail autenticado agora e cola no bloco de regras copiado.
+    // O texto é o mesmo do arquivo firestore.rules (mantenha os dois iguais);
+    // só o e-mail do administrador vem de quem está logado agora.
     function regrasFirebasePara(email) {
         return `rules_version = '2';
+
+// Regras do Firestore da PC Formatech.
+//
+// Como aplicar: Firebase Console → Firestore Database → Regras → colar este
+// arquivo inteiro → Publicar. (O botão "Copiar regras corrigidas", na aba
+// Visitas do painel, copia este mesmo texto com o e-mail de quem está logado.)
+//
+// O servidor (pasta api/) usa a credencial de administrador do Firebase, que
+// não passa por estas regras: pedidos, loja, anúncios, publicações, biometria
+// e inscrições de notificação são gravados só por ele.
+
 service cloud.firestore {
   match /databases/{database}/documents {
+
     function isAdmin() {
-      return request.auth != null && request.auth.token.email == '${email}';
+      return request.auth != null
+        && request.auth.token.email == '${email}';
     }
 
-    // Coleções administradas
-    match /clients/{id}          { allow read, write: if isAdmin(); }
-    match /budgets/{id}          { allow read, write: if isAdmin(); }
-    match /products/{id}         { allow read, write: if isAdmin(); }
-    match /services/{id}         { allow read, write: if isAdmin(); }
-    match /data/{id}             { allow read, write: if isAdmin(); }
-    match /pushSubscriptions/{id}{ allow read, write: if isAdmin(); }
-    match /notifyState/{id}      { allow read, write: if isAdmin(); }
-    match /hero_slides/{id}      { allow read: if true;  allow write: if isAdmin(); }
-    match /siteSettings/{id}     { allow read: if true;  allow write: if isAdmin(); }
+    // ── Dados do painel (clientes, orçamentos, produtos, serviços) ─────────
+    match /data/{id}              { allow read, write: if isAdmin(); }
+    match /clients/{id}           { allow read, write: if isAdmin(); }
+    match /budgets/{id}           { allow read, write: if isAdmin(); }
+    match /products/{id}          { allow read, write: if isAdmin(); }
+    match /services/{id}          { allow read, write: if isAdmin(); }
+    match /pushSubscriptions/{id} { allow read, write: if isAdmin(); }
+    match /notifyState/{id}       { allow read, write: if isAdmin(); }
 
-    // Presença — leitura só admin, escrita pública validada
-    function shapePresenca() {
-      let d = request.resource.data;
-      return d.keys().hasAll(['sessionId','lastSeenClient'])
-        && d.sessionId is string && d.sessionId.size() <= 64
+    // ── Públicos para leitura (tema do site e slides) ──────────────────────
+    match /siteSettings/{id}      { allow read: if true; allow write: if isAdmin(); }
+    match /hero_slides/{id}       { allow read: if true; allow write: if isAdmin(); }
+
+    // ── Presença dos visitantes (aba Tempo Real e Visitas) ─────────────────
+    // Qualquer visitante grava a própria visita, mas só com os campos que o
+    // site manda, em tamanhos razoáveis, e no documento da própria sessão.
+    // Só o administrador lê e apaga (antes qualquer um podia apagar o
+    // histórico de visitas).
+
+    function texto(d, campo, max) {
+      return !(campo in d) || (d[campo] is string && d[campo].size() <= max);
+    }
+
+    function numero(d, campo) {
+      return !(campo in d) || d[campo] is number;
+    }
+
+    function lista(d, campo) {
+      return !(campo in d) || (d[campo] is list && d[campo].size() <= 20);
+    }
+
+    function sessaoValida(d) {
+      return d.sessionId is string
+        && d.sessionId.matches('^sess_[0-9]{10,16}_[a-z0-9]{1,12}$')
         && d.lastSeenClient is number;
     }
-    match /presence/{id} {
-      allow read:   if isAdmin();
-      allow create: if shapePresenca();
-      allow update: if shapePresenca();
-      allow delete: if true;
-    }
-    match /presenceDaily/{id} {
-      allow read:   if isAdmin();
-      allow create: if shapePresenca();
-      allow update: if shapePresenca();
-      allow delete: if true;
+
+    function camposComuns(d) {
+      return texto(d, 'visitorId', 16)
+        && texto(d, 'page', 200)
+        && texto(d, 'pagina', 200)
+        && (!('dispositivo' in d) || d.dispositivo in ['desktop', 'mobile', 'tablet'])
+        && texto(d, 'origem', 40)
+        && numero(d, 'entrouClient')
+        && (!('lastSeen' in d) || d.lastSeen is timestamp)
+        && (!('avisado' in d) || d.avisado is bool);
     }
 
-    // Tudo o mais fica proibido
+    match /presence/{sessao} {
+      function presencaValida() {
+        let d = request.resource.data;
+        return d.keys().hasOnly([
+            'sessionId', 'visitorId', 'visitorLabel', 'page', 'pagina', 'pageTitle',
+            'dispositivo', 'idioma', 'timezone', 'referrer', 'origem', 'status',
+            'entrouClient', 'entrou', 'lastSeen', 'lastSeenClient', 'avisado'
+          ])
+          && sessaoValida(d)
+          && d.sessionId == sessao
+          && camposComuns(d)
+          && texto(d, 'visitorLabel', 40)
+          && texto(d, 'pageTitle', 160)
+          && texto(d, 'idioma', 40)
+          && texto(d, 'timezone', 64)
+          && texto(d, 'referrer', 220)
+          && (!('status' in d) || d.status in ['online', 'away', 'offline'])
+          && (!('entrou' in d) || d.entrou is timestamp);
+      }
+      allow read, delete: if isAdmin();
+      allow create, update: if presencaValida();
+    }
+
+    match /presenceDaily/{registro} {
+      function visitaDoDiaValida() {
+        let d = request.resource.data;
+        return d.keys().hasOnly([
+            'sessionId', 'dayKey', 'visitorId', 'page', 'pagina', 'dispositivo',
+            'origem', 'entrouClient', 'lastSeen', 'lastSeenClient', 'avisado',
+            'servicos', 'buscas', 'acoes'
+          ])
+          && sessaoValida(d)
+          && d.dayKey is string && d.dayKey.matches('^[0-9]{8}$')
+          && registro == d.sessionId + '_' + d.dayKey
+          && camposComuns(d)
+          && lista(d, 'servicos')
+          && lista(d, 'buscas')
+          && lista(d, 'acoes');
+      }
+      allow read, delete: if isAdmin();
+      allow create, update: if visitaDoDiaValida();
+    }
+
+    // ── Todo o resto: fechado ───────────────────────────────────────────────
     match /{document=**} { allow read, write: if false; }
   }
 }`;
