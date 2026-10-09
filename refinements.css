@@ -3309,3 +3309,86 @@ html[data-theme='dark'] #depoimentos .depo-zap-resultado { background: #111b21; 
         scroll-snap-align: center;
     }
 }
+
+
+/* ── 31 · "Site resumido" no cabeçalho ──────────────────────────────────────
+   Volta para a página inicial (/), onde tudo aparece de forma mais simples.
+   Fica no canto direito do cabeçalho (o botão do tema fica no esquerdo) e
+   herda a cor do texto do cabeçalho, que muda conforme o tema. */
+
+.header .link-resumido {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.45rem 0.95rem 0.45rem 0.75rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, currentColor 14%, transparent);
+    border: 1px solid color-mix(in srgb, currentColor 38%, transparent);
+    /* Mesma cor dos links do menu (calculada pelo tema para contrastar com o
+       fundo do cabeçalho). !important: theme-system.css força color: inherit
+       em tudo dentro do cabeçalho. */
+    color: var(--pcft-header-text, rgba(255, 255, 255, 0.95)) !important;
+    font-size: 0.85rem;
+    font-weight: 700;
+    line-height: 1.1;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.header .link-resumido:hover,
+.header .link-resumido:focus-visible {
+    background: color-mix(in srgb, currentColor 24%, transparent);
+    border-color: currentColor;
+}
+
+.header .link-resumido svg {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Celular: compacto, em duas linhas, na altura do botão do tema. */
+@media (max-width: 600px) {
+    .header .link-resumido {
+        top: calc(0.6rem + env(safe-area-inset-top));
+        right: 0.5rem;
+        height: 38px;
+        gap: 0.3rem;
+        padding: 0 0.5rem 0 0.4rem;
+        border-radius: 12px;
+        font-size: 0.62rem;
+    }
+
+    /* Sem ícone: só o texto em duas linhas, para caber ao lado da marca. */
+    .header .link-resumido svg { display: none; }
+    .header .link-resumido { padding: 0 0.45rem; }
+    .header .link-resumido-texto { text-align: center; }
+    .header .link-resumido-texto span { display: block; }
+}
+
+/* Telas muito estreitas: só o ícone (o nome fica para leitores de tela). */
+@media (max-width: 340px) {
+    .header .link-resumido { width: 38px; padding: 0; justify-content: center; }
+    .header .link-resumido svg { display: block; width: 18px; height: 18px; }
+    .header .link-resumido-texto {
+        position: absolute; width: 1px; height: 1px; overflow: hidden;
+        clip: rect(0 0 0 0); white-space: nowrap;
+    }
+}
+
+/* Celulares bem estreitos (320px): o menu de 5 itens passava 30px da tela e
+   cortava o "Agendar". Letra e espaçamento um pouco menores só aqui. */
+@media (max-width: 340px) {
+    .nav-links li a { font-size: 0.75rem; padding-inline: 0.28rem; }
+    .nav-links li .nav-cta { padding-inline: 0.4rem; }
+}
