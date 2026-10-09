@@ -3430,3 +3430,26 @@ html[data-theme='dark'] #depoimentos .depo-zap-resultado { background: #111b21; 
 
     .about-foto img { aspect-ratio: 4 / 5; object-position: 50% 50%; }
 }
+
+
+/* ── 33 · "Fale com a gente": três cartões iguais ───────────────────────────
+   O de Canaã dos Carajás herdava de styles2.css uma margem de 16px no topo
+   (ficava mais baixo e menor que os outros), sem a sombra dos vizinhos e com
+   o título em preto. Agora os três têm o mesmo tamanho, sombra e cores. */
+
+.social-proof .location-info {
+    margin: 0;
+    background: var(--premium-card, #fff);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.social-proof .location-info strong {
+    color: var(--primary-color);
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+.social-proof .location-info small { color: var(--primary-color); }
+
+html[data-theme='dark'] .social-proof .location-info strong { color: var(--theme-text); }
+html[data-theme='dark'] .social-proof .location-info small { color: var(--theme-muted); }

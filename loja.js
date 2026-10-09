@@ -220,7 +220,8 @@
 
     $('bt-detalhe-compartilhar').addEventListener('click', async () => {
         if (!abertoAgora) return;
-        const url = location.origin + location.pathname + '#' + encodeURIComponent(abertoAgora.id);
+        // Marca de indicação: quem abrir o link aparece no painel como Indicações · Produto da loja.
+        const url = location.origin + location.pathname + '?origem=indicacao-produto#' + encodeURIComponent(abertoAgora.id);
         const dados = { title: abertoAgora.nome + ' | Bird Tech', text: `${abertoAgora.nome} por ${moeda(abertoAgora.preco)} na Bird Tech`, url };
         const botao = $('bt-detalhe-compartilhar');
         registrar('acao', 'compartilhar:loja-' + abertoAgora.id);

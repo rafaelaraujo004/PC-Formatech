@@ -1272,36 +1272,75 @@
      * Guardado na sessão: ir da página de entrada ao site principal não
      * transforma a visita em "direto".
      */
+    /**
+     * De onde a visita veio, a partir do endereço (?origem=, utm_source, gclid,
+     * fbclid…), da página anterior (document.referrer) e do aplicativo que abriu
+     * o site (user agent). Não lê nada da página: dá para testar com qualquer
+     * combinação (window.PCFTOrigem.classificar).
+     *
+     * A ordem importa:
+     *  1. Link marcado (?origem=whatsapp-status) sempre vence: foi o dono que
+     *     disse de onde é.
+     *  2. App do Instagram ANTES do fbclid: o Instagram também põe fbclid nos
+     *     links da bio, e antes essas visitas entravam como Facebook.
+     *  3. Página anterior de rede social (inclui "android-app://com.whatsapp",
+     *     que o Chrome do Android informa quando o link vem de um app).
+     *  4. Marcas de anúncio (gclid = Google, fbclid/app do Facebook = Facebook).
+     *  5. Outros sites e buscadores; sem nada disso, "direto".
+     */
+    function classificarOrigem(busca, referencia, ua, hostAtual) {
+        ua = String(ua || '');
+        let params;
+        try { params = new URLSearchParams(busca || ''); } catch (e) { params = new URLSearchParams(''); }
+
+        const marcada = params.get('origem') || params.get('utm_source') || params.get('ref');
+        if (marcada) {
+            const limpo = String(marcada).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9_-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 30);
+            if (limpo) return 'link:' + limpo;
+        }
+
+        if (/Instagram/i.test(ua)) return 'instagram';
+
+        let host = '';
+        try {
+            host = new URL(referencia).hostname.toLowerCase().replace(/^www\./, '');
+        } catch (e) { host = ''; }
+        const casa = String(hostAtual || '').toLowerCase().replace(/^www\./, '');
+        // Navegação dentro do próprio site (ou entre www e pcformatech.vercel.app).
+        if (host && (host === casa || /(^|\.)pcformatech\.(com\.br|vercel\.app)$/.test(host))) host = '';
+
+        if (host) {
+            if (/instagram/.test(host)) return 'instagram';
+            if (/whatsapp|(^|\.)wa\.me$/.test(host)) return 'whatsapp';
+            if (/facebook|messenger|(^|\.)fb\.(com|me)$|com\.facebook\./.test(host)) return 'facebook';
+        }
+
+        if (params.get('gclid') || params.get('gbraid') || params.get('wbraid')) return 'google';
+        if (params.get('fbclid') || /FBAN|FBAV|FB_IAB/.test(ua)) return 'facebook';
+        if (/musical_ly|BytedanceWebview|TikTok/i.test(ua)) return 'tiktok';
+
+        if (host) {
+            if (/(^|\.)google\.|googlequicksearchbox/.test(host) && !/\.gm$|mail\./.test(host)) return 'google';
+            if (/bing\.|yahoo|duckduckgo|ecosia|brave\./.test(host)) return 'busca';
+            if (/youtube|youtu\.be/.test(host)) return 'youtube';
+            if (/tiktok/.test(host)) return 'tiktok';
+            if (/mail|outlook|com\.google\.android\.gm$/.test(host)) return 'email';
+            if (/telegram|org\.telegram/.test(host)) return 'telegram';
+            return 'site:' + host.slice(0, 30);
+        }
+        return 'direto';
+    }
+
+    window.PCFTOrigem = { classificar: classificarOrigem };
+
     function detectarOrigem() {
         const salva = safeGet(sessionStorage, 'pcft_origem');
         if (salva) return salva;
 
         let origem = 'direto';
         try {
-            const params = new URLSearchParams(window.location.search);
-            const marcada = params.get('origem') || params.get('utm_source') || params.get('ref');
-            const ua = navigator.userAgent || '';
-            if (marcada) {
-                origem = 'link:' + marcada.toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 30);
-            } else if (params.get('gclid')) {
-                origem = 'google';
-            } else if (params.get('fbclid') || /FBAN|FBAV/.test(ua)) {
-                origem = 'facebook';
-            } else if (/Instagram/.test(ua)) {
-                origem = 'instagram';
-            } else if (document.referrer) {
-                const host = new URL(document.referrer).hostname.replace(/^www\./, '');
-                if (host && host !== window.location.hostname.replace(/^www\./, '')) {
-                    if (/whatsapp|wa\.me/.test(host)) origem = 'whatsapp';
-                    else if (/instagram/.test(host)) origem = 'instagram';
-                    else if (/facebook|fb\.com|fb\.me/.test(host)) origem = 'facebook';
-                    else if (/google\./.test(host)) origem = 'google';
-                    else if (/bing\.|yahoo|duckduckgo/.test(host)) origem = 'busca';
-                    else if (/youtube|youtu\.be/.test(host)) origem = 'youtube';
-                    else if (/tiktok/.test(host)) origem = 'tiktok';
-                    else origem = 'site:' + host.slice(0, 30);
-                }
-            }
+            origem = classificarOrigem(window.location.search, document.referrer, navigator.userAgent || '', window.location.hostname);
         } catch (e) { /* fica "direto" */ }
 
         safeSet(sessionStorage, 'pcft_origem', origem);

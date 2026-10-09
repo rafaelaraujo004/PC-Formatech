@@ -100,10 +100,10 @@
     // Mensagem que abre no WhatsApp, por serviço, quando a pessoa já escreveu algo.
     const ASSUNTO = {
         formatacao: 'formatação do computador',
-        manutencao: 'computador lento / manutenção',
+        manutencao: 'computador lento',
         seguranca: 'vírus e segurança',
         programas: 'instalação de programas',
-        drivers: 'drivers (som, Wi-Fi, vídeo)',
+        drivers: 'som, Wi-Fi ou vídeo sem funcionar',
         backup: 'backup de arquivos',
         remoto: 'atendimento remoto',
         ajuda: 'um problema no computador'

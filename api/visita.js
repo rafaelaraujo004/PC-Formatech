@@ -13,6 +13,18 @@ const JANELA_ONLINE_MS = 70 * 1000;       // mesmo critério do Dashboard Tempo 
 const INTERVALO_MINIMO_MS = 45 * 1000;    // no máximo uma notificação a cada 45 s
 const PRESENCA_RECENTE_MS = 3 * 60 * 1000;
 
+/** Títulos das artes (publicações e produtos da loja) pelo código do link. */
+async function registrarNomesDasArtes(db) {
+    try {
+        const Resumo = require('../resumo-visitas.js');
+        const [pubs, prods] = await Promise.all([db.collection('publicacoes').get(), db.collection('lojaProdutos').get()]);
+        const mapa = {};
+        pubs.docs.forEach((d) => { mapa[Resumo.codigoDaArte(d.id)] = d.data().titulo; });
+        prods.docs.forEach((d) => { mapa[Resumo.codigoDaArte('loja-' + d.id)] = d.data().nome; });
+        Resumo.registrarArtes(mapa);
+    } catch (e) { /* sem os títulos: fica o código */ }
+}
+
 module.exports = async function handler(req, res) {
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
@@ -61,7 +73,10 @@ module.exports = async function handler(req, res) {
         const online = await contarOnline(db, agora);
         const p = decisao.presenca;
         const aparelho = NOMES_DISPOSITIVO[p.dispositivo] || 'computador';
-        const origem = nomeDaOrigem(p.origem || corpo.origem);
+        const origemBruta = String(p.origem || corpo.origem || '');
+        // Link de uma arte da Divulgação: troca o código pelo título da arte.
+        if (/^link:[a-z]+-arte-[a-z0-9]{6}/.test(origemBruta)) await registrarNomesDasArtes(db);
+        const origem = nomeDaOrigem(origemBruta);
         const outros = decisao.acumulado - 1;
 
         const titulo = outros > 0

@@ -66,6 +66,25 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
         
+        // "O computador liga?" = Não: aviso de que peça não é com a gente.
+        const pcLigaSelect = document.getElementById('pc-liga');
+        const avisoNaoLiga = document.getElementById('aviso-nao-liga');
+        if (pcLigaSelect && avisoNaoLiga) {
+            pcLigaSelect.addEventListener('change', () => {
+                avisoNaoLiga.hidden = pcLigaSelect.value !== 'Não';
+            });
+        }
+
+        // Ao limpar o formulário, some também o que dependia das respostas.
+        formatacaoForm.addEventListener('reset', () => {
+            if (avisoNaoLiga) avisoNaoLiga.hidden = true;
+            const enviado = document.getElementById('form-enviado');
+            if (enviado) enviado.hidden = true;
+            problemaOutroGrupo.style.display = 'none';
+            programasOutrosGrupo.style.display = 'none';
+            backupDetalhes.style.display = 'none';
+        });
+
         // Máscara para telefone
         const clienteTelefone = document.getElementById('cliente-telefone');
         if (clienteTelefone) {
@@ -143,8 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const possuiSenhas = document.getElementById('possui-senhas')?.value || '';
             const expectativasCheckboxes = document.querySelectorAll('input[name="expectativa[]"]:checked');
             const expectativas = Array.from(expectativasCheckboxes).map(cb => cb.value);
-            const autorizaAvaliacao = document.querySelector('input[name="autoriza-avaliacao"]:checked')?.value || '';
-            
+
             // Autorização final
             const autorizacaoFinal = document.getElementById('autorizacao-final')?.checked || false;
             
@@ -217,7 +235,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     message += `│   • ${e}\n`;
                 });
             }
-            message += `│ 🔧 Avaliação Técnica: ${autorizaAvaliacao}\n`;
             message += `└─────────────────────────\n\n`;
             
             message += `✅ *AUTORIZAÇÃO CONFIRMADA*\n`;
@@ -235,138 +252,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const whatsappURL = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodedMessage}`;
             
             
-            // Abrir WhatsApp IMEDIATAMENTE
+            // Abre o WhatsApp com as respostas e mostra a confirmação na página.
+            const enviado = document.getElementById('form-enviado');
+            const linkEnviado = document.getElementById('form-enviado-link');
+            if (linkEnviado) linkEnviado.href = whatsappURL;
+            if (enviado) {
+                enviado.hidden = false;
+                enviado.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
             const whatsappWindow = window.open(whatsappURL, '_blank');
-            
             if (!whatsappWindow) {
-                // Se o popup foi bloqueado, tentar redirecionamento direto
-                console.warn('Popup bloqueado, tentando redirecionamento...');
+                // Janela bloqueada pelo navegador: vai direto para o WhatsApp.
                 window.location.href = whatsappURL;
             }
-            
-            // ====== CADASTRO AUTOMÁTICO NO SISTEMA (APÓS ABRIR WHATSAPP) ======
-            
-            try {
-                // 1. Cadastrar cliente automaticamente
-                const clientes = JSON.parse(localStorage.getItem('pcformatech_clients') || '[]');
-                
-                // Verificar se cliente já existe (por telefone)
-                const clienteExistente = clientes.find(c => c.phone === telefone);
-                
-                let clienteId;
-            
-                if (!clienteExistente) {
-                    // Criar novo cliente
-                    const novoCliente = {
-                        id: Date.now(),
-                        name: nome,
-                        phone: telefone,
-                        email: '',
-                        address: cidade,
-                        createdAt: new Date().toISOString()
-                    };
-                    
-                    clientes.push(novoCliente);
-                    localStorage.setItem('pcformatech_clients', JSON.stringify(clientes));
-                    clienteId = novoCliente.id;
-                } else {
-                    clienteId = clienteExistente.id;
-                }
-            
-            // 2. Criar orçamento/serviço automaticamente
-            const budgets = JSON.parse(localStorage.getItem('pcformatech_budgets') || '[]');
-            
-            // Função para gerar número sequencial do orçamento
-            function getNextBudgetNumber() {
-                if (budgets.length === 0) {
-                    const now = new Date();
-                    const year = now.getFullYear().toString().slice(-2);
-                    return `0001-${year}`;
-                }
-                
-                const lastBudget = budgets[budgets.length - 1];
-                const lastNumber = parseInt(lastBudget.budgetNumber.split('-')[0]);
-                const nextNumber = (lastNumber + 1).toString().padStart(4, '0');
-                const now = new Date();
-                const year = now.getFullYear().toString().slice(-2);
-                
-                return `${nextNumber}-${year}`;
-            }
-            
-            // Preparar serviços para o orçamento
-            const servicosParaOrcamento = [];
-            
-            // Adicionar formatação como serviço principal
-            servicosParaOrcamento.push({
-                description: 'Formatação de Computador',
-                quantity: 1,
-                unitPrice: 0, // Preço será definido no admin
-                total: 0
-            });
-            
-            // Adicionar outros problemas como serviços
-            if (problemas.length > 0) {
-                problemas.forEach(prob => {
-                    servicosParaOrcamento.push({
-                        description: `Reparo: ${prob}`,
-                        quantity: 1,
-                        unitPrice: 0,
-                        total: 0
-                    });
-                });
-            }
-            
-            // Calcular data de vencimento da garantia (90 dias)
-            const dataAtual = new Date();
-            const dataGarantia = new Date(dataAtual);
-            dataGarantia.setDate(dataGarantia.getDate() + 90);
-            
-            const diaGarantia = String(dataGarantia.getDate()).padStart(2, '0');
-            const mesGarantia = String(dataGarantia.getMonth() + 1).padStart(2, '0');
-            const anoGarantia = dataGarantia.getFullYear();
-            const dataGarantiaFormatada = `${diaGarantia}/${mesGarantia}/${anoGarantia}`;
-            
-            // Criar orçamento
-            const novoOrcamento = {
-                id: Date.now(),
-                budgetNumber: getNextBudgetNumber(),
-                clientId: clienteId,
-                clientName: nome,
-                date: new Date().toISOString().split('T')[0],
-                services: servicosParaOrcamento,
-                products: [],
-                defect: problemas.join(', ') + (problemaOutro ? ` - ${problemaOutro}` : ''),
-                diagnosis: 'Aguardando avaliação técnica',
-                solution: programas.length > 0 ? `Instalação: ${programas.join(', ')}` : '',
-                warranty: `90 dias para formatação (válido até ${dataGarantiaFormatada})`,
-                observations: `Backup: ${temArquivos}${temArquivos === 'Sim' ? ` (${tiposArquivo.join(', ')})` : ''}\nExpectativas: ${expectativas.join(', ')}\nPossui senhas: ${possuiSenhas}`,
-                total: 0,
-                status: 'Pendente',
-                createdAt: new Date().toISOString()
-            };
-            
-            budgets.push(novoOrcamento);
-            localStorage.setItem('pcformatech_budgets', JSON.stringify(budgets));
-            
-                // Mostrar mensagem de sucesso
-                alert(String.fromCodePoint(0x2705) + ' Formulário preenchido com sucesso!\n\n' + 
-                      String.fromCodePoint(0x1F4DD) + ' Cliente cadastrado no sistema!\n' +
-                      String.fromCodePoint(0x1F4CB) + ' Orçamento Nº ' + novoOrcamento.budgetNumber + ' criado!');
-                      
-            } catch (cadastroError) {
-                console.error('Erro ao cadastrar no sistema:', cadastroError);
-                // Não interrompe o fluxo - WhatsApp já foi aberto
-            }
-            
-            // ====== FIM DO CADASTRO AUTOMÁTICO ======
-            
-            // Limpar formulário após pequeno delay
-            setTimeout(() => {
-                formatacaoForm.reset();
-                problemaOutroGrupo.style.display = 'none';
-                programasOutrosGrupo.style.display = 'none';
-                backupDetalhes.style.display = 'none';
-            }, 1000);
         });
     }
 });

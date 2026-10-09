@@ -1651,9 +1651,9 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="firebase-config.secure.js"></script>
     <link rel="stylesheet" href="theme-system.css?v=7">
-    <script src="theme-system.js?v=6"></script>
+    <script src="theme-system.js?v=7"></script>
     <!-- Camada de refinamento: por ultimo, para vencer o <style> embutido e o theme-system.css -->
-    <link rel="stylesheet" href="admin-refinements.css?v=11">
+    <link rel="stylesheet" href="admin-refinements.css?v=12">
     <link rel="stylesheet" href="anuncios.css?v=4">
     <script src="auth-system.secure.js" defer></script>
 </head>
@@ -2618,6 +2618,14 @@
                 <button type="button" class="av-botao" id="dv-nova"><i class="fas fa-plus" aria-hidden="true"></i> Nova arte</button>
             </div>
 
+            <div class="dv-canal" role="radiogroup" aria-label="Onde vai postar">
+                <span class="dv-canal-rotulo"><i class="fas fa-route" aria-hidden="true"></i> Vou postar no</span>
+                <button type="button" role="radio" data-dv-canal="whatsapp" style="--dv-cor:#25D366"><i class="fab fa-whatsapp" aria-hidden="true"></i> WhatsApp</button>
+                <button type="button" role="radio" data-dv-canal="instagram" style="--dv-cor:#E1306C"><i class="fab fa-instagram" aria-hidden="true"></i> Instagram</button>
+                <button type="button" role="radio" data-dv-canal="facebook" style="--dv-cor:#1877F2"><i class="fab fa-facebook" aria-hidden="true"></i> Facebook</button>
+                <small class="dv-canal-dica">O link de cada arte sai marcado: em Visitas você vê qual arte e qual rede trouxe cada pessoa.</small>
+            </div>
+
             <div class="dv-filtros" role="group" aria-label="Filtrar artes">
                 <button type="button" class="is-ativo" data-dv-filtro="todas" aria-pressed="true">Todas</button>
                 <button type="button" data-dv-filtro="pcformatech" aria-pressed="false">PC Formatech</button>
@@ -2939,7 +2947,15 @@
                 </div>
                 <div class="rt-card av-cartao">
                     <h3 class="av-cartao-titulo"><i class="fas fa-route" style="color:#3F51B5;"></i> De onde vieram</h3>
+                    <div class="av-canais" id="av-canais" aria-label="Visitas por canal"></div>
+                    <p class="av-subtitulo">Detalhe</p>
                     <ol class="av-barras" id="av-origens"></ol>
+                    <p class="av-dica" id="av-dica-direto" hidden><i class="fas fa-lightbulb"></i> Muita gente em "Acesso direto"? Quase sempre é WhatsApp: no iPhone ele não diz de onde a pessoa veio. Use os links rastreáveis (abaixo) e as artes da Divulgação, que já saem marcadas.</p>
+                </div>
+                <div class="rt-card av-cartao" id="av-artes-cartao" hidden>
+                    <h3 class="av-cartao-titulo"><i class="fas fa-images" style="color:#E91E63;"></i> Artes que trouxeram visitas</h3>
+                    <p class="av-texto">Quem entrou pelo link de uma arte da Divulgação, por rede.</p>
+                    <ol class="av-artes" id="av-artes"></ol>
                 </div>
                 <div class="rt-card av-cartao">
                     <h3 class="av-cartao-titulo"><i class="fas fa-search" style="color:#009688;"></i> O que escreveram na busca</h3>
@@ -2996,25 +3012,54 @@
                     <p class="av-status" id="bio-status" role="status" aria-live="polite"></p>
                 </div>
 
-                <div class="rt-card av-cartao">
+                <div class="rt-card av-cartao lr-cartao" id="lr-cartao">
                     <h3 class="av-cartao-titulo"><i class="fas fa-link"></i> Links rastreáveis</h3>
-                    <p class="av-texto">Crie um link para cada lugar onde você divulga. Quem entrar por ele aparece em "De onde vieram" com esse nome — assim você sabe quantas pessoas clicaram em cada link.</p>
-                    <div class="av-link-form">
-                        <input type="text" id="av-link-nome" maxlength="30" placeholder="Ex.: status-whatsapp" autocomplete="off" aria-label="Nome do link">
-                        <button type="button" class="av-botao" id="av-link-gerar">Criar link</button>
+                    <p class="av-texto">Monte o link de cada lugar onde você divulga. Quem entrar por ele aparece em "De onde vieram" com o nome do lugar, e a lista lá embaixo mostra quantas pessoas cada link trouxe.</p>
+
+                    <div class="lr-montar">
+                    <p class="lr-passo"><span>1</span> Onde vai divulgar?</p>
+                    <div class="lr-canais" id="lr-canais" role="radiogroup" aria-label="Canal"></div>
+
+                    <p class="lr-passo"><span>2</span> Em que lugar?</p>
+                    <div class="lr-lugares" id="lr-lugares" role="radiogroup" aria-label="Lugar"></div>
+
+                    <p class="lr-passo"><span>3</span> Para qual página?</p>
+                    <select id="lr-pagina" class="lr-select" aria-label="Página de destino"></select>
+
+                    <details class="lr-extra">
+                        <summary>Dar um nome de campanha (opcional)</summary>
+                        <input type="text" id="lr-campanha" maxlength="30" placeholder="Ex.: promo outubro" autocomplete="off" aria-label="Nome da campanha">
+                        <small id="lr-campanha-conta"></small>
+                    </details>
                     </div>
-                    <div class="av-link-sugestoes">
-                        <button type="button" data-link="status-whatsapp">status-whatsapp</button>
-                        <button type="button" data-link="bio-instagram">bio-instagram</button>
-                        <button type="button" data-link="grupo-whatsapp">grupo-whatsapp</button>
-                        <button type="button" data-link="panfleto">panfleto</button>
-                    </div>
-                    <div class="av-link-resultado" id="av-link-resultado" hidden>
-                        <code id="av-link-url"></code>
-                        <div class="av-acoes">
-                            <button type="button" class="av-botao" id="av-link-copiar"><i class="fas fa-copy"></i> Copiar</button>
-                            <a class="av-botao av-botao-secundario" id="av-link-whatsapp" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> Enviar pelo WhatsApp</a>
+
+                    <div class="lr-saida">
+                    <div class="lr-resultado">
+                        <div class="lr-previa">
+                            <span class="lr-previa-icone" id="lr-previa-icone" aria-hidden="true"></span>
+                            <div>
+                                <small>Vai aparecer em "De onde vieram" como</small>
+                                <strong id="lr-nome"></strong>
+                            </div>
                         </div>
+                        <code class="lr-url" id="lr-url"></code>
+                        <div class="lr-botoes">
+                            <button type="button" class="av-botao" id="lr-copiar"><i class="fas fa-copy" aria-hidden="true"></i> Copiar link</button>
+                            <button type="button" class="av-botao av-botao-secundario" id="lr-compartilhar"><i class="fas fa-share-alt" aria-hidden="true"></i> Compartilhar</button>
+                            <button type="button" class="av-botao av-botao-secundario" id="lr-ver-qr"><i class="fas fa-qrcode" aria-hidden="true"></i> QR code</button>
+                            <button type="button" class="av-botao av-botao-secundario" id="lr-salvar"><i class="fas fa-bookmark" aria-hidden="true"></i> Salvar na lista</button>
+                        </div>
+                        <div class="lr-qr" id="lr-qr" hidden>
+                            <canvas id="lr-qr-canvas" role="img" aria-label="QR code do link"></canvas>
+                            <a class="av-botao" id="lr-qr-baixar"><i class="fas fa-download" aria-hidden="true"></i> Baixar QR para imprimir</a>
+                        </div>
+                        <p class="av-status" id="lr-aviso" role="status" aria-live="polite"></p>
+                    </div>
+
+                    <div class="lr-salvos">
+                        <h4>Seus links <small>· visitas <span id="lr-salvos-periodo">hoje</span></small></h4>
+                        <ul class="lr-lista" id="lr-lista"></ul>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -3110,15 +3155,17 @@
     </div>
 
         <script src="admin-app.js?v=7"></script>
-        <script src="resumo-visitas.js?v=3"></script>
-        <script src="admin-visitas.js?v=4"></script>
+        <script src="resumo-visitas.js?v=4"></script>
+        <script src="admin-visitas.js?v=5"></script>
+        <script src="vendor/qrcode-generator.js"></script>
+        <script src="admin-links.js?v=1"></script>
         <script src="https://cdn.jsdelivr.net/npm/@simplewebauthn/browser@14.0.0/dist/bundle/index.umd.min.js" integrity="sha384-06g944bCm8L/wG3i0Q8PdB8jccE4GdpHdNCa1tJY8eMqoP3GIHGJdL6B5lD5OMGD" crossorigin="anonymous"></script>
         <script src="admin-biometria.js?v=2"></script>
         <script src="loja-fundo.js?v=1"></script>
         <script src="admin-loja.js?v=1"></script>
         <script src="anuncios.js?v=4"></script>
         <script src="admin-anuncios.js?v=2"></script>
-        <script src="admin-divulgacao.js?v=3"></script>
+        <script src="admin-divulgacao.js?v=4"></script>
         <script src="admin-pedidos.js?v=1"></script>
 </body>
 </html>
