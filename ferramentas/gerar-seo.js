@@ -21,7 +21,7 @@ const EMPRESA = {
     '@type': 'LocalBusiness',
     '@id': SITE + '/#empresa',
     name: 'PC Formatech',
-    description: 'Assistência técnica de computadores e notebooks: formatação, limpeza, otimização, remoção de vírus, backup e suporte remoto.',
+    description: 'Assistência técnica de computadores e notebooks (só programas, sem conserto de peças): formatação, manutenção, limpeza e otimização, remoção de vírus, backup e suporte remoto.',
     url: SITE + '/site.html',
     image: SITE + '/images/og/pc-formatech.jpg',
     logo: SITE + '/icon-512.png',
@@ -51,6 +51,26 @@ const SERVICOS = [
             ['Vou perder meus arquivos?', 'Não, se você pedir o backup. Ele é opcional: basta avisar que quer guardar fotos, documentos e outros arquivos antes da formatação.'],
             ['A formatação tem garantia?', 'Sim. São 30 dias de garantia e de suporte depois da formatação.'],
             ['Dá para formatar à distância?', 'Em muitos casos, sim, pelo atendimento remoto, que tem desconto. Fale pelo WhatsApp para saber se o seu caso permite.']
+        ]
+    },
+    {
+        // Página para quem busca "manutenção de computador": reúne o que a
+        // manutenção de programas inclui e deixa claro que não é de peças.
+        slug: 'manutencao-de-computador',
+        nome: 'Manutenção de computador',
+        titulo: `Manutenção de Computador e Notebook em ${CIDADE}`,
+        descricao: `Manutenção de computador e notebook em ${CIDADE}: limpeza do sistema, otimização, Windows e drivers atualizados e verificação de vírus. A partir de R$ 70.`,
+        icone: 'fa-tools',
+        preco: 70,
+        chamada: 'Manutenção de programas para o computador voltar a ficar rápido, seguro e atualizado, sem apagar seus arquivos. Trabalhamos só com a parte de software: sem abrir a máquina e sem trocar peças.',
+        inclui: ['Limpeza do sistema e de arquivos temporários', 'Otimização da inicialização e do Windows', 'Windows e drivers atualizados', 'Verificação de vírus e da proteção', 'Diagnóstico do sistema e do disco', 'Relatório do que foi feito'],
+        quando: ['Faz mais de um ano que o computador não passa por manutenção', 'Ficou lento, trava ou demora para ligar', 'O Windows mostra erros ou não termina as atualizações', 'Você vai usar o computador para trabalho ou estudo e precisa dele confiável'],
+        faq: [
+            ['O que é manutenção de computador?', 'É o cuidado com a parte de programas: limpeza, otimização, atualizações e verificação de vírus e de erros do sistema. Deixa o computador mais rápido e evita problemas maiores, como perder arquivos.'],
+            ['Vocês fazem manutenção de peças (hardware)?', 'Não. A PC Formatech trabalha só com programas (software). Conserto de peças, tela, placa ou limpeza interna não é com a gente; se o problema for de peça, você é avisado já no diagnóstico.'],
+            ['De quanto em quanto tempo fazer manutenção?', 'Uma vez por ano é um bom ritmo para a maioria dos computadores. Se o computador é usado o dia inteiro, para trabalho, vale a cada 6 meses.'],
+            ['A manutenção apaga meus arquivos?', 'Não. Seus programas e arquivos continuam no computador. Se o caso pedir formatação, você é avisado antes e decide.'],
+            ['Dá para fazer à distância?', 'Sim. A maior parte da manutenção pode ser feita pelo atendimento remoto, que tem 10% de desconto.']
         ]
     },
     {
@@ -318,7 +338,7 @@ function paginaServico(s) {
 function paginaIndice() {
     const url = SITE + '/servicos/';
     const titulo = `Serviços de Informática em ${CIDADE}`;
-    const descricao = `Formatação, limpeza e otimização, remoção de vírus, backup, instalação de programas e suporte remoto em ${CIDADE}, PA. Diagnóstico grátis pelo WhatsApp.`;
+    const descricao = `Formatação, manutenção, limpeza e otimização, remoção de vírus, backup, instalação de programas e suporte remoto em ${CIDADE}, PA. Diagnóstico grátis pelo WhatsApp.`;
     const dados = [
         EMPRESA,
         {
@@ -667,7 +687,7 @@ function paginaDica(d) {
             url,
             image: imagemPrevia('dica-' + d.slug),
             datePublished: d.publicado,
-            dateModified: d.publicado,
+            dateModified: d.atualizado || d.publicado,
             inLanguage: 'pt-BR',
             author: { '@id': EMPRESA['@id'] },
             publisher: { '@id': EMPRESA['@id'] },
@@ -744,7 +764,7 @@ function paginaDicas() {
         <section class="sv-hero">
             <nav class="sv-trilha" aria-label="Você está em"><a href="/site.html">Início</a> <span aria-hidden="true">/</span> <span aria-current="page">Dicas</span></nav>
             <h1>${esc(titulo)}</h1>
-            <p class="sv-hero-texto">Respostas rápidas para as dúvidas mais comuns sobre computador e notebook, de quem conserta todo dia.</p>
+            <p class="sv-hero-texto">Respostas rápidas para as dúvidas mais comuns sobre computador e notebook, de quem resolve isso todo dia.</p>
         </section>
 
         <div class="sv-conteudo">
@@ -765,6 +785,25 @@ function paginaDicas() {
 
 // ── sitemap.xml ───────────────────────────────────────────────────────────
 
+/** Arquivo de cada endereço do sitemap ("/servicos/x/" → servicos/x/index.html). */
+const arquivoDe = (u) => (u === '/' ? 'index.html' : u.endsWith('/') ? u.slice(1) + 'index.html' : u.slice(1));
+
+/**
+ * Data da última mudança de verdade de cada página. Se toda página "muda"
+ * todo dia, o Google passa a ignorar o lastmod; assim ele sabe quais
+ * páginas valem uma nova visita.
+ */
+function ultimaMudanca(rel, hoje) {
+    if (alterados.has(rel)) return hoje;
+    try {
+        const { execSync } = require('child_process');
+        if (execSync(`git status --porcelain -- "${rel}"`, { cwd: RAIZ }).toString().trim()) return hoje;
+        const data = execSync(`git log -1 --format=%cs -- "${rel}"`, { cwd: RAIZ }).toString().trim();
+        if (data) return data;
+    } catch (e) { /* fora do git: usa hoje */ }
+    return hoje;
+}
+
 function sitemap() {
     const hoje = new Date().toISOString().slice(0, 10);
     const urls = [
@@ -780,17 +819,23 @@ function sitemap() {
     ];
     return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls.map(([u, p]) => `    <url><loc>${SITE}${u}</loc><lastmod>${hoje}</lastmod><priority>${p}</priority></url>`).join('\n')}
+${urls.map(([u, p]) => `    <url><loc>${SITE}${u}</loc><lastmod>${ultimaMudanca(arquivoDe(u), hoje)}</lastmod><priority>${p}</priority></url>`).join('\n')}
 </urlset>
 `;
 }
 
 // ── Gravação ──────────────────────────────────────────────────────────────
 
+// Páginas cujo conteúdo mudou nesta geração (as iguais nem são regravadas).
+const alterados = new Set();
+
 function gravar(rel, conteudo) {
     const arq = path.join(RAIZ, rel);
     fs.mkdirSync(path.dirname(arq), { recursive: true });
+    const antes = fs.existsSync(arq) ? fs.readFileSync(arq, 'utf8').replace(/\r\n/g, '\n') : null;
+    if (antes === conteudo.replace(/\r\n/g, '\n')) return;
     fs.writeFileSync(arq, conteudo);
+    alterados.add(rel);
     console.log('gravado', rel);
 }
 

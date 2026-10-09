@@ -9,6 +9,120 @@
 
 module.exports = [
     {
+        slug: 'computador-nao-atualiza-para-windows-11',
+        titulo: 'Meu computador não atualiza para o Windows 11: e agora?',
+        descricao: 'O suporte do Windows 10 acabou. Veja por que o computador não atualiza para o Windows 11, como saber se ele é compatível e quais são as opções.',
+        resumo: 'Por que o Windows 11 não aparece, como verificar o seu computador e o que fazer com o Windows 10.',
+        publicado: '2026-10-09',
+        servicos: ['formatacao-de-computador', 'backup-de-dados', 'suporte-remoto'],
+        blocos: [
+            {
+                p: [
+                    'O Windows 10 deixou de receber suporte da Microsoft em 14 de outubro de 2025. O computador continua ligando e funcionando, mas sem atualizações de segurança ele fica cada vez mais exposto a vírus e golpes, principalmente quem usa banco e compras pela internet.',
+                    'Quem se inscreveu no programa de atualizações estendidas (ESU) para uso doméstico recebeu mais um ano de correções de segurança, até 13 de outubro de 2026. Depois disso, o Windows 10 fica sem nenhuma atualização.'
+                ]
+            },
+            {
+                h2: 'Por que o Windows 11 não aparece no meu computador',
+                p: ['O Windows 11 é gratuito para quem tem Windows 10, mas exige mais do computador. Os requisitos principais são:'],
+                lista: [
+                    'Processador compatível: em geral, Intel de 8ª geração ou mais novo, ou AMD Ryzen 2000 ou mais novo',
+                    'Pelo menos 4 GB de memória e 64 GB de espaço',
+                    'TPM 2.0, um chip de segurança que muitos computadores têm, mas vem desligado',
+                    'Inicialização segura (Secure Boot) ativada'
+                ]
+            },
+            {
+                h2: 'Como saber se o seu computador é compatível',
+                passos: [
+                    'Abra o Windows Update (Configurações › Atualização e Segurança) e veja se aparece a oferta do Windows 11.',
+                    'Se não aparecer, instale o aplicativo "Verificação de Integridade do PC", da própria Microsoft. Ele diz o que falta.',
+                    'Se o problema for só o TPM ou a inicialização segura, muitas vezes basta ativar uma opção na configuração do computador (BIOS) e o Windows 11 passa a ser liberado.'
+                ]
+            },
+            {
+                h2: 'E se o computador não for compatível?',
+                p: [
+                    'Existe forma de instalar o Windows 11 em alguns computadores fora dos requisitos, mas a própria Microsoft avisa que eles podem não receber atualizações. Por isso avaliamos caso a caso e explicamos os riscos antes.',
+                    'Se o processador for muito antigo, o caminho seguro costuma ser trocar de computador. Troca de peças não é com a gente, mas depois podemos instalar o Windows 11 e passar seus arquivos e programas para o computador novo.'
+                ]
+            },
+            {
+                h2: 'Antes de atualizar, guarde seus arquivos',
+                p: ['A atualização do Windows 10 para o 11 normalmente mantém arquivos e programas, mas qualquer falha no meio do caminho pode dar trabalho. Faça uma cópia das fotos e documentos antes, ou peça o backup junto com o serviço.']
+            }
+        ]
+    },
+    {
+        slug: 'quanto-tempo-demora-formatar-notebook',
+        titulo: 'Quanto tempo demora para formatar um notebook?',
+        descricao: 'Formatar um computador ou notebook leva normalmente de 2 a 4 horas. Veja o que influencia no tempo e como deixar tudo pronto para ser mais rápido.',
+        resumo: 'Quanto tempo leva a formatação e o que deixa ela mais rápida ou mais demorada.',
+        publicado: '2026-10-09',
+        servicos: ['formatacao-de-computador', 'backup-de-dados', 'instalacao-de-programas-e-drivers'],
+        blocos: [
+            {
+                p: ['Na PC Formatech, formatar um computador ou notebook leva normalmente de 2 a 4 horas. Em geral, dá para combinar a entrega no mesmo dia.']
+            },
+            {
+                h2: 'O que influencia no tempo',
+                lista: [
+                    'Quantidade de arquivos para copiar antes e devolver depois (o backup)',
+                    'Quantos programas precisam ser instalados, como Office e programas do seu trabalho',
+                    'As atualizações do Windows e dos drivers, que dependem da internet',
+                    'Se o computador tem HD ou SSD: com SSD tudo fica bem mais rápido'
+                ]
+            },
+            {
+                h2: 'Como deixar tudo mais rápido',
+                passos: [
+                    'Separe a lista dos programas que você usa e as senhas das contas (e-mail, Microsoft, Google).',
+                    'Diga quais pastas precisam ser guardadas: fotos, documentos, trabalhos.',
+                    'Se tiver programas pagos, deixe à mão as chaves ou o login de cada um.'
+                ]
+            },
+            {
+                h2: 'Dá para formatar à distância?',
+                p: ['Em muitos casos, sim, pelo atendimento remoto, que tem 10% de desconto. Você acompanha tudo pela tela e não precisa sair de casa. Pelo WhatsApp a gente confirma se o seu caso permite.']
+            }
+        ]
+    },
+    {
+        slug: 'formatar-computador-sem-perder-arquivos',
+        titulo: 'Como formatar o computador sem perder seus arquivos',
+        descricao: 'O que salvar antes de formatar (fotos, documentos, senhas, favoritos e programas), onde guardar e como funciona a formatação com backup.',
+        resumo: 'A lista do que guardar antes de formatar e onde deixar a cópia.',
+        publicado: '2026-10-09',
+        servicos: ['backup-de-dados', 'formatacao-de-computador'],
+        blocos: [
+            {
+                p: ['Formatar apaga tudo o que está no computador. Para não perder nada, o segredo é fazer a cópia (o backup) antes e conferir se ela abriu certinho.']
+            },
+            {
+                h2: 'O que guardar antes de formatar',
+                lista: [
+                    'Pastas Documentos, Área de Trabalho, Downloads, Imagens e Vídeos',
+                    'Senhas e favoritos do navegador: entre na sua conta do Google ou da Microsoft para sincronizar',
+                    'E-mails e contatos do Outlook, se você usa o programa no computador',
+                    'Arquivos de programas do trabalho, como sistemas de loja, planilhas e bancos de dados',
+                    'Chaves ou login dos programas pagos, como o Office'
+                ]
+            },
+            {
+                h2: 'Onde guardar a cópia',
+                lista: [
+                    'HD externo ou pendrive: rápido e fica com você',
+                    'Nuvem (Google Drive ou OneDrive): acessa de qualquer lugar, mas depende do espaço da conta',
+                    'O ideal é ter a cópia em dois lugares'
+                ]
+            },
+            {
+                h2: 'Formatação com backup',
+                p: ['Se preferir não se preocupar, peça o backup junto com a formatação (a partir de R$ 45,00). A gente copia seus arquivos, confere se estão abrindo, formata e devolve tudo no lugar, com os programas essenciais instalados. Seus arquivos não ficam guardados com a gente sem a sua autorização.']
+            }
+        ]
+    },
+    {
         slug: 'quanto-custa-formatar-computador',
         titulo: 'Quanto custa formatar um computador em Canaã dos Carajás?',
         descricao: 'Quanto custa formatar computador ou notebook em Canaã dos Carajás, o que está incluso, quanto tempo leva e quando vale mais a pena só limpar e otimizar.',
