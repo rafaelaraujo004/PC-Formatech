@@ -89,11 +89,23 @@
         el.classList.toggle('is-erro', Boolean(erro));
     }
 
+    /**
+     * O Firebase do painel só era iniciado pelo login com senha (auth-system,
+     * ao tocar em "Entrar"). Entrando direto pela biometria, ninguém o tinha
+     * iniciado e o login parava com "No Firebase App '[DEFAULT]'".
+     */
+    function garantirFirebase() {
+        if (!window.firebase || !firebase.apps) throw new Error('O Firebase não carregou. Recarregue a página e tente de novo.');
+        if (!firebase.apps.length && typeof window.initFirebase === 'function') window.initFirebase();
+        if (!firebase.apps.length) throw new Error('O Firebase não iniciou. Recarregue a página e tente de novo.');
+    }
+
     async function entrar() {
         const botao = botaoEntrar();
         if (botao) botao.classList.add('is-carregando');
         mostrarStatusLogin('Confirme com sua digital ou rosto…');
         try {
+            garantirFirebase();
             const { opcoes } = await chamar('login-opcoes');
             const resposta = await lib().startAuthentication({ optionsJSON: opcoes });
             mostrarStatusLogin('Conferindo…');
