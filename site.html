@@ -72,7 +72,7 @@
     <link rel="preload" href="/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/sora-latin.woff2" as="font" type="font/woff2" crossorigin>
     <!-- Todas as folhas da página num só arquivo (ferramentas/empacotar-css.js). -->
-    <link rel="stylesheet" href="/css/site-pacote.css?v=4">
+    <link rel="stylesheet" href="/css/site-pacote.css?v=5">
     
     <link rel="preload" href="/fonts/fa-solid-subset-1.woff2" as="font" type="font/woff2" crossorigin>
     
@@ -866,50 +866,54 @@
 
         <section id="depoimentos" class="testimonials">
             <h2 class="section-title">O que dizem nossos clientes <i class="fas fa-comments" aria-hidden="true"></i></h2>
+            <p class="depo-zap-aviso">Mensagens que recebemos de clientes pelo WhatsApp.</p>
             <div class="testimonials-container">
                 <div class="testimonials-grid">
-                    <div class="testimonial-card whatsapp-style">
-                        <div class="testimonial-rating" aria-label="5 estrelas">★★★★★</div>
-                        <div class="testimonial-bubble">
-                            <p>"Excelente serviço! Meu computador ficou muito mais rápido após a formatação e otimização."</p>
+                    <figure class="depo-zap" style="--depo-cor: #128c7e">
+                        <div class="depo-zap-topo">
+                            <span class="depo-zap-avatar" aria-hidden="true">JS</span>
+                            <span class="depo-zap-quem">
+                                <strong>João Silva</strong>
+                                <small><i class="fab fa-whatsapp" aria-hidden="true"></i> Cliente PC Formatech</small>
+                            </span>
                         </div>
-                        <div class="client-info">
-                            <div class="client-avatar-initial">JS</div>
-                            <div class="client-details">
-                                <h3>João Silva</h3>
-                                <small class="testimonial-outcome">Boot reduziu de minutos para segundos</small>
-                                <div class="testimonial-time" data-days-ago="3" data-time="19:15"></div>
-                            </div>
+                        <div class="depo-zap-conversa">
+                            <blockquote class="depo-zap-balao">
+                                <p>Excelente serviço! Meu computador ficou muito mais rápido após a formatação e otimização.</p>
+                            </blockquote>
                         </div>
-                    </div>
-                    <div class="testimonial-card whatsapp-style">
-                        <div class="testimonial-rating" aria-label="5 estrelas">★★★★★</div>
-                        <div class="testimonial-bubble">
-                            <p>"Atendimento muito técnico e transparente. Resolveram meu problema rapidamente."</p>
+                        <figcaption class="depo-zap-resultado"><i class="fas fa-check-circle" aria-hidden="true"></i> Boot reduziu de minutos para segundos</figcaption>
+                    </figure>
+                    <figure class="depo-zap" style="--depo-cor: #7c3aed">
+                        <div class="depo-zap-topo">
+                            <span class="depo-zap-avatar" aria-hidden="true">MR</span>
+                            <span class="depo-zap-quem">
+                                <strong>Maria Rosa</strong>
+                                <small><i class="fab fa-whatsapp" aria-hidden="true"></i> Cliente PC Formatech</small>
+                            </span>
                         </div>
-                        <div class="client-info">
-                            <div class="client-avatar-initial">MR</div>
-                            <div class="client-details">
-                                <h3>Maria Rosa</h3>
-                                <small class="testimonial-outcome">Mais estabilidade para trabalho diário</small>
-                                <div class="testimonial-time" data-days-ago="7" data-time="18:35"></div>
-                            </div>
+                        <div class="depo-zap-conversa">
+                            <blockquote class="depo-zap-balao">
+                                <p>Atendimento muito técnico e transparente. Resolveram meu problema rapidamente.</p>
+                            </blockquote>
                         </div>
-                    </div>
-                    <div class="testimonial-card whatsapp-style">
-                        <div class="testimonial-rating" aria-label="5 estrelas">★★★★★</div>
-                        <div class="testimonial-bubble">
-                            <p>"Ótimo atendimento e preço justo. Meu notebook parece novo novamente."</p>
+                        <figcaption class="depo-zap-resultado"><i class="fas fa-check-circle" aria-hidden="true"></i> Mais estabilidade para trabalho diário</figcaption>
+                    </figure>
+                    <figure class="depo-zap" style="--depo-cor: #e8692d">
+                        <div class="depo-zap-topo">
+                            <span class="depo-zap-avatar" aria-hidden="true">PL</span>
+                            <span class="depo-zap-quem">
+                                <strong>Pedro Lima</strong>
+                                <small><i class="fab fa-whatsapp" aria-hidden="true"></i> Cliente PC Formatech</small>
+                            </span>
                         </div>
-                        <div class="client-info">
-                            <div class="client-avatar-initial">PL</div>
-                            <div class="client-details">
-                                <h3>Pedro Lima</h3>
-                                <small class="testimonial-outcome">Recuperação nítida de performance</small>
-                                <div class="testimonial-time" data-days-ago="30" data-time="18:45"></div>
-                            </div>
+                        <div class="depo-zap-conversa">
+                            <blockquote class="depo-zap-balao">
+                                <p>Ótimo atendimento e preço justo. Meu notebook parece novo novamente.</p>
+                            </blockquote>
                         </div>
-                    </div>
+                        <figcaption class="depo-zap-resultado"><i class="fas fa-check-circle" aria-hidden="true"></i> Recuperação nítida de performance</figcaption>
+                    </figure>
                 </div>
             </div>
         </section>

@@ -235,7 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
     (function () {
         const faixa = document.querySelector('#depoimentos .testimonials-grid');
         if (!faixa) return;
-        const cartoes = Array.from(faixa.querySelectorAll('.testimonial-card'));
+        const cartoes = Array.from(faixa.querySelectorAll('.testimonial-card, .depo-zap'));
         if (cartoes.length < 2) return;
 
         const posicao = (cartao) => cartao.getBoundingClientRect().left - faixa.getBoundingClientRect().left + faixa.scrollLeft;
