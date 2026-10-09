@@ -23,7 +23,7 @@ const EMPRESA = {
     name: 'PC Formatech',
     description: 'Assistência técnica de computadores e notebooks: formatação, limpeza, otimização, remoção de vírus, backup e suporte remoto.',
     url: SITE + '/site.html',
-    image: SITE + '/images/og-preview.jpg',
+    image: SITE + '/images/og/pc-formatech.jpg',
     logo: SITE + '/icon-512.png',
     telephone: '+55 94 98430-5772',
     priceRange: 'R$ 40 a R$ 80',
@@ -147,7 +147,7 @@ const precoDe = (s) => (s.preco ? `A partir de ${reais(s.preco)}` : s.precoTexto
 
 /** Prévia para WhatsApp/redes: images/og/<nome>.jpg se existir, senão a geral. */
 function imagemPrevia(nome) {
-    return nome && fs.existsSync(path.join(RAIZ, 'images/og', nome + '.jpg')) ? `${SITE}/images/og/${nome}.jpg` : SITE + '/images/og-preview.jpg';
+    return nome && fs.existsSync(path.join(RAIZ, 'images/og', nome + '.jpg')) ? `${SITE}/images/og/${nome}.jpg` : SITE + '/images/og/pc-formatech.jpg';
 }
 
 function cabeca({ titulo, descricao, url, extras, previa, tipo }) {
@@ -169,6 +169,8 @@ function cabeca({ titulo, descricao, url, extras, previa, tipo }) {
     <meta property="og:image" content="${imagemPrevia(previa)}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:alt" content="${esc(titulo)} | PC Formatech">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="theme-color" content="#0b2b2c">
     <link rel="icon" type="image/svg+xml" href="/favicon-icon.svg">
