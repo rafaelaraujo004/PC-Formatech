@@ -201,5 +201,15 @@
       "destination": "https://www.pcformatech.com.br/robots.txt",
       "permanent": true
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/a/imagem/:codigo",
+      "destination": "/api/arte?img=:codigo"
+    },
+    {
+      "source": "/a/:slug",
+      "destination": "/api/arte?s=:slug"
+    }
   ]
 }
