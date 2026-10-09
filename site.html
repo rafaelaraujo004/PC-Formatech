@@ -72,7 +72,7 @@
     <link rel="preload" href="/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/sora-latin.woff2" as="font" type="font/woff2" crossorigin>
     <!-- Todas as folhas da página num só arquivo (ferramentas/empacotar-css.js). -->
-    <link rel="stylesheet" href="/css/site-pacote.css?v=3">
+    <link rel="stylesheet" href="/css/site-pacote.css?v=4">
     
     <link rel="preload" href="/fonts/fa-solid-subset-1.woff2" as="font" type="font/woff2" crossorigin>
     
@@ -320,8 +320,8 @@
     <header class="header">
         <nav class="nav-bar">
             <div class="logo">
-                <a href="admin.html" title="Painel Administrativo">
-                    <img src="/icon-192.png" alt="PC Formatech" class="logo-img" style="width:40px;height:40px;border-radius:10px;">
+                <a href="#home" title="Início">
+                    <img src="/icon-192.png" alt="PC Formatech, início" class="logo-img" style="width:40px;height:40px;border-radius:10px;">
                 </a>
                 <div class="brand-text">
                     <span class="brand-name">PCFORMATECH</span>
@@ -329,10 +329,10 @@
                 </div>
             </div>
             <ul class="nav-links" id="navLinks">
-                <li><a href="#home">Home</a></li>
+                <li class="nav-so-largo"><a href="#home">Home</a></li>
                 <li><a href="#diagnostico">Diagnóstico</a></li>
                 <li><a href="#servicos">Serviços</a></li>
-                <li><a href="#sobre">Sobre</a></li>
+                <li class="nav-so-largo"><a href="#sobre">Sobre</a></li>
                 <li><a href="loja.html">Loja</a></li>
                 <li><a href="apps.html">Apps</a></li>
                 <li><a href="https://api.whatsapp.com/send?phone=5594984305772&text=Ol%C3%A1%2C%20quero%20agendar%20um%20atendimento." target="_blank" class="nav-cta">Agendar</a></li>
@@ -587,32 +587,6 @@
             </div>
         </section>
 
-        <section class="attention-flow" aria-labelledby="curiosidades-titulo">
-            <h2 class="titulo-oculto" id="curiosidades-titulo">Por que o computador fica lento</h2>
-            <div class="attention-grid">
-                <article class="attention-card" data-reveal>
-                    <span class="attention-label">Curiosidade 01</span>
-                    <h3>Por que o PC fica lento</h3>
-                    <p class="teaser">Programas escondidos e inicialização pesada roubam desempenho todo dia. O diagnóstico acha e corrige.</p>
-                </article>
-                <article class="attention-card" data-reveal>
-                    <span class="attention-label">Curiosidade 02</span>
-                    <h3>Tempo perdido todo dia</h3>
-                    <p class="teaser">Programas abrindo em câmera lenta parecem normais, até você usar um PC otimizado.</p>
-                </article>
-                <article class="attention-card" data-reveal>
-                    <span class="attention-label">Curiosidade 03</span>
-                    <h3>Sem manutenção, só piora</h3>
-                    <p class="teaser">Sem revisão, travamentos e falhas aumentam. A preventiva protege arquivos e prolonga a vida do PC.</p>
-                </article>
-                <article class="attention-card" data-reveal>
-                    <span class="attention-label">Curiosidade 04</span>
-                    <h3>Backup antes do problema</h3>
-                    <p class="teaser">Quem deixa para depois costuma perder fotos e documentos. Com proteção em dia, eles ficam seguros.</p>
-                </article>
-            </div>
-        </section>
-
         <section class="pc-transform" id="transformacao">
             <div class="pc-transform-head" data-reveal>
                 <h2>Antes e depois da manutenção</h2>
@@ -696,11 +670,11 @@
                 </article>
                 <article class="proof-card" data-reveal>
                     <strong data-counter="1" data-suffix="h">0</strong>
-                    <span>hora para primeira resposta</span>
+                    <span>para a primeira resposta</span>
                 </article>
                 <article class="proof-card" data-reveal>
-                    <strong data-counter="100" data-suffix="%">0</strong>
-                    <span>valor combinado antes do serviço</span>
+                    <strong data-counter="5" data-suffix="+">0</strong>
+                    <span>anos de experiência</span>
                 </article>
             </div>
         </section>
@@ -1272,24 +1246,6 @@
                     </div>
                 </div>
 
-                <div class="about-stats">
-                    <div class="stat-item">
-                        <div class="stat-number">500+</div>
-                        <div class="stat-label">PCs Atendidos</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number">5+</div>
-                        <div class="stat-label">Anos de Experiência</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number">98%</div>
-                        <div class="stat-label">Satisfação</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number">24h</div>
-                        <div class="stat-label">Tempo de Resposta</div>
-                    </div>
-                </div>
             </div>
         </section>
     </main>
@@ -1407,9 +1363,9 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js" defer></script>
     <script src="firebase-config.js" defer></script>
     <script src="firebase-iniciar.js" defer></script>
-    <script src="site-config.js" defer></script>
-    <script src="theme-system.js?v=5" defer></script>
-    <script src="main.js?v=6" defer></script>
+    <script src="site-config.js?v=2" defer></script>
+    <script src="theme-system.js?v=6" defer></script>
+    <script src="main.js?v=7" defer></script>
     <script src="anuncios.js?v=4" defer></script>
     <script src="seasonal-badge.js?v=2" defer></script>
 </body>

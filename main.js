@@ -228,6 +228,57 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // ── Depoimentos: bolinhas no celular ────────────────────────────────────
+    // No celular os depoimentos deslizam para o lado, e nada indicava que havia
+    // mais cartões. As bolinhas mostram quantos são, em qual a pessoa está, e
+    // levam direto a cada um.
+    (function () {
+        const faixa = document.querySelector('#depoimentos .testimonials-grid');
+        if (!faixa) return;
+        const cartoes = Array.from(faixa.querySelectorAll('.testimonial-card'));
+        if (cartoes.length < 2) return;
+
+        const posicao = (cartao) => cartao.getBoundingClientRect().left - faixa.getBoundingClientRect().left + faixa.scrollLeft;
+
+        const pontos = document.createElement('div');
+        pontos.className = 'depo-pontos';
+        pontos.setAttribute('role', 'group');
+        pontos.setAttribute('aria-label', 'Escolher depoimento');
+        const botoes = cartoes.map((cartao, i) => {
+            const botao = document.createElement('button');
+            botao.type = 'button';
+            botao.setAttribute('aria-label', 'Depoimento ' + (i + 1) + ' de ' + cartoes.length);
+            botao.addEventListener('click', () => {
+                faixa.scrollTo({
+                    left: posicao(cartao) - (faixa.clientWidth - cartao.offsetWidth) / 2,
+                    behavior: prefersReducedMotion.matches ? 'auto' : 'smooth'
+                });
+            });
+            pontos.appendChild(botao);
+            return botao;
+        });
+        faixa.insertAdjacentElement('afterend', pontos);
+
+        function marcar() {
+            const centro = faixa.scrollLeft + faixa.clientWidth / 2;
+            let atual = 0;
+            let menor = Infinity;
+            cartoes.forEach((cartao, i) => {
+                const distancia = Math.abs(posicao(cartao) + cartao.offsetWidth / 2 - centro);
+                if (distancia < menor) { menor = distancia; atual = i; }
+            });
+            botoes.forEach((botao, i) => botao.setAttribute('aria-current', i === atual ? 'true' : 'false'));
+        }
+
+        let agendado = false;
+        faixa.addEventListener('scroll', () => {
+            if (agendado) return;
+            agendado = true;
+            requestAnimationFrame(() => { agendado = false; marcar(); });
+        }, { passive: true });
+        marcar();
+    })();
+
     // ── Contadores da prova social ──────────────────────────────────────────
     const counterEls = document.querySelectorAll('[data-counter]');
     if (counterEls.length) {

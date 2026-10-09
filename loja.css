@@ -1263,3 +1263,7 @@ body.bt-com-carrinho { padding-bottom: 90px; }
 }
 
 .bt-autor { margin-top: 0.6rem !important; font-size: 0.8rem; opacity: 0.7; }
+
+/* O botão do tema some enquanto a pessoa desce a página (theme-system.js). */
+#themeToggleBtn { transition: opacity 0.25s ease, visibility 0.25s ease; }
+#themeToggleBtn.pcft-toggle-oculto { opacity: 0; visibility: hidden; pointer-events: none; }
