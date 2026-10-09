@@ -378,6 +378,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 resultText = 'Seu computador apresenta sinais de degradação de performance. Uma otimização técnica pode recuperar velocidade e estabilidade.';
             }
 
+            if (checked.some((el) => el.value === 'superaquecimento')) {
+                resultText += ' Sobre o superaquecimento: quando vem de sujeira ou de peça (cooler, pasta térmica), é serviço de hardware, que não fazemos. A otimização resolve quando o calor vem de programas pesando o computador.';
+            }
             diagnosticResult.hidden = false;
             diagnosticResult.textContent = resultText;
             diagnosticWhatsappCta.hidden = false;

@@ -61,7 +61,7 @@ const SERVICOS = [
         icone: 'fa-tachometer-alt',
         preco: 70,
         chamada: 'Programas escondidos, arquivos acumulados e inicialização pesada roubam desempenho todo dia. A manutenção encontra e corrige.',
-        inclui: ['Limpeza do sistema', 'Otimização do Windows', 'Atualização de drivers', 'Verificação de hardware', 'Remoção de arquivos temporários', 'Relatório de desempenho'],
+        inclui: ['Limpeza do sistema', 'Otimização do Windows', 'Atualização de drivers', 'Diagnóstico do sistema e do disco', 'Remoção de arquivos temporários', 'Relatório de desempenho'],
         quando: ['O computador ficou lento com o tempo', 'Os programas demoram para abrir', 'O ventilador faz barulho ou o notebook esquenta', 'Faz mais de um ano que ninguém cuida da máquina'],
         faq: [
             ['Limpeza resolve computador lento sem formatar?', 'Muitas vezes, sim. A otimização tira o que pesa na inicialização e no uso do dia a dia sem apagar seus programas e arquivos.'],
@@ -333,7 +333,7 @@ function paginaIndice() {
         <section class="sv-hero">
             <nav class="sv-trilha" aria-label="Você está em"><a href="/site.html">Início</a> <span aria-hidden="true">/</span> <span aria-current="page">Serviços</span></nav>
             <h1>${esc(titulo)}</h1>
-            <p class="sv-hero-texto">Assistência técnica de computadores e notebooks, presencial em ${CIDADE} ou remota para todo o Brasil. Escolha o serviço para ver o que está incluso e quanto custa.</p>
+            <p class="sv-hero-texto">Assistência técnica de computadores e notebooks, presencial em ${CIDADE} ou remota para todo o Brasil. Trabalhamos só com a parte de programas (software), sem conserto de peças. Escolha o serviço para ver o que está incluso e quanto custa.</p>
             <div class="sv-acoes">
                 <a class="sv-cta" href="${zap('Olá! Vim pelo site e quero um orçamento.')}" target="_blank" rel="noopener"><i class="fab fa-whatsapp" aria-hidden="true"></i> Pedir orçamento no WhatsApp</a>
             </div>
