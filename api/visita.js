@@ -8,6 +8,7 @@
 const {
     iniciarAdmin, enviarParaTodos, lerPreferencias, nomeDaOrigem, NOMES_DISPOSITIVO
 } = require('./_push');
+const { lembrarSemFalhar } = require('./_lembretes');
 
 const JANELA_ONLINE_MS = 70 * 1000;       // mesmo critério do Dashboard Tempo Real
 const INTERVALO_MINIMO_MS = 45 * 1000;    // no máximo uma notificação a cada 45 s
@@ -37,6 +38,10 @@ module.exports = async function handler(req, res) {
     try {
         const admin = iniciarAdmin();
         const db = admin.firestore();
+
+        // Toda visita também confere se chegou a hora de algum lembrete da
+        // Divulgação (o agendamento do GitHub às vezes atrasa ou pula).
+        await lembrarSemFalhar(db);
 
         const prefs = await lerPreferencias(db);
         if (prefs.visitas === false) return res.status(200).json({ ok: true, notificado: false, motivo: 'desligado' });
