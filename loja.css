@@ -1261,3 +1261,5 @@ body.bt-com-carrinho { padding-bottom: 90px; }
     *, *::before, *::after { transition: none !important; animation: none !important; }
     html { scroll-behavior: auto; }
 }
+
+.bt-autor { margin-top: 0.6rem !important; font-size: 0.8rem; opacity: 0.7; }

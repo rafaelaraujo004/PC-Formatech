@@ -9,14 +9,14 @@
     var PRE_EXTRA = 3;  // dias de antecedência
     var POST_EXTRA = 0; // sem prorrogação após o fim do período
     var SEASONAL = [
-        { name: 'Natal',               greeting: 'Feliz',  icon: '\u{1F384}', start: '12-25', end: '12-25' },
-        { name: 'Ano Novo',            greeting: 'Feliz',  icon: '\u2728',     start: '01-01', end: '01-01' },
-        { name: 'P\u00e1scoa',         greeting: 'Feliz',  icon: '\u{1F423}', start: '03-25', end: '04-22' },
-        { name: 'Dia das M\u00e3es',   greeting: 'Feliz',  icon: '\u{1F490}', start: '05-08', end: '05-14' },
-        { name: 'Festa Junina',        greeting: 'Feliz',  icon: '\u{1F33D}', start: '06-24', end: '06-24' },
-        { name: 'Dia dos Pais',        greeting: 'Feliz',  icon: '\u{1F3C6}', start: '08-08', end: '08-14' },
-        { name: 'Dia das Crian\u00e7as', greeting: 'Feliz', icon: '\u{1F388}', start: '10-12', end: '10-12' },
-        { name: 'Halloween',           greeting: 'Happy',  icon: '\u{1F383}', start: '10-31', end: '10-31' }
+        { id: 'natal',            name: 'Natal',               greeting: 'Feliz',  icon: '\u{1F384}', start: '12-25', end: '12-25' },
+        { id: 'ano-novo',         name: 'Ano Novo',            greeting: 'Feliz',  icon: '\u2728',     start: '01-01', end: '01-01' },
+        { id: 'pascoa',           name: 'P\u00e1scoa',         greeting: 'Feliz',  icon: '\u{1F423}', start: '03-25', end: '04-22' },
+        { id: 'dia-das-maes',     name: 'Dia das M\u00e3es',   greeting: 'Feliz',  icon: '\u{1F490}', start: '05-08', end: '05-14' },
+        { id: 'festa-junina',     name: 'Festa Junina',        greeting: 'Feliz',  icon: '\u{1F33D}', start: '06-24', end: '06-24' },
+        { id: 'dia-dos-pais',     name: 'Dia dos Pais',        greeting: 'Feliz',  icon: '\u{1F3C6}', start: '08-08', end: '08-14' },
+        { id: 'dia-das-criancas', name: 'Dia das Crian\u00e7as', greeting: 'Feliz', icon: '\u{1F388}', start: '10-12', end: '10-12' },
+        { id: 'halloween',        name: 'Halloween',           greeting: 'Happy',  icon: '\u{1F383}', start: '10-31', end: '10-31' }
     ];
 
     function isLeap(year) {
@@ -101,6 +101,7 @@
 
         var parsed = splitSeasonalTitle(title);
         return {
+            id: themeId || theme.id || '',
             greeting: parsed.greeting,
             name: parsed.name,
             icon: iconByThemeId(themeId || theme.id || '')
@@ -121,6 +122,7 @@
             if (iconRight) iconRight.textContent = forcedByTheme.icon;
             if (greetEl)   greetEl.textContent   = forcedByTheme.greeting;
             if (nameEl)    nameEl.textContent    = forcedByTheme.name + '!';
+            badge.setAttribute('data-ocasiao', forcedByTheme.id);
             badge.hidden = false;
             return;
         }
@@ -142,6 +144,7 @@
         if (iconRight) iconRight.textContent = active.icon;
         if (greetEl)   greetEl.textContent   = active.greeting;
         if (nameEl)    nameEl.textContent     = active.name + '!';
+        badge.setAttribute('data-ocasiao', active.id);
         badge.hidden = false;
     }
 

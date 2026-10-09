@@ -72,7 +72,7 @@
     <link rel="preload" href="/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/sora-latin.woff2" as="font" type="font/woff2" crossorigin>
     <!-- Todas as folhas da página num só arquivo (ferramentas/empacotar-css.js). -->
-    <link rel="stylesheet" href="/css/site-pacote.css?v=2">
+    <link rel="stylesheet" href="/css/site-pacote.css?v=3">
     
     <link rel="preload" href="/fonts/fa-solid-subset-1.woff2" as="font" type="font/woff2" crossorigin>
     
@@ -566,19 +566,19 @@
             <h2 id="frentes-titulo">O que a PC Formatech faz</h2>
             <p class="frentes-sub">Três jeitos de ajudar você. Escolha o que precisa:</p>
             <div class="frentes-grade">
-                <a class="frente" href="#servicos">
+                <a class="frente" href="#servicos" data-reveal>
                     <span class="frente-icone"><i class="fas fa-tools" aria-hidden="true"></i></span>
                     <strong>Assistência técnica</strong>
                     <span>Formatação, limpeza, vírus, programas, drivers e backup. Presencial em Canaã dos Carajás ou à distância com 10% de desconto.</span>
                     <em>A partir de R$ 40 <i class="fas fa-arrow-right" aria-hidden="true"></i></em>
                 </a>
-                <a class="frente frente-loja" href="loja.html">
+                <a class="frente frente-loja" href="loja.html" data-reveal>
                     <span class="frente-icone"><i class="fas fa-keyboard" aria-hidden="true"></i></span>
                     <strong>Loja Bird Tech</strong>
                     <span>Fones, mouses, cabos e acessórios. Pague com Pix pelo site e retire na loja ou receba em casa.</span>
                     <em>Ver produtos <i class="fas fa-arrow-right" aria-hidden="true"></i></em>
                 </a>
-                <a class="frente frente-apps" href="apps.html">
+                <a class="frente frente-apps" href="apps.html" data-reveal>
                     <span class="frente-icone"><i class="fas fa-laptop-code" aria-hidden="true"></i></span>
                     <strong>Criação de apps e sistemas</strong>
                     <span>Troque as planilhas por um sistema simples: estoque, agenda, orçamentos e financeiro. Funciona no celular e no computador.</span>
@@ -869,7 +869,7 @@
 
 
         <!-- Loja Bird Tech (loja.html) -->
-        <section class="bird-tech-faixa" aria-labelledby="bird-tech-titulo">
+        <section class="bird-tech-faixa" aria-labelledby="bird-tech-titulo" data-reveal>
             <img src="/images/loja/bird-tech-icone-176.webp" alt="" width="84" height="84" loading="lazy">
             <div class="bird-tech-texto">
                 <p class="bird-tech-selo">Nossa loja</p>
@@ -880,7 +880,7 @@
         </section>
 
         <!-- Criação de apps (apps.html) -->
-        <section class="bird-tech-faixa apps-faixa" aria-labelledby="apps-faixa-titulo">
+        <section class="bird-tech-faixa apps-faixa" aria-labelledby="apps-faixa-titulo" data-reveal>
             <span class="apps-faixa-icone" aria-hidden="true"><i class="fas fa-laptop-code"></i></span>
             <div class="bird-tech-texto">
                 <p class="bird-tech-selo">Para empresas e negócios</p>
@@ -1330,7 +1330,7 @@
                 <div class="contact-item">
                     <i class="fas fa-envelope" aria-hidden="true"></i>
                     <div class="contact-info">
-                        <p>contato@pcformatech.com</p>
+                        <p><a href="mailto:rafaelaraujo004@gmail.com">rafaelaraujo004@gmail.com</a></p>
                     </div>
                 </div>
                 <div class="contact-item">
@@ -1382,7 +1382,7 @@
         </nav>
         <div class="footer-bottom">
             <div class="footer-info-bottom">
-                <p>&copy; <span data-ano-atual>2026</span> PC Formatech. Todos os direitos reservados.</p>
+                <p>&copy; <span data-ano-atual>2026</span> PC Formatech. Todos os direitos reservados. <span class="footer-autor">Site feito por Rafael Araújo</span></p>
                 <div class="payment-methods-icons">
                     <i class="fab fa-cc-visa" aria-hidden="true"></i>
                     <i class="fab fa-cc-mastercard" aria-hidden="true"></i>
@@ -1408,139 +1408,9 @@
     <script src="firebase-config.js" defer></script>
     <script src="firebase-iniciar.js" defer></script>
     <script src="site-config.js" defer></script>
-    <script src="theme-system.js?v=4" defer></script>
-    <script src="main.js?v=5" defer></script>
+    <script src="theme-system.js?v=5" defer></script>
+    <script src="main.js?v=6" defer></script>
     <script src="anuncios.js?v=4" defer></script>
-    <script src="seasonal-badge.js" defer></script>
-    <script>
-    /* ── Badge sazonal ───────────────────────────────────────────────────── */
-    (function () {
-        var PRE_EXTRA = 3;
-        var POST_EXTRA = 0;
-        var SEASONAL = [
-            { name: 'Natal',                greeting: 'Feliz',  icon: '🎄', start: '12-25', end: '12-25' },
-            { name: 'Ano Novo',             greeting: 'Feliz',  icon: '✨', start: '01-01', end: '01-01' },
-            { name: 'Páscoa',               greeting: 'Feliz',  icon: '🐣', start: '03-25', end: '04-22' },
-            { name: 'Dia das Mães',         greeting: 'Feliz',  icon: '💐', start: '05-08', end: '05-14' },
-            { name: 'Festa Junina',         greeting: 'Feliz',  icon: '🌽', start: '06-24', end: '06-24' },
-            { name: 'Dia dos Pais',         greeting: 'Feliz',  icon: '🏆', start: '08-08', end: '08-14' },
-            { name: 'Dia das Crianças',     greeting: 'Feliz',  icon: '🎈', start: '10-12', end: '10-12' },
-            { name: 'Halloween',            greeting: 'Happy',  icon: '🎃', start: '10-31', end: '10-31' }
-        ];
-        function doy(m, d) {
-            var acc = [0,31,28,31,30,31,30,31,31,30,31,30,31], n = d;
-            for (var i = 1; i < m; i++) n += acc[i];
-            return n;
-        }
-        function isActive(start, end) {
-            var now = new Date(), tDOY = doy(now.getMonth() + 1, now.getDate());
-            var sp = start.split('-').map(Number), ep = end.split('-').map(Number);
-            var sN = doy(sp[0], sp[1]), eN = doy(ep[0], ep[1]);
-            var wraps = eN < sN;
-            if (wraps) eN += 365;
-                 return (tDOY >= sN - PRE_EXTRA && tDOY <= eN + POST_EXTRA) ||
-                     (wraps && (tDOY + 365 >= sN - PRE_EXTRA && tDOY + 365 <= eN + POST_EXTRA));
-        }
-
-        function iconByThemeId(themeId) {
-            var map = {
-                'natal': '🎄',
-                'ano-novo': '✨',
-                'pascoa': '🐣',
-                'dia-das-maes': '💐',
-                'festa-junina': '🌽',
-                'dia-dos-pais': '🏆',
-                'dia-das-criancas': '🎈',
-                'halloween': '🎃'
-            };
-            return map[themeId] || '🎉';
-        }
-
-        function splitSeasonalTitle(title) {
-            var raw = String(title || '').trim().replace(/[!]+$/, '');
-            if (!raw) {
-                return { greeting: 'Feliz', name: 'Data Comemorativa' };
-            }
-            var parts = raw.split(/\s+/);
-            if (parts.length > 1 && /^(feliz|happy)$/i.test(parts[0])) {
-                return { greeting: parts[0], name: parts.slice(1).join(' ') };
-            }
-            return { greeting: 'Feliz', name: raw };
-        }
-
-        function getThemeSeasonalBadge() {
-            var root = document.documentElement;
-            if (!root || root.getAttribute('data-theme-category') !== 'seasonal') {
-                return null;
-            }
-
-            var themeId = root.getAttribute('data-theme-id') || '';
-            var manager = window.PCFormatechThemeManager;
-            var theme = manager && typeof manager.getCurrentTheme === 'function'
-                ? manager.getCurrentTheme()
-                : null;
-
-            if (!theme || theme.category !== 'seasonal') {
-                return null;
-            }
-
-            var title = '';
-            if (theme.banner && Array.isArray(theme.banner.slides) && theme.banner.slides[0] && theme.banner.slides[0].title) {
-                title = theme.banner.slides[0].title;
-            } else if (theme.name) {
-                title = theme.name;
-            }
-
-            var parsed = splitSeasonalTitle(title);
-            return {
-                greeting: parsed.greeting,
-                name: parsed.name,
-                icon: iconByThemeId(themeId || theme.id || '')
-            };
-        }
-        function showBadge() {
-            var badge = document.getElementById('pcft-seasonal-badge');
-            if (!badge) return;
-            var iconLeft  = badge.querySelector('.pcft-seasonal-icon-left');
-            var iconRight = badge.querySelector('.pcft-seasonal-icon-right');
-            var greetEl   = badge.querySelector('.pcft-seasonal-greeting');
-            var nameEl    = badge.querySelector('.pcft-seasonal-name');
-
-            var forcedByTheme = getThemeSeasonalBadge();
-            if (forcedByTheme) {
-                if (iconLeft)  iconLeft.textContent  = forcedByTheme.icon;
-                if (iconRight) iconRight.textContent = forcedByTheme.icon;
-                if (greetEl)   greetEl.textContent   = forcedByTheme.greeting;
-                if (nameEl)    nameEl.textContent    = forcedByTheme.name + '!';
-                badge.hidden = false;
-                return;
-            }
-
-            var active = null;
-            for (var i = 0; i < SEASONAL.length; i++) {
-                if (isActive(SEASONAL[i].start, SEASONAL[i].end)) { active = SEASONAL[i]; break; }
-            }
-            if (!active) {
-                badge.hidden = true;
-                if (greetEl) greetEl.textContent = '';
-                if (nameEl) nameEl.textContent = '';
-                return;
-            }
-            if (iconLeft)  iconLeft.textContent  = active.icon;
-            if (iconRight) iconRight.textContent = active.icon;
-            if (greetEl)   greetEl.textContent   = active.greeting;
-            if (nameEl)    nameEl.textContent     = active.name + '!';
-            badge.hidden = false;
-        }
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', showBadge);
-        } else {
-            showBadge();
-        }
-
-        window.addEventListener('pcformatech:themechange', showBadge);
-    })();
-    /* ───────────────────────────────────────────────────────────────────── */
-    </script>
+    <script src="seasonal-badge.js?v=2" defer></script>
 </body>
 </html>

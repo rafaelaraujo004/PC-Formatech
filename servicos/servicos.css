@@ -475,3 +475,5 @@ h1, h2 {
 }
 
 :root[data-theme="dark"] .sv-artigo-passos li::before { color: #032421; }
+
+.sv-rodape-autor { grid-column: 1 / -1; font-size: 0.8rem; opacity: 0.7; }
