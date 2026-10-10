@@ -307,6 +307,30 @@
         return melhor.id;
     }
 
+    // Busca com transição: os cartões deslizam para a nova ordem (View
+    // Transitions). Sem suporte no navegador, ou para quem pede menos
+    // movimento, a troca é na hora.
+    function comTransicao(mudar) {
+        const reduz = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (typeof document.startViewTransition !== 'function' || reduz) {
+            mudar();
+            return;
+        }
+        document.startViewTransition(mudar);
+    }
+
+    /** O serviço que buscar() vai destacar, sem mexer na página. */
+    function melhorPara(consulta) {
+        if (normalizar(consulta).length < 2) return null;
+        const melhor = pontuar(consulta)[0];
+        return melhor && melhor.pontos > 0 ? melhor.id : null;
+    }
+
+    function mostrar(consulta) {
+        comTransicao(() => buscar(consulta, true));
+        return melhorPara(consulta);
+    }
+
     // ── Registro para o resumo do painel ─────────────────────────────────────
     // O rastreador (theme-system.js) carrega depois desta página; por isso a
     // busca por ele acontece na hora do evento, não no carregamento.
@@ -336,7 +360,7 @@
     campo.addEventListener('input', () => {
         clearTimeout(espera);
         espera = setTimeout(() => {
-            const idMelhor = buscar(campo.value, true);
+            const idMelhor = mostrar(campo.value);
             sincronizarUrl(campo.value);
             clearTimeout(esperaRegistro);
             esperaRegistro = setTimeout(() => registrarBusca(campo.value, idMelhor), 1500);
@@ -348,7 +372,7 @@
         evento.preventDefault();
         clearTimeout(espera);
         clearTimeout(esperaRegistro);
-        registrarBusca(campo.value, buscar(campo.value, true));
+        registrarBusca(campo.value, mostrar(campo.value));
         sincronizarUrl(campo.value);
         irParaResultados();
     });
@@ -356,7 +380,7 @@
     document.querySelectorAll('.pt-chip').forEach((chip) => {
         chip.addEventListener('click', () => {
             campo.value = chip.dataset.q;
-            registrarBusca(campo.value, buscar(campo.value, true));
+            registrarBusca(campo.value, mostrar(campo.value));
             sincronizarUrl(campo.value);
             irParaResultados();
         });
@@ -364,7 +388,7 @@
 
     limpar.addEventListener('click', () => {
         campo.value = '';
-        restaurar();
+        comTransicao(restaurar);
         sincronizarUrl('');
         campo.focus();
     });
