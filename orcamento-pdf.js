@@ -21,7 +21,7 @@
         whatsappNumero: '5594984305772',
         site: 'www.pcformatech.com.br',
         instagram: '@pcformatech',
-        email: 'contatopcformatech@gmail.com'
+        email: 'rafaelaraujo004@gmail.com'
     };
 
     const COR = {
