@@ -131,21 +131,26 @@
         return `${doc}-${orc.number}-${nome}.pdf`;
     }
 
-    let logoPronto = null;
-    function carregarLogo() {
-        if (!logoPronto) {
-            logoPronto = fetch('/icon-512.png')
-                .then((r) => (r.ok ? r.blob() : Promise.reject(new Error('sem logo'))))
+    // Imagens do PDF, baixadas uma vez: o logo e a assinatura do Rafael
+    // (images/pdf/assinatura-rafael.png, que vai sobre a linha do técnico no laudo).
+    const imagens = new Map();
+    function carregarImagem(url) {
+        if (!imagens.has(url)) {
+            const pronta = fetch(url)
+                .then((r) => (r.ok ? r.blob() : Promise.reject(new Error('sem imagem'))))
                 .then((blob) => new Promise((resolve, reject) => {
                     const leitor = new FileReader();
                     leitor.onload = () => resolve(leitor.result);
                     leitor.onerror = reject;
                     leitor.readAsDataURL(blob);
                 }))
-                .catch(() => { logoPronto = null; return null; });
+                .catch(() => { imagens.delete(url); return null; });
+            imagens.set(url, pronta);
         }
-        return logoPronto;
+        return imagens.get(url);
     }
+    const carregarLogo = () => carregarImagem('/icon-512.png');
+    const ASSINATURA = { url: '/images/pdf/assinatura-rafael.png', largura: 50, proporcao: 182 / 736, nome: 'Rafael Araújo' };
 
     /** Link de aprovação: abre a conversa da loja com a mensagem pronta. */
     function linkAprovar(orc, total) {
@@ -167,6 +172,7 @@
         const nomeDoc = laudo ? 'Laudo' : 'Orçamento';
         const t = totais(orc);
         const logo = await carregarLogo();
+        const assinatura = laudo ? await carregarImagem(ASSINATURA.url) : null;
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF({ unit: 'mm', format: 'a4', compress: true });
         doc.setProperties({
@@ -440,8 +446,13 @@
         // Laudo: assinaturas do técnico e do cliente.
         if (laudo) {
             // As assinaturas podem descer até perto do rodapé (que fica em ALT - 13).
-            if (y + 19 > ALT - 15) { doc.addPage(); y = 20; }
-            y = Math.max(y + 11, ALT - 26);
+            if (y + 21 > ALT - 15) { doc.addPage(); y = 20; }
+            y = Math.max(y + 13, ALT - 25);
+            // A assinatura do Rafael vai sozinha, cruzando de leve a linha, como feita à caneta.
+            if (assinatura) {
+                const h = ASSINATURA.largura * ASSINATURA.proporcao;
+                try { doc.addImage(assinatura, 'PNG', M + 43 - ASSINATURA.largura / 2, y + 1.6 - h, ASSINATURA.largura, h, 'assinatura', 'FAST'); } catch (e) { /* segue sem */ }
+            }
             doc.setDrawColor(...COR.suave);
             doc.setLineWidth(0.3);
             doc.line(M + 6, y, M + 80, y);
@@ -450,7 +461,7 @@
             doc.text(`${EMPRESA.nome}`, M + 43, y + 4.6, { align: 'center' });
             doc.text(String((cliente && cliente.name) || 'Cliente'), LARG - M - 43, y + 4.6, { align: 'center' });
             fonte('normal', 7.6, COR.suave);
-            doc.text('Técnico responsável', M + 43, y + 8.4, { align: 'center' });
+            doc.text(`${ASSINATURA.nome} · Técnico responsável`, M + 43, y + 8.4, { align: 'center' });
             doc.text('Cliente', LARG - M - 43, y + 8.4, { align: 'center' });
         }
 
