@@ -108,8 +108,23 @@
             const atual = porAssunto.get(chave);
             if (!atual || (ehVertical(a) && !ehVertical(atual))) porAssunto.set(chave, a);
         });
-        return [...porAssunto.values()].sort((a, b) =>
+        const fila = [...porAssunto.values()].sort((a, b) =>
             ((Number(a.ordem) || 0) - (Number(b.ordem) || 0)) || String(a.id).localeCompare(String(b.id)));
+        // Nos rodízios de vídeo, as categorias se espalham pela fila (os vídeos
+        // de apps não caem em dias seguidos no meio dos de serviço). O rodízio
+        // geral fica como sempre foi.
+        return tipo && tipo !== RODIZIO ? espalhar(fila) : fila;
+    }
+
+    /** Intercala por categoria: cada grupo ocupa posições igualmente espaçadas. */
+    function espalhar(fila) {
+        const grupos = new Map();
+        fila.forEach((a) => { const g = a.categoria || ''; if (!grupos.has(g)) grupos.set(g, []); grupos.get(g).push(a); });
+        const ordemDoGrupo = [...grupos.keys()].sort((x, y) => grupos.get(y).length - grupos.get(x).length);
+        return ordemDoGrupo
+            .flatMap((g, gi) => grupos.get(g).map((a, i) => ({ a, chave: (i + 0.5) / grupos.get(g).length, gi })))
+            .sort((x, y) => (x.chave - y.chave) || (x.gi - y.gi))
+            .map((x) => x.a);
     }
 
     /**
