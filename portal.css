@@ -920,3 +920,13 @@ main { flex: 1; }
     html { scroll-behavior: auto; }
     .pt *, .pt *::before, .pt *::after { animation: none !important; transition: none !important; }
 }
+
+/* O cartão inteiro abre a página do serviço (link "esticado" do título);
+   o botão do WhatsApp fica por cima e continua abrindo a conversa. */
+.pt-card-link { color: inherit; text-decoration: none; }
+.pt-card-link::before { content: ''; position: absolute; inset: 0; z-index: 1; border-radius: inherit; }
+.pt-card:has(.pt-card-link) { cursor: pointer; }
+.pt-card-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.pt-card-link:focus-visible { outline: none; }
+.pt-card:has(.pt-card-link:focus-visible) { outline: 3px solid var(--pt-menta); outline-offset: 3px; }
+.pt-card-actions { position: relative; z-index: 2; }
