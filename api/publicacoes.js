@@ -48,7 +48,12 @@ async function garantirIniciais(db) {
     for (const [i, p] of lista.entries()) {
         if (removidas.includes(p.id)) continue;
         const ref = db.collection(COLECAO).doc(p.id);
-        if ((await ref.get()).exists) continue;
+        const atual = await ref.get();
+        if (atual.exists) {
+            // Arte que ganhou vídeo depois de criada (ou perdeu o campo): repõe.
+            if (p.video && atual.data().video !== p.video) await ref.set({ video: p.video, atualizadoEm: agora }, { merge: true });
+            continue;
+        }
         const { id, ...dados } = p;
         await ref.set({ ...dados, inicial: true, ordem: dados.ordem || i + 1, criadoEm: agora, atualizadoEm: agora });
     }

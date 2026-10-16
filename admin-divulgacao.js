@@ -76,6 +76,13 @@
             ordem: 100 + (Number(p.ordem) || 0)
         };
     }
+    /** Reels: a capa /images/divulgacao/reels-x.jpg tem o vídeo reels-x.mp4 ao lado. */
+    function comVideo(p) {
+        if (p.video) return p;
+        const capa = /^(\/images\/divulgacao\/reels-[\w-]+)\.jpg$/.exec(p.imagem || '');
+        return capa ? { ...p, video: capa[1] + '.mp4' } : p;
+    }
+
     let filtro = 'todas';
     let carregado = false;
     let editando = null;
@@ -149,6 +156,8 @@
      */
     async function arquivoDaImagem(p) {
         const blob = await (await fetch(p.imagem)).blob();
+        // JPEG já serve para todos os apps: vai o original, sem perder qualidade.
+        if (blob.type === 'image/jpeg') return new File([blob], nomeDoArquivo(p) + '.jpg', { type: 'image/jpeg' });
         const bitmap = await createImageBitmap(blob);
         const tela = document.createElement('canvas');
         tela.width = bitmap.width;
@@ -157,7 +166,7 @@
         ctx.fillStyle = '#fff';
         ctx.fillRect(0, 0, tela.width, tela.height);
         ctx.drawImage(bitmap, 0, 0);
-        const jpeg = await new Promise((r) => tela.toBlob(r, 'image/jpeg', 0.92));
+        const jpeg = await new Promise((r) => tela.toBlob(r, 'image/jpeg', 0.95));
         return new File([jpeg], nomeDoArquivo(p) + '.jpg', { type: 'image/jpeg' });
     }
 
@@ -167,8 +176,22 @@
         return new File([blob], nomeDoArquivo(p) + '.mp4', { type: 'video/mp4' });
     }
 
-    /** O arquivo da arte: o vídeo, quando ela tem, ou a imagem. */
-    const arquivoDaArte = (p) => (p.video ? arquivoDoVideo(p) : arquivoDaImagem(p));
+    /**
+     * O arquivo da arte (o vídeo, quando ela tem, ou a imagem), preparado uma
+     * vez e guardado por 10 min: o vídeo é grande, e o celular só abre o menu
+     * de compartilhar logo depois do toque.
+     */
+    const prontos = new Map();
+    function preparar(chave, gerar) {
+        if (!prontos.has(chave)) {
+            const pronto = gerar();
+            prontos.set(chave, pronto);
+            pronto.catch(() => prontos.delete(chave));
+            setTimeout(() => prontos.delete(chave), 10 * 60e3);
+        }
+        return prontos.get(chave);
+    }
+    const arquivoDaArte = (p) => (p.video ? preparar(p.id + ':video', () => arquivoDoVideo(p)) : arquivoDaImagem(p));
 
     /**
      * Versão 1080×1920 para Status e Stories (api/arte.js monta). Se não
@@ -187,18 +210,11 @@
         }
     }
 
-    // O celular só abre o menu de compartilhar logo depois de um toque: a
-    // imagem do Story é preparada antes (quando a tela de postar abre), para
+    // O celular só abre o menu de compartilhar logo depois de um toque: o
+    // arquivo do Story é preparado antes (quando a tela de postar abre), para
     // o toque em "Postar" já compartilhar na hora.
-    const storiesProntos = new Map();
     function prepararStory(p) {
-        if (!storiesProntos.has(p.id)) {
-            const pronto = arquivoStory(p);
-            storiesProntos.set(p.id, pronto);
-            pronto.catch(() => storiesProntos.delete(p.id));
-            setTimeout(() => storiesProntos.delete(p.id), 10 * 60e3);
-        }
-        return storiesProntos.get(p.id);
+        return p.video ? arquivoDaArte(p) : preparar(p.id + ':story', () => arquivoStory(p));
     }
 
     async function copiar(texto) {
@@ -228,6 +244,7 @@
     async function compartilhar(p, botao) {
         botao.disabled = true;
         try {
+            if (p.video) status('Preparando o vídeo…');
             const r = await enviarArte(p);
             if (r.como === 'compartilhado') {
                 status(r.copiou ? 'Compartilhado. A legenda também ficou copiada, caso o app não a tenha colado.' : 'Compartilhado.');
@@ -238,6 +255,7 @@
             }
         } catch (erro) {
             if (erro && erro.name === 'AbortError') status('');
+            else if (erro && erro.name === 'NotAllowedError') status('O vídeo ficou pronto. Toque de novo em "Compartilhar" para enviar.');
             else status('Não foi possível compartilhar: ' + (erro.message || erro), true);
         } finally {
             botao.disabled = false;
@@ -370,7 +388,7 @@
                 chamar('listar'),
                 fetch('/api/loja', { headers: { Accept: 'application/json' } }).then((r) => r.json()).catch(() => ({}))
             ]);
-            publicacoes = json.publicacoes || [];
+            publicacoes = (json.publicacoes || []).map(comVideo);
             produtosLoja = (loja.produtos || []).map(comoArte);
             carregado = true;
             registrarNomes();
@@ -540,7 +558,7 @@
                 chamar('listar'),
                 fetch('/api/loja', { headers: { Accept: 'application/json' } }).then((r) => r.json()).catch(() => ({}))
             ]);
-            publicacoes = json.publicacoes || [];
+            publicacoes = (json.publicacoes || []).map(comVideo);
             produtosLoja = (loja.produtos || []).map(comoArte);
             carregado = true;
             if ($('dv-grade')) desenhar();
