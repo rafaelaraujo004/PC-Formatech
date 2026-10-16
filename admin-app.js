@@ -118,6 +118,10 @@
                     localStorage.setItem('pcformatech_services', JSON.stringify(servicesDoc.data().data));
                     console.log('✅ Serviços/preços carregados do Firebase');
                 }
+                // Orçamentos antigos ganham etapa e número certo; a arrumação só é
+                // gravada agora, com os dados da nuvem já lidos.
+                orcamentosDaNuvem = true;
+                prepararOrcamentos();
                 // Atualizar UI com dados do Firebase
                 loadClientsTable();
                 if (typeof loadProductsTable === 'function') loadProductsTable();
@@ -2160,13 +2164,50 @@ function updateChartTheme() {
             }
         }
 
-        // ===== GESTÃO DE ORÇAMENTOS E LAUDOS =====
+        // ===== ORÇAMENTO → SERVIÇO → LAUDO =====
+        // Um atendimento segue sempre esta ordem e guarda um número só:
+        //   1. Orçamento: em aberto até a validade; o cliente pode recusar.
+        //   2. Serviço: "Converter em serviço" lança os itens no histórico do
+        //      cliente, e o orçamento deixa de contar como em aberto.
+        //   3. Laudo: emitido depois do serviço, com diagnóstico e solução.
+        // O número é AAAA-NNNN (2026-0007), dado ao salvar e reiniciado a cada
+        // ano. Até 10/2026 saía "0NaN-25" a partir do segundo orçamento (somava
+        // 1 a um texto): esses ganham número novo, e o antigo fica em
+        // numeroAntigo (a busca acha pelos dois). O PDF é de orcamento-pdf.js.
         let budgets = [];
         let currentBudget = null;
+        let modoOrcamento = 'orcamento';     // o que a janela está editando: orçamento ou laudo
+        let filtroOrcamentos = 'todos';
+        let orcamentosDaNuvem = false;       // a arrumação só é gravada depois de ler o Firebase
+
+        const NUMERO_ORCAMENTO = /^(\d{4})-(\d{4,})$/;
+        const VALIDADE_PADRAO = 7;
+        const GARANTIA_DIAS = 30;
+        const PAGAMENTO_PADRAO = 'Pix, cartão ou dinheiro';
+        const ETAPAS_ORCAMENTO = [['orcamento', 'Orçamento'], ['servico', 'Serviço'], ['laudo', 'Laudo']];
+        const PDF_ORC = () => window.PCFTOrcamentoPDF;
+
+        const escHtml = (t) => String(t == null ? '' : t).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        const reais = (v) => (PDF_ORC() ? PDF_ORC().moeda(v) : 'R$ ' + (Number(v) || 0).toFixed(2).replace('.', ','));
+        const campoOrc = (id) => document.getElementById(id);
+
+        function hojeISO() {
+            const d = new Date();
+            return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+        }
+
+        function somarDiasISO(iso, dias) {
+            const d = new Date(String(iso || hojeISO()).slice(0, 10) + 'T12:00:00');
+            d.setDate(d.getDate() + (Number(dias) || 0));
+            return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+        }
+
+        const diasAte = (iso) => Math.round((Date.parse(iso + 'T12:00:00') - Date.parse(hojeISO() + 'T12:00:00')) / 864e5);
+        const textoGarantia = (iso) => `30 dias (até ${formatDateBR(somarDiasISO(iso, GARANTIA_DIAS))})`;
+        const garantiaPadrao = (t) => !String(t || '').trim() || /^(3 meses|30 dias)/i.test(String(t).trim());
 
         function loadBudgetsFromStorage() {
-            const saved = localStorage.getItem('pcformatech_budgets');
-            budgets = saved ? JSON.parse(saved) : [];
+            try { budgets = JSON.parse(localStorage.getItem('pcformatech_budgets') || '[]') || []; } catch (e) { budgets = []; }
         }
 
         function saveBudgetsToStorage() {
@@ -2174,434 +2215,169 @@ function updateChartTheme() {
             _syncToFirebase('budgets', budgets);
         }
 
-        function getNextBudgetNumber() {
-            const lastNumber = budgets.length > 0 ? Math.max(...budgets.map(b => b.number || 0)) : 0;
-            return (lastNumber + 1).toString().padStart(4, '0') + '-25';
+        const clienteDoOrcamento = (b) => clients.find(c => c.id === b.clientId) || null;
+
+        /** Próximo número do ano: 2026-0001, 2026-0002… */
+        function proximoNumeroOrcamento(ano) {
+            const maior = budgets.reduce((m, b) => {
+                const r = NUMERO_ORCAMENTO.exec(String(b.number || ''));
+                return r && Number(r[1]) === ano ? Math.max(m, Number(r[2])) : m;
+            }, 0);
+            return ano + '-' + String(maior + 1).padStart(4, '0');
         }
 
-        function openNewBudgetModal() {
-            // Calcular data de vencimento da garantia (90 dias = 3 meses)
-            const dataAtual = new Date();
-            const dataGarantia = new Date(dataAtual);
-            dataGarantia.setDate(dataGarantia.getDate() + 90);
-            
-            const diaGarantia = String(dataGarantia.getDate()).padStart(2, '0');
-            const mesGarantia = String(dataGarantia.getMonth() + 1).padStart(2, '0');
-            const anoGarantia = dataGarantia.getFullYear();
-            const dataGarantiaFormatada = `${diaGarantia}/${mesGarantia}/${anoGarantia}`;
-            
-            currentBudget = {
-                id: null,
-                number: getNextBudgetNumber(),
-                clientId: null,
-                date: new Date().toISOString().split('T')[0],
-                type: 'orcamento',
-                services: [],
-                products: [],
-                defect: '',
-                report: '',
-                solution: '',
-                observations: '',
-                warranty: `3 Meses (válido até ${dataGarantiaFormatada})`
-            };
-
-            document.getElementById('budgetModalTitle').innerHTML = '<i class="fas fa-file-invoice"></i> Novo Orçamento / Laudo Técnico';
-            document.getElementById('budgetSaveButton').innerHTML = '<i class="fas fa-save"></i> Salvar Orçamento/Laudo';
-
-            populateClientSelect();
-            document.getElementById('budgetDate').value = currentBudget.date;
-            document.getElementById('budgetType').value = currentBudget.type;
-            document.getElementById('budgetServices').innerHTML = '';
-            document.getElementById('budgetProducts').innerHTML = '';
-            document.getElementById('budgetDefect').value = '';
-            document.getElementById('budgetReport').value = '';
-            document.getElementById('budgetSolution').value = '';
-            document.getElementById('budgetObservations').value = '';
-            document.getElementById('budgetWarranty').value = currentBudget.warranty;
-            updateBudgetTotal();
-
-            document.getElementById('budgetModal').style.display = 'block';
+        /** Orçamento antigo que já tinha virado serviço (o histórico do cliente guarda a origem). */
+        function foiConvertido(b) {
+            const c = clienteDoOrcamento(b);
+            const origem = `Convertido do ${b.type || 'orcamento'} Nº ${b.number}`;
+            return Boolean(c && (c.services || []).some(s => s.orcamentoId === b.id
+                || (String(s.description || '').startsWith(origem) && s.date === b.date)));
         }
 
-        function populateClientSelect() {
-            const select = document.getElementById('budgetClientId');
-            select.innerHTML = '<option value="">Selecione um cliente...</option>';
-            
-            clients.forEach(client => {
-                const option = document.createElement('option');
-                option.value = client.id;
-                option.textContent = `${client.name} - ${client.phone}`;
-                select.appendChild(option);
-            });
-        }
-
-        function addServiceToBudget() {
-            const saved = localStorage.getItem('pcformatech_services');
-            const services = saved ? JSON.parse(saved) : defaultServices;
-
-            const serviceData = {name: '', quantity: 1, unit: 'un', price: 0};
-            currentBudget.services.push(serviceData);
-            renderServiceRow(serviceData, services);
-            updateBudgetTotal();
-        }
-
-        function renderServiceRow(serviceData = {name: '', quantity: 1, unit: 'un', price: 0}, servicesMap = null) {
-            const container = document.getElementById('budgetServices');
-            const services = servicesMap || (localStorage.getItem('pcformatech_services') ? JSON.parse(localStorage.getItem('pcformatech_services')) : defaultServices);
-
-            const selectedKey = Object.keys(services).find(key => services[key].name === serviceData.name) || '';
-
-            const serviceDiv = document.createElement('div');
-            serviceDiv.className = 'service-card';
-            serviceDiv.innerHTML = `
-                <div class="client-form">
-                    <div class="input-group">
-                        <label>Serviço:</label>
-                        <select onchange="updateServicePrice(this, this.value)">
-                            <option value="">Selecione...</option>
-                            ${Object.keys(services).filter(k => k !== 'remoto').map(key => 
-                                `<option value="${key}" data-price="${services[key].price}" ${selectedKey === key ? 'selected' : ''}>${services[key].name}</option>`
-                            ).join('')}
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label>Quantidade:</label>
-                        <input type="number" value="${serviceData.quantity || 1}" min="1" onchange="updateBudgetTotal()">
-                    </div>
-                    <div class="input-group">
-                        <label>Unidade:</label>
-                        <input type="text" value="${serviceData.unit || 'un'}" readonly>
-                    </div>
-                    <div class="input-group">
-                        <label>Valor Unitário (R$):</label>
-                        <input type="number" step="0.01" value="${serviceData.price || 0}" onchange="updateBudgetTotal()">
-                    </div>
-                    <div class="input-group">
-                        <button type="button" class="btn-action btn-delete" onclick="removeServiceFromBudget(this)">
-                            <i class="fas fa-trash"></i> Remover
-                        </button>
-                    </div>
-                </div>
-            `;
-            
-            container.appendChild(serviceDiv);
-        }
-
-        function updateServicePrice(selectElement, serviceKey) {
-            if (!serviceKey) return;
-            
-            const saved = localStorage.getItem('pcformatech_services');
-            const services = saved ? JSON.parse(saved) : defaultServices;
-
-            const serviceDiv = selectElement.closest('.service-card');
-            if (!serviceDiv) return;
-            
-            const inputs = serviceDiv.querySelectorAll('input[type="number"]');
-            
-            inputs[1].value = services[serviceKey].price;
-            updateBudgetTotal();
-        }
-
-        function removeServiceFromBudget(buttonElement) {
-            const serviceDiv = buttonElement.closest('.service-card');
-            if (serviceDiv) {
-                serviceDiv.remove();
-            }
-            updateBudgetTotal();
-        }
-
-        function addProductToBudget() {
-            const productData = {name: '', quantity: 1, unit: 'un', price: 0};
-            currentBudget.products.push(productData);
-            renderProductRow(productData);
-            updateBudgetTotal();
-        }
-
-        function renderProductRow(productData = {name: '', quantity: 1, unit: 'un', price: 0}) {
-            const container = document.getElementById('budgetProducts');
-            const selectedProduct = products.find(p => p.name === productData.name);
-
-            const productDiv = document.createElement('div');
-            productDiv.className = 'service-card';
-            productDiv.innerHTML = `
-                <div class="client-form">
-                    <div class="input-group">
-                        <label>Produto:</label>
-                        <select onchange="updateProductPrice(this, this.value)">
-                            <option value="">Selecione...</option>
-                            ${products.map(p => 
-                                `<option value="${p.id}" data-price="${p.price}" ${selectedProduct && selectedProduct.id === p.id ? 'selected' : ''}>${p.name}</option>`
-                            ).join('')}
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label>Quantidade:</label>
-                        <input type="number" value="${productData.quantity || 1}" min="1" onchange="updateBudgetTotal()">
-                    </div>
-                    <div class="input-group">
-                        <label>Unidade:</label>
-                        <input type="text" value="${productData.unit || 'un'}" readonly>
-                    </div>
-                    <div class="input-group">
-                        <label>Valor Unitário (R$):</label>
-                        <input type="number" step="0.01" value="${productData.price || 0}" onchange="updateBudgetTotal()">
-                    </div>
-                    <div class="input-group">
-                        <button type="button" class="btn-action btn-delete" onclick="removeProductFromBudget(this)">
-                            <i class="fas fa-trash"></i> Remover
-                        </button>
-                    </div>
-                </div>
-            `;
-            
-            container.appendChild(productDiv);
-        }
-
-        function updateProductPrice(selectElement, productId) {
-            if (!productId) return;
-            
-            const product = products.find(p => p.id == productId);
-            if (!product) return;
-
-            const productDiv = selectElement.closest('.service-card');
-            if (!productDiv) return;
-            
-            const inputs = productDiv.querySelectorAll('input[type="number"]');
-            
-            inputs[1].value = product.price;
-            updateBudgetTotal();
-        }
-
-        function removeProductFromBudget(buttonElement) {
-            const productDiv = buttonElement.closest('.service-card');
-            if (productDiv) {
-                productDiv.remove();
-            }
-            updateBudgetTotal();
-        }
-
-        function updateBudgetTotal() {
-            let total = 0;
-            
-            // Calcular total dos serviços
-            const servicesContainer = document.getElementById('budgetServices');
-            Array.from(servicesContainer.children).forEach((div, index) => {
-                const inputs = div.querySelectorAll('input[type="number"]');
-                const quantity = parseFloat(inputs[0].value) || 0;
-                const price = parseFloat(inputs[1].value) || 0;
-                total += quantity * price;
-            });
-            
-            // Calcular total dos produtos
-            const productsContainer = document.getElementById('budgetProducts');
-            Array.from(productsContainer.children).forEach((div, index) => {
-                const inputs = div.querySelectorAll('input[type="number"]');
-                const quantity = parseFloat(inputs[0].value) || 0;
-                const price = parseFloat(inputs[1].value) || 0;
-                total += quantity * price;
-            });
-            
-            document.getElementById('budgetTotal').textContent = total.toFixed(2).replace('.', ',');
-        }
-
-        function saveBudget() {
-            const clientId = parseInt(document.getElementById('budgetClientId').value);
-            if (!clientId) {
-                alert('Por favor, selecione um cliente!');
-                return;
-            }
-
-            // Coletar dados dos serviços
-            const servicesContainer = document.getElementById('budgetServices');
-            const services = [];
-            Array.from(servicesContainer.children).forEach((div) => {
-                const select = div.querySelector('select');
-                const inputs = div.querySelectorAll('input');
-                const selectedOption = select.options[select.selectedIndex];
-                
-                if (selectedOption.value) {
-                    services.push({
-                        name: selectedOption.textContent,
-                        quantity: parseInt(inputs[0].value) || 1,
-                        unit: inputs[1].value || 'un',
-                        price: parseFloat(inputs[2].value) || 0
-                    });
+        /** Dá etapa, situação e número certo aos orçamentos antigos. Devolve true se mudou algo. */
+        function normalizarOrcamentos() {
+            let mudou = false;
+            const peso = (b) => Date.parse(b.createdAt || '') || Number(b.id) || 0;
+            [...budgets].sort((a, b) => peso(a) - peso(b)).forEach((b) => {
+                if (!b.etapa) {
+                    if (b.type === 'laudo') { b.etapa = 'laudo'; b.laudoData = b.laudoData || b.date; }
+                    else if (foiConvertido(b)) { b.etapa = 'servico'; b.convertidoEm = b.convertidoEm || b.date; }
+                    else b.etapa = 'orcamento';
+                    mudou = true;
+                }
+                if (b.etapa === 'orcamento' && !b.situacao) { b.situacao = 'aberto'; mudou = true; }
+                if (!NUMERO_ORCAMENTO.test(String(b.number || ''))) {
+                    if (b.number && !b.numeroAntigo) b.numeroAntigo = String(b.number);
+                    b.number = proximoNumeroOrcamento(Number(String(b.date || '').slice(0, 4)) || new Date().getFullYear());
+                    mudou = true;
                 }
             });
-
-            // Coletar dados dos produtos
-            const productsContainer = document.getElementById('budgetProducts');
-            const budgetProducts = [];
-            Array.from(productsContainer.children).forEach((div) => {
-                const select = div.querySelector('select');
-                const inputs = div.querySelectorAll('input');
-                const selectedOption = select.options[select.selectedIndex];
-                
-                if (selectedOption.value) {
-                    budgetProducts.push({
-                        name: selectedOption.textContent,
-                        quantity: parseInt(inputs[0].value) || 1,
-                        unit: inputs[1].value || 'un',
-                        price: parseFloat(inputs[2].value) || 0
-                    });
-                }
-            });
-
-            // Calcular data de vencimento da garantia se for um valor padrão
-            let warrantyValue = document.getElementById('budgetWarranty').value;
-            if (warrantyValue === '3 Meses' || warrantyValue.startsWith('3 Meses (válido até')) {
-                const dataAtual = new Date();
-                const dataGarantia = new Date(dataAtual);
-                dataGarantia.setDate(dataGarantia.getDate() + 90);
-                
-                const diaGarantia = String(dataGarantia.getDate()).padStart(2, '0');
-                const mesGarantia = String(dataGarantia.getMonth() + 1).padStart(2, '0');
-                const anoGarantia = dataGarantia.getFullYear();
-                const dataGarantiaFormatada = `${diaGarantia}/${mesGarantia}/${anoGarantia}`;
-                
-                warrantyValue = `3 Meses (válido até ${dataGarantiaFormatada})`;
-            }
-            
-            const budget = {
-                id: currentBudget.id || Date.now(),
-                number: currentBudget.number,
-                clientId,
-                date: document.getElementById('budgetDate').value,
-                type: document.getElementById('budgetType').value,
-                services,
-                products: budgetProducts,
-                defect: document.getElementById('budgetDefect').value,
-                report: document.getElementById('budgetReport').value,
-                solution: document.getElementById('budgetSolution').value,
-                observations: document.getElementById('budgetObservations').value,
-                warranty: warrantyValue,
-                createdAt: currentBudget.createdAt || new Date().toISOString()
-            };
-
-            if (currentBudget.id) {
-                const index = budgets.findIndex(b => b.id === currentBudget.id);
-                budgets[index] = budget;
-            } else {
-                budgets.push(budget);
-            }
-
-            saveBudgetsToStorage();
-            closeModal('budgetModal');
-            loadBudgetsTable();
-            showSuccess();
+            return mudou;
         }
 
-        function editBudget(budgetId) {
-            const budget = budgets.find(b => b.id === budgetId);
-            if (!budget) {
-                alert('Orçamento/Laudo não encontrado!');
-                return;
-            }
-
-            currentBudget = {...budget};
-
-            document.getElementById('budgetModalTitle').innerHTML = `<i class="fas fa-edit"></i> Editar ${budget.type === 'laudo' ? 'Laudo Técnico' : 'Orçamento'}`;
-            document.getElementById('budgetSaveButton').innerHTML = '<i class="fas fa-save"></i> Atualizar Orçamento/Laudo';
-
-            populateClientSelect();
-            document.getElementById('budgetClientId').value = budget.clientId;
-            document.getElementById('budgetDate').value = budget.date;
-            document.getElementById('budgetType').value = budget.type;
-            document.getElementById('budgetDefect').value = budget.defect || '';
-            document.getElementById('budgetReport').value = budget.report || '';
-            document.getElementById('budgetSolution').value = budget.solution || '';
-            document.getElementById('budgetObservations').value = budget.observations || '';
-            document.getElementById('budgetWarranty').value = budget.warranty || '';
-
-            const servicesContainer = document.getElementById('budgetServices');
-            servicesContainer.innerHTML = '';
-            const serviceItems = Array.isArray(budget.services) ? budget.services : [];
-            serviceItems.forEach(service => renderServiceRow(service));
-
-            const productsContainer = document.getElementById('budgetProducts');
-            productsContainer.innerHTML = '';
-            const productItems = Array.isArray(budget.products) ? budget.products : [];
-            productItems.forEach(product => renderProductRow(product));
-
-            updateBudgetTotal();
-            document.getElementById('budgetModal').style.display = 'block';
+        // Arrumação feita antes de ler a nuvem fica pendente até poder gravar.
+        let orcamentosArrumar = false;
+        function prepararOrcamentos() {
+            if (normalizarOrcamentos()) orcamentosArrumar = true;
+            if (orcamentosArrumar && orcamentosDaNuvem && budgets.length) { orcamentosArrumar = false; saveBudgetsToStorage(); }
         }
 
-        function loadBudgetsTable() {
-            const tbody = document.getElementById('budgetsTableBody');
-            tbody.innerHTML = '';
-
-            const searchTerm = document.getElementById('searchBudget')?.value.toLowerCase() || '';
-            
-            // String(...) evita quebrar quando o orçamento não tem número ou aponta
-            // para um cliente que já foi excluído.
-            const filteredBudgets = budgets.filter(budget => {
-                const client = clients.find(c => c.id === budget.clientId);
-                const clientName = String(client?.name || '').toLowerCase();
-                return clientName.includes(searchTerm) || String(budget.number || '').includes(searchTerm);
-            });
-
-            if (!filteredBudgets.length) {
-                renderTabelaVazia(tbody, {
-                    buscando: !!searchTerm,
-                    icone: 'file-invoice',
-                    tituloVazio: 'Nenhum orçamento ou laudo emitido',
-                    textoVazio: 'Clique em "Novo Orçamento/Laudo" para criar o primeiro.',
-                    tituloBusca: 'Nenhum orçamento encontrado',
-                    textoBusca: 'Busque pelo nome do cliente ou pelo número do laudo.'
-                });
-                return;
-            }
-
-            filteredBudgets.reverse().forEach(budget => {
-                const client = clients.find(c => c.id === budget.clientId);
-                const total = calculateBudgetTotal(budget);
-                
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td><strong>${budget.number}</strong></td>
-                    <td>${client ? client.name : 'Cliente não encontrado'}</td>
-                    <td>${formatDateBR(budget.date)}</td>
-                    <td><strong>R$ ${total.toFixed(2).replace('.', ',')}</strong></td>
-                    <td><span class="service-status ${budget.type === 'laudo' ? 'status-concluido' : 'status-andamento'}">${budget.type === 'laudo' ? 'Laudo' : 'Orçamento'}</span></td>
-                    <td>
-                        <button class="btn-action btn-view" onclick="viewBudget(${budget.id})">
-                            <i class="fas fa-eye"></i> Ver
-                        </button>
-                        <button class="btn-action btn-edit" onclick="editBudget(${budget.id})">
-                            <i class="fas fa-edit"></i> Editar
-                        </button>
-                        <button class="btn-action btn-convert" onclick="convertBudgetToService(${budget.id})" title="Converter em Serviço">
-                            <i class="fas fa-exchange-alt"></i> Converter
-                        </button>
-                        <button class="btn-action btn-whatsapp" onclick="generatePDFForBudget(${budget.id})">
-                            <i class="fas fa-file-pdf"></i> PDF
-                        </button>
-                        <button class="btn-action btn-delete" onclick="deleteBudget(${budget.id})">
-                            <i class="fas fa-trash"></i> Excluir
-                        </button>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
+        /** Onde o atendimento está: em aberto, vencido, recusado, em serviço ou com laudo. */
+        function situacaoOrcamento(b) {
+            if (b.etapa === 'laudo') return { chave: 'laudo', texto: 'Laudo emitido', detalhe: b.laudoData ? formatDateBR(b.laudoData) : '' };
+            if (b.etapa === 'servico') return { chave: 'servico', texto: 'Virou serviço', detalhe: b.convertidoEm ? formatDateBR(b.convertidoEm) : '' };
+            if (b.situacao === 'recusado') return { chave: 'recusado', texto: 'Recusado', detalhe: '' };
+            const dias = diasAte(somarDiasISO(b.date, b.validadeDias || VALIDADE_PADRAO));
+            if (dias < 0) return { chave: 'vencido', texto: 'Vencido', detalhe: '' };
+            return { chave: 'aberto', texto: 'Em aberto', detalhe: dias === 0 ? 'vence hoje' : dias === 1 ? 'vence amanhã' : `vence em ${dias} dias` };
         }
 
         function calculateBudgetTotal(budget) {
-            let total = 0;
-            
-            if (budget.services) {
-                budget.services.forEach(service => {
-                    total += (service.quantity || 1) * (service.price || 0);
-                });
+            if (PDF_ORC()) return PDF_ORC().totais(budget).total;
+            const soma = (l) => (l || []).reduce((t, i) => t + (i.quantity || 1) * (i.price || 0), 0);
+            return Math.max(0, soma(budget.services) + soma(budget.products) - (Number(budget.desconto) || 0));
+        }
+
+        // ── Lista ─────────────────────────────────────────────────────────
+
+        function desenharResumoOrcamentos() {
+            const caixa = campoOrc('orcResumo');
+            if (!caixa) return;
+            const mes = hojeISO().slice(0, 7);
+            let abertos = 0, valorAberto = 0, vencendo = 0, convertidos = 0, decididos = 0, mesQtd = 0, mesValor = 0;
+            budgets.forEach((b) => {
+                const s = situacaoOrcamento(b);
+                const total = calculateBudgetTotal(b);
+                if (s.chave === 'aberto') {
+                    abertos++;
+                    valorAberto += total;
+                    if (diasAte(somarDiasISO(b.date, b.validadeDias || VALIDADE_PADRAO)) <= 1) vencendo++;
+                }
+                if (s.chave === 'servico' || s.chave === 'laudo') {
+                    convertidos++;
+                    if (String(b.convertidoEm || b.laudoData || b.date || '').slice(0, 7) === mes) { mesQtd++; mesValor += total; }
+                }
+                if (s.chave !== 'aberto') decididos++;
+            });
+            const taxa = decididos ? Math.round((convertidos / decididos) * 100) + '%' : '—';
+            caixa.innerHTML = `
+                <div class="orc-kpi is-aberto"><span>Em aberto</span><strong>${abertos}</strong><small>${reais(valorAberto)}${vencendo ? ` · ${vencendo} vencendo` : ''}</small></div>
+                <div class="orc-kpi is-servico"><span>Fechados no mês</span><strong>${mesQtd}</strong><small>${reais(mesValor)}</small></div>
+                <div class="orc-kpi is-taxa"><span>Aprovação</span><strong>${taxa}</strong><small>${convertidos} de ${decididos} decididos</small></div>`;
+        }
+
+        function etapasHtml(b) {
+            const atual = ETAPAS_ORCAMENTO.findIndex(([e]) => e === b.etapa);
+            return `<ol class="orc-etapas" aria-label="Etapa do atendimento">${ETAPAS_ORCAMENTO.map(([, nome], i) =>
+                `<li class="${i < atual ? 'is-feita' : i === atual ? 'is-atual' : ''}">${nome}</li>`).join('')}</ol>`;
+        }
+
+        function acoesOrcamentoHtml(b, s) {
+            const botao = (acao, icone, texto, classe) => `<button type="button" class="orc-acao ${classe || ''}" data-acao="${acao}"${texto ? '' : ' aria-label="Excluir" title="Excluir"'}><i class="fas fa-${icone}" aria-hidden="true"></i>${texto ? ' ' + texto : ''}</button>`;
+            const excluir = botao('excluir', 'trash-alt', '', 'is-perigo');
+            if (b.etapa === 'laudo') {
+                return botao('enviar-laudo', 'paper-plane', 'Enviar laudo', 'is-principal') + botao('pdf-laudo', 'file-pdf', 'PDF')
+                    + botao('editar', 'pen', 'Editar laudo') + (b.convertidoEm ? botao('pdf-orcamento', 'file-invoice', 'Orçamento') : '') + excluir;
             }
-            
-            if (budget.products) {
-                budget.products.forEach(product => {
-                    total += (product.quantity || 1) * (product.price || 0);
-                });
+            if (b.etapa === 'servico') {
+                return botao('laudo', 'clipboard-check', 'Emitir laudo', 'is-principal') + botao('pdf-orcamento', 'file-pdf', 'PDF do orçamento') + excluir;
             }
-            
-            return total;
+            if (s.chave === 'recusado') return botao('reabrir', 'undo', 'Reabrir') + botao('pdf-orcamento', 'file-pdf', 'PDF') + excluir;
+            return botao('enviar', 'paper-plane', 'Enviar', 'is-principal') + botao('converter', 'check-circle', 'Virou serviço', 'is-ok')
+                + botao('editar', 'pen', 'Editar') + botao('pdf-orcamento', 'file-pdf', 'PDF')
+                + (s.chave === 'vencido' ? botao('reabrir', 'redo', 'Renovar') : botao('recusar', 'times-circle', 'Recusou')) + excluir;
+        }
+
+        function loadBudgetsTable() {
+            const lista = campoOrc('orcLista');
+            if (!lista) return;
+            prepararOrcamentos();
+            desenharResumoOrcamentos();
+            document.querySelectorAll('[data-orc-filtro]').forEach((b) => {
+                b.classList.toggle('is-ativo', b.dataset.orcFiltro === filtroOrcamentos);
+                b.setAttribute('aria-pressed', String(b.dataset.orcFiltro === filtroOrcamentos));
+            });
+
+            const termo = (campoOrc('searchBudget')?.value || '').trim().toLowerCase();
+            const filtrados = budgets.filter((b) => {
+                const s = situacaoOrcamento(b).chave;
+                if (filtroOrcamentos === 'encerrados' ? !['recusado', 'vencido'].includes(s) : (filtroOrcamentos !== 'todos' && s !== filtroOrcamentos)) return false;
+                if (!termo) return true;
+                const c = clienteDoOrcamento(b);
+                return [c && c.name, b.number, b.numeroAntigo, b.equipamento].some(v => String(v || '').toLowerCase().includes(termo));
+            }).sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')) || String(b.number).localeCompare(String(a.number)));
+
+            if (!filtrados.length) {
+                const buscando = Boolean(termo) || filtroOrcamentos !== 'todos';
+                lista.innerHTML = `<div class="orc-vazio"><i class="fas fa-${buscando ? 'search' : 'file-invoice-dollar'}" aria-hidden="true"></i>
+                    <strong>${buscando ? 'Nada encontrado' : 'Nenhum orçamento ainda'}</strong>
+                    <span>${buscando ? 'Mude o filtro ou busque pelo nome do cliente ou pelo número.' : 'Toque em "Novo orçamento" para criar o primeiro.'}</span></div>`;
+                return;
+            }
+
+            lista.innerHTML = filtrados.map((b) => {
+                const c = clienteDoOrcamento(b);
+                const s = situacaoOrcamento(b);
+                const itens = [...(b.services || []), ...(b.products || [])].filter(i => i && i.name);
+                const resumo = itens.length
+                    ? escHtml(itens[0].name) + (itens.length > 1 ? ` <span class="orc-mais">+ ${itens.length - 1} ${itens.length === 2 ? 'item' : 'itens'}</span>` : '')
+                    : '<span class="orc-mais">Sem itens</span>';
+                const enviado = b.etapa === 'laudo' ? b.laudoEnviadoEm : b.enviadoEm;
+                return `<article class="orc-card is-${s.chave}" data-id="${b.id}">
+                    <div class="orc-card-topo">
+                        <span class="orc-numero">Nº ${escHtml(b.number)}</span>
+                        <span class="orc-chip">${s.texto}${s.detalhe ? ' · ' + s.detalhe : ''}</span>
+                    </div>
+                    <strong class="orc-cliente">${escHtml(c ? c.name : 'Cliente excluído')}</strong>
+                    <p class="orc-card-itens">${resumo}${b.equipamento ? `<small>${escHtml(b.equipamento)}</small>` : ''}</p>
+                    <div class="orc-card-meio">
+                        <span>${formatDateBR(b.date)}${enviado ? ` · <i class="fas fa-check-double" aria-hidden="true"></i> enviado ${formatDateBR(enviado)}` : ''}${b.numeroAntigo ? ` · antes ${escHtml(b.numeroAntigo)}` : ''}</span>
+                        <strong class="orc-total">${reais(calculateBudgetTotal(b))}</strong>
+                    </div>
+                    ${etapasHtml(b)}
+                    <div class="orc-acoes">${acoesOrcamentoHtml(b, s)}</div>
+                </article>`;
+            }).join('');
         }
 
         const _buscarOrcamentos = debounce(() => loadBudgetsTable());
@@ -2609,285 +2385,495 @@ function updateChartTheme() {
             _buscarOrcamentos();
         }
 
+        function avisoOrcamentos(texto, erro, id) {
+            const el = campoOrc(id || 'orcStatus');
+            if (!el) return;
+            el.textContent = texto || '';
+            el.classList.toggle('is-erro', Boolean(erro));
+            if (texto && !erro) setTimeout(() => { if (el.textContent === texto) el.textContent = ''; }, 5000);
+        }
+
+        // Ações dos cartões (um ouvinte só para a lista inteira).
+        document.addEventListener('click', (e) => {
+            const filtro = e.target.closest('[data-orc-filtro]');
+            if (filtro) { filtroOrcamentos = filtro.dataset.orcFiltro; loadBudgetsTable(); return; }
+            const botao = e.target.closest('#orcLista .orc-acao');
+            if (!botao) return;
+            const id = Number(botao.closest('.orc-card').dataset.id);
+            const b = budgets.find(x => x.id === id);
+            if (!b) return;
+            const acoes = {
+                'enviar': () => enviarOrcamento(b, 'orcamento', botao),
+                'enviar-laudo': () => enviarOrcamento(b, 'laudo', botao),
+                'pdf-orcamento': () => abrirPdfOrcamento(b, 'orcamento', botao),
+                'pdf-laudo': () => abrirPdfOrcamento(b, 'laudo', botao),
+                'editar': () => editBudget(b.id),
+                'laudo': () => emitirLaudo(b.id),
+                'converter': () => convertBudgetToService(b.id),
+                'recusar': () => mudarSituacaoOrcamento(b, 'recusado'),
+                'reabrir': () => mudarSituacaoOrcamento(b, 'aberto'),
+                'excluir': () => deleteBudget(b.id)
+            };
+            if (acoes[botao.dataset.acao]) acoes[botao.dataset.acao]();
+        });
+
+        function mudarSituacaoOrcamento(b, situacao) {
+            b.situacao = situacao;
+            if (situacao === 'recusado') b.recusadoEm = hojeISO();
+            if (situacao === 'aberto') {
+                // Reabrir um orçamento vencido dá mais uma validade inteira a partir de hoje.
+                const passou = -diasAte(somarDiasISO(b.date, b.validadeDias || VALIDADE_PADRAO));
+                if (passou > 0) b.validadeDias = (b.validadeDias || VALIDADE_PADRAO) + passou + VALIDADE_PADRAO;
+                delete b.recusadoEm;
+            }
+            b.updatedAt = new Date().toISOString();
+            saveBudgetsToStorage();
+            loadBudgetsTable();
+            avisoOrcamentos(situacao === 'recusado' ? `Orçamento Nº ${b.number} marcado como recusado.` : `Orçamento Nº ${b.number} em aberto de novo, válido até ${formatDateBR(somarDiasISO(b.date, b.validadeDias))}.`);
+        }
+
+        // ── Janela de edição ──────────────────────────────────────────────
+
+        function servicosConhecidos() {
+            let mapa = defaultServices;
+            try { mapa = JSON.parse(localStorage.getItem('pcformatech_services') || 'null') || defaultServices; } catch (e) { /* padrão */ }
+            return Object.keys(mapa).filter(k => k !== 'remoto' && mapa[k] && mapa[k].name)
+                .map(k => ({ nome: mapa[k].name, preco: Number(mapa[k].price) || 0 }));
+        }
+
+        const produtosConhecidos = () => (products || []).filter(p => p && p.name).map(p => ({ nome: p.name, preco: Number(p.price) || 0 }));
+
+        function preencherSugestoes() {
+            const lista = (id, itens) => {
+                const dl = campoOrc(id);
+                if (dl) dl.innerHTML = itens.map(i => `<option value="${escHtml(i.nome)}">${reais(i.preco)}</option>`).join('');
+            };
+            lista('orcSugestoesServico', servicosConhecidos());
+            lista('orcSugestoesProduto', produtosConhecidos());
+            const rapidos = campoOrc('orcRapidos');
+            if (rapidos) {
+                rapidos.innerHTML = servicosConhecidos().slice(0, 6).map(s =>
+                    `<button type="button" class="orc-rapido" data-nome="${escHtml(s.nome)}" data-preco="${s.preco}">${escHtml(s.nome.replace(/ de (Computadores?|Dados)$/i, ''))} <b>${reais(s.preco)}</b></button>`).join('');
+            }
+        }
+
+        function linhaItemOrcamento(tipo, item) {
+            const i = item || {};
+            const div = document.createElement('div');
+            div.className = 'orc-item';
+            div.dataset.tipo = tipo;
+            div.dataset.auto = i.price ? '0' : '1';
+            div.innerHTML = `
+                <span class="orc-item-tipo">${tipo === 'produto' ? 'Produto' : 'Serviço'}</span>
+                <input type="text" class="orc-item-nome" list="${tipo === 'produto' ? 'orcSugestoesProduto' : 'orcSugestoesServico'}" placeholder="${tipo === 'produto' ? 'Produto (escolha ou digite)' : 'Serviço (escolha ou digite)'}" value="${escHtml(i.name || '')}" aria-label="Descrição">
+                <label class="orc-item-qtd"><span>Qtd</span><input type="number" min="1" step="1" inputmode="numeric" value="${Number(i.quantity) || 1}"></label>
+                <label class="orc-item-preco"><span>Valor (R$)</span><input type="number" min="0" step="0.01" inputmode="decimal" value="${i.price != null && i.price !== '' ? Number(i.price).toFixed(2) : ''}" placeholder="0,00"></label>
+                <strong class="orc-item-total">R$ 0,00</strong>
+                <button type="button" class="orc-item-remover" aria-label="Remover item" title="Remover"><i class="fas fa-times" aria-hidden="true"></i></button>`;
+            campoOrc('orcItens').appendChild(div);
+            return div;
+        }
+
+        function addServiceToBudget(nome, preco) {
+            const linha = linhaItemOrcamento('servico', nome ? { name: nome, price: preco } : null);
+            atualizarTotaisOrcamento();
+            if (!nome) linha.querySelector('.orc-item-nome').focus();
+        }
+
+        function addProductToBudget() {
+            linhaItemOrcamento('produto').querySelector('.orc-item-nome').focus();
+            atualizarTotaisOrcamento();
+        }
+
+        function lerItensOrcamento() {
+            const servicos = [], produtosItens = [];
+            document.querySelectorAll('#orcItens .orc-item').forEach((div) => {
+                const nome = div.querySelector('.orc-item-nome').value.trim();
+                if (!nome) return;
+                const [qtd, preco] = div.querySelectorAll('input[type="number"]');
+                const item = { name: nome, quantity: Math.max(1, parseFloat(qtd.value) || 1), unit: 'un', price: Math.max(0, parseFloat(preco.value) || 0) };
+                (div.dataset.tipo === 'produto' ? produtosItens : servicos).push(item);
+            });
+            return { services: servicos, products: produtosItens };
+        }
+
+        function atualizarTotaisOrcamento() {
+            document.querySelectorAll('#orcItens .orc-item').forEach((div) => {
+                const [qtd, preco] = div.querySelectorAll('input[type="number"]');
+                div.querySelector('.orc-item-total').textContent = reais((parseFloat(qtd.value) || 0) * (parseFloat(preco.value) || 0));
+            });
+            const parcial = { ...lerItensOrcamento(), desconto: parseFloat(campoOrc('budgetDesconto').value) || 0 };
+            const t = PDF_ORC() ? PDF_ORC().totais(parcial) : { subtotal: 0, desconto: 0, total: 0 };
+            campoOrc('orcSubtotal').textContent = reais(t.subtotal);
+            campoOrc('orcDescontoValor').textContent = t.desconto ? '- ' + reais(t.desconto) : reais(0);
+            campoOrc('budgetTotal').textContent = reais(t.total);
+            const extenso = PDF_ORC() ? PDF_ORC().extenso(t.total) : '';
+            campoOrc('orcExtenso').textContent = extenso ? extenso.charAt(0).toUpperCase() + extenso.slice(1) : '';
+            campoOrc('orcItensVazio').hidden = Boolean(document.querySelector('#orcItens .orc-item'));
+        }
+        const updateBudgetTotal = atualizarTotaisOrcamento;
+
+        // Digitar ou escolher um serviço conhecido já põe o preço (até a pessoa mudar o valor).
+        document.addEventListener('input', (e) => {
+            const div = e.target.closest && e.target.closest('#orcItens .orc-item');
+            if (div) {
+                if (e.target.classList.contains('orc-item-nome')) {
+                    const conhecido = (div.dataset.tipo === 'produto' ? produtosConhecidos() : servicosConhecidos())
+                        .find(i => i.nome.toLowerCase() === e.target.value.trim().toLowerCase());
+                    const preco = div.querySelectorAll('input[type="number"]')[1];
+                    if (conhecido && (div.dataset.auto === '1' || !preco.value)) { preco.value = conhecido.preco.toFixed(2); div.dataset.auto = '1'; }
+                } else if (e.target === div.querySelectorAll('input[type="number"]')[1]) {
+                    div.dataset.auto = '0';
+                }
+                atualizarTotaisOrcamento();
+                return;
+            }
+            if (e.target.id === 'budgetDesconto') atualizarTotaisOrcamento();
+            if (e.target.id === 'budgetDate' || e.target.id === 'budgetLaudoData') {
+                const base = modoOrcamento === 'laudo' ? campoOrc('budgetLaudoData').value : campoOrc('budgetDate').value;
+                if (base && garantiaPadrao(campoOrc('budgetWarranty').value)) campoOrc('budgetWarranty').value = textoGarantia(base);
+                desenharFaixaOrcamento();
+            }
+            if (e.target.id === 'budgetValidade') desenharFaixaOrcamento();
+        });
+
+        document.addEventListener('click', (e) => {
+            const rapido = e.target.closest('#orcRapidos .orc-rapido');
+            if (rapido) { addServiceToBudget(rapido.dataset.nome, Number(rapido.dataset.preco)); return; }
+            const remover = e.target.closest('#orcItens .orc-item-remover');
+            if (remover) { remover.closest('.orc-item').remove(); atualizarTotaisOrcamento(); }
+        });
+
+        function populateClientSelect() {
+            const select = campoOrc('budgetClientId');
+            const ordenados = [...clients].sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'pt-BR'));
+            select.innerHTML = '<option value="">Escolha o cliente…</option>' + ordenados.map(c =>
+                `<option value="${c.id}">${escHtml(c.name)}${c.phone ? ' · ' + escHtml(c.phone) : ''}</option>`).join('');
+        }
+
+        function desenharFaixaOrcamento() {
+            const faixa = campoOrc('orcFaixa');
+            if (!faixa || !currentBudget) return;
+            const ano = Number(String(campoOrc('budgetDate').value || hojeISO()).slice(0, 4));
+            const numero = currentBudget.number || proximoNumeroOrcamento(ano);
+            const etapa = modoOrcamento === 'laudo' ? 'laudo' : (currentBudget.etapa || 'orcamento');
+            let detalhe = '';
+            if (modoOrcamento === 'orcamento') {
+                const vence = somarDiasISO(campoOrc('budgetDate').value || hojeISO(), parseInt(campoOrc('budgetValidade').value) || VALIDADE_PADRAO);
+                detalhe = `Válido até ${formatDateBR(vence)}`;
+            } else {
+                detalhe = 'Depois do serviço: diagnóstico, solução e garantia';
+            }
+            faixa.innerHTML = `
+                <div class="orc-faixa-num"><span>${modoOrcamento === 'laudo' ? 'Laudo técnico' : 'Orçamento'}</span>
+                    <strong>Nº ${escHtml(numero)}</strong>${currentBudget.number ? '' : '<small>número dado ao salvar</small>'}</div>
+                <div class="orc-faixa-info">${etapasHtml({ etapa })}<small>${detalhe}</small></div>`;
+        }
+
+        function abrirJanelaOrcamento(modo) {
+            modoOrcamento = modo;
+            const b = currentBudget;
+            const laudo = modo === 'laudo';
+            preencherSugestoes();
+            populateClientSelect();
+            campoOrc('budgetModalTitle').innerHTML = laudo
+                ? `<i class="fas fa-clipboard-check"></i> ${b.etapa === 'laudo' ? 'Editar laudo técnico' : 'Emitir laudo técnico'}`
+                : `<i class="fas fa-file-invoice-dollar"></i> ${b.id ? 'Editar orçamento' : 'Novo orçamento'}`;
+            campoOrc('budgetClientId').value = b.clientId || '';
+            campoOrc('budgetDate').value = b.date || hojeISO();
+            // Validade fora da lista (um orçamento renovado, por exemplo) ganha a sua opção.
+            const validade = campoOrc('budgetValidade');
+            const dias = String(b.validadeDias || VALIDADE_PADRAO);
+            validade.querySelectorAll('option[data-extra]').forEach(o => o.remove());
+            if (![...validade.options].some(o => o.value === dias)) validade.insertAdjacentHTML('beforeend', `<option value="${dias}" data-extra>${dias} dias</option>`);
+            validade.value = dias;
+            campoOrc('budgetLaudoData').value = b.laudoData || hojeISO();
+            campoOrc('budgetEquipamento').value = b.equipamento || '';
+            campoOrc('budgetDefect').value = b.defect || '';
+            campoOrc('budgetReport').value = b.report || '';
+            campoOrc('budgetSolution').value = b.solution || '';
+            campoOrc('budgetObservations').value = b.observations || '';
+            campoOrc('budgetDesconto').value = b.desconto ? Number(b.desconto).toFixed(2) : '';
+            campoOrc('budgetPagamento').value = b.pagamento || PAGAMENTO_PADRAO;
+            campoOrc('budgetPix').checked = b.pix !== false;
+            const baseGarantia = laudo ? campoOrc('budgetLaudoData').value : campoOrc('budgetDate').value;
+            campoOrc('budgetWarranty').value = garantiaPadrao(b.warranty) ? textoGarantia(baseGarantia) : b.warranty;
+
+            campoOrc('orcValidadeCampo').hidden = laudo;
+            campoOrc('orcLaudoDataCampo').hidden = !laudo;
+            campoOrc('orcLaudoSecao').hidden = !laudo;
+            campoOrc('orcDefeitoRotulo').textContent = laudo ? 'Defeito relatado pelo cliente' : 'Problema relatado pelo cliente';
+            campoOrc('budgetSaveButton').innerHTML = `<i class="fas fa-save"></i> ${laudo ? 'Salvar laudo' : 'Salvar orçamento'}`;
+            campoOrc('orcEnviarBtn').innerHTML = `<i class="fab fa-whatsapp"></i> ${laudo ? 'Enviar laudo' : 'Enviar ao cliente'}`;
+
+            campoOrc('orcItens').innerHTML = '';
+            (b.services || []).forEach(s => linhaItemOrcamento('servico', s));
+            (b.products || []).forEach(p => linhaItemOrcamento('produto', p));
+            avisoOrcamentos('', false, 'orcModalStatus');
+            desenharFaixaOrcamento();
+            atualizarTotaisOrcamento();
+            campoOrc('budgetModal').style.display = 'block';
+            const conteudo = campoOrc('budgetModal').querySelector('.modal-content');
+            if (conteudo) conteudo.scrollTop = 0;
+        }
+
+        function openNewBudgetModal() {
+            const hoje = hojeISO();
+            currentBudget = {
+                id: null, number: null, etapa: 'orcamento', situacao: 'aberto', type: 'orcamento',
+                clientId: null, date: hoje, validadeDias: VALIDADE_PADRAO,
+                services: [], products: [], desconto: 0, pagamento: PAGAMENTO_PADRAO, pix: true,
+                equipamento: '', defect: '', report: '', solution: '', observations: '',
+                warranty: textoGarantia(hoje)
+            };
+            abrirJanelaOrcamento('orcamento');
+        }
+
+        function editBudget(budgetId) {
+            const budget = budgets.find(b => b.id === budgetId);
+            if (!budget) { alert('Orçamento não encontrado.'); return; }
+            currentBudget = JSON.parse(JSON.stringify(budget));
+            abrirJanelaOrcamento(budget.etapa === 'laudo' ? 'laudo' : 'orcamento');
+        }
+
         function viewBudget(budgetId) {
             editBudget(budgetId);
         }
 
-        function deleteBudget(budgetId) {
-            if (confirm('Tem certeza que deseja excluir este orçamento/laudo?')) {
-                budgets = budgets.filter(b => b.id !== budgetId);
-                saveBudgetsToStorage();
-                loadBudgetsTable();
-                showSuccess();
+        /** Etapa 3: depois do serviço, o laudo com diagnóstico, solução e garantia. */
+        function emitirLaudo(budgetId) {
+            const budget = budgets.find(b => b.id === budgetId);
+            if (!budget) return;
+            currentBudget = JSON.parse(JSON.stringify(budget));
+            if (!currentBudget.laudoData) currentBudget.laudoData = hojeISO();
+            if (!currentBudget.solution) currentBudget.solution = lerResumoItens(currentBudget);
+            abrirJanelaOrcamento('laudo');
+            setTimeout(() => campoOrc('budgetReport').focus(), 50);
+        }
+
+        const lerResumoItens = (b) => [...(b.services || []), ...(b.products || [])].filter(i => i && i.name).map(i => i.name).join(', ');
+
+        function lerFormularioOrcamento() {
+            const b = { ...currentBudget, ...lerItensOrcamento() };
+            b.clientId = parseInt(campoOrc('budgetClientId').value) || null;
+            b.date = campoOrc('budgetDate').value || hojeISO();
+            b.validadeDias = parseInt(campoOrc('budgetValidade').value) || VALIDADE_PADRAO;
+            b.equipamento = campoOrc('budgetEquipamento').value.trim();
+            b.defect = campoOrc('budgetDefect').value.trim();
+            b.report = campoOrc('budgetReport').value.trim();
+            b.solution = campoOrc('budgetSolution').value.trim();
+            b.observations = campoOrc('budgetObservations').value.trim();
+            b.warranty = campoOrc('budgetWarranty').value.trim();
+            b.pagamento = campoOrc('budgetPagamento').value.trim() || PAGAMENTO_PADRAO;
+            b.desconto = Math.max(0, parseFloat(campoOrc('budgetDesconto').value) || 0);
+            b.pix = campoOrc('budgetPix').checked;
+            if (modoOrcamento === 'laudo') b.laudoData = campoOrc('budgetLaudoData').value || hojeISO();
+            return b;
+        }
+
+        /** Salva o que está na janela. Devolve o orçamento salvo, ou null se falta algo. */
+        function saveBudget() {
+            const b = lerFormularioOrcamento();
+            if (!b.clientId) {
+                avisoOrcamentos('Escolha o cliente.', true, 'orcModalStatus');
+                campoOrc('budgetClientId').focus();
+                return null;
+            }
+            if (modoOrcamento === 'orcamento' && !b.services.length && !b.products.length) {
+                avisoOrcamentos('Coloque pelo menos um item no orçamento.', true, 'orcModalStatus');
+                return null;
+            }
+            if (b.desconto > 0 && PDF_ORC() && PDF_ORC().totais({ ...b, desconto: 0 }).subtotal < b.desconto) {
+                avisoOrcamentos('O desconto é maior que o subtotal.', true, 'orcModalStatus');
+                campoOrc('budgetDesconto').focus();
+                return null;
+            }
+            const novo = !b.id;
+            if (novo) {
+                b.id = Date.now();
+                b.createdAt = new Date().toISOString();
+            }
+            if (!b.number) b.number = proximoNumeroOrcamento(Number(b.date.slice(0, 4)) || new Date().getFullYear());
+            if (modoOrcamento === 'laudo') { b.etapa = 'laudo'; b.type = 'laudo'; }
+            else { b.etapa = b.etapa || 'orcamento'; b.type = 'orcamento'; if (b.etapa === 'orcamento' && !b.situacao) b.situacao = 'aberto'; }
+            b.updatedAt = new Date().toISOString();
+
+            const i = budgets.findIndex(x => x.id === b.id);
+            if (i >= 0) budgets[i] = b; else budgets.push(b);
+            currentBudget = JSON.parse(JSON.stringify(b));
+            saveBudgetsToStorage();
+            loadBudgetsTable();
+            desenharFaixaOrcamento();
+            return b;
+        }
+
+        function salvarEFechar() {
+            const b = saveBudget();
+            if (!b) return;
+            closeModal('budgetModal');
+            avisoOrcamentos(`${modoOrcamento === 'laudo' ? 'Laudo' : 'Orçamento'} Nº ${b.number} salvo.`);
+        }
+
+        // ── PDF e envio ───────────────────────────────────────────────────
+
+        async function comBotaoOcupado(botao, texto, tarefa) {
+            const antes = botao ? botao.innerHTML : '';
+            if (botao) { botao.disabled = true; botao.innerHTML = `<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> ${texto}`; }
+            try { return await tarefa(); }
+            finally { if (botao) { botao.disabled = false; botao.innerHTML = antes; } }
+        }
+
+        async function abrirPdfOrcamento(b, tipo, botao) {
+            const c = clienteDoOrcamento(b);
+            if (!c) { alert('O cliente deste orçamento não foi encontrado.'); return; }
+            try {
+                await comBotaoOcupado(botao, 'Gerando…', async () => {
+                    const doc = await PDF_ORC().gerar(b, c, { tipo });
+                    const nome = PDF_ORC().nomeArquivo(b, c, tipo);
+                    // Computador abre o PDF numa aba; celular (sem leitor de PDF) baixa.
+                    if (navigator.pdfViewerEnabled) {
+                        const aba = window.open(doc.output('bloburl'), '_blank');
+                        if (!aba) doc.save(nome);
+                    } else {
+                        doc.save(nome);
+                    }
+                });
+            } catch (e) {
+                alert('Não foi possível gerar o PDF: ' + (e && e.message ? e.message : e));
             }
         }
 
+        const numeroWhatsCliente = (fone) => {
+            const d = String(fone || '').replace(/\D/g, '');
+            if (d.length === 10 || d.length === 11) return '55' + d;
+            if ((d.length === 12 || d.length === 13) && d.startsWith('55')) return d;
+            return '';
+        };
+
+        function mensagemEnvio(b, c, tipo) {
+            const nome = String(c.name || '').trim().split(/\s+/)[0];
+            const ola = `Olá${nome ? ', ' + nome : ''}!`;
+            if (tipo === 'laudo') {
+                return `${ola} Segue o laudo técnico Nº ${b.number} do seu atendimento na PC Formatech, com o diagnóstico, o que foi feito e a garantia. Qualquer dúvida, é só chamar.`;
+            }
+            const vence = formatDateBR(somarDiasISO(b.date, b.validadeDias || VALIDADE_PADRAO));
+            return `${ola} Segue o orçamento Nº ${b.number} da PC Formatech: ${reais(calculateBudgetTotal(b))}, válido até ${vence}. Para aprovar, é só responder esta mensagem.`;
+        }
+
+        async function enviarOrcamento(b, tipo, botao) {
+            const c = clienteDoOrcamento(b);
+            if (!c) { alert('O cliente deste orçamento não foi encontrado.'); return; }
+            try {
+                await comBotaoOcupado(botao, 'Preparando…', async () => {
+                    const doc = await PDF_ORC().gerar(b, c, { tipo });
+                    const nome = PDF_ORC().nomeArquivo(b, c, tipo);
+                    const texto = mensagemEnvio(b, c, tipo);
+                    const arquivo = new File([doc.output('blob')], nome, { type: 'application/pdf' });
+                    if (navigator.canShare && navigator.canShare({ files: [arquivo] })) {
+                        try {
+                            await navigator.share({ files: [arquivo], text: texto, title: nome.replace(/\.pdf$/, '') });
+                            marcarEnviado(b, tipo);
+                            return;
+                        } catch (erro) {
+                            if (erro && erro.name === 'AbortError') return;
+                            if (erro && erro.name === 'NotAllowedError') {
+                                avisoOrcamentos('O PDF ficou pronto. Toque de novo em Enviar.', false, campoOrc('budgetModal').style.display === 'block' ? 'orcModalStatus' : 'orcStatus');
+                                return;
+                            }
+                        }
+                    }
+                    // Sem o menu de compartilhar (computador): baixa o PDF e abre a
+                    // conversa do cliente com a mensagem, para anexar o arquivo.
+                    doc.save(nome);
+                    const fone = numeroWhatsCliente(c.phone);
+                    window.open(`https://api.whatsapp.com/send?${fone ? 'phone=' + fone + '&' : ''}text=${encodeURIComponent(texto)}`, '_blank');
+                    marcarEnviado(b, tipo);
+                    avisoOrcamentos(`O PDF foi baixado. Anexe ${tipo === 'laudo' ? 'o laudo' : 'o orçamento'} na conversa que abriu.`);
+                });
+            } catch (e) {
+                alert('Não foi possível enviar: ' + (e && e.message ? e.message : e));
+            }
+        }
+
+        function marcarEnviado(b, tipo) {
+            const alvo = budgets.find(x => x.id === b.id);
+            if (!alvo) return;
+            alvo[tipo === 'laudo' ? 'laudoEnviadoEm' : 'enviadoEm'] = hojeISO();
+            saveBudgetsToStorage();
+            loadBudgetsTable();
+        }
+
+        // Botões da janela: salvar, PDF e enviar (os dois últimos salvam antes).
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('#budgetSaveButton')) { salvarEFechar(); return; }
+            const pdf = e.target.closest('#orcPdfBtn');
+            if (pdf) { const b = saveBudget(); if (b) abrirPdfOrcamento(b, modoOrcamento, pdf); return; }
+            const enviar = e.target.closest('#orcEnviarBtn');
+            if (enviar) { const b = saveBudget(); if (b) enviarOrcamento(b, modoOrcamento, enviar); }
+        });
+
         function generatePDF() {
-            if (!currentBudget || !currentBudget.clientId) {
-                alert('Por favor, preencha todos os dados obrigatórios!');
-                return;
-            }
-
-            const clientId = parseInt(document.getElementById('budgetClientId').value);
-            const client = clients.find(c => c.id === clientId);
-            
-            if (!client) {
-                alert('Cliente não encontrado!');
-                return;
-            }
-
-            generatePDFDocument(currentBudget, client);
+            const b = saveBudget();
+            if (b) abrirPdfOrcamento(b, modoOrcamento, null);
         }
 
         function generatePDFForBudget(budgetId) {
-            const budget = budgets.find(b => b.id === budgetId);
-            const client = clients.find(c => c.id === budget.clientId);
-            
-            if (!budget || !client) {
-                alert('Dados não encontrados!');
-                return;
-            }
-
-            generatePDFDocument(budget, client);
+            const b = budgets.find(x => x.id === budgetId);
+            if (b) abrirPdfOrcamento(b, b.etapa === 'laudo' ? 'laudo' : 'orcamento', null);
         }
+
+        // ── Etapa 2: virou serviço ────────────────────────────────────────
 
         function convertBudgetToService(budgetId) {
             const budget = budgets.find(b => b.id === budgetId);
-            if (!budget) {
-                alert('Orçamento/Laudo não encontrado!');
-                return;
-            }
-            
-            const client = clients.find(c => c.id === budget.clientId);
-            if (!client) {
-                alert('Cliente não encontrado!');
-                return;
-            }
-            
-            const confirmMsg = `Deseja converter este ${budget.type === 'laudo' ? 'Laudo' : 'Orçamento'} em serviços para o cliente ${client.name}?\n\nSerão adicionados ${budget.services.length} serviço(s) ao histórico do cliente.`;
-            
-            if (!confirm(confirmMsg)) {
-                return;
-            }
-            
-            // Inicializar array de serviços se não existir
-            if (!client.services) client.services = [];
-            
-            // Adicionar cada serviço do orçamento ao cliente
-            budget.services.forEach(budgetService => {
-                const service = {
-                    type: budgetService.name,
-                    description: `Convertido do ${budget.type} Nº ${budget.number}${budget.defect ? ' - ' + budget.defect : ''}`,
-                    price: budgetService.quantity * budgetService.price,
-                    status: 'concluido', // Assumindo que está concluído
-                    date: budget.date
-                };
-                client.services.push(service);
-            });
-            
-            // Adicionar produtos como serviços também, se houver
-            if (budget.products && budget.products.length > 0) {
-                budget.products.forEach(budgetProduct => {
-                    const service = {
-                        type: `Produto: ${budgetProduct.name}`,
-                        description: `Produto fornecido - Convertido do ${budget.type} Nº ${budget.number}`,
-                        price: budgetProduct.quantity * budgetProduct.price,
-                        status: 'concluido',
-                        date: budget.date
-                    };
-                    client.services.push(service);
-                });
-            }
-            
-            saveClientsToStorage();
-            updateDashboard();
-            
-            alert(`✅ Sucesso!\n\n${budget.services.length + (budget.products ? budget.products.length : 0)} item(ns) convertido(s) em serviço(s) para o cliente ${client.name}.`);
-            
-            // Atualizar a visualização se estiver na aba de orçamentos
-            loadBudgetsTable();
-        }
-        
-        function generatePDFDocument(budget, client) {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-
-            // Cabeçalho
-            doc.setFontSize(18);
-            doc.setFont('helvetica', 'bold');
-            doc.text('PC Formatech', 105, 20, { align: 'center' });
-            
-            doc.setFontSize(9);
-            doc.setFont('helvetica', 'normal');
-            doc.text('62.712.268/0001-03', 105, 26, { align: 'center' });
-            doc.text('Rodovia PA-160 - Serra Dourada II', 105, 31, { align: 'center' });
-            doc.text('68352-193 - Canaã dos Carajas/PA', 105, 36, { align: 'center' });
-            
-            doc.text('contatopcformatech@gmail.com', 190, 20, { align: 'right' });
-
-            // Dados do Cliente
-            doc.setFontSize(10);
-            doc.setFont('helvetica', 'bold');
-            doc.setTextColor(128, 128, 128);
-            doc.text('Dados do Cliente', 20, 50);
-            
-            doc.setFont('helvetica', 'normal');
-            doc.setTextColor(0, 0, 0);
-            doc.text(client.name, 20, 58);
-            
-            const budgetDate = formatDateBR(budget.date);
-            doc.text(`Data: ${budgetDate}`, 190, 58, { align: 'right' });
-
-            // Número do Laudo
-            doc.setFillColor(128, 128, 128);
-            doc.rect(20, 65, 170, 10, 'F');
-            doc.setTextColor(255, 255, 255);
-            doc.setFont('helvetica', 'bold');
-            const title = budget.type === 'laudo' ? 'LAUDO TÉCNICO' : 'ORÇAMENTO';
-            doc.text(`${title} Nº ${budget.number}`, 105, 72, { align: 'center' });
-
-            // Serviços
-            doc.setTextColor(0, 0, 0);
-            doc.setFont('helvetica', 'bold');
-            doc.text('Serviços', 20, 85);
-
-            let yPos = 90;
-            let totalServicos = 0;
-
-            if (budget.services && budget.services.length > 0) {
-                const servicesData = budget.services.map(s => [
-                    s.name,
-                    s.quantity,
-                    s.unit,
-                    `R$ ${s.price.toFixed(2).replace('.', ',')}`,
-                    `R$ ${(s.quantity * s.price).toFixed(2).replace('.', ',')}`
-                ]);
-
-                doc.autoTable({
-                    startY: yPos,
-                    head: [['Nome', 'Quantidade', 'Unidade', 'Valor Unitário', 'Valor Total']],
-                    body: servicesData,
-                    theme: 'grid',
-                    headStyles: { fillColor: [200, 200, 200], textColor: [0, 0, 0] },
-                    margin: { left: 20, right: 20 }
-                });
-
-                totalServicos = budget.services.reduce((sum, s) => sum + (s.quantity * s.price), 0);
-                yPos = doc.lastAutoTable.finalY + 5;
-                
-                doc.setFont('helvetica', 'bold');
-                doc.text(`Total Serviços`, 140, yPos);
-                doc.text(`R$ ${totalServicos.toFixed(2).replace('.', ',')}`, 190, yPos, { align: 'right' });
-                yPos += 10;
-            }
-
-            // Produtos
-            if (budget.products && budget.products.length > 0) {
-                doc.setFont('helvetica', 'bold');
-                doc.text('Produtos', 20, yPos);
-                yPos += 5;
-
-                const productsData = budget.products.map(p => [
-                    p.name,
-                    p.quantity,
-                    p.unit,
-                    `R$ ${p.price.toFixed(2).replace('.', ',')}`,
-                    `R$ ${(p.quantity * p.price).toFixed(2).replace('.', ',')}`
-                ]);
-
-                doc.autoTable({
-                    startY: yPos,
-                    head: [['Nome', 'Quantidade', 'Unidade', 'Valor Unitário', 'Valor Total']],
-                    body: productsData,
-                    theme: 'grid',
-                    headStyles: { fillColor: [200, 200, 200], textColor: [0, 0, 0] },
-                    margin: { left: 20, right: 20 }
-                });
-
-                const totalProdutos = budget.products.reduce((sum, p) => sum + (p.quantity * p.price), 0);
-                yPos = doc.lastAutoTable.finalY + 5;
-                
-                doc.setFont('helvetica', 'bold');
-                doc.text(`Total Produtos`, 140, yPos);
-                doc.text(`R$ ${totalProdutos.toFixed(2).replace('.', ',')}`, 190, yPos, { align: 'right' });
-                yPos += 10;
-            }
-
-            // Total Geral
+            if (!budget) { alert('Orçamento não encontrado.'); return; }
+            if (budget.etapa !== 'orcamento') { alert(`O orçamento Nº ${budget.number} já virou serviço em ${formatDateBR(budget.convertidoEm || budget.date)}.`); return; }
+            const client = clienteDoOrcamento(budget);
+            if (!client) { alert('O cliente deste orçamento não foi encontrado.'); return; }
+            const itens = [...(budget.services || []), ...(budget.products || [])].filter(i => i && i.name);
             const total = calculateBudgetTotal(budget);
-            doc.setFont('helvetica', 'bold');
-            doc.text(`Subtotal`, 140, yPos);
-            doc.text(`R$ ${total.toFixed(2).replace('.', ',')}`, 190, yPos, { align: 'right' });
-            yPos += 5;
-            doc.text(`Total`, 140, yPos);
-            doc.text(`R$ ${total.toFixed(2).replace('.', ',')}`, 190, yPos, { align: 'right' });
-            yPos += 10;
+            if (!confirm(`O cliente ${client.name} aprovou o orçamento Nº ${budget.number} (${reais(total)})?\n\nOs ${itens.length} item(ns) vão para o histórico do cliente e o orçamento sai de "em aberto". Depois do serviço, emita o laudo.`)) return;
 
-            // Seções adicionais
-            if (budget.defect) {
-                doc.setFont('helvetica', 'bold');
-                doc.text('Defeito', 20, yPos);
-                yPos += 5;
-                doc.setFont('helvetica', 'normal');
-                const defectLines = doc.splitTextToSize(budget.defect, 170);
-                doc.text(defectLines, 20, yPos);
-                yPos += (defectLines.length * 5) + 5;
-            }
+            if (!client.services) client.services = [];
+            const hoje = hojeISO();
+            // O desconto entra proporcional em cada item, para o histórico somar o total certo.
+            const subtotal = itens.reduce((t, i) => t + (i.quantity || 1) * (i.price || 0), 0);
+            const fator = subtotal > 0 ? total / subtotal : 1;
+            const produtos = new Set(budget.products || []);
+            itens.forEach((item) => {
+                const produto = produtos.has(item);
+                client.services.push({
+                    type: produto ? `Produto: ${item.name}` : item.name,
+                    description: `Do orçamento Nº ${budget.number}${budget.equipamento ? ' · ' + budget.equipamento : ''}${budget.defect ? ' · ' + budget.defect : ''}`,
+                    price: Math.round((item.quantity || 1) * (item.price || 0) * fator * 100) / 100,
+                    status: 'concluido',
+                    date: hoje,
+                    orcamentoId: budget.id
+                });
+            });
+            budget.etapa = 'servico';
+            budget.situacao = 'aprovado';
+            budget.convertidoEm = hoje;
+            budget.updatedAt = new Date().toISOString();
 
-            if (budget.report) {
-                doc.setFont('helvetica', 'bold');
-                doc.text('Laudo', 20, yPos);
-                yPos += 5;
-                doc.setFont('helvetica', 'normal');
-                const reportLines = doc.splitTextToSize(budget.report, 170);
-                doc.text(reportLines, 20, yPos);
-                yPos += (reportLines.length * 5) + 5;
-            }
+            saveClientsToStorage();
+            saveBudgetsToStorage();
+            if (typeof updateDashboard === 'function') updateDashboard();
+            loadBudgetsTable();
+            avisoOrcamentos(`Orçamento Nº ${budget.number} virou serviço. Quando terminar, toque em "Emitir laudo".`);
+        }
 
-            if (budget.solution) {
-                doc.setFont('helvetica', 'bold');
-                doc.text('Solução', 20, yPos);
-                yPos += 5;
-                doc.setFont('helvetica', 'normal');
-                const solutionLines = doc.splitTextToSize(budget.solution, 170);
-                doc.text(solutionLines, 20, yPos);
-                yPos += (solutionLines.length * 5) + 5;
-            }
-
-            if (budget.observations) {
-                doc.setFont('helvetica', 'bold');
-                doc.text('Observações', 20, yPos);
-                yPos += 5;
-                doc.setFont('helvetica', 'normal');
-                const obsLines = doc.splitTextToSize(budget.observations, 170);
-                doc.text(obsLines, 20, yPos);
-                yPos += (obsLines.length * 5) + 5;
-            }
-
-            if (budget.warranty) {
-                doc.setFont('helvetica', 'bold');
-                doc.text(`Garantia: ${budget.warranty}`, 20, yPos);
-                yPos += 10;
-            }
-
-            // Assinatura
-            yPos = Math.max(yPos, 250);
-            doc.line(65, yPos, 145, yPos);
-            doc.setFont('helvetica', 'normal');
-            doc.text('PC Formatech', 105, yPos + 5, { align: 'center' });
-
-            // Rodapé
-            doc.setFontSize(8);
-            doc.text('instagram: @pcformatech', 20, 285);
-
-            // Salvar PDF no formato Cliente_Tipo
-            const tipoLabel = budget.type === 'laudo' ? 'Laudo' : 'Orcamento';
-            const nomeCliente = String(client.name || 'Cliente')
-                .trim()
-                .replace(/[\\/:*?"<>|]/g, '')
-                .replace(/\s+/g, ' ');
-            const fileName = `${nomeCliente}_${tipoLabel}.pdf`;
-            doc.save(fileName);
+        function deleteBudget(budgetId) {
+            const b = budgets.find(x => x.id === budgetId);
+            if (!b) return;
+            const c = clienteDoOrcamento(b);
+            const nome = b.etapa === 'laudo' ? 'laudo' : 'orçamento';
+            const extra = b.etapa === 'orcamento' ? '' : '\n\nOs serviços já lançados no histórico do cliente continuam lá.';
+            if (!confirm(`Excluir o ${nome} Nº ${b.number}${c ? ' de ' + c.name : ''}?${extra}\n\nEsta ação não pode ser desfeita.`)) return;
+            budgets = budgets.filter(x => x.id !== budgetId);
+            saveBudgetsToStorage();
+            loadBudgetsTable();
+            avisoOrcamentos(`${nome.charAt(0).toUpperCase() + nome.slice(1)} Nº ${b.number} excluído.`);
         }
 
         // Inicialização de produtos e orçamentos (incorporada no DOMContentLoaded principal acima)
@@ -3572,8 +3558,9 @@ function updateChartTheme() {
             const ticketMedio = clientsComFat > 0 ? fatTotal / clientsComFat : 0;
 
             // ── Orçamentos ────────────────────────────────────────────
-            const orcAbertos   = budgets.filter(b => !b.finalizado).length;
-            const orcFechados  = budgets.filter(b => b.finalizado).length;
+            prepararOrcamentos();
+            const orcAbertos   = budgets.filter(b => situacaoOrcamento(b).chave === 'aberto').length;
+            const orcFechados  = budgets.filter(b => b.etapa === 'servico' || b.etapa === 'laudo').length;
             // Orçamentos que viraram serviço, sobre o total de orçamentos.
             // Antes era svConcluido / budgets.length — serviços concluídos sobre
             // orçamentos, duas populações sem relação, que dava 233%.
