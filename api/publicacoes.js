@@ -48,7 +48,18 @@ async function garantirIniciais(db) {
     for (const [i, p] of lista.entries()) {
         if (removidas.includes(p.id)) continue;
         const ref = db.collection(COLECAO).doc(p.id);
-        if ((await ref.get()).exists) continue;
+        const atual = await ref.get();
+        if (atual.exists) {
+            // Arquivo da arte trocado no site (vídeo novo ou imagem em qualidade
+            // maior, com outro nome por causa do cache): atualiza o registro.
+            // Imagem enviada pelo painel (imagemDados) não é mexida.
+            const d = atual.data();
+            const novo = {};
+            if (p.video && d.video !== p.video) novo.video = p.video;
+            if (!d.imagemDados && /^\/images\/divulgacao\//.test(d.imagem || '') && d.imagem !== p.imagem) novo.imagem = p.imagem;
+            if (Object.keys(novo).length) await ref.set({ ...novo, atualizadoEm: agora }, { merge: true });
+            continue;
+        }
         const { id, ...dados } = p;
         await ref.set({ ...dados, inicial: true, ordem: dados.ordem || i + 1, criadoEm: agora, atualizadoEm: agora });
     }

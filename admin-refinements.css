@@ -2105,6 +2105,7 @@ html[data-theme='dark'] .bl-aviso { color: #ffc46b; }
 }
 
 /* Reels: o vídeo ocupa o quadro, com a capa até dar play. */
+.dv-postar-img[hidden] { display: none !important; }
 .dv-foto video {
     display: block;
     width: 100%;

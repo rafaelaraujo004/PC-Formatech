@@ -169,7 +169,7 @@ async function bytesDaArte(db, arte) {
  * A arte inteira no centro (cantos arredondados e sombra) sobre ela mesma
  * ampliada e desfocada, numa tela largura×altura; a arte cabe em caixaL×caixaA.
  */
-async function montarSobreFundo(bytes, largura, altura, caixaL, caixaA) {
+async function montarSobreFundo(bytes, largura, altura, caixaL, caixaA, jpeg = { quality: 84, mozjpeg: true }) {
     const sharp = require('sharp');
     // Um resize por pipeline (o sharp usa só o último): primeiro reduz bem,
     // depois amplia e desfoca — fica só a cor da arte, sem texto legível.
@@ -188,9 +188,13 @@ async function montarSobreFundo(bytes, largura, altura, caixaL, caixaA) {
     const sombra = Buffer.from(`<svg width="${largura}" height="${altura}"><defs><filter id="s" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="16"/></filter></defs><rect x="${x}" y="${y + 12}" width="${w}" height="${h}" rx="${raio}" fill="#000" fill-opacity=".5" filter="url(#s)"/></svg>`);
     return sharp(fundo)
         .composite([{ input: sombra, left: 0, top: 0 }, { input: arredondada, left: x, top: y }])
-        .jpeg({ quality: 84, mozjpeg: true })
+        .jpeg(jpeg)
         .toBuffer();
 }
+
+// Status e Stories: o WhatsApp e o Instagram recomprimem de novo; sai com
+// qualidade alta e cor cheia (4:4:4) para o texto das artes não borrar.
+const JPEG_STORY = { quality: 93, chromaSubsampling: '4:4:4', mozjpeg: true };
 
 /** Prévia de link: 1200×630, para feed, story e foto quadrada de produto. */
 const montarPrevia = (bytes) => montarSobreFundo(bytes, LARGURA, ALTURA, LARGURA - 120, ALTURA - 64);
@@ -204,9 +208,9 @@ async function montarStory(bytes) {
     const sharp = require('sharp');
     const { width, height } = await sharp(bytes).metadata();
     if (height / width >= 1.7) {
-        return sharp(bytes).resize(1080, 1920, { fit: 'cover' }).jpeg({ quality: 86, mozjpeg: true }).toBuffer();
+        return sharp(bytes).resize(1080, 1920, { fit: 'cover' }).jpeg(JPEG_STORY).toBuffer();
     }
-    return montarSobreFundo(bytes, 1080, 1920, 960, 1440);
+    return montarSobreFundo(bytes, 1080, 1920, 960, 1440, JPEG_STORY);
 }
 
 // ── Rota ──────────────────────────────────────────────────────────────────

@@ -245,6 +245,21 @@
         $('dv-postar-origem').textContent = s.rodizio ? 'Escolhida pelo rodízio de hoje' : '';
         const img = $('dv-postar-img');
         img.src = s.arte.imagem || '';
+        // Reels: mostra o próprio vídeo que vai ser postado.
+        let video = $('dv-postar-video');
+        if (!video) {
+            video = document.createElement('video');
+            video.id = 'dv-postar-video';
+            video.className = img.className;
+            video.muted = true;
+            video.loop = true;
+            video.playsInline = true;
+            video.autoplay = true;
+            img.after(video);
+        }
+        img.hidden = Boolean(s.arte.video);
+        video.hidden = !s.arte.video;
+        if (s.arte.video) { video.poster = s.arte.imagem || ''; video.src = s.arte.video; video.play().catch(() => {}); } else { video.removeAttribute('src'); video.load(); }
         // Mostra a versão de Story que vai ser compartilhada, assim que fica pronta.
         D().prepararStory(s.arte).then((arquivo) => {
             // Vídeo (Reels) fica com a capa: a tag <img> não mostra MP4.
@@ -290,7 +305,8 @@
                 status('dv-postar-status', 'Neste aparelho não abre o menu de compartilhar: a imagem foi baixada e a legenda copiada. Depois de postar, toque em "Já postei".');
             }
         } catch (erro) {
-            if (!erro || erro.name !== 'AbortError') status('dv-postar-status', 'Não foi possível compartilhar: ' + ((erro && erro.message) || erro), true);
+            if (erro && erro.name === 'NotAllowedError') status('dv-postar-status', 'O vídeo ficou pronto. Toque de novo no botão para postar.');
+            else if (!erro || erro.name !== 'AbortError') status('dv-postar-status', 'Não foi possível compartilhar: ' + ((erro && erro.message) || erro), true);
         } finally {
             botao.disabled = false;
         }
@@ -521,7 +537,7 @@
             d.querySelectorAll('[data-fechar]').forEach((b) => b.addEventListener('click', () => d.close()));
             d.addEventListener('click', (e) => { if (e.target === d) d.close(); });
         });
-        dialogoPostar().addEventListener('close', () => { aberto = null; });
+        dialogoPostar().addEventListener('close', () => { aberto = null; const v = $('dv-postar-video'); if (v) v.pause(); });
 
         // A lista de artes chegou (ou mudou): carrega a programação junto.
         document.addEventListener('pcft:artes', () => {
