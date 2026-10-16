@@ -10,6 +10,10 @@
 const { iniciarAdmin } = require('./_push');
 const { ErroDeAcesso, exigirAdmin } = require('./_admin');
 
+// Endereço do painel (o APK abre aqui) e o antigo, que só redireciona para ele.
+const PAINEL = 'https://www.pcformatech.com.br';
+const ORIGENS_PAINEL = [PAINEL, 'https://pcformatech.vercel.app'];
+
 function safeJson(texto) {
     try { return JSON.parse(texto); } catch (e) { return {}; }
 }
@@ -43,11 +47,27 @@ module.exports = async function handler(req, res) {
 
         // Os últimos 40 caracteres do endpoint viram o id: evita duplicatas.
         const id = Buffer.from(subscription.endpoint).toString('base64url').slice(-40);
+        const origem = ORIGENS_PAINEL.includes(req.headers.origin) ? req.headers.origin : null;
         await db.collection('pushSubscriptions').doc(id).set({
             subscription,
             email: usuario.email,
+            origem,
             updatedAt: admin.firestore.FieldValue.serverTimestamp()
         }, { merge: true });
+
+        // O painel mudou para o www em 16/10/2026. A inscrição feita lá
+        // substitui as do endereço antigo (pcformatech.vercel.app), que não
+        // guardavam a origem: o celular continuaria inscrito nos dois e cada
+        // aviso chegaria duas vezes. Entram também as sem e-mail, de antes de a
+        // rota exigir o login (são poucas: a coleção é lida inteira).
+        if (origem === PAINEL) {
+            const todas = await db.collection('pushSubscriptions').get();
+            const antigas = todas.docs.filter((d) => {
+                const dados = d.data();
+                return d.id !== id && dados.origem !== PAINEL && (!dados.email || dados.email === usuario.email);
+            });
+            await Promise.all(antigas.map((d) => d.ref.delete()));
+        }
 
         return res.status(200).json({ ok: true });
     } catch (err) {
