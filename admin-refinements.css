@@ -3061,3 +3061,101 @@ html[data-theme='dark'] .bl-aviso { color: #ffc46b; }
     .dv-entrada-topo { grid-template-columns: 84px minmax(0, 1fr) auto; }
     .dv-chips button { padding: 0 0.6rem; }
 }
+
+
+/* ── 22 · Avaliações no Google (Início do painel) ───────────────────────────
+   Cartão que monta o pedido de avaliação e abre o WhatsApp (admin-avaliacao.js).
+   O mesmo botão claro "Avaliação" aparece em cada linha da lista de clientes. */
+
+.avaliar-card {
+    margin-top: 1.2rem;
+    padding: 1.2rem 1.3rem;
+    border-radius: var(--adm-raio);
+    background: var(--adm-superficie);
+    border: 1px solid var(--adm-borda);
+    border-left: 4px solid #fbbc05;
+    box-shadow: var(--adm-sombra);
+    color: var(--adm-texto);
+}
+
+.avaliar-card-topo { display: flex; gap: 0.9rem; align-items: flex-start; }
+
+.avaliar-card-icone {
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: rgba(251, 188, 5, 0.16);
+    color: #c48a00;
+    font-size: 1.15rem;
+}
+
+.avaliar-card h2 { margin: 0 0 0.2rem; font-size: var(--adm-fs-lg); color: var(--adm-texto); }
+.avaliar-card-topo p { margin: 0; color: var(--adm-texto-suave); font-size: var(--adm-fs-sm); line-height: 1.5; }
+
+.avaliar-card-campos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+    gap: 0.7rem 1rem;
+    margin-top: 1rem;
+}
+
+.avaliar-card-campos label {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.3rem;
+    font-size: var(--adm-fs-xs);
+    font-weight: 600;
+    color: var(--adm-texto);
+}
+
+.avaliar-card-campos label span { font-weight: 400; color: var(--adm-texto-suave); }
+
+.avaliar-card-campos input {
+    flex: 1 1 100%;
+    width: 100%;
+    min-height: 44px;
+    padding: 0.55rem 0.75rem;
+    border-radius: 10px;
+    border: 1px solid var(--adm-borda-forte);
+    background: var(--adm-superficie-2);
+    color: var(--adm-texto);
+    font: inherit;
+    font-size: var(--adm-fs-base);
+}
+
+.avaliar-card-campos input:focus { outline: 2px solid #40998f; outline-offset: 1px; }
+
+.avaliar-card-acoes {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 0.9rem;
+}
+
+.avaliar-card-acoes .btn-action { min-height: 44px; padding: 0.55rem 1rem; font-size: var(--adm-fs-sm); border: 0; }
+
+.admin-panel .avaliar-btn-claro,
+.avaliar-btn-claro {
+    background: var(--adm-superficie-2);
+    border: 1px solid var(--adm-borda-forte) !important;
+    color: var(--adm-texto);
+}
+
+.admin-panel .avaliar-btn-claro .fa-star,
+.avaliar-btn-claro .fa-star { color: #e0a800 !important; }
+
+.avaliar-aviso { font-size: var(--adm-fs-xs); font-weight: 600; color: var(--adm-ok); }
+.avaliar-aviso.is-alerta { color: var(--adm-critico); }
+
+.avaliar-dica { margin: 0.8rem 0 0; font-size: var(--adm-fs-xs); color: var(--adm-texto-suave); line-height: 1.5; }
+
+@media (max-width: 600px) {
+    .avaliar-card { padding: 1rem; }
+    .avaliar-card-acoes .btn-action { flex: 1 1 auto; justify-content: center; }
+    .avaliar-card-acoes #avaliar-zap { flex-basis: 100%; }
+}

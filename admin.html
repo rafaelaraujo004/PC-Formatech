@@ -1652,7 +1652,7 @@
     <link rel="stylesheet" href="theme-system.css?v=7">
     <script src="theme-system.js?v=7"></script>
     <!-- Camada de refinamento: por ultimo, para vencer o <style> embutido e o theme-system.css -->
-    <link rel="stylesheet" href="admin-refinements.css?v=15">
+    <link rel="stylesheet" href="admin-refinements.css?v=16">
     <link rel="stylesheet" href="anuncios.css?v=4">
     <script src="auth-system.js?v=2" defer></script>
 </head>
@@ -1793,6 +1793,31 @@
                     <p><i class="fas fa-money-bill-wave"></i> Receita Total</p>
                 </div>
             </div>
+
+            <section class="avaliar-card" aria-labelledby="avaliar-titulo">
+                <div class="avaliar-card-topo">
+                    <span class="avaliar-card-icone" aria-hidden="true"><i class="fas fa-star"></i></span>
+                    <div>
+                        <h2 id="avaliar-titulo">Avaliações no Google</h2>
+                        <p>Terminou um atendimento? Mande o pedido de avaliação. Quanto mais avaliações, mais a PC Formatech aparece para quem procura no Google em Canaã.</p>
+                    </div>
+                </div>
+                <div class="avaliar-card-campos">
+                    <label>Nome do cliente <span>(opcional)</span>
+                        <input type="text" id="avaliar-nome" autocomplete="off" placeholder="Ex.: Maria">
+                    </label>
+                    <label>WhatsApp do cliente <span>(opcional)</span>
+                        <input type="tel" id="avaliar-fone" inputmode="tel" autocomplete="off" placeholder="(94) 9 0000-0000">
+                    </label>
+                </div>
+                <div class="avaliar-card-acoes">
+                    <button type="button" class="btn-action btn-whatsapp" id="avaliar-zap"><i class="fab fa-whatsapp"></i> Pedir no WhatsApp</button>
+                    <button type="button" class="btn-action avaliar-btn-claro" id="avaliar-copiar"><i class="fas fa-copy"></i> Copiar mensagem</button>
+                    <button type="button" class="btn-action avaliar-btn-claro" id="avaliar-link"><i class="fas fa-link"></i> Copiar link</button>
+                    <span class="avaliar-aviso" id="avaliar-aviso" role="status" aria-live="polite"></span>
+                </div>
+                <p class="avaliar-dica">Sem número, o WhatsApp abre para você escolher o contato. Peça a todos os clientes e não ofereça desconto em troca: o Google proíbe e pode apagar as avaliações.</p>
+            </section>
             
             <div class="chart-container">
                 <h2 style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
@@ -3207,7 +3232,7 @@
         </div>
     </div>
 
-        <script src="admin-app.js?v=7"></script>
+        <script src="admin-app.js?v=8"></script>
         <script src="resumo-visitas.js?v=4"></script>
         <script src="admin-visitas.js?v=5"></script>
         <script src="vendor/qrcode-generator.js"></script>
@@ -3222,6 +3247,7 @@
         <script src="agenda-divulgacao.js?v=3"></script>
         <script src="admin-agenda.js?v=5"></script>
         <script src="admin-atualizar.js?v=1"></script>
+        <script src="admin-avaliacao.js?v=1"></script>
         <script src="admin-pedidos.js?v=1"></script>
 </body>
 </html>
