@@ -247,7 +247,8 @@
         img.src = s.arte.imagem || '';
         // Mostra a versão de Story que vai ser compartilhada, assim que fica pronta.
         D().prepararStory(s.arte).then((arquivo) => {
-            if (aberto !== s || !arquivo) return;
+            // Vídeo (Reels) fica com a capa: a tag <img> não mostra MP4.
+            if (aberto !== s || !arquivo || !String(arquivo.type).startsWith('image/')) return;
             const url = URL.createObjectURL(arquivo);
             img.onload = () => URL.revokeObjectURL(url);
             img.src = url;
