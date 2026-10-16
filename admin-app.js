@@ -755,6 +755,9 @@
                         <button class="btn-action btn-whatsapp" onclick="openWhatsApp('${client.phone}', '${client.name}')">
                             <i class="fab fa-whatsapp"></i> WhatsApp
                         </button>
+                        <button class="btn-action avaliar-btn-claro" onclick="pedirAvaliacao(${client.id})" title="Pedir avaliação no Google pelo WhatsApp">
+                            <i class="fas fa-star"></i> Avaliação
+                        </button>
                         <button class="btn-action btn-delete" onclick="deleteClient(${client.id})">
                             <i class="fas fa-trash"></i> Excluir
                         </button>
@@ -901,6 +904,13 @@
             const message = `Olá ${name}! Aqui é da PC Formatech. Como posso ajudá-lo(a) hoje?`;
             const url = `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(message)}`;
             window.open(url, '_blank');
+        }
+
+        /** Pede a avaliação no Google pelo WhatsApp do cliente (admin-avaliacao.js). */
+        function pedirAvaliacao(clientId) {
+            const cliente = clients.find(c => c.id === clientId);
+            if (!cliente || !window.PCFAvaliacao) return;
+            window.PCFAvaliacao.abrir(cliente.phone, cliente.name);
         }
 
         // ===== GESTÃO DE SERVIÇOS =====
