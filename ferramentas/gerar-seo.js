@@ -16,6 +16,9 @@ const DICAS = require('./dicas');
 const SITE = 'https://www.pcformatech.com.br';
 const WHATSAPP = '5594984305772';
 const CIDADE = 'Canaã dos Carajás';
+// Endereço do Perfil da Empresa no Google (o CEP fica de fora até ser confirmado).
+const RUA = 'Rodovia PA-160, Serra Dourada II';
+const MAPA = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent('PC Formatech, ' + RUA + ', ' + CIDADE + ' - PA');
 
 const EMPRESA = {
     '@type': 'LocalBusiness',
@@ -27,7 +30,8 @@ const EMPRESA = {
     logo: SITE + '/icon-512.png',
     telephone: '+55 94 98430-5772',
     priceRange: 'R$ 40 a R$ 80',
-    address: { '@type': 'PostalAddress', addressLocality: CIDADE, addressRegion: 'PA', addressCountry: 'BR' },
+    address: { '@type': 'PostalAddress', streetAddress: RUA, addressLocality: CIDADE, addressRegion: 'PA', addressCountry: 'BR' },
+    hasMap: MAPA,
     areaServed: [
         { '@type': 'City', name: CIDADE },
         { '@type': 'Country', name: 'Brasil' }
@@ -266,6 +270,7 @@ function rodape() {
         <nav aria-label="Serviços">
             ${SERVICOS.map((s) => `<a href="/servicos/${s.slug}/">${esc(s.nome)}</a>`).join('\n            ')}
         </nav>
+        <p class="sv-rodape-endereco"><i class="fas fa-map-marker-alt" aria-hidden="true"></i> ${esc(RUA)}, ${CIDADE}, PA · <a href="${MAPA.replace(/&/g, '&amp;')}" target="_blank" rel="noopener">Como chegar</a> · Horário: combine pelo WhatsApp</p>
         <p class="sv-rodape-contato"><a href="/dicas/">Dicas para o seu computador</a> · <a href="${zap('Olá! Vim pelo site.')}" target="_blank" rel="noopener">(94) 98430-5772</a> · <a href="https://instagram.com/pcformatech" target="_blank" rel="noopener">@pcformatech</a></p>
         <p class="sv-rodape-autor">Site feito por Rafael Araújo · <a href="/privacidade/">Política de privacidade</a></p>
     </footer>`;
@@ -1011,7 +1016,7 @@ function paginaPrivacidade() {
     const titulo = 'Política de privacidade';
     const descricao = 'O que o site da PC Formatech guarda quando você visita ou faz um pedido, para quê, e como pedir para ver ou apagar os seus dados.';
     const blocos = [
-        ['Quem somos', `<p>PC Formatech, assistência técnica de computadores, loja de periféricos Bird Tech e criação de apps e sistemas, em ${CIDADE}, PA. Responsável: Rafael Araújo. Contato: WhatsApp <a href="${zap('Olá! Tenho uma dúvida sobre a privacidade no site.')}" target="_blank" rel="noopener">(94) 98430-5772</a> ou Instagram <a href="https://instagram.com/pcformatech" target="_blank" rel="noopener">@pcformatech</a>.</p>`],
+        ['Quem somos', `<p>PC Formatech, assistência técnica de computadores, loja de periféricos Bird Tech e criação de apps e sistemas, na ${RUA}, ${CIDADE}, PA. Responsável: Rafael Araújo. Contato: WhatsApp <a href="${zap('Olá! Tenho uma dúvida sobre a privacidade no site.')}" target="_blank" rel="noopener">(94) 98430-5772</a> ou Instagram <a href="https://instagram.com/pcformatech" target="_blank" rel="noopener">@pcformatech</a>.</p>`],
         ['O que guardamos quando você visita o site', `<ul>
                     <li>As páginas que você abre e por quanto tempo fica nelas.</li>
                     <li>O tipo de aparelho (celular, computador ou tablet), o idioma e o fuso horário do navegador.</li>
