@@ -50,8 +50,14 @@ async function garantirIniciais(db) {
         const ref = db.collection(COLECAO).doc(p.id);
         const atual = await ref.get();
         if (atual.exists) {
-            // Arte que ganhou vídeo depois de criada (ou perdeu o campo): repõe.
-            if (p.video && atual.data().video !== p.video) await ref.set({ video: p.video, atualizadoEm: agora }, { merge: true });
+            // Arquivo da arte trocado no site (vídeo novo ou imagem em qualidade
+            // maior, com outro nome por causa do cache): atualiza o registro.
+            // Imagem enviada pelo painel (imagemDados) não é mexida.
+            const d = atual.data();
+            const novo = {};
+            if (p.video && d.video !== p.video) novo.video = p.video;
+            if (!d.imagemDados && /^\/images\/divulgacao\//.test(d.imagem || '') && d.imagem !== p.imagem) novo.imagem = p.imagem;
+            if (Object.keys(novo).length) await ref.set({ ...novo, atualizadoEm: agora }, { merge: true });
             continue;
         }
         const { id, ...dados } = p;

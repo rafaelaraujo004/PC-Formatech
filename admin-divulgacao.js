@@ -76,11 +76,11 @@
             ordem: 100 + (Number(p.ordem) || 0)
         };
     }
-    /** Reels: a capa /images/divulgacao/reels-x.jpg tem o vídeo reels-x.mp4 ao lado. */
+    /** Reels: a capa /images/divulgacao/reels-x.jpg tem o vídeo reels-x-hd.mp4 ao lado. */
     function comVideo(p) {
         if (p.video) return p;
         const capa = /^(\/images\/divulgacao\/reels-[\w-]+)\.jpg$/.exec(p.imagem || '');
-        return capa ? { ...p, video: capa[1] + '.mp4' } : p;
+        return capa ? { ...p, video: capa[1] + '-hd.mp4' } : p;
     }
 
     let filtro = 'todas';
