@@ -19,6 +19,8 @@ const CIDADE = 'Canaã dos Carajás';
 // Endereço do Perfil da Empresa no Google (o CEP fica de fora até ser confirmado).
 const RUA = 'Rodovia PA-160, Serra Dourada II';
 const MAPA = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent('PC Formatech, ' + RUA + ', ' + CIDADE + ' - PA');
+// Horário de atendimento (o mesmo do Perfil da Empresa no Google).
+const HORARIO = 'Seg a sex 8h às 18h, sáb 8h às 12h';
 
 const EMPRESA = {
     '@type': 'LocalBusiness',
@@ -32,6 +34,26 @@ const EMPRESA = {
     priceRange: 'R$ 40 a R$ 80',
     address: { '@type': 'PostalAddress', streetAddress: RUA, addressLocality: CIDADE, addressRegion: 'PA', addressCountry: 'BR' },
     hasMap: MAPA,
+    openingHoursSpecification: [
+        {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": [
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday"
+            ],
+            "opens": "08:00",
+            "closes": "18:00"
+        },
+        {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": "Saturday",
+            "opens": "08:00",
+            "closes": "12:00"
+        }
+    ],
     areaServed: [
         { '@type': 'City', name: CIDADE },
         { '@type': 'Country', name: 'Brasil' }
@@ -270,7 +292,7 @@ function rodape() {
         <nav aria-label="Serviços">
             ${SERVICOS.map((s) => `<a href="/servicos/${s.slug}/">${esc(s.nome)}</a>`).join('\n            ')}
         </nav>
-        <p class="sv-rodape-endereco"><i class="fas fa-map-marker-alt" aria-hidden="true"></i> ${esc(RUA)}, ${CIDADE}, PA · <a href="${MAPA.replace(/&/g, '&amp;')}" target="_blank" rel="noopener">Como chegar</a> · Horário: combine pelo WhatsApp</p>
+        <p class="sv-rodape-endereco"><i class="fas fa-map-marker-alt" aria-hidden="true"></i> ${esc(RUA)}, ${CIDADE}, PA · <a href="${MAPA.replace(/&/g, '&amp;')}" target="_blank" rel="noopener">Como chegar</a> · ${HORARIO}</p>
         <p class="sv-rodape-contato"><a href="/dicas/">Dicas para o seu computador</a> · <a href="${zap('Olá! Vim pelo site.')}" target="_blank" rel="noopener">(94) 98430-5772</a> · <a href="https://instagram.com/pcformatech" target="_blank" rel="noopener">@pcformatech</a></p>
         <p class="sv-rodape-autor">Site feito por Rafael Araújo · <a href="/privacidade/">Política de privacidade</a></p>
     </footer>`;
