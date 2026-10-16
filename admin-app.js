@@ -2182,7 +2182,7 @@ function updateChartTheme() {
 
         const NUMERO_ORCAMENTO = /^(\d{4})-(\d{4,})$/;
         const VALIDADE_PADRAO = 7;
-        const GARANTIA_DIAS = 90;
+        const GARANTIA_DIAS = 30;
         const PAGAMENTO_PADRAO = 'Pix, cartão ou dinheiro';
         const ETAPAS_ORCAMENTO = [['orcamento', 'Orçamento'], ['servico', 'Serviço'], ['laudo', 'Laudo']];
         const PDF_ORC = () => window.PCFTOrcamentoPDF;
@@ -2203,8 +2203,8 @@ function updateChartTheme() {
         }
 
         const diasAte = (iso) => Math.round((Date.parse(iso + 'T12:00:00') - Date.parse(hojeISO() + 'T12:00:00')) / 864e5);
-        const textoGarantia = (iso) => `3 meses (até ${formatDateBR(somarDiasISO(iso, GARANTIA_DIAS))})`;
-        const garantiaPadrao = (t) => !String(t || '').trim() || /^3 meses/i.test(String(t).trim());
+        const textoGarantia = (iso) => `30 dias (até ${formatDateBR(somarDiasISO(iso, GARANTIA_DIAS))})`;
+        const garantiaPadrao = (t) => !String(t || '').trim() || /^(3 meses|30 dias)/i.test(String(t).trim());
 
         function loadBudgetsFromStorage() {
             try { budgets = JSON.parse(localStorage.getItem('pcformatech_budgets') || '[]') || []; } catch (e) { budgets = []; }
