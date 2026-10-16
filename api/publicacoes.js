@@ -66,6 +66,8 @@ function paraSaida(doc) {
         legenda: d.legenda || '',
         link: d.link || '',
         imagem,
+        // Vídeo (Reels): só os que vêm de publicacoes-iniciais.json; a imagem vira a capa.
+        video: /^\/images\/divulgacao\/[\w.-]+\.mp4$/.test(d.video || '') ? d.video : null,
         inicio: d.inicio || null,
         fim: d.fim || null,
         ordem: Number(d.ordem) || 0,

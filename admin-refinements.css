@@ -2104,6 +2104,15 @@ html[data-theme='dark'] .bl-aviso { color: #ffc46b; }
     object-fit: contain;
 }
 
+/* Reels: o vídeo ocupa o quadro, com a capa até dar play. */
+.dv-foto video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #000;
+}
+
 .dv-info {
     display: grid;
     gap: 0.3rem;

@@ -161,11 +161,22 @@
         return new File([jpeg], nomeDoArquivo(p) + '.jpg', { type: 'image/jpeg' });
     }
 
+    /** Vídeo (Reels) da arte, como arquivo MP4 para compartilhar ou baixar. */
+    async function arquivoDoVideo(p) {
+        const blob = await (await fetch(p.video)).blob();
+        return new File([blob], nomeDoArquivo(p) + '.mp4', { type: 'video/mp4' });
+    }
+
+    /** O arquivo da arte: o vídeo, quando ela tem, ou a imagem. */
+    const arquivoDaArte = (p) => (p.video ? arquivoDoVideo(p) : arquivoDaImagem(p));
+
     /**
      * Versão 1080×1920 para Status e Stories (api/arte.js monta). Se não
      * vier, vai a arte original mesmo.
      */
     async function arquivoStory(p) {
+        // O vídeo já é vertical: vai ele mesmo para o Status e o Story.
+        if (p.video) return arquivoDoVideo(p);
         try {
             const resposta = await fetch('/a/story/' + codigoDaArte(p.id));
             const blob = resposta.ok ? await resposta.blob() : null;
@@ -204,7 +215,7 @@
     async function enviarArte(p, opcoes) {
         const o = opcoes || {};
         const texto = textoParaCompartilhar(p, o.canal);
-        const arquivo = await (o.story ? prepararStory(p) : arquivoDaImagem(p));
+        const arquivo = await (o.story ? prepararStory(p) : arquivoDaArte(p));
         const copiou = await copiar(texto);
         if (navigator.canShare && navigator.canShare({ files: [arquivo] })) {
             await navigator.share({ files: [arquivo], text: texto, title: p.titulo || MARCAS[p.categoria].nome });
@@ -284,17 +295,32 @@
 
             const foto = document.createElement('div');
             foto.className = 'dv-foto';
-            const img = document.createElement('img');
-            img.src = p.imagem;
-            img.alt = p.titulo || '';
-            img.loading = 'lazy';
-            foto.appendChild(img);
+            if (p.video) {
+                // Reels: o vídeo com a capa, tocando sem som quando a pessoa der play.
+                const video = document.createElement('video');
+                video.src = p.video;
+                video.poster = p.imagem;
+                video.muted = true;
+                video.playsInline = true;
+                video.loop = true;
+                video.controls = true;
+                video.preload = 'none';
+                video.setAttribute('aria-label', p.titulo || 'Vídeo');
+                foto.classList.add('dv-foto-video');
+                foto.appendChild(video);
+            } else {
+                const img = document.createElement('img');
+                img.src = p.imagem;
+                img.alt = p.titulo || '';
+                img.loading = 'lazy';
+                foto.appendChild(img);
+            }
 
             const info = document.createElement('div');
             info.className = 'dv-info';
             const marca = document.createElement('span');
             marca.className = 'dv-marca';
-            marca.textContent = p.produto ? 'Bird Tech · produto' : MARCAS[p.categoria].nome;
+            marca.textContent = p.produto ? 'Bird Tech · produto' : MARCAS[p.categoria].nome + (p.video ? ' · vídeo' : '');
             const titulo = document.createElement('strong');
             titulo.textContent = p.titulo || 'Arte sem nome';
             const legenda = document.createElement('p');
@@ -326,7 +352,7 @@
             acoes.append(
                 botao('fa-share-alt', 'Compartilhar', 'dv-compartilhar', (b) => compartilhar(p, b)),
                 botao('fa-copy', 'Copiar legenda', null, async () => status(await copiar(textoParaCompartilhar(p)) ? 'Legenda e link copiados.' : 'Não foi possível copiar.')),
-                botao('fa-download', 'Baixar', null, async () => { baixarArquivo(await arquivoDaImagem(p)); status('Imagem baixada.'); }),
+                botao('fa-download', 'Baixar', null, async () => { baixarArquivo(await arquivoDaArte(p)); status(p.video ? 'Vídeo baixado.' : 'Imagem baixada.'); }),
                 ...(p.produto
                     ? [botao('fa-store', 'Editar na Loja', 'av-botao-secundario dv-largo', () => window.switchTab('loja'))]
                     : [botao('fa-pen', 'Editar', null, () => abrirEditor(p)), botao('fa-trash-alt', 'Remover', 'av-botao-secundario bl-remover', () => remover(p))])
