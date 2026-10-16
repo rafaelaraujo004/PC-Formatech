@@ -3468,3 +3468,25 @@ html[data-theme='dark'] #depoimentos .depo-zap-resultado { background: #111b21; 
 
 html[data-theme='dark'] .social-proof .location-info strong { color: var(--theme-text); }
 html[data-theme='dark'] .social-proof .location-info small { color: var(--theme-muted); }
+
+/* ── Área de toque no celular (16/10/2026) ───────────────────────────────────
+   Os pontos do carrossel tinham 2 px de altura e os links do rodapé 23 px:
+   difíceis de acertar com o dedo. A área de toque cresce; o desenho não. */
+
+.hero-indicators .indicator {
+    height: 26px;
+    padding: 12px 0;
+    /* O tema (theme-system.css) pinta o fundo com !important; o recorte
+       precisa do mesmo peso para o traço continuar fino. */
+    background-clip: content-box !important;
+}
+.hero-indicators .indicator.active::after { top: 12px; height: 2px; }
+#home .hero-indicators { padding-top: 0; padding-bottom: 0; }
+
+.whatsapp-close { min-width: 44px; min-height: 44px; }
+
+@media (max-width: 760px) {
+    .footer-servicos a { display: inline-flex; align-items: center; min-height: 40px; }
+    .hero-trust-strip a { display: inline-block; padding: 12px 0; margin: -12px 0; }
+}
+

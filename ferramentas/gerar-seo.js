@@ -267,7 +267,7 @@ function rodape() {
             ${SERVICOS.map((s) => `<a href="/servicos/${s.slug}/">${esc(s.nome)}</a>`).join('\n            ')}
         </nav>
         <p class="sv-rodape-contato"><a href="/dicas/">Dicas para o seu computador</a> · <a href="${zap('Olá! Vim pelo site.')}" target="_blank" rel="noopener">(94) 98430-5772</a> · <a href="https://instagram.com/pcformatech" target="_blank" rel="noopener">@pcformatech</a></p>
-        <p class="sv-rodape-autor">Site feito por Rafael Araújo</p>
+        <p class="sv-rodape-autor">Site feito por Rafael Araújo · <a href="/privacidade/">Política de privacidade</a></p>
     </footer>`;
 }
 
@@ -998,6 +998,63 @@ function paginaDicas() {
 `;
 }
 
+// ── Política de privacidade (LGPD) ────────────────────────────────────────
+//
+// Diz só o que o site faz de verdade. Se o site passar a guardar outra coisa
+// (campo novo em presence/presenceDaily, pedidos, formulários, um script de
+// fora), atualize este texto e a data.
+
+const PRIVACIDADE_ATUALIZADA = '16/10/2026';
+
+function paginaPrivacidade() {
+    const url = SITE + '/privacidade/';
+    const titulo = 'Política de privacidade';
+    const descricao = 'O que o site da PC Formatech guarda quando você visita ou faz um pedido, para quê, e como pedir para ver ou apagar os seus dados.';
+    const blocos = [
+        ['Quem somos', `<p>PC Formatech, assistência técnica de computadores, loja de periféricos Bird Tech e criação de apps e sistemas, em ${CIDADE}, PA. Responsável: Rafael Araújo. Contato: WhatsApp <a href="${zap('Olá! Tenho uma dúvida sobre a privacidade no site.')}" target="_blank" rel="noopener">(94) 98430-5772</a> ou Instagram <a href="https://instagram.com/pcformatech" target="_blank" rel="noopener">@pcformatech</a>.</p>`],
+        ['O que guardamos quando você visita o site', `<ul>
+                    <li>As páginas que você abre e por quanto tempo fica nelas.</li>
+                    <li>O tipo de aparelho (celular, computador ou tablet), o idioma e o fuso horário do navegador.</li>
+                    <li>De onde você veio, por exemplo Instagram, WhatsApp ou Google.</li>
+                    <li>O que você digita na busca da página inicial e em quais botões de serviço você toca.</li>
+                    <li>Um código sorteado para contar as visitas sem repetir. Ele não é o seu nome nem o seu número.</li>
+                </ul>
+                <p>Nessas visitas não guardamos nome, telefone, e-mail nem localização.</p>`],
+        ['Para que usamos', '<p>Para saber quantas pessoas visitam o site e quais serviços procuram, melhorar as páginas e avisar a PC Formatech quando alguém entra no site, sem identificar quem é.</p>'],
+        ['Pedidos na loja Bird Tech', '<p>Quando você fecha um pedido, guardamos os produtos, o valor, a forma de entrega e, se você escrever, o seu nome, telefone e observações. Usamos só para separar o pedido, confirmar o pagamento e combinar a entrega ou a retirada. O pagamento por Pix é feito no app do seu banco; o site não recebe dados bancários.</p>'],
+        ['Formulário de formatação e botões do WhatsApp', '<p>As respostas do formulário de formatação e as mensagens dos botões não ficam guardadas no site: elas abrem no seu WhatsApp, e você decide se envia. A conversa no WhatsApp segue as regras do próprio WhatsApp.</p>'],
+        ['Onde os dados ficam', '<p>Os registros ficam no Firebase, do Google, e o site é hospedado na Vercel. Para evitar abuso nos pedidos, contamos as tentativas por endereço de internet de forma embaralhada: o endereço em si não fica guardado.</p>'],
+        ['No seu aparelho', '<p>O site guarda no próprio navegador a sua escolha de tema (claro ou escuro), o carrinho da loja e o código de visita. Você pode apagar isso limpando os dados do site no navegador. O site não usa cookies de propaganda nem de rastreamento de outras empresas.</p>'],
+        ['Seus direitos', `<p>Pela Lei Geral de Proteção de Dados (LGPD), você pode pedir para saber quais dados temos sobre você, corrigir ou apagar. É só chamar no WhatsApp <a href="${zap('Olá! Quero saber, corrigir ou apagar os meus dados do site.')}" target="_blank" rel="noopener">(94) 98430-5772</a>. Respondemos em até 15 dias.</p>`],
+        ['Por quanto tempo', '<p>Os registros de visita são usados para as estatísticas do site e podem ser apagados a qualquer momento a seu pedido. Os pedidos da loja ficam guardados enquanto forem necessários para garantia, troca e controle das vendas.</p>'],
+        ['Mudanças nesta política', `<p>Se o site passar a guardar outra informação, este texto é atualizado e a data abaixo muda. Última atualização: ${PRIVACIDADE_ATUALIZADA}.</p>`]
+    ];
+    const dados = [EMPRESA, { '@type': 'WebPage', '@id': url, url, name: titulo, inLanguage: 'pt-BR', dateModified: '2026-10-16' }];
+    return `${cabeca({ titulo, descricao, url, extras: '    ' + jsonLd({ '@context': 'https://schema.org', '@graph': dados }) })}
+<body>
+    ${topo}
+
+    <main>
+        <section class="sv-hero">
+            <nav class="sv-trilha" aria-label="Você está em"><a href="/site.html">Início</a> <span aria-hidden="true">/</span> <span aria-current="page">Privacidade</span></nav>
+            <h1>${esc(titulo)}</h1>
+            <p class="sv-hero-texto">O que o site guarda quando você visita ou faz um pedido, para quê, e como pedir para ver ou apagar os seus dados. Atualizada em ${PRIVACIDADE_ATUALIZADA}.</p>
+        </section>
+
+        <div class="sv-conteudo">
+            ${blocos.map(([h, corpo]) => `<section class="sv-bloco sv-bloco-largo">
+                <h2>${esc(h)}</h2>
+                ${corpo}
+            </section>`).join('\n            ')}
+        </div>
+    </main>
+
+    ${rodape()}
+</body>
+</html>
+`;
+}
+
 // ── sitemap.xml ───────────────────────────────────────────────────────────
 
 /** Arquivo de cada endereço do sitemap ("/servicos/x/" → servicos/x/index.html). */
@@ -1030,7 +1087,8 @@ function sitemap() {
         ['/apps.html', '0.8'],
         ['/dicas/', '0.7'],
         ...DICAS.map((d) => [`/dicas/${d.slug}/`, '0.7']),
-        ['/formulario-formatacao.html', '0.4']
+        ['/formulario-formatacao.html', '0.4'],
+        ['/privacidade/', '0.3']
     ];
     return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -1059,4 +1117,5 @@ gravar('servicos/index.html', paginaIndice());
 gravar('apps.html', paginaApps());
 DICAS.forEach((d) => gravar(`dicas/${d.slug}/index.html`, paginaDica(d)));
 gravar('dicas/index.html', paginaDicas());
+gravar('privacidade/index.html', paginaPrivacidade());
 gravar('sitemap.xml', sitemap());
