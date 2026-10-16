@@ -3753,3 +3753,5 @@ html[data-theme='dark'] .orc-item[data-tipo='produto'] .orc-item-tipo { color: #
     .orc-modal-acoes #orcEnviarBtn { flex-basis: 100%; order: -1; }
     .orc-acao { min-height: 40px; }
 }
+
+.orc-acao.is-copiado { border-color: #25d366; color: #1f7a5c; }
