@@ -1654,7 +1654,7 @@
     <link rel="stylesheet" href="theme-system.css?v=7">
     <script src="theme-system.js?v=7"></script>
     <!-- Camada de refinamento: por ultimo, para vencer o <style> embutido e o theme-system.css -->
-    <link rel="stylesheet" href="admin-refinements.css?v=17">
+    <link rel="stylesheet" href="admin-refinements.css?v=18">
     <link rel="stylesheet" href="anuncios.css?v=4">
     <script src="auth-system.js?v=2" defer></script>
 </head>
@@ -1981,33 +1981,30 @@
         <!-- Orçamentos e Laudos -->
         <div id="tab-budgets" class="tab-content">
             <div class="clients-container">
-                <h2><i class="fas fa-file-invoice-dollar"></i> Orçamentos e Laudos Técnicos</h2>
-                
-                <button class="btn-save" onclick="openNewBudgetModal()" style="margin-bottom: 20px;">
-                    <i class="fas fa-plus-circle"></i> Novo Orçamento/Laudo
-                </button>
-
-                <div class="search-box">
-                    <input type="text" id="searchBudget" placeholder="🔍 Buscar orçamento por cliente ou número..." onkeyup="searchBudgets()">
+                <div class="bl-cabecalho">
+                    <span class="ad-cabecalho-icone orc-cabecalho-icone" aria-hidden="true"><i class="fas fa-file-invoice-dollar"></i></span>
+                    <div>
+                        <h2>Orçamentos e laudos</h2>
+                        <p>Cada atendimento segue a ordem orçamento → serviço → laudo, com o mesmo número do começo ao fim.</p>
+                    </div>
+                    <button type="button" class="av-botao" onclick="openNewBudgetModal()"><i class="fas fa-plus" aria-hidden="true"></i> Novo orçamento</button>
                 </div>
 
-                <div class="table-wrapper">
-                    <table class="clients-table" id="budgetsTable">
-                        <thead>
-                            <tr>
-                                <th>Nº Laudo</th>
-                                <th>Cliente</th>
-                                <th>Data</th>
-                                <th>Total</th>
-                                <th>Tipo</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="budgetsTableBody">
-                            <!-- Orçamentos serão inseridos aqui -->
-                        </tbody>
-                    </table>
+                <div class="orc-resumo" id="orcResumo" aria-live="polite"></div>
+
+                <div class="orc-barra">
+                    <div class="dv-filtros orc-filtros" role="group" aria-label="Filtrar">
+                        <button type="button" class="is-ativo" data-orc-filtro="todos" aria-pressed="true">Todos</button>
+                        <button type="button" data-orc-filtro="aberto" aria-pressed="false">Em aberto</button>
+                        <button type="button" data-orc-filtro="servico" aria-pressed="false">Viraram serviço</button>
+                        <button type="button" data-orc-filtro="laudo" aria-pressed="false">Com laudo</button>
+                        <button type="button" data-orc-filtro="encerrados" aria-pressed="false">Recusados e vencidos</button>
+                    </div>
+                    <input type="search" id="searchBudget" class="orc-busca" placeholder="Buscar por cliente, número ou equipamento" oninput="searchBudgets()" aria-label="Buscar orçamento">
                 </div>
+
+                <p class="av-status" id="orcStatus" role="status" aria-live="polite"></p>
+                <div class="orc-lista" id="orcLista"></div>
             </div>
         </div>
     </div>
@@ -2239,94 +2236,98 @@
 
     <!-- Modal de Novo Orçamento/Laudo -->
     <div id="budgetModal" class="modal">
-        <div class="modal-content" style="max-width: 1000px;">
+        <div class="modal-content orc-modal">
             <div class="modal-header">
-                <h2 id="budgetModalTitle"><i class="fas fa-file-invoice"></i> Novo Orçamento / Laudo Técnico</h2>
-                <span class="close" onclick="closeModal('budgetModal')">&times;</span>
+                <h2 id="budgetModalTitle"><i class="fas fa-file-invoice-dollar"></i> Novo orçamento</h2>
+                <span class="close" onclick="closeModal('budgetModal')" role="button" aria-label="Fechar">&times;</span>
             </div>
-            <form id="budgetForm">
-                <input type="hidden" id="budgetId">
-                
-                <div class="client-form">
-                    <div class="input-group">
-                        <label>Cliente: *</label>
-                        <select id="budgetClientId" required onchange="loadClientData()">
-                            <option value="">Selecione um cliente...</option>
-                        </select>
+            <div class="orc-faixa" id="orcFaixa"></div>
+            <form id="budgetForm" onsubmit="return false" novalidate>
+                <section class="orc-secao">
+                    <div class="orc-grade">
+                        <label class="orc-campo orc-largo">Cliente *
+                            <select id="budgetClientId" required></select>
+                        </label>
+                        <label class="orc-campo">Data do orçamento
+                            <input type="date" id="budgetDate">
+                        </label>
+                        <label class="orc-campo" id="orcValidadeCampo">Validade
+                            <select id="budgetValidade">
+                                <option value="3">3 dias</option>
+                                <option value="7">7 dias</option>
+                                <option value="15">15 dias</option>
+                                <option value="30">30 dias</option>
+                            </select>
+                        </label>
+                        <label class="orc-campo" id="orcLaudoDataCampo" hidden>Data do laudo
+                            <input type="date" id="budgetLaudoData">
+                        </label>
+                        <label class="orc-campo orc-largo">Equipamento
+                            <input type="text" id="budgetEquipamento" placeholder="Ex.: Notebook Dell Inspiron 15, Windows 11" autocomplete="off">
+                        </label>
+                        <label class="orc-campo orc-largo"><span id="orcDefeitoRotulo">Problema relatado pelo cliente</span>
+                            <textarea id="budgetDefect" rows="2" placeholder="Ex.: computador muito lento e travando ao abrir o navegador"></textarea>
+                        </label>
                     </div>
-                    
-                    <div class="input-group">
-                        <label>Data: *</label>
-                        <input type="date" id="budgetDate" required>
+                </section>
+
+                <section class="orc-secao orc-secao-laudo" id="orcLaudoSecao" hidden>
+                    <h3><i class="fas fa-stethoscope" aria-hidden="true"></i> Laudo técnico</h3>
+                    <div class="orc-grade">
+                        <label class="orc-campo orc-largo">Diagnóstico
+                            <textarea id="budgetReport" rows="3" placeholder="O que foi encontrado: ex.: HD com setores defeituosos, sistema corrompido por vírus…"></textarea>
+                        </label>
+                        <label class="orc-campo orc-largo">Solução aplicada
+                            <textarea id="budgetSolution" rows="3" placeholder="O que foi feito para resolver"></textarea>
+                        </label>
                     </div>
-                    
-                    <div class="input-group">
-                        <label>Tipo: *</label>
-                        <select id="budgetType" required>
-                            <option value="orcamento">Orçamento</option>
-                            <option value="laudo">Laudo Técnico</option>
-                        </select>
+                </section>
+
+                <section class="orc-secao">
+                    <div class="orc-secao-topo">
+                        <h3><i class="fas fa-list-ul" aria-hidden="true"></i> Itens</h3>
+                        <div class="orc-itens-botoes">
+                            <button type="button" class="av-botao av-botao-secundario" onclick="addServiceToBudget()"><i class="fas fa-plus" aria-hidden="true"></i> Serviço</button>
+                            <button type="button" class="av-botao av-botao-secundario" onclick="addProductToBudget()"><i class="fas fa-plus" aria-hidden="true"></i> Produto</button>
+                        </div>
                     </div>
+                    <div class="orc-rapidos" id="orcRapidos" aria-label="Adicionar serviço com um toque"></div>
+                    <div class="orc-itens" id="orcItens"></div>
+                    <p class="orc-itens-vazio" id="orcItensVazio">Toque num serviço acima ou em "+ Serviço". Dá para digitar qualquer descrição.</p>
+                    <datalist id="orcSugestoesServico"></datalist>
+                    <datalist id="orcSugestoesProduto"></datalist>
+                </section>
+
+                <section class="orc-secao orc-fechamento">
+                    <div class="orc-grade">
+                        <label class="orc-campo">Desconto (R$)
+                            <input type="number" id="budgetDesconto" min="0" step="0.01" inputmode="decimal" placeholder="0,00">
+                        </label>
+                        <label class="orc-campo">Formas de pagamento
+                            <input type="text" id="budgetPagamento" autocomplete="off">
+                        </label>
+                        <label class="orc-campo orc-largo">Garantia
+                            <input type="text" id="budgetWarranty" autocomplete="off">
+                        </label>
+                        <label class="orc-campo orc-largo">Observações
+                            <textarea id="budgetObservations" rows="2" placeholder="Aparece no PDF, em Condições"></textarea>
+                        </label>
+                        <label class="orc-check orc-largo"><input type="checkbox" id="budgetPix" checked> QR Code do Pix com o valor exato no PDF</label>
+                    </div>
+                    <div class="orc-totais" aria-live="polite">
+                        <div><span>Subtotal</span><b id="orcSubtotal">R$ 0,00</b></div>
+                        <div><span>Desconto</span><b id="orcDescontoValor">R$ 0,00</b></div>
+                        <div class="orc-total-final"><span>Total</span><strong id="budgetTotal">R$ 0,00</strong></div>
+                        <small id="orcExtenso"></small>
+                    </div>
+                </section>
+
+                <p class="av-status" id="orcModalStatus" role="status" aria-live="polite"></p>
+                <div class="orc-modal-acoes">
+                    <button type="button" class="av-botao" id="budgetSaveButton"><i class="fas fa-save"></i> Salvar orçamento</button>
+                    <button type="button" class="av-botao av-botao-secundario" id="orcPdfBtn"><i class="fas fa-file-pdf"></i> Ver PDF</button>
+                    <button type="button" class="av-botao orc-botao-zap" id="orcEnviarBtn"><i class="fab fa-whatsapp"></i> Enviar ao cliente</button>
                 </div>
-
-                <hr style="margin: 20px 0;">
-
-                <h3><i class="fas fa-tools"></i> Serviços</h3>
-                <div id="budgetServices">
-                    <!-- Serviços serão adicionados aqui -->
-                </div>
-                <button type="button" class="btn-save" onclick="addServiceToBudget()" style="margin-bottom: 20px;">
-                    <i class="fas fa-plus"></i> Adicionar Serviço
-                </button>
-
-                <h3><i class="fas fa-box"></i> Produtos</h3>
-                <div id="budgetProducts">
-                    <!-- Produtos serão adicionados aqui -->
-                </div>
-                <button type="button" class="btn-save" onclick="addProductToBudget()" style="margin-bottom: 20px;">
-                    <i class="fas fa-plus"></i> Adicionar Produto
-                </button>
-
-                <hr style="margin: 20px 0;">
-
-                <div class="input-group" style="grid-column: 1 / -1;">
-                    <label>Defeito Relatado:</label>
-                    <textarea id="budgetDefect" rows="3" placeholder="Descreva o problema relatado pelo cliente..."></textarea>
-                </div>
-
-                <div class="input-group" style="grid-column: 1 / -1;">
-                    <label>Laudo Técnico:</label>
-                    <textarea id="budgetReport" rows="3" placeholder="Diagnóstico técnico detalhado..."></textarea>
-                </div>
-
-                <div class="input-group" style="grid-column: 1 / -1;">
-                    <label>Solução Aplicada:</label>
-                    <textarea id="budgetSolution" rows="3" placeholder="Serviços e produtos aplicados..."></textarea>
-                </div>
-
-                <div class="input-group" style="grid-column: 1 / -1;">
-                    <label>Observações:</label>
-                    <textarea id="budgetObservations" rows="2" placeholder="Informações adicionais..."></textarea>
-                </div>
-
-                <div class="input-group">
-                    <label>Garantia:</label>
-                    <input type="text" id="budgetWarranty" placeholder="Ex: 3 Meses">
-                </div>
-
-                <div class="input-group">
-                    <label><strong>Total: R$ <span id="budgetTotal">0,00</span></strong></label>
-                </div>
-
-                <hr style="margin: 20px 0;">
-
-                <button type="button" class="btn-save" id="budgetSaveButton" onclick="saveBudget()">
-                    <i class="fas fa-save"></i> Salvar Orçamento/Laudo
-                </button>
-                
-                <button type="button" class="btn-save" onclick="generatePDF()" style="background: #dc3545;">
-                    <i class="fas fa-file-pdf"></i> Gerar PDF
-                </button>
             </form>
         </div>
     </div>
@@ -3260,7 +3261,10 @@
         </div>
     </div>
 
-        <script src="admin-app.js?v=8"></script>
+        <script src="vendor/qrcode-generator.js"></script>
+        <script src="pix.js?v=1"></script>
+        <script src="orcamento-pdf.js?v=1"></script>
+        <script src="admin-app.js?v=9"></script>
         <script src="resumo-visitas.js?v=4"></script>
         <script src="admin-visitas.js?v=5"></script>
         <script src="vendor/qrcode-generator.js"></script>
