@@ -3159,3 +3159,166 @@ html[data-theme='dark'] .bl-aviso { color: #ffc46b; }
     .avaliar-card-acoes .btn-action { flex: 1 1 auto; justify-content: center; }
     .avaliar-card-acoes #avaliar-zap { flex-basis: 100%; }
 }
+
+
+/* ── 23 · Postar 3 de uma vez (aba Divulgação) ──────────────────────────────
+   1 vídeo e 2 fotos no mesmo envio (admin-postar3.js). As três vagas ficam
+   lado a lado, em pé como o Status; tocar numa abre a lista para trocar. */
+
+.dv-cabecalho-botoes { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-left: auto; }
+.bl-cabecalho .dv-cabecalho-botoes .av-botao { margin-left: 0; }
+.dv-trio-abrir { background: linear-gradient(135deg, #2f8f84, #1f6f8b); box-shadow: 0 8px 20px -10px rgba(31, 111, 139, 0.8); }
+
+.dv-trio { width: min(560px, calc(100% - 1.5rem)); }
+.dv-trio-explica { margin: 0.5rem 0 0.9rem; color: var(--adm-texto-suave); font-size: var(--adm-fs-sm); line-height: 1.5; }
+
+.dv-trio-vagas {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.6rem;
+    margin-bottom: 0.9rem;
+}
+
+.dv-trio-vaga {
+    display: grid;
+    gap: 0.45rem;
+    align-content: start;
+    padding: 0.45rem;
+    border: 1.5px solid var(--adm-borda);
+    border-radius: 14px;
+    background: var(--adm-superficie-2);
+    color: var(--adm-texto);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.dv-trio-vaga:hover { border-color: var(--brand-400, #40998f); }
+.dv-trio-vaga.is-trocando { border-color: var(--brand-400, #40998f); box-shadow: 0 0 0 3px rgba(64, 153, 143, 0.22); }
+
+.dv-trio-mini {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 9 / 16;
+    overflow: hidden;
+    border-radius: 10px;
+    background: var(--adm-superficie);
+}
+
+.dv-trio-mini img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.dv-trio-play {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    margin: -18px 0 0 -18px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.55);
+    color: #fff;
+    font-size: 0.85rem;
+    padding-left: 3px;
+}
+
+.dv-trio-vazia { display: grid; place-items: center; color: var(--adm-texto-suave); font-size: var(--adm-fs-xs); }
+
+.dv-trio-info { display: grid; gap: 0.15rem; min-width: 0; }
+
+.dv-trio-tipo {
+    justify-self: start;
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    background: var(--adm-info-suave);
+    color: var(--adm-info);
+    font-size: var(--adm-fs-label);
+    font-weight: 800;
+}
+
+.dv-trio-nome {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: var(--adm-fs-xs);
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.dv-trio-marca { color: var(--adm-texto-suave); font-size: var(--adm-fs-label); }
+.dv-trio-trocar { margin-top: 0.15rem; color: var(--brand-400, #40998f); font-size: var(--adm-fs-label); font-weight: 800; }
+
+.dv-trio-escolha {
+    margin-bottom: 0.9rem;
+    padding: 0.7rem;
+    border: 1px solid var(--adm-borda);
+    border-radius: 14px;
+    background: var(--adm-superficie-2);
+}
+
+.dv-trio-escolha[hidden] { display: none; }
+.dv-trio-escolha-topo { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; margin-bottom: 0.6rem; }
+.dv-trio-escolha-topo .av-botao { min-height: 36px; padding: 0 0.8rem; }
+
+.dv-trio-opcoes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+    gap: 0.5rem;
+    max-height: min(46dvh, 380px);
+    overflow-y: auto;
+    padding: 2px;
+}
+
+.dv-trio-opcao {
+    display: grid;
+    gap: 0.3rem;
+    align-content: start;
+    padding: 0.3rem;
+    border: 1.5px solid transparent;
+    border-radius: 12px;
+    background: var(--adm-superficie);
+    color: var(--adm-texto);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.dv-trio-opcao:hover { border-color: var(--adm-borda-forte); }
+.dv-trio-opcao.is-atual { border-color: var(--brand-400, #40998f); }
+.dv-trio-opcao .dv-trio-nome { font-size: var(--adm-fs-label); }
+
+.dv-trio .dv-postar-botao:disabled { cursor: progress; }
+
+.dv-trio-uma {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.8rem;
+    margin-top: 0.6rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--adm-borda);
+    color: var(--adm-texto-suave);
+    font-size: var(--adm-fs-xs);
+}
+
+.dv-trio-uma-botoes { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+.dv-trio-uma-botoes .av-botao { min-height: 40px; padding: 0 0.8rem; }
+
+@media (max-width: 760px) {
+    .dv-cabecalho-botoes { width: 100%; margin-left: 0; }
+    .dv-cabecalho-botoes .av-botao { flex: 1 1 100%; }
+    .bl-cabecalho .dv-cabecalho-botoes #dv-nova { width: 100%; }
+}
+
+@media (max-width: 600px) {
+    .dv-trio { padding: 1rem; }
+    .dv-trio-vagas { gap: 0.4rem; }
+    .dv-trio-vaga { padding: 0.35rem; }
+    .dv-trio-marca { display: none; }
+    .dv-trio-uma-botoes { width: 100%; }
+    .dv-trio-uma-botoes .av-botao { flex: 1 1 0; padding: 0 0.4rem; }
+}

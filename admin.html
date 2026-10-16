@@ -1652,7 +1652,7 @@
     <link rel="stylesheet" href="theme-system.css?v=7">
     <script src="theme-system.js?v=7"></script>
     <!-- Camada de refinamento: por ultimo, para vencer o <style> embutido e o theme-system.css -->
-    <link rel="stylesheet" href="admin-refinements.css?v=16">
+    <link rel="stylesheet" href="admin-refinements.css?v=17">
     <link rel="stylesheet" href="anuncios.css?v=4">
     <script src="auth-system.js?v=2" defer></script>
 </head>
@@ -2639,7 +2639,10 @@
                     <h2>Divulgação</h2>
                     <p>Artes prontas para postar. Toque em Compartilhar e escolha WhatsApp, Instagram ou Status: a imagem vai com a legenda e o link.</p>
                 </div>
-                <button type="button" class="av-botao" id="dv-nova"><i class="fas fa-plus" aria-hidden="true"></i> Nova arte</button>
+                <div class="dv-cabecalho-botoes">
+                    <button type="button" class="av-botao dv-trio-abrir" id="dv-trio-abrir"><i class="fas fa-layer-group" aria-hidden="true"></i> Postar 3 de uma vez</button>
+                    <button type="button" class="av-botao av-botao-secundario" id="dv-nova"><i class="fas fa-plus" aria-hidden="true"></i> Nova arte</button>
+                </div>
             </div>
 
             <!-- Programação de Status e Stories (admin-agenda.js) -->
@@ -2747,6 +2750,29 @@
         <div class="dv-postar-rodape">
             <button type="button" class="av-botao av-botao-secundario" id="dv-postar-pular"><i class="fas fa-forward" aria-hidden="true"></i> Pular hoje</button>
             <button type="button" class="av-botao av-botao-secundario" id="dv-postar-feito"><i class="fas fa-check" aria-hidden="true"></i> Já postei</button>
+        </div>
+    </dialog>
+
+    <!-- Postar 3 de uma vez: 1 vídeo + 2 fotos (admin-postar3.js) -->
+    <dialog class="dv-dialogo dv-trio" id="dv-trio" aria-labelledby="dv-trio-titulo">
+        <div class="dv-dialogo-topo">
+            <h3 class="bl-subtitulo" id="dv-trio-titulo">Postar 3 de uma vez</h3>
+            <button type="button" class="dv-fechar" data-fechar aria-label="Fechar"><i class="fas fa-times" aria-hidden="true"></i></button>
+        </div>
+        <p class="dv-trio-explica">1 vídeo e 2 fotos no mesmo envio, já no formato de Status e Stories. A sugestão muda todo dia e mistura PC Formatech, Bird Tech e Apps. Toque em uma para trocar.</p>
+        <div class="dv-trio-vagas" id="dv-trio-vagas"></div>
+        <div class="dv-trio-escolha" id="dv-trio-escolha" hidden>
+            <div class="dv-trio-escolha-topo">
+                <strong id="dv-trio-escolha-titulo">Escolha</strong>
+                <button type="button" class="av-botao av-botao-secundario" id="dv-trio-escolha-fechar">Cancelar</button>
+            </div>
+            <div class="dv-trio-opcoes" id="dv-trio-opcoes"></div>
+        </div>
+        <div class="dv-postar-botoes" id="dv-trio-botoes"></div>
+        <p class="av-status" id="dv-trio-status" role="status" aria-live="polite"></p>
+        <div class="dv-trio-uma">
+            <span>Se o app aceitar só um por vez:</span>
+            <div class="dv-trio-uma-botoes" id="dv-trio-uma-botoes"></div>
         </div>
     </dialog>
 
@@ -3243,9 +3269,10 @@
         <script src="admin-loja.js?v=1"></script>
         <script src="anuncios.js?v=4"></script>
         <script src="admin-anuncios.js?v=2"></script>
-        <script src="admin-divulgacao.js?v=8"></script>
+        <script src="admin-divulgacao.js?v=9"></script>
         <script src="agenda-divulgacao.js?v=3"></script>
         <script src="admin-agenda.js?v=5"></script>
+        <script src="admin-postar3.js?v=1"></script>
         <script src="admin-atualizar.js?v=1"></script>
         <script src="admin-avaliacao.js?v=1"></script>
         <script src="admin-pedidos.js?v=1"></script>
