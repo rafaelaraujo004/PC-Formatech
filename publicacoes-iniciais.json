@@ -196,6 +196,36 @@
             "imagem": "/images/divulgacao/reels-backup.jpg",
             "video": "/images/divulgacao/reels-backup-hd.mp4",
             "ordem": 0
+        },
+        {
+            "id": "bird-reels-fone",
+            "categoria": "birdtech",
+            "titulo": "Reels: fone por R$ 14,99 (Status/Stories)",
+            "legenda": "Fone chiando, com um lado mudo ou com o fio partido? Na Bird Tech tem fone novo a partir de R$ 14,99: Hmaston EJ-40 e EJ-102, com fio e conector P2 de 3,5 mm. Pague com Pix, cartão ou dinheiro e retire com a PC Formatech ou receba em Canaã dos Carajás. Peça pelo WhatsApp (94) 98430-5772 ou veja na loja:",
+            "link": "https://www.pcformatech.com.br/loja.html",
+            "imagem": "/images/divulgacao/reels-loja-fone.jpg",
+            "video": "/images/divulgacao/reels-loja-fone-hd.mp4",
+            "ordem": 0
+        },
+        {
+            "id": "bird-reels-comprar",
+            "categoria": "birdtech",
+            "titulo": "Reels: como comprar na Bird Tech (Status/Stories)",
+            "legenda": "Comprar na Bird Tech é fácil: escolha o produto na loja do site, pague com Pix no valor exato (também aceitamos cartão ou dinheiro) e retire com a PC Formatech ou combine a entrega em Canaã dos Carajás. Dúvidas? WhatsApp (94) 98430-5772. Veja a loja:",
+            "link": "https://www.pcformatech.com.br/loja.html",
+            "imagem": "/images/divulgacao/reels-loja-comprar.jpg",
+            "video": "/images/divulgacao/reels-loja-comprar-hd.mp4",
+            "ordem": 0
+        },
+        {
+            "id": "bird-reels-encomenda",
+            "categoria": "birdtech",
+            "titulo": "Reels: encomenda na Bird Tech (Status/Stories)",
+            "legenda": "Não achou o que procura? Mouses, teclados, cabos, carregadores e pendrives: se não está na vitrine, a Bird Tech consegue por encomenda. Peça pelo WhatsApp (94) 98430-5772. Veja a loja:",
+            "link": "https://www.pcformatech.com.br/loja.html",
+            "imagem": "/images/divulgacao/reels-loja-encomenda.jpg",
+            "video": "/images/divulgacao/reels-loja-encomenda-hd.mp4",
+            "ordem": 0
         }
     ]
 }
