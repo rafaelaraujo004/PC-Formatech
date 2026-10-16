@@ -146,6 +146,36 @@
             "link": "https://www.pcformatech.com.br/servicos/limpeza-e-otimizacao/",
             "imagem": "/images/divulgacao/anuncio-computador-lento-story.jpg",
             "ordem": 0
+        },
+        {
+            "id": "pcf-reels-virus",
+            "categoria": "pcformatech",
+            "titulo": "Reels: vírus e propaganda (Status/Stories)",
+            "legenda": "Propaganda abrindo sozinha, janelas estranhas ou navegador cheio de anúncio? Pode ser vírus, e suas senhas ficam em risco. A PC Formatech remove os vírus e instala um antivírus para proteger seus arquivos e senhas. A partir de R$ 60, em Canaã dos Carajás ou à distância. Chame no WhatsApp (94) 98430-5772.",
+            "link": "https://www.pcformatech.com.br/servicos/remocao-de-virus/",
+            "imagem": "/images/divulgacao/reels-virus.jpg",
+            "video": "/images/divulgacao/reels-virus.mp4",
+            "ordem": 0
+        },
+        {
+            "id": "pcf-reels-remoto",
+            "categoria": "pcformatech",
+            "titulo": "Reels: atendimento sem sair de casa (Status/Stories)",
+            "legenda": "Seu PC deu problema? Nem precisa sair de casa: você chama no WhatsApp, instala o AnyDesk e a gente resolve pela internet, com você acompanhando tudo pela tela. Lentidão, vírus, programas e drivers, para qualquer cidade, com 10% de desconto. Chame no WhatsApp (94) 98430-5772.",
+            "link": "https://www.pcformatech.com.br/servicos/suporte-remoto/",
+            "imagem": "/images/divulgacao/reels-remoto.jpg",
+            "video": "/images/divulgacao/reels-remoto.mp4",
+            "ordem": 0
+        },
+        {
+            "id": "apps-reels",
+            "categoria": "apps",
+            "titulo": "Reels: seu negócio no app (Status/Stories)",
+            "legenda": "Ainda controla estoque, agenda e contas no caderno ou na planilha? A PC Formatech cria o app do seu negócio: estoque, agenda, orçamentos e financeiro, tudo num lugar só, no celular e no computador. A partir de R$ 149,99. Peça o seu no WhatsApp (94) 98430-5772.",
+            "link": "https://www.pcformatech.com.br/apps.html",
+            "imagem": "/images/divulgacao/reels-apps.jpg",
+            "video": "/images/divulgacao/reels-apps.mp4",
+            "ordem": 0
         }
     ]
 }
