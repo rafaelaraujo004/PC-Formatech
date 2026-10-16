@@ -575,6 +575,7 @@
 
     window.PCFTDivulgacao = {
         listar, obterArtes, linkDaArte, chamar, prepararStory, enviarArte, codigoDaArte,
+        textoParaCompartilhar, copiar, baixarArquivo,
         artes: () => publicacoes.concat(produtosLoja),
         carregado: () => carregado,
         marca: (categoria) => (MARCAS[categoria] || MARCAS.pcformatech).nome
