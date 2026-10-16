@@ -341,18 +341,14 @@
         const linhasExtenso = doc.splitTextToSize(porExtenso.charAt(0).toUpperCase() + porExtenso.slice(1) + '.', LARG_DIR - 2);
         const alturaDir = 6 + (t.desconto > 0 ? 6 : 0) + 14 + 3 + linhasExtenso.length * 3.6 + (aprovar ? 24 : 0);
 
-        let codigoPix = '', instrucao = [], linhasCodigo = [], alturaEsq = 0;
+        let codigoPix = '', instrucao = [], alturaEsq = 0;
         const xP = M + 39;
         const largTexto = largEsq - 42;
         if (pix) {
             codigoPix = window.PCFTPix.codigo(t.total, 'PCF' + String(orc.number).replace(/\D/g, ''), `${nomeDoc} ${orc.number}`);
             fonte('normal', 7.9);
-            instrucao = doc.splitTextToSize(`No app do banco, toque em Pix e em "Ler QR Code": o valor de ${moeda(t.total)} já vem preenchido. No celular, use o copia e cola.`, largTexto);
-            doc.setFont('courier', 'normal');
-            doc.setFontSize(5.7);
-            const porLinha = Math.max(20, Math.floor(largTexto / doc.getTextWidth('0')));
-            linhasCodigo = codigoPix.match(new RegExp('.{1,' + porLinha + '}', 'g'));
-            alturaEsq = Math.max(39, 9 + instrucao.length * 3.5 + 4.2 + 4.6 + linhasCodigo.length * 2.45 + 3);
+            instrucao = doc.splitTextToSize(`No app do banco, toque em Pix e em "Ler QR Code": o valor de ${moeda(t.total)} já vem preenchido. No celular, toque no botão abaixo e cole no app do banco (Pix copia e cola).`, largTexto);
+            alturaEsq = Math.max(39, 9 + instrucao.length * 3.5 + 1.8 + 9 + 4);
         } else {
             alturaEsq = 12;
         }
@@ -403,15 +399,16 @@
             doc.text('Pague com Pix', xP, y + 8);
             fonte('normal', 7.9, COR.texto);
             doc.text(instrucao, xP, y + 12.6, { lineHeightFactor: 1.3 });
-            let yP = y + 12.6 + instrucao.length * 3.5 + 0.8;
-            fonte('normal', 7.3, COR.suave);
-            doc.text(doc.splitTextToSize(`Recebedor: ${window.PCFTPix.dados.titular}`, largTexto)[0], xP, yP);
-            yP += 4.6;
-            rotulo('PIX COPIA E COLA', xP, yP);
-            doc.setFont('courier', 'normal');
-            doc.setFontSize(5.7);
-            doc.setTextColor(...COR.texto);
-            doc.text(linhasCodigo, xP, yP + 3.2, { lineHeightFactor: 1.2 });
+            let yP = y + 12.6 + instrucao.length * 3.5 + 1.2;
+            // Botão que abre /pix/ (pix-pagina.js), onde um toque copia o código:
+            // o PDF sozinho não copia nada.
+            const yBotao = yP + 0.6;
+            const linkPix = `https://www.pcformatech.com.br/pix/?v=${t.total.toFixed(2)}&n=${encodeURIComponent(orc.number)}&t=${laudo ? 'laudo' : 'orcamento'}`;
+            doc.setFillColor(...COR.teal);
+            doc.roundedRect(xP, yBotao, largTexto, 9, 2, 2, 'F');
+            fonte('bold', 8.6, [255, 255, 255]);
+            doc.text('Copiar código Pix', xP + largTexto / 2, yBotao + 6, { align: 'center' });
+            doc.link(xP, yBotao, largTexto, 9, { url: linkPix });
             y += alturaEsq;
         } else {
             rotulo('VALOR POR EXTENSO', M, y + 4);
@@ -422,7 +419,7 @@
         // Condições: garantia, validade e observações.
         const condicoes = [];
         if (orc.warranty) condicoes.push(['Garantia', String(orc.warranty)]);
-        condicoes.push(['Pagamento', String(orc.pagamento || 'Pix, cartão ou dinheiro').trim() + '.']);
+        condicoes.push(['Pagamento', String(orc.pagamento || 'Pix, cartão ou dinheiro').trim() + (pix ? `. Pix em nome de ${window.PCFTPix.dados.titular}.` : '.')]);
         if (!laudo) condicoes.push(['Validade', `Este orçamento vale até ${dataBR(somarDias(orc.date, orc.validadeDias || 7))}. Depois dessa data, os valores podem mudar.`]);
         if (orc.observations) condicoes.push(['Observações', String(orc.observations)]);
         if (condicoes.length) {

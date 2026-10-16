@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Pagar com Pix | PC Formatech</title>
+    <meta name="theme-color" content="#06101b">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="stylesheet" href="/fontes.css">
+    <!-- Página aberta pelo botão "Copiar código Pix" do PDF do orçamento e do
+         laudo (orcamento-pdf.js): o PDF não copia nada sozinho. O código é
+         montado aqui com o mesmo pix.js do PDF, a partir do valor e do número. -->
+    <style>
+        :root { color-scheme: light dark; --fundo: #eef5f4; --cartao: #fff; --texto: #12263a; --suave: #5f6c7b; --borda: rgba(11, 61, 61, 0.12); --menta: #40998f; }
+        @media (prefers-color-scheme: dark) { :root { --fundo: #06101b; --cartao: #0f1c2b; --texto: #e3eef3; --suave: #9db3c4; --borda: rgba(95, 201, 190, 0.18); } }
+        * { box-sizing: border-box; }
+        body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 20px 16px; background: var(--fundo); color: var(--texto); font-family: 'Manrope', system-ui, sans-serif; }
+        main { width: min(100%, 420px); padding: 22px 20px 20px; border-radius: 22px; background: var(--cartao); border: 1px solid var(--borda); box-shadow: 0 30px 70px -40px rgba(0, 0, 0, 0.5); text-align: center; }
+        .topo { display: flex; align-items: center; justify-content: center; gap: 10px; font-family: 'Sora', sans-serif; font-weight: 800; }
+        .topo img { width: 40px; height: 40px; border-radius: 10px; }
+        h1 { margin: 16px 0 2px; font-size: 1rem; font-weight: 700; color: var(--suave); }
+        .valor { margin: 0; font-family: 'Sora', sans-serif; font-size: 2.3rem; font-weight: 800; }
+        .doc { margin: 2px 0 14px; color: var(--suave); font-size: 0.9rem; }
+        canvas { display: block; margin: 0 auto 14px; border-radius: 12px; background: #fff; }
+        .codigo { margin: 0 0 12px; padding: 10px 12px; border-radius: 12px; border: 1px dashed var(--borda); background: rgba(64, 153, 143, 0.06); font: 0.72rem/1.4 ui-monospace, Consolas, monospace; word-break: break-all; text-align: left; user-select: all; }
+        button { width: 100%; min-height: 54px; border: 0; border-radius: 14px; background: #25d366; color: #fff; font: 800 1.05rem 'Manrope', sans-serif; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+        button.ok { background: var(--menta); }
+        .passos { margin: 14px 0 0; padding: 0; list-style: none; display: grid; gap: 6px; text-align: left; color: var(--suave); font-size: 0.9rem; }
+        .passos b { color: var(--texto); }
+        .rec { margin: 14px 0 0; font-size: 0.8rem; color: var(--suave); }
+        .erro { color: #c0392b; font-weight: 700; }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="topo"><img src="/icon-192.png" alt="" width="40" height="40"> PC Formatech</div>
+        <h1>Pagar com Pix</h1>
+        <p class="valor" id="valor">—</p>
+        <p class="doc" id="doc"></p>
+        <canvas id="qr" aria-label="QR Code do Pix"></canvas>
+        <p class="codigo" id="codigo"></p>
+        <button type="button" id="copiar">Copiar código Pix</button>
+        <ol class="passos">
+            <li>1. Toque em <b>Copiar código Pix</b>.</li>
+            <li>2. No app do banco, abra <b>Pix</b> e escolha <b>Pix copia e cola</b>.</li>
+            <li>3. Cole o código: o valor já vem preenchido. Confira e confirme.</li>
+        </ol>
+        <p class="rec" id="rec"></p>
+    </main>
+    <script src="/vendor/qrcode-generator.js"></script>
+    <script src="/pix.js?v=1"></script>
+    <script src="/pix-pagina.js?v=1"></script>
+</body>
+</html>

@@ -2316,7 +2316,7 @@ function updateChartTheme() {
             const botao = (acao, icone, texto, classe) => `<button type="button" class="orc-acao ${classe || ''}" data-acao="${acao}"${texto ? '' : ' aria-label="Excluir" title="Excluir"'}><i class="fas fa-${icone}" aria-hidden="true"></i>${texto ? ' ' + texto : ''}</button>`;
             const excluir = botao('excluir', 'trash-alt', '', 'is-perigo');
             if (b.etapa === 'laudo') {
-                return botao('enviar-laudo', 'paper-plane', 'Enviar laudo', 'is-principal') + botao('pdf-laudo', 'file-pdf', 'PDF')
+                return botao('enviar-laudo', 'paper-plane', 'Enviar laudo', 'is-principal') + botao('pdf-laudo', 'file-pdf', 'PDF') + botao('copiar-pix', 'copy', 'Pix')
                     + botao('editar', 'pen', 'Editar laudo') + (b.convertidoEm ? botao('pdf-orcamento', 'file-invoice', 'Orçamento') : '') + excluir;
             }
             if (b.etapa === 'servico') {
@@ -2324,7 +2324,7 @@ function updateChartTheme() {
             }
             if (s.chave === 'recusado') return botao('reabrir', 'undo', 'Reabrir') + botao('pdf-orcamento', 'file-pdf', 'PDF') + excluir;
             return botao('enviar', 'paper-plane', 'Enviar', 'is-principal') + botao('converter', 'check-circle', 'Virou serviço', 'is-ok')
-                + botao('editar', 'pen', 'Editar') + botao('pdf-orcamento', 'file-pdf', 'PDF')
+                + botao('editar', 'pen', 'Editar') + botao('pdf-orcamento', 'file-pdf', 'PDF') + botao('copiar-pix', 'copy', 'Pix')
                 + (s.chave === 'vencido' ? botao('reabrir', 'redo', 'Renovar') : botao('recusar', 'times-circle', 'Recusou')) + excluir;
         }
 
@@ -2412,10 +2412,26 @@ function updateChartTheme() {
                 'converter': () => convertBudgetToService(b.id),
                 'recusar': () => mudarSituacaoOrcamento(b, 'recusado'),
                 'reabrir': () => mudarSituacaoOrcamento(b, 'aberto'),
+                'copiar-pix': () => copiarPixOrcamento(b, botao),
                 'excluir': () => deleteBudget(b.id)
             };
             if (acoes[botao.dataset.acao]) acoes[botao.dataset.acao]();
         });
+
+        /** Copia o Pix copia e cola do valor exato (o mesmo do PDF), para colar no WhatsApp. */
+        async function copiarPixOrcamento(b, botao) {
+            const total = calculateBudgetTotal(b);
+            if (!(total > 0) || !window.PCFTPix) { avisoOrcamentos('Sem valor para cobrar neste atendimento.', true); return; }
+            const nomeDoc = b.etapa === 'laudo' ? 'Laudo' : 'Orçamento';
+            const codigo = window.PCFTPix.codigo(total, 'PCF' + String(b.number).replace(/\D/g, ''), `${nomeDoc} ${b.number}`);
+            try {
+                await navigator.clipboard.writeText(codigo);
+                avisoOrcamentos(`Pix de ${reais(total)} copiado (${nomeDoc.toLowerCase()} Nº ${b.number}). É só colar na conversa do cliente.`);
+                if (botao) { botao.classList.add('is-copiado'); setTimeout(() => botao.classList.remove('is-copiado'), 1500); }
+            } catch (e) {
+                prompt('Copie o código Pix:', codigo);
+            }
+        }
 
         function mudarSituacaoOrcamento(b, situacao) {
             b.situacao = situacao;
