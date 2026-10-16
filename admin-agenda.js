@@ -187,7 +187,7 @@
         });
         info.append(onde);
         const detalhes = [];
-        if (s.rodizio) detalhes.push('Rodízio');
+        if (s.rodizio) detalhes.push((A.RODIZIOS[s.rodizioTipo] || A.RODIZIOS[A.RODIZIO]).curto);
         if (s.registro && s.registro.lembradoEm) detalhes.push('lembrete às ' + horaMinuto(s.registro.lembradoEm));
         if (s.estado === 'sem-arte') detalhes.push(s.rodizio ? 'nenhuma arte no rodízio' : 'arte removida ou fora do período');
         if (detalhes.length) info.append(el('small', '', detalhes.join(' · ')));
@@ -242,7 +242,7 @@
         $('dv-postar-titulo').textContent = s.estado === 'depois' ? 'Postar agora' : 'Hora de postar';
         $('dv-postar-hora').textContent = `${A.horaTexto(s.hora)} · ${A.nomesOnde(s.onde)}`;
         $('dv-postar-arte').textContent = titulo(s.arte);
-        $('dv-postar-origem').textContent = s.rodizio ? 'Escolhida pelo rodízio de hoje' : '';
+        $('dv-postar-origem').textContent = s.rodizio ? 'Escolhida pelo ' + (A.RODIZIOS[s.rodizioTipo] || A.RODIZIOS[A.RODIZIO]).curto.toLowerCase() + ' de hoje' : '';
         const img = $('dv-postar-img');
         img.src = s.arte.imagem || '';
         // Reels: mostra o próprio vídeo que vai ser postado.
@@ -382,9 +382,11 @@
     function opcoesDeArte(selecionada) {
         const select = el('select');
         select.dataset.campo = 'arte';
-        const rodizio = el('option', '', '🔁 Rodízio');
-        rodizio.value = A.RODIZIO;
-        select.append(rodizio);
+        Object.keys(A.RODIZIOS).forEach((tipo) => {
+            const o = el('option', '', A.RODIZIOS[tipo].nome);
+            o.value = tipo;
+            select.append(o);
+        });
         const artes = D().artes().filter((a) => !a.produto);
         const grupos = {};
         artes.forEach((a) => { (grupos[a.categoria] = grupos[a.categoria] || []).push(a); });
@@ -398,7 +400,7 @@
             });
             select.append(grupo);
         });
-        if (selecionada !== A.RODIZIO && !artes.some((a) => a.id === selecionada)) {
+        if (!A.ehRodizio(selecionada) && !artes.some((a) => a.id === selecionada)) {
             const sumida = el('option', '', '⚠ Arte removida: escolha outra');
             sumida.value = selecionada;
             select.append(sumida);
