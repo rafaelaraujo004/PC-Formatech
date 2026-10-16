@@ -20,7 +20,7 @@ const AGENDA = 'divulgacaoAgenda';
 
 /** Artes no formato que a regra da programação usa (sem a imagem pesada). */
 async function artesDaAgenda(db) {
-    const snap = await db.collection('publicacoes').select('titulo', 'categoria', 'inicio', 'fim', 'ordem').get();
+    const snap = await db.collection('publicacoes').select('titulo', 'categoria', 'inicio', 'fim', 'ordem', 'imagem', 'video').get();
     return snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 }
 

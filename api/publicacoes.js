@@ -138,7 +138,8 @@ async function lerAgenda(db) {
         db.collection('pushSubscriptions').count().get().then((s) => s.data().count).catch(() => null)
     ]);
     return {
-        entradas: (config.exists && config.data().entradas) || [],
+        // Com os vídeos da manhã garantidos (ver agenda-divulgacao.js).
+        entradas: Agenda.garantirVideosDaManha(Agenda.normalizar((config.exists && config.data().entradas) || [])),
         hoje: { dia: quando.dia, registros: (dia.exists && dia.data().registros) || {} },
         inscritos
     };
@@ -149,11 +150,12 @@ async function salvarAgenda(db, lista) {
     if (lista.length > Agenda.MAX_ENTRADAS) throw new ErroDeAcesso(400, `No máximo ${Agenda.MAX_ENTRADAS} horários.`);
     const entradas = Agenda.normalizar(lista);
     if (entradas.length !== lista.length) throw new ErroDeAcesso(400, 'Cada horário precisa de pelo menos um dia e um lugar para postar.');
-    const fixas = [...new Set(entradas.filter((e) => e.arte !== Agenda.RODIZIO).map((e) => e.arte))];
+    const fixas = [...new Set(entradas.filter((e) => !Agenda.ehRodizio(e.arte)).map((e) => e.arte))];
     const docs = await Promise.all(fixas.map((id) => db.collection(COLECAO).doc(id).get()));
     if (docs.some((d) => !d.exists)) throw new ErroDeAcesso(400, 'Uma das artes escolhidas não existe mais. Escolha outra.');
-    await db.collection(AGENDA).doc('config').set({ entradas, atualizadoEm: Date.now() });
-    return entradas;
+    const completas = Agenda.garantirVideosDaManha(entradas);
+    await db.collection(AGENDA).doc('config').set({ entradas: completas, atualizadoEm: Date.now() });
+    return completas;
 }
 
 async function marcarNaAgenda(db, corpo) {
