@@ -226,6 +226,56 @@
             "imagem": "/images/divulgacao/reels-loja-encomenda.jpg",
             "video": "/images/divulgacao/reels-loja-encomenda-hd.mp4",
             "ordem": 0
+        },
+        {
+            "id": "pcf-reels-drivers",
+            "categoria": "pcformatech",
+            "titulo": "Reels: sem som ou Wi-Fi (Status/Stories)",
+            "legenda": "O som parou, o Wi-Fi sumiu, a tela ficou esticada ou a impressora não funciona? Quase sempre é driver. A PC Formatech instala os drivers certos para cada peça voltar a funcionar. A partir de R$ 40, em Canaã dos Carajás ou à distância. Chame no WhatsApp (94) 98430-5772.",
+            "link": "https://www.pcformatech.com.br/servicos/instalacao-de-programas-e-drivers/",
+            "imagem": "/images/divulgacao/reels-drivers.jpg",
+            "video": "/images/divulgacao/reels-drivers-hd.mp4",
+            "ordem": 0
+        },
+        {
+            "id": "pcf-reels-programas",
+            "categoria": "pcformatech",
+            "titulo": "Reels: Word e Excel (Status/Stories)",
+            "legenda": "Precisa do Word, Excel, PowerPoint ou de um leitor de PDF para trabalhar ou estudar? A PC Formatech instala o Office e os programas que você precisar. A partir de R$ 50, em Canaã dos Carajás ou à distância. Chame no WhatsApp (94) 98430-5772.",
+            "link": "https://www.pcformatech.com.br/servicos/instalacao-de-programas-e-drivers/",
+            "imagem": "/images/divulgacao/reels-programas.jpg",
+            "video": "/images/divulgacao/reels-programas-hd.mp4",
+            "ordem": 0
+        },
+        {
+            "id": "pcf-reels-ajuda",
+            "categoria": "pcformatech",
+            "titulo": "Reels: não sei o que é (Status/Stories)",
+            "legenda": "Seu computador está estranho e você não sabe qual serviço resolve? Conte do seu jeito no WhatsApp: a gente orienta, diz o serviço certo e o valor antes de começar. Só programas (software), sem conserto de peças. WhatsApp (94) 98430-5772.",
+            "link": "https://www.pcformatech.com.br/",
+            "imagem": "/images/divulgacao/reels-ajuda.jpg",
+            "video": "/images/divulgacao/reels-ajuda-hd.mp4",
+            "ordem": 0
+        },
+        {
+            "id": "apps-reels-agenda",
+            "categoria": "apps",
+            "titulo": "Reels: agenda de clientes (Status/Stories)",
+            "legenda": "Clientes marcando pelo WhatsApp e horário duplicado? A PC Formatech cria a agenda do seu negócio: todos os horários num lugar só, no celular e no computador. A partir de R$ 149,99 + R$ 39,90/mês com suporte e backup. Peça a sua no WhatsApp (94) 98430-5772.",
+            "link": "https://www.pcformatech.com.br/apps.html",
+            "imagem": "/images/divulgacao/reels-agenda.jpg",
+            "video": "/images/divulgacao/reels-agenda-hd.mp4",
+            "ordem": 0
+        },
+        {
+            "id": "apps-reels-estoque",
+            "categoria": "apps",
+            "titulo": "Reels: controle de estoque (Status/Stories)",
+            "legenda": "Só descobre que o produto acabou quando o cliente pede? A PC Formatech cria o controle de estoque e vendas do seu negócio, com aviso de estoque baixo. A partir de R$ 299,99 + R$ 69,90/mês com suporte e backup. Peça o seu no WhatsApp (94) 98430-5772.",
+            "link": "https://www.pcformatech.com.br/apps.html",
+            "imagem": "/images/divulgacao/reels-estoque.jpg",
+            "video": "/images/divulgacao/reels-estoque-hd.mp4",
+            "ordem": 0
         }
     ]
 }
