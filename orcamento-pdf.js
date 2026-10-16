@@ -188,38 +188,38 @@
 
         // Cabeçalho: faixa escura com o logo, os dados da loja e o documento.
         doc.setFillColor(...COR.fundoTopo);
-        doc.rect(0, 0, LARG, 46, 'F');
+        doc.rect(0, 0, LARG, 43, 'F');
         doc.setFillColor(...COR.menta);
-        doc.rect(0, 46, LARG, 1.2, 'F');
+        doc.rect(0, 43, LARG, 1.2, 'F');
         if (logo) {
-            try { doc.addImage(logo, 'PNG', M - 2, 5, 36, 36, 'logo', 'FAST'); } catch (e) { /* segue sem logo */ }
+            try { doc.addImage(logo, 'PNG', M - 1, 5, 33, 33, 'logo', 'FAST'); } catch (e) { /* segue sem logo */ }
         }
-        const xT = logo ? M + 38 : M;
+        const xT = logo ? M + 37 : M;
         fonte('bold', 18, [255, 255, 255]);
-        doc.text(EMPRESA.nome, xT, 17);
+        doc.text(EMPRESA.nome, xT, 15.5);
         fonte('normal', 8.4, COR.menta);
-        doc.text(EMPRESA.linha, xT, 22.6);
+        doc.text(EMPRESA.linha, xT, 21);
         fonte('normal', 8, COR.claro);
-        doc.text(EMPRESA.endereco, xT, 30);
-        doc.text(`WhatsApp ${EMPRESA.whatsapp}   ·   ${EMPRESA.site}`, xT, 34.8);
-        doc.text(`Instagram ${EMPRESA.instagram}   ·   ${EMPRESA.email}`, xT, 39.6);
+        doc.text(EMPRESA.endereco, xT, 28.2);
+        doc.text(`WhatsApp ${EMPRESA.whatsapp}   ·   ${EMPRESA.site}`, xT, 32.8);
+        doc.text(`Instagram ${EMPRESA.instagram}   ·   ${EMPRESA.email}`, xT, 37.4);
 
         fonte('bold', 9, COR.menta);
-        doc.text(titulo, LARG - M, 15, { align: 'right' });
+        doc.text(titulo, LARG - M, 13.5, { align: 'right' });
         fonte('bold', 17, [255, 255, 255]);
-        doc.text(`Nº ${orc.number}`, LARG - M, 24, { align: 'right' });
+        doc.text(`Nº ${orc.number}`, LARG - M, 22.5, { align: 'right' });
         fonte('normal', 8.4, COR.claro);
         if (laudo) {
-            doc.text(`Emitido em ${dataBR(orc.laudoData || orc.date)}`, LARG - M, 31, { align: 'right' });
-            if (orc.laudoData && orc.laudoData !== orc.date) doc.text(`Orçamento de ${dataBR(orc.date)}`, LARG - M, 35.8, { align: 'right' });
+            doc.text(`Emitido em ${dataBR(orc.laudoData || orc.date)}`, LARG - M, 29.5, { align: 'right' });
+            if (orc.laudoData && orc.laudoData !== orc.date) doc.text(`Orçamento de ${dataBR(orc.date)}`, LARG - M, 34.3, { align: 'right' });
         } else {
-            doc.text(`Emitido em ${dataBR(orc.date)}`, LARG - M, 31, { align: 'right' });
+            doc.text(`Emitido em ${dataBR(orc.date)}`, LARG - M, 29.5, { align: 'right' });
             fonte('bold', 8.4, COR.menta);
-            doc.text(`Válido até ${dataBR(somarDias(orc.date, orc.validadeDias || 7))}`, LARG - M, 35.8, { align: 'right' });
+            doc.text(`Válido até ${dataBR(somarDias(orc.date, orc.validadeDias || 7))}`, LARG - M, 34.3, { align: 'right' });
         }
 
         // Cliente (e equipamento, quando informado).
-        y = 55;
+        y = 51;
         const equipamento = String(orc.equipamento || '').trim();
         const linhasEquip = equipamento ? doc.splitTextToSize(equipamento, 70).slice(0, 2) : [];
         doc.setFillColor(...COR.fundo);
@@ -235,7 +235,7 @@
             fonte('bold', 10);
             doc.text(linhasEquip, 120, y + 12.8, { lineHeightFactor: 1.3 });
         }
-        y += 23 + 8;
+        y += 23 + 6;
 
         // Textos do atendimento, com uma faixa de cor à esquerda. Texto longo
         // continua na página seguinte.
@@ -257,7 +257,7 @@
                 if (primeiro) { fonte('bold', 9.6, COR.teal); doc.text(tituloBloco, M + 5, y + 4.6); }
                 fonte('normal', 9.6);
                 doc.text(parte, M + 5, y + (primeiro ? 9.9 : 3.3), { lineHeightFactor: 1.36 });
-                y += h + 4.5;
+                y += h + 3.2;
                 primeiro = false;
                 if (linhas.length) { doc.addPage(); y = 20; }
             }
@@ -295,7 +295,7 @@
                 body: corpo,
                 theme: 'plain',
                 margin: { left: M, right: M, top: 20, bottom: ALT - LIMITE + 2 },
-                styles: { font: 'helvetica', fontSize: 9.6, textColor: COR.texto, cellPadding: { top: 2.9, bottom: 2.9, left: 3, right: 3 }, valign: 'middle', overflow: 'linebreak' },
+                styles: { font: 'helvetica', fontSize: 9.6, textColor: COR.texto, cellPadding: { top: 2.3, bottom: 2.3, left: 3, right: 3 }, valign: 'middle', overflow: 'linebreak' },
                 headStyles: { fillColor: COR.teal, textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 8.4 },
                 alternateRowStyles: { fillColor: COR.zebra },
                 columnStyles: {
@@ -322,90 +322,101 @@
             y += 10;
         }
 
-        // Totais à direita; o valor por extenso à esquerda.
-        const alturaTotais = 6 + (t.desconto > 0 ? 6 : 0) + 15;
-        espaco(alturaTotais + 4);
-        const xCaixa = LARG - M - 76;
-        const topoTotais = y;
+        // Fechamento em duas colunas: à esquerda o Pix (QR Code do valor exato
+        // e o copia e cola); à direita os totais, o valor por extenso e, no
+        // orçamento, o botão de aprovar pelo WhatsApp.
+        const pix = o.pix !== false && orc.pix !== false && t.total > 0 && window.PCFTPix && typeof window.qrcode === 'function';
+        const aprovar = !laudo;
+        const LARG_DIR = 74;
+        const xCaixa = LARG - M - LARG_DIR;
+        const largEsq = xCaixa - 6 - M;
+        const porExtenso = extenso(t.total);
+        fonte('italic', 8.4);
+        const linhasExtenso = doc.splitTextToSize(porExtenso.charAt(0).toUpperCase() + porExtenso.slice(1) + '.', LARG_DIR - 2);
+        const alturaDir = 6 + (t.desconto > 0 ? 6 : 0) + 14 + 3 + linhasExtenso.length * 3.6 + (aprovar ? 24 : 0);
+
+        let codigoPix = '', instrucao = [], linhasCodigo = [], alturaEsq = 0;
+        const xP = M + 39;
+        const largTexto = largEsq - 42;
+        if (pix) {
+            codigoPix = window.PCFTPix.codigo(t.total, 'PCF' + String(orc.number).replace(/\D/g, ''), `${nomeDoc} ${orc.number}`);
+            fonte('normal', 7.9);
+            instrucao = doc.splitTextToSize(`No app do banco, toque em Pix e em "Ler QR Code": o valor de ${moeda(t.total)} já vem preenchido. No celular, use o copia e cola.`, largTexto);
+            doc.setFont('courier', 'normal');
+            doc.setFontSize(5.7);
+            const porLinha = Math.max(20, Math.floor(largTexto / doc.getTextWidth('0')));
+            linhasCodigo = codigoPix.match(new RegExp('.{1,' + porLinha + '}', 'g'));
+            alturaEsq = Math.max(39, 9 + instrucao.length * 3.5 + 4.2 + 4.6 + linhasCodigo.length * 2.45 + 3);
+        } else {
+            alturaEsq = 12;
+        }
+        espaco(Math.max(alturaDir, alturaEsq) + 2);
+        const topo = y;
+
+        // Coluna da direita.
         const linhaTotal = (nome, valor, cor) => {
-            fonte('normal', 9.4, COR.suave);
+            fonte('normal', 9.2, COR.suave);
             doc.text(nome, xCaixa + 4, y + 4);
-            fonte('bold', 9.6, cor || COR.texto);
+            fonte('bold', 9.4, cor || COR.texto);
             doc.text(valor, LARG - M - 4, y + 4, { align: 'right' });
             y += 6;
         };
         linhaTotal('Subtotal', moeda(t.subtotal));
         if (t.desconto > 0) linhaTotal('Desconto', '- ' + moeda(t.desconto), COR.verde);
         doc.setFillColor(...COR.teal);
-        doc.roundedRect(xCaixa, y + 0.5, 76, 13, 2.6, 2.6, 'F');
+        doc.roundedRect(xCaixa, y + 0.5, LARG_DIR, 13, 2.6, 2.6, 'F');
         fonte('bold', 9, COR.menta);
         doc.text('TOTAL', xCaixa + 4.5, y + 8.6);
         fonte('bold', 15, [255, 255, 255]);
         doc.text(moeda(t.total), LARG - M - 4.5, y + 9.2, { align: 'right' });
-        y += 15;
-        rotulo('VALOR POR EXTENSO', M, topoTotais + 4);
-        fonte('italic', 9.4);
-        const porExtenso = extenso(t.total);
-        doc.text(doc.splitTextToSize(porExtenso.charAt(0).toUpperCase() + porExtenso.slice(1) + '.', xCaixa - M - 8), M, topoTotais + 9.4, { lineHeightFactor: 1.35 });
-        y += 7;
+        y += 17;
+        fonte('italic', 8.4, COR.suave);
+        doc.text(linhasExtenso, LARG - M - 1, y, { align: 'right', lineHeightFactor: 1.3 });
+        y += linhasExtenso.length * 3.6;
+        if (aprovar) {
+            y += 3;
+            doc.setFillColor(...COR.zap);
+            doc.roundedRect(xCaixa, y, LARG_DIR, 11.5, 2.6, 2.6, 'F');
+            fonte('bold', 9.6, [255, 255, 255]);
+            doc.text('Aprovar pelo WhatsApp', xCaixa + LARG_DIR / 2, y + 7.4, { align: 'center' });
+            doc.link(xCaixa, y, LARG_DIR, 11.5, { url: linkAprovar(orc, t.total) });
+            fonte('normal', 7.3, COR.suave);
+            doc.text('Toque e a conversa abre com a mensagem pronta.', xCaixa + LARG_DIR / 2, y + 15.6, { align: 'center' });
+            y += 18;
+        }
+        const fimDir = y;
 
-        // Pagamento: QR Code do Pix com o valor exato e, no orçamento, o botão
-        // de aprovar pelo WhatsApp.
-        const pix = o.pix !== false && orc.pix !== false && t.total > 0 && window.PCFTPix && typeof window.qrcode === 'function';
-        const pagamento = String(orc.pagamento || 'Pix, cartão ou dinheiro').trim();
-        const aprovar = !laudo;
+        // Coluna da esquerda.
+        y = topo;
         if (pix) {
-            const codigoPix = window.PCFTPix.codigo(t.total, 'PCF' + String(orc.number).replace(/\D/g, ''), `${nomeDoc} ${orc.number}`);
-            const altura = 47;
-            espaco(altura + 2);
             doc.setDrawColor(...COR.linha);
             doc.setLineWidth(0.35);
-            doc.roundedRect(M, y, UTIL, altura, 3, 3, 'S');
-            desenharQr(doc, codigoPix, M + 5, y + 5, 37);
-            const xP = M + 48;
-            const largTexto = aprovar ? 78 : 125;
-            fonte('bold', 12, COR.teal);
-            doc.text('Pague com Pix', xP, y + 9);
-            fonte('normal', 8.6, COR.texto);
-            const instrucao = doc.splitTextToSize(`No app do banco, toque em Pix e depois em "Ler QR Code". O valor de ${moeda(t.total)} já vem preenchido.`, largTexto);
-            doc.text(instrucao, xP, y + 14.5, { lineHeightFactor: 1.32 });
-            let yP = y + 14.5 + instrucao.length * 3.9 + 1.5;
-            fonte('normal', 8, COR.suave);
-            doc.text(`Recebedor: ${window.PCFTPix.dados.titular} (${EMPRESA.nome})`, xP, yP);
-            yP += 4.3;
-            doc.text(doc.splitTextToSize(`Também aceitamos: ${pagamento}.`, largTexto)[0], xP, yP);
-            yP += 5.3;
+            doc.roundedRect(M, y, largEsq, alturaEsq, 3, 3, 'S');
+            desenharQr(doc, codigoPix, M + 4.5, y + 4.5, 30);
+            fonte('bold', 11.5, COR.teal);
+            doc.text('Pague com Pix', xP, y + 8);
+            fonte('normal', 7.9, COR.texto);
+            doc.text(instrucao, xP, y + 12.6, { lineHeightFactor: 1.3 });
+            let yP = y + 12.6 + instrucao.length * 3.5 + 0.8;
+            fonte('normal', 7.3, COR.suave);
+            doc.text(doc.splitTextToSize(`Recebedor: ${window.PCFTPix.dados.titular}`, largTexto)[0], xP, yP);
+            yP += 4.6;
             rotulo('PIX COPIA E COLA', xP, yP);
             doc.setFont('courier', 'normal');
-            doc.setFontSize(6.3);
-            doc.setTextColor(...COR.suave);
-            // O código não tem onde quebrar: corta em linhas do mesmo tamanho.
-            const porLinha = Math.max(20, Math.floor(largTexto / doc.getTextWidth('0')));
-            doc.text(codigoPix.match(new RegExp('.{1,' + porLinha + '}', 'g')).slice(0, 4), xP, yP + 3.6, { lineHeightFactor: 1.15 });
-            if (aprovar) botaoAprovar(M + UTIL - 48, y + 9, 44);
-            y += altura + 6;
+            doc.setFontSize(5.7);
+            doc.setTextColor(...COR.texto);
+            doc.text(linhasCodigo, xP, yP + 3.2, { lineHeightFactor: 1.2 });
+            y += alturaEsq;
         } else {
-            espaco(aprovar ? 20 : 10);
-            rotulo('FORMAS DE PAGAMENTO', M, y + 4);
-            fonte('normal', 9.4);
-            doc.text(pagamento, M, y + 9.4);
-            if (aprovar) botaoAprovar(LARG - M - 48, y, 48);
-            y += aprovar ? 20 : 14;
+            rotulo('VALOR POR EXTENSO', M, y + 4);
+            y += 12;
         }
-
-        function botaoAprovar(x, yy, largura) {
-            doc.setFillColor(...COR.zap);
-            doc.roundedRect(x, yy, largura, 12, 2.6, 2.6, 'F');
-            fonte('bold', 9.4, [255, 255, 255]);
-            doc.text('Aprovar pelo WhatsApp', x + largura / 2, yy + 7.6, { align: 'center' });
-            doc.link(x, yy, largura, 12, { url: linkAprovar(orc, t.total) });
-            fonte('normal', 7.6, COR.suave);
-            doc.text(doc.splitTextToSize('Toque no botão e a conversa abre com a mensagem pronta.', largura), x + largura / 2, yy + 16.5, { align: 'center', lineHeightFactor: 1.3 });
-        }
+        y = Math.max(y, fimDir) + 6;
 
         // Condições: garantia, validade e observações.
         const condicoes = [];
         if (orc.warranty) condicoes.push(['Garantia', String(orc.warranty)]);
+        condicoes.push(['Pagamento', String(orc.pagamento || 'Pix, cartão ou dinheiro').trim() + '.']);
         if (!laudo) condicoes.push(['Validade', `Este orçamento vale até ${dataBR(somarDias(orc.date, orc.validadeDias || 7))}. Depois dessa data, os valores podem mudar.`]);
         if (orc.observations) condicoes.push(['Observações', String(orc.observations)]);
         if (condicoes.length) {
@@ -428,8 +439,9 @@
 
         // Laudo: assinaturas do técnico e do cliente.
         if (laudo) {
-            espaco(30);
-            y = Math.max(y + 16, Math.min(LIMITE - 14, y + 16));
+            // As assinaturas podem descer até perto do rodapé (que fica em ALT - 13).
+            if (y + 19 > ALT - 15) { doc.addPage(); y = 20; }
+            y = Math.max(y + 11, ALT - 26);
             doc.setDrawColor(...COR.suave);
             doc.setLineWidth(0.3);
             doc.line(M + 6, y, M + 80, y);

@@ -2369,7 +2369,7 @@ function updateChartTheme() {
                         <span class="orc-chip">${s.texto}${s.detalhe ? ' · ' + s.detalhe : ''}</span>
                     </div>
                     <strong class="orc-cliente">${escHtml(c ? c.name : 'Cliente excluído')}</strong>
-                    <p class="orc-resumo">${resumo}${b.equipamento ? `<small>${escHtml(b.equipamento)}</small>` : ''}</p>
+                    <p class="orc-card-itens">${resumo}${b.equipamento ? `<small>${escHtml(b.equipamento)}</small>` : ''}</p>
                     <div class="orc-card-meio">
                         <span>${formatDateBR(b.date)}${enviado ? ` · <i class="fas fa-check-double" aria-hidden="true"></i> enviado ${formatDateBR(enviado)}` : ''}${b.numeroAntigo ? ` · antes ${escHtml(b.numeroAntigo)}` : ''}</span>
                         <strong class="orc-total">${reais(calculateBudgetTotal(b))}</strong>

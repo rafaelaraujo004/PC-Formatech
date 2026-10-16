@@ -3415,8 +3415,8 @@ html[data-theme='dark'] .bl-aviso { color: #ffc46b; }
 html[data-theme='dark'] .orc-chip { color: color-mix(in srgb, var(--orc-cor) 55%, #fff); }
 
 .orc-cliente { font-size: var(--adm-fs-lg); line-height: 1.25; }
-.orc-card .orc-resumo { margin: 0; color: var(--adm-texto-suave); font-size: var(--adm-fs-sm); line-height: 1.4; }
-.orc-card .orc-resumo small { display: block; margin-top: 0.1rem; font-size: var(--adm-fs-xs); }
+.orc-card-itens { margin: 0; color: var(--adm-texto-suave); font-size: var(--adm-fs-sm); line-height: 1.4; }
+.orc-card-itens small { display: block; margin-top: 0.1rem; font-size: var(--adm-fs-xs); }
 .orc-mais { color: var(--adm-texto-suave); font-weight: 600; }
 
 .orc-card-meio { display: flex; align-items: baseline; justify-content: space-between; gap: 0.6rem; color: var(--adm-texto-suave); font-size: var(--adm-fs-xs); }
