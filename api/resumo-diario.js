@@ -13,8 +13,7 @@ module.exports = async function handler(req, res) {
     if (!autorizadoComoCron(req)) return res.status(401).json({ error: 'Unauthorized' });
 
     try {
-        const admin = iniciarAdmin();
-        const db = admin.firestore();
+        const { db } = iniciarAdmin();
 
         const prefs = await lerPreferencias(db);
         if (prefs.resumoDiario === false) return res.status(200).json({ ok: true, enviado: false, motivo: 'desligado' });

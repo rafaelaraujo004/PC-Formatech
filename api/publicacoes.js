@@ -180,8 +180,7 @@ async function marcarNaAgenda(db, corpo) {
 
 module.exports = async function handler(req, res) {
     try {
-        const admin = iniciarAdmin();
-        const db = admin.firestore();
+        const { auth, db } = iniciarAdmin();
 
         if (req.method === 'GET') {
             if (req.query && req.query.lembrar !== undefined) {
@@ -194,7 +193,7 @@ module.exports = async function handler(req, res) {
         if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
         const corpo = typeof req.body === 'string' ? safeJson(req.body) : (req.body || {});
-        await exigirAdmin(admin, corpo.idToken);
+        await exigirAdmin(auth, corpo.idToken);
 
         if (corpo.acao === 'listar') {
             await garantirIniciais(db);

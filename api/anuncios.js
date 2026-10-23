@@ -14,6 +14,7 @@
 // "apps" (Criação de apps e sistemas, com a tela de demonstração de apps.html).
 
 const { iniciarAdmin } = require('./_push');
+const { FieldValue } = require('firebase-admin/firestore');
 const { ErroDeAcesso, exigirAdmin } = require('./_admin');
 const loja = require('./loja');
 const PUBLICACOES = require('../publicacoes-iniciais.json');
@@ -283,12 +284,12 @@ async function servirImagem(db, id, res) {
     return res.status(200).send(Buffer.from(partes[2], 'base64'));
 }
 
-async function registrarMetrica(admin, db, corpo, res) {
+async function registrarMetrica(db, corpo, res) {
     const campo = corpo.tipo === 'clique' ? 'cliques' : (corpo.tipo === 'visto' ? 'vistos' : null);
     const id = String(corpo.id || '');
     if (!campo || !/^[\w-]{1,64}$/.test(id)) return res.status(400).json({ error: 'Métrica inválida.' });
     try {
-        await db.collection(COLECAO).doc(id).update({ [campo]: admin.firestore.FieldValue.increment(1) });
+        await db.collection(COLECAO).doc(id).update({ [campo]: FieldValue.increment(1) });
     } catch (erro) {
         return res.status(404).json({ error: 'Anúncio não encontrado.' });
     }
@@ -297,8 +298,7 @@ async function registrarMetrica(admin, db, corpo, res) {
 
 module.exports = async function handler(req, res) {
     try {
-        const admin = iniciarAdmin();
-        const db = admin.firestore();
+        const { auth, db } = iniciarAdmin();
 
         if (req.method === 'GET') {
             if (req.query && req.query.img) return servirImagem(db, req.query.img, res);
@@ -313,9 +313,9 @@ module.exports = async function handler(req, res) {
         if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
         const corpo = typeof req.body === 'string' ? safeJson(req.body) : (req.body || {});
-        if (corpo.acao === 'metrica') return registrarMetrica(admin, db, corpo, res);
+        if (corpo.acao === 'metrica') return registrarMetrica(db, corpo, res);
 
-        await exigirAdmin(admin, corpo.idToken);
+        await exigirAdmin(auth, corpo.idToken);
 
         if (corpo.acao === 'listar') {
             await garantirAnunciosIniciais(db);

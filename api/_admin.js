@@ -12,11 +12,11 @@ class ErroDeAcesso extends Error {
 }
 
 /** Confere o idToken do Firebase e se o e-mail é de administrador. */
-async function exigirAdmin(admin, idToken, mensagemSemLogin) {
+async function exigirAdmin(auth, idToken, mensagemSemLogin) {
     if (!idToken) throw new ErroDeAcesso(401, mensagemSemLogin || 'Entre no painel com e-mail e senha.');
     let decodificado;
     try {
-        decodificado = await admin.auth().verifyIdToken(String(idToken));
+        decodificado = await auth.verifyIdToken(String(idToken));
     } catch (erro) {
         throw new ErroDeAcesso(401, 'Sessão expirada. Entre de novo com e-mail e senha.');
     }

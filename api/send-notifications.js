@@ -3,16 +3,9 @@
 // Chamado via cron (vercel.json) e protegido por CRON_SECRET.
 
 const webpush = require('web-push');
-const admin   = require('firebase-admin');
+const { iniciarAdmin } = require('./_push');
 
 // ---------- helpers ----------
-function initAdmin() {
-    if (admin.apps.length) return;
-    const raw = process.env.FIREBASE_SERVICE_ACCOUNT;
-    if (!raw) throw new Error('FIREBASE_SERVICE_ACCOUNT não definida');
-    admin.initializeApp({ credential: admin.credential.cert(JSON.parse(raw)) });
-}
-
 function initWebPush() {
     webpush.setVapidDetails(
         process.env.VAPID_SUBJECT || 'mailto:rafaelaraujo004@gmail.com',
@@ -36,9 +29,8 @@ module.exports = async function handler(req, res) {
     }
 
     try {
-        initAdmin();
+        const { db } = iniciarAdmin();
         initWebPush();
-        const db = admin.firestore();
 
         // ---- 1. Buscar todas as subscriptions ----
         const subsSnap = await db.collection('pushSubscriptions').get();
