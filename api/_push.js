@@ -2,14 +2,18 @@
 // O prefixo "_" faz a Vercel não publicar este arquivo como rota.
 
 const webpush = require('web-push');
-const admin = require('firebase-admin');
+const { initializeApp, getApps, cert } = require('firebase-admin/app');
+const { getAuth } = require('firebase-admin/auth');
+const { getFirestore } = require('firebase-admin/firestore');
 
+/** Inicia o Firebase Admin uma vez por instância e devolve { auth, db }. */
 function iniciarAdmin() {
-    if (admin.apps.length) return admin;
-    const raw = process.env.FIREBASE_SERVICE_ACCOUNT;
-    if (!raw) throw new Error('FIREBASE_SERVICE_ACCOUNT não definida');
-    admin.initializeApp({ credential: admin.credential.cert(JSON.parse(raw)) });
-    return admin;
+    if (!getApps().length) {
+        const raw = process.env.FIREBASE_SERVICE_ACCOUNT;
+        if (!raw) throw new Error('FIREBASE_SERVICE_ACCOUNT não definida');
+        initializeApp({ credential: cert(JSON.parse(raw)) });
+    }
+    return { auth: getAuth(), db: getFirestore() };
 }
 
 function iniciarWebPush() {

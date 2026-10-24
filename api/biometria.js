@@ -73,8 +73,8 @@ async function gastarDesafio(db, desafio) {
     }
 }
 
-function exigirAdmin(admin, idToken) {
-    return exigirAdminBase(admin, idToken, 'Entre com e-mail e senha antes de cadastrar a biometria.');
+function exigirAdmin(auth, idToken) {
+    return exigirAdminBase(auth, idToken, 'Entre com e-mail e senha antes de cadastrar a biometria.');
 }
 
 async function passkeysDo(db, uid) {
@@ -112,11 +112,10 @@ module.exports = async function handler(req, res) {
     const acao = String(corpo.acao || '');
 
     try {
-        const admin = iniciarAdmin();
-        const db = admin.firestore();
+        const { auth, db } = iniciarAdmin();
 
         if (acao === 'cadastro-opcoes') {
-            const usuario = await exigirAdmin(admin, corpo.idToken);
+            const usuario = await exigirAdmin(auth, corpo.idToken);
             const existentes = await passkeysDo(db, usuario.uid);
             const opcoes = await generateRegistrationOptions({
                 rpName: 'PC Formatech · Painel',
@@ -137,7 +136,7 @@ module.exports = async function handler(req, res) {
         }
 
         if (acao === 'cadastro') {
-            const usuario = await exigirAdmin(admin, corpo.idToken);
+            const usuario = await exigirAdmin(auth, corpo.idToken);
             let desafio = null;
             const verificacao = await confirmar(() => verifyRegistrationResponse({
                 response: corpo.resposta,
@@ -204,7 +203,7 @@ module.exports = async function handler(req, res) {
             await gastarDesafio(db, desafio);
 
             // O dono da passkey ainda precisa ser administrador hoje.
-            const usuario = await admin.auth().getUser(salvo.uid);
+            const usuario = await auth.getUser(salvo.uid);
             if (usuario.disabled || !EMAILS_ADMIN.includes(String(usuario.email || '').toLowerCase())) {
                 throw new ErroDeAcesso(403, 'Usuário sem permissão de administrador.');
             }
@@ -213,12 +212,12 @@ module.exports = async function handler(req, res) {
                 counter: verificacao.authenticationInfo.newCounter,
                 usadoEm: Date.now()
             });
-            const token = await admin.auth().createCustomToken(salvo.uid, { biometria: true });
+            const token = await auth.createCustomToken(salvo.uid, { biometria: true });
             return res.status(200).json({ ok: true, token });
         }
 
         if (acao === 'listar') {
-            const usuario = await exigirAdmin(admin, corpo.idToken);
+            const usuario = await exigirAdmin(auth, corpo.idToken);
             const lista = (await passkeysDo(db, usuario.uid))
                 .map((c) => ({ id: c.id, aparelho: c.aparelho, criadoEm: c.criadoEm, usadoEm: c.usadoEm, sincronizada: c.sincronizada }))
                 .sort((a, b) => (b.criadoEm || 0) - (a.criadoEm || 0));
@@ -226,7 +225,7 @@ module.exports = async function handler(req, res) {
         }
 
         if (acao === 'remover') {
-            const usuario = await exigirAdmin(admin, corpo.idToken);
+            const usuario = await exigirAdmin(auth, corpo.idToken);
             const ref = db.collection(COLECAO).doc(String(corpo.id || '-'));
             const doc = await ref.get();
             if (!doc.exists || doc.data().uid !== usuario.uid) throw new ErroDeAcesso(404, 'Biometria não encontrada.');
