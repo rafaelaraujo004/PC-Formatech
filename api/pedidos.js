@@ -27,7 +27,7 @@ function safeJson(texto) {
 
 const texto = (valor, max) => String(valor || '').trim().replace(/\s+/g, ' ').slice(0, max);
 
-async function registrar(db, entrada, req, res) {
+async function registrar(admin, db, entrada, req, res) {
     const codigo = String(entrada.codigo || '');
     if (!CODIGO.test(codigo)) return res.status(400).json({ error: 'Código inválido.' });
     const etapa = ETAPAS.includes(entrada.etapa) ? entrada.etapa : null;
@@ -140,12 +140,13 @@ function paraSaida(doc) {
 module.exports = async function handler(req, res) {
     try {
         if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
-        const { auth, db } = iniciarAdmin();
+        const admin = iniciarAdmin();
+        const db = admin.firestore();
         const corpo = typeof req.body === 'string' ? safeJson(req.body) : (req.body || {});
 
-        if (corpo.acao === 'registrar') return registrar(db, corpo.pedido || {}, req, res);
+        if (corpo.acao === 'registrar') return registrar(admin, db, corpo.pedido || {}, req, res);
 
-        await exigirAdmin(auth, corpo.idToken);
+        await exigirAdmin(admin, corpo.idToken);
 
         if (corpo.acao === 'listar') {
             const snap = await db.collection(COLECAO).orderBy('criadoEm', 'desc').limit(300).get();

@@ -218,7 +218,7 @@ async function montarStory(bytes) {
 async function handler(req, res, db) {
     if (req.method !== 'GET' && req.method !== 'HEAD') return res.status(405).end();
     const consulta = req.query || {};
-    db = db || iniciarAdmin().db;
+    db = db || iniciarAdmin().firestore();
 
     // /a/imagem/<código> (prévia do link) e /a/story/<código> (Status e Stories).
     const formato = consulta.img !== undefined ? 'imagem' : consulta.story !== undefined ? 'story' : null;

@@ -120,7 +120,8 @@ async function servirImagem(db, id, base, res) {
 
 module.exports = async function handler(req, res) {
     try {
-        const { auth, db } = iniciarAdmin();
+        const admin = iniciarAdmin();
+        const db = admin.firestore();
 
         if (req.method === 'GET') {
             if (req.query && req.query.img) return servirImagem(db, req.query.img, req.query.base === '1', res);
@@ -135,7 +136,7 @@ module.exports = async function handler(req, res) {
         if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
         const corpo = typeof req.body === 'string' ? safeJson(req.body) : (req.body || {});
-        await exigirAdmin(auth, corpo.idToken);
+        await exigirAdmin(admin, corpo.idToken);
 
         if (corpo.acao === 'listar') {
             await garantirCatalogoInicial(db);

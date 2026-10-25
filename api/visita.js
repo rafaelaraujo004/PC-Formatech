@@ -36,7 +36,8 @@ module.exports = async function handler(req, res) {
     }
 
     try {
-        const { db } = iniciarAdmin();
+        const admin = iniciarAdmin();
+        const db = admin.firestore();
 
         // Toda visita também confere se chegou a hora de algum lembrete da
         // Divulgação (o agendamento do GitHub às vezes atrasa ou pula).

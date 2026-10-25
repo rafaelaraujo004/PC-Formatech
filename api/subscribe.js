@@ -8,7 +8,6 @@
 //   POST /api/subscribe { idToken, subscription } — idToken do Firebase Auth
 
 const { iniciarAdmin } = require('./_push');
-const { FieldValue } = require('firebase-admin/firestore');
 const { ErroDeAcesso, exigirAdmin } = require('./_admin');
 
 // Endereço do painel (o APK abre aqui) e o antigo, que só redireciona para ele.
@@ -42,8 +41,9 @@ module.exports = async function handler(req, res) {
     if (!subscription) return res.status(400).json({ error: 'Inscrição inválida.' });
 
     try {
-        const { auth, db } = iniciarAdmin();
-        const usuario = await exigirAdmin(auth, corpo.idToken, 'Entre no painel para ativar os avisos.');
+        const admin = iniciarAdmin();
+        const usuario = await exigirAdmin(admin, corpo.idToken, 'Entre no painel para ativar os avisos.');
+        const db = admin.firestore();
 
         // Os últimos 40 caracteres do endpoint viram o id: evita duplicatas.
         const id = Buffer.from(subscription.endpoint).toString('base64url').slice(-40);
@@ -52,7 +52,7 @@ module.exports = async function handler(req, res) {
             subscription,
             email: usuario.email,
             origem,
-            updatedAt: FieldValue.serverTimestamp()
+            updatedAt: admin.firestore.FieldValue.serverTimestamp()
         }, { merge: true });
 
         // O painel mudou para o www em 16/10/2026. A inscrição feita lá
