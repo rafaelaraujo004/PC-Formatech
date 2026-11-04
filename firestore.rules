@@ -27,6 +27,19 @@ service cloud.firestore {
     match /pushSubscriptions/{id} { allow read, write: if isAdmin(); }
     match /notifyState/{id}       { allow read, write: if isAdmin(); }
 
+    // ── Atendimento WhatsApp Business ──────────────────────────────────────
+    // O administrador só LÊ no painel; quem grava é o servidor (pasta api/,
+    // com a credencial de administrador, que não passa por estas regras).
+    // O navegador não pode inserir mensagens: toda gravação vem da Cloud API.
+    match /whatsappConversations/{id} {
+      allow read: if isAdmin();
+      allow write: if false;
+      match /mensagens/{msgId} {
+        allow read: if isAdmin();
+        allow write: if false;
+      }
+    }
+
     // ── Públicos para leitura (tema do site e slides) ──────────────────────
     match /siteSettings/{id}      { allow read: if true; allow write: if isAdmin(); }
     match /hero_slides/{id}       { allow read: if true; allow write: if isAdmin(); }
