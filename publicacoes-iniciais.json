@@ -100,13 +100,13 @@
             "id": "apps-feed",
             "categoria": "apps",
             "titulo": "Criação de apps (feed)",
-            "legenda": "Seu negócio ainda depende de planilhas? A PC Formatech cria o app do seu negócio: controle de estoque, agendamento de clientes, orçamentos e pedidos, financeiro e painel. Simples de usar, funciona no celular e no computador. A partir de R$ 149,99, pronto em 7 a 15 dias. Fale com a gente pelo WhatsApp (94) 98430-5772.",
+            "legenda": "Seu negócio ainda depende de planilhas? A PC Formatech cria o app do seu negócio: controle de estoque, agendamento de clientes, orçamentos e pedidos, financeiro e painel. Simples de usar, funciona no celular e no computador. Orçamento sem compromisso, pronto em 7 a 15 dias. Fale com a gente pelo WhatsApp (94) 98430-5772.",
             "link": "https://www.pcformatech.com.br/apps.html",
-            "imagem": "/images/divulgacao/apps-feed.jpg",
+            "imagem": "/images/divulgacao/apps-feed-v2.jpg",
             "ordem": 1,
             "banner": {
                 "selo": "Novo serviço",
-                "botaoTexto": "Ver apps e preços",
+                "botaoTexto": "Ver os apps",
                 "link": "/apps.html"
             }
         },
@@ -114,9 +114,9 @@
             "id": "apps-story",
             "categoria": "apps",
             "titulo": "Criação de apps (Status/Stories)",
-            "legenda": "Seu negócio ainda depende de planilhas? A PC Formatech cria o app do seu negócio: controle de estoque, agendamento de clientes, orçamentos e pedidos, financeiro e painel. Simples de usar, funciona no celular e no computador. A partir de R$ 149,99, pronto em 7 a 15 dias. Fale com a gente pelo WhatsApp (94) 98430-5772.",
+            "legenda": "Seu negócio ainda depende de planilhas? A PC Formatech cria o app do seu negócio: controle de estoque, agendamento de clientes, orçamentos e pedidos, financeiro e painel. Simples de usar, funciona no celular e no computador. Orçamento sem compromisso, pronto em 7 a 15 dias. Fale com a gente pelo WhatsApp (94) 98430-5772.",
             "link": "https://www.pcformatech.com.br/apps.html",
-            "imagem": "/images/divulgacao/apps-story.jpg",
+            "imagem": "/images/divulgacao/apps-story-v2.jpg",
             "ordem": 2
         },
         {
@@ -171,10 +171,10 @@
             "id": "apps-reels",
             "categoria": "apps",
             "titulo": "Reels: seu negócio no app (Status/Stories)",
-            "legenda": "Ainda controla estoque, agenda e contas no caderno ou na planilha? A PC Formatech cria o app do seu negócio: estoque, agenda, orçamentos e financeiro, tudo num lugar só, no celular e no computador. A partir de R$ 149,99. Peça o seu no WhatsApp (94) 98430-5772.",
+            "legenda": "Ainda controla estoque, agenda e contas no caderno ou na planilha? A PC Formatech cria o app do seu negócio: estoque, agenda, orçamentos e financeiro, tudo num lugar só, no celular e no computador. Orçamento sem compromisso. Peça o seu no WhatsApp (94) 98430-5772.",
             "link": "https://www.pcformatech.com.br/apps.html",
             "imagem": "/images/divulgacao/reels-apps.jpg",
-            "video": "/images/divulgacao/reels-apps-hd.mp4",
+            "video": "/images/divulgacao/reels-apps-v2-hd.mp4",
             "ordem": 0
         },
         {
@@ -261,20 +261,20 @@
             "id": "apps-reels-agenda",
             "categoria": "apps",
             "titulo": "Reels: agenda de clientes (Status/Stories)",
-            "legenda": "Clientes marcando pelo WhatsApp e horário duplicado? A PC Formatech cria a agenda do seu negócio: todos os horários num lugar só, no celular e no computador. A partir de R$ 149,99 + R$ 39,90/mês com suporte e backup. Peça a sua no WhatsApp (94) 98430-5772.",
+            "legenda": "Clientes marcando pelo WhatsApp e horário duplicado? A PC Formatech cria a agenda do seu negócio: todos os horários num lugar só, no celular e no computador. Com suporte e backup inclusos, orçamento sem compromisso. Peça a sua no WhatsApp (94) 98430-5772.",
             "link": "https://www.pcformatech.com.br/apps.html",
             "imagem": "/images/divulgacao/reels-agenda.jpg",
-            "video": "/images/divulgacao/reels-agenda-hd.mp4",
+            "video": "/images/divulgacao/reels-agenda-v2-hd.mp4",
             "ordem": 0
         },
         {
             "id": "apps-reels-estoque",
             "categoria": "apps",
             "titulo": "Reels: controle de estoque (Status/Stories)",
-            "legenda": "Só descobre que o produto acabou quando o cliente pede? A PC Formatech cria o controle de estoque e vendas do seu negócio, com aviso de estoque baixo. A partir de R$ 299,99 + R$ 69,90/mês com suporte e backup. Peça o seu no WhatsApp (94) 98430-5772.",
+            "legenda": "Só descobre que o produto acabou quando o cliente pede? A PC Formatech cria o controle de estoque e vendas do seu negócio, com aviso de estoque baixo. Com suporte e backup inclusos, orçamento sem compromisso. Peça o seu no WhatsApp (94) 98430-5772.",
             "link": "https://www.pcformatech.com.br/apps.html",
             "imagem": "/images/divulgacao/reels-estoque.jpg",
-            "video": "/images/divulgacao/reels-estoque-hd.mp4",
+            "video": "/images/divulgacao/reels-estoque-v2-hd.mp4",
             "ordem": 0
         }
     ]

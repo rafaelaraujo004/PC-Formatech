@@ -14,7 +14,7 @@
     let anuncios = [];
     let produtos = [];
     // Dados do anúncio de Apps e sistemas (preço e tela de demonstração), vindos da API.
-    let appsInfo = { preco: 149.99, imagem: '/images/apps/demo-painel.webp', link: '/apps.html' };
+    let appsInfo = { preco: null, imagem: '/images/apps/demo-painel.webp', link: '/apps.html' };
     let carregado = false;
 
     let editando = null;   // anúncio em edição (ou null para novo)

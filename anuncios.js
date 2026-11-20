@@ -12,7 +12,7 @@
     const API = '/api/anuncios';
     const LOGO = '/images/loja/bird-tech-icone-176.webp';
     const VISTOS_KEY = 'pcft_anuncios_vistos';
-    const CSS = '/anuncios.css?v=4';
+    const CSS = '/anuncios.css?v=5';
 
     const moeda = (valor) => Number(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
@@ -144,7 +144,8 @@
         const info = a.apps;
         const titulo = a.titulo || 'Troque suas planilhas por um sistema';
         const chamada = a.chamada || 'Sistema feito sob medida para o seu negócio, no celular e no computador. Pronto em 7 a 15 dias.';
-        slide.setAttribute('aria-label', 'Anúncio: ' + titulo + ', a partir de ' + moeda(info.preco));
+        const temPreco = Number(info.preco) > 0;
+        slide.setAttribute('aria-label', 'Anúncio: ' + titulo + (temPreco ? ', a partir de ' + moeda(info.preco) : ', orçamento sem compromisso'));
 
         const fundo = el('div', 'an-fundo');
         fundo.setAttribute('aria-hidden', 'true');
@@ -155,7 +156,9 @@
         if (a.selo) topo.append(el('span', 'an-selo', a.selo));
 
         const precos = el('div', 'an-precos');
-        precos.append(el('p', 'an-preco-de an-a-partir', 'A partir de'), blocoPreco(info.preco));
+        // Sem preço (apps.html não mostra valores): "Orçamento sem compromisso".
+        if (temPreco) precos.append(el('p', 'an-preco-de an-a-partir', 'A partir de'), blocoPreco(info.preco));
+        else precos.append(el('p', 'an-preco-de an-a-partir', 'Feito sob medida'), el('p', 'an-preco an-preco-texto', 'Orçamento sem compromisso'));
         const prazo = textoPrazo(a.fim);
         if (prazo) {
             const aviso = el('p', 'an-prazo');
