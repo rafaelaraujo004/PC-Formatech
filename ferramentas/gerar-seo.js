@@ -463,12 +463,12 @@ function paginaIndice() {
 
 // ── Página de criação de apps e sistemas (apps.html) ──────────────────────
 //
-// PREÇOS: preencha os valores (em reais) e rode o script de novo. Enquanto um
-// preço estiver null, a página mostra "R$ [PREÇO]" e o script avisa.
-// Cada sistema tem a criação (preco) e a mensalidade, mais barata, que cobre
-// hospedagem, cópia de segurança, suporte e pequenos ajustes. Mensalidade
-// null = ainda não definida: a página não mostra valor (diz que vem junto
-// com o orçamento).
+// VALORES: a página NÃO mostra preço. Os cards dizem "Sob consulta" e o valor
+// (criação + mensalidade, que cobre hospedagem, cópia de segurança, suporte e
+// pequenos ajustes) vai pelo WhatsApp, depois que a pessoa conta a ideia.
+// Os números também ficam fora deste arquivo: o repositório é público.
+// Para voltar a mostrar um valor, ponha preco e mensalidade (em reais) no
+// sistema e rode o script de novo: o card e o "Monte seu pedido" usam.
 
 const APPS = {
     prazo: '7 a 15 dias',
@@ -487,9 +487,7 @@ const APPS = {
             nome: 'Controle de estoque e vendas',
             texto: 'Saiba na hora o que tem na prateleira, o que vendeu e o que precisa repor.',
             itens: ['Entrada e saída de produtos', 'Aviso de estoque baixo', 'Vendas do dia e do mês'],
-            icone: 'caixa',
-            preco: 299.99,
-            mensalidade: 69.90
+            icone: 'caixa'
         },
         {
             id: 'agenda',
@@ -498,9 +496,7 @@ const APPS = {
             nome: 'Agendamento de clientes',
             texto: 'Seus horários organizados, sem conflito e sem caderno perdido.',
             itens: ['Agenda por dia e por profissional', 'Lembrete para o cliente', 'Histórico de cada cliente'],
-            icone: 'agenda',
-            preco: 149.99,
-            mensalidade: 39.90
+            icone: 'agenda'
         },
         {
             id: 'orcamentos',
@@ -509,9 +505,7 @@ const APPS = {
             nome: 'Orçamentos e ordens de serviço',
             texto: 'Monte orçamentos em segundos e acompanhe cada serviço do início ao fim.',
             itens: ['Orçamento pronto para enviar', 'Situação de cada serviço', 'Tudo guardado por cliente'],
-            icone: 'documento',
-            preco: 199.99,
-            mensalidade: 49.90
+            icone: 'documento'
         },
         {
             id: 'financeiro',
@@ -520,9 +514,7 @@ const APPS = {
             nome: 'Controle financeiro e de clientes',
             texto: 'Entradas, saídas, quem pagou e quem está devendo, num lugar só.',
             itens: ['Contas a pagar e a receber', 'Cadastro de clientes', 'Resumo do mês'],
-            icone: 'carteira',
-            preco: 249.99,
-            mensalidade: 59.90
+            icone: 'carteira'
         },
         {
             id: 'painel',
@@ -531,9 +523,7 @@ const APPS = {
             nome: 'Painel com gráficos automáticos',
             texto: 'Os números do seu negócio em gráficos que se atualizam sozinhos.',
             itens: ['Gráficos de vendas e despesas', 'Comparação entre meses', 'Abre no celular'],
-            icone: 'grafico',
-            preco: 149.99,
-            mensalidade: 39.90
+            icone: 'grafico'
         },
         {
             id: 'outro',
@@ -564,7 +554,9 @@ const ICONES_APPS = {
 };
 
 const ico = (nome, classe) => `<svg class="${classe || 'ap-ico'}" viewBox="0 0 24 24" aria-hidden="true">${ICONES_APPS[nome]}</svg>`;
-const precoApp = (v) => (v === 'fale' ? 'Fale com a gente' : `A partir de ${typeof v === 'number' ? reais(v) : 'R$ [PREÇO]'}`);
+const precoApp = (v) => (v === 'fale' ? 'Fale com a gente' : typeof v === 'number' ? `A partir de ${reais(v)}` : 'Sob consulta');
+/** Algum sistema com valor definido? Sem nenhum, a página fala em orçamento, não em preço. */
+const appsComValor = () => APPS.sistemas.some((s) => typeof s.preco === 'number');
 /**
  * Perguntas rápidas antes do WhatsApp (pedido-rapido.js): até 3 perguntas,
  * uma por vez; no fim, resumo, valor e a mensagem pronta para o WhatsApp.
@@ -624,7 +616,7 @@ function blocoPedido(cfg) {
             </section>`;
 }
 
-/** "+ R$ 49,90/mês" quando a mensalidade já foi definida; senão, nada. */
+/** "+ R$ X/mês" quando a mensalidade foi definida; senão, nada. */
 const mensalApp = (s) => (typeof s.mensalidade === 'number' ? `+ ${reais(s.mensalidade)}/mês` : '');
 const menorMensalidade = () => {
     const valores = APPS.sistemas.map((s) => s.mensalidade).filter((v) => typeof v === 'number');
@@ -698,7 +690,7 @@ function paginaApps() {
                     <ul>
                         ${s.itens.map((i) => `<li>${ico('check', 'ap-ico-mini')} ${esc(i)}</li>`).join('\n                        ')}
                     </ul>
-                    <p class="ap-preco${s.preco === 'fale' ? ' ap-preco-fale' : ''}">${esc(precoApp(s.preco))}${mensalApp(s) ? ` <small class="ap-preco-mensal">${esc(mensalApp(s))}</small>` : ''}</p>
+                    <p class="ap-preco${typeof s.preco === 'number' ? '' : ' ap-preco-fale'}">${esc(precoApp(s.preco))}${mensalApp(s) ? ` <small class="ap-preco-mensal">${esc(mensalApp(s))}</small>` : (s.preco === 'fale' ? '' : ' <small class="ap-preco-mensal">Orçamento sem compromisso</small>')}</p>
                     <a class="sv-cta ap-card-cta" data-pedido-marcar="${s.id}" href="${zap(s.preco === 'fale' ? 'Olá! Vim pelo site. Tenho uma ideia de sistema para o meu negócio e quero conversar.' : `Olá! Vim pelo site e quero ${s.pedido}.`)}" target="_blank" rel="noopener">${ico('zap', 'ap-ico-zap')} Quero este</a>
                 </article>`).join('\n                ');
 
@@ -747,7 +739,8 @@ function paginaApps() {
 
     const mensalMin = menorMensalidade();
 
-    return `${cabeca({ titulo, descricao, url, previa: 'apps', extras: '    <link rel="stylesheet" href="/apps.css?v=4">\n    ' + jsonLd({ '@context': 'https://schema.org', '@graph': dados }) })}
+    // Prévia sem preço; nome novo para o WhatsApp não reaproveitar a antiga.
+    return `${cabeca({ titulo, descricao, url, previa: 'apps-sob-medida', extras: '    <link rel="stylesheet" href="/apps.css?v=4">\n    ' + jsonLd({ '@context': 'https://schema.org', '@graph': dados }) })}
 <body>
     ${topo}
 
@@ -827,7 +820,9 @@ function paginaApps() {
                 <div class="ap-cards">
                 ${cards}
                 </div>
-                <p class="ap-nota">Valores da criação do sistema. A maioria tem também uma mensalidade, mais barata, que cobre hospedagem, cópia de segurança, suporte e pequenos ajustes. Você recebe os dois valores antes de começar.</p>
+                <p class="ap-nota">${appsComValor()
+                    ? 'Valores da criação do sistema. A maioria tem também uma mensalidade, mais barata, que cobre hospedagem, cópia de segurança, suporte e pequenos ajustes. Você recebe os dois valores antes de começar.'
+                    : 'O valor depende do que o seu negócio precisa. Você conta como trabalha hoje e recebe, sem compromisso, o valor da criação e da mensalidade (hospedagem, cópia de segurança, suporte e pequenos ajustes) antes de começar.'}</p>
             </section>
 
             <section class="sv-bloco sv-bloco-largo ap-portfolio" id="projetos" aria-labelledby="ap-projetos-titulo">
@@ -901,8 +896,6 @@ function paginaApps() {
 `;
 }
 
-const faltando = APPS.sistemas.filter((s) => s.preco === null).map((s) => s.nome).concat(APPS.suporteMensal === null ? ['Suporte mensal'] : []);
-if (faltando.length) console.warn('ATENÇÃO apps.html: preço ainda não definido para: ' + faltando.join(', '));
 
 // ── Dicas (artigos) ───────────────────────────────────────────────────────
 

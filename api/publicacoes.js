@@ -57,6 +57,8 @@ async function garantirIniciais(db) {
             const novo = {};
             if (p.video && d.video !== p.video) novo.video = p.video;
             if (!d.imagemDados && /^\/images\/divulgacao\//.test(d.imagem || '') && d.imagem !== p.imagem) novo.imagem = p.imagem;
+            // A legenda acompanha a arte nova (ex.: arte refeita sem o preço).
+            if (Object.keys(novo).length && p.legenda && d.legenda !== p.legenda) novo.legenda = p.legenda;
             if (Object.keys(novo).length) await ref.set({ ...novo, atualizadoEm: agora }, { merge: true });
             continue;
         }

@@ -262,6 +262,14 @@
 
 .an-preco-inteiro { font-size: clamp(2.6rem, 10.5cqw, 5rem); }
 
+/* Anúncio sem valor (apps): frase no lugar do número. */
+.an-preco-texto {
+    max-width: 14ch;
+    font-size: clamp(1.5rem, 5.6cqw, 2.6rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+}
+
 .an-preco-centavos {
     margin-top: 0.16em;
     font-size: clamp(1.1rem, 4.2cqw, 2rem);

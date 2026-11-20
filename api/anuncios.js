@@ -25,9 +25,10 @@ const MAX_IMAGEM = 900_000;
 const DATA_URL = /^data:image\/(webp|jpeg|png);base64,[A-Za-z0-9+/=]+$/;
 const TIPOS = ['produto', 'imagem', 'apps'];
 
-// Dados do anúncio de apps. O preço é o menor "a partir de" de apps.html
-// (bloco APPS em ferramentas/gerar-seo.js): se mudar lá, mude aqui.
-const APPS = { preco: 149.99, imagem: '/images/apps/demo-painel.webp', link: '/apps.html' };
+// Dados do anúncio de apps. Sem preço: apps.html não mostra valores e o
+// banner diz "Orçamento sem compromisso". Para voltar a mostrar, ponha aqui
+// o menor "a partir de" (em reais) e também em admin-anuncios.js.
+const APPS = { preco: null, imagem: '/images/apps/demo-painel.webp', link: '/apps.html' };
 
 function safeJson(texto) {
     try { return JSON.parse(texto); } catch (e) { return {}; }
@@ -87,6 +88,24 @@ async function garantirAnunciosDePromocoes(db) {
     const marcaRef = db.collection('lojaConfig').doc('estado');
     const marca = await marcaRef.get();
     const feitos = (marca.exists && marca.data().anunciosDePromocoes) || [];
+
+    // Arte da promoção trocada no site (com outro nome, por causa do cache):
+    // o anúncio que já existe passa a usar a nova. Cada troca é lida uma vez
+    // (artesDePromocoes guarda a arte já aplicada). Arte enviada pelo painel
+    // (imagemDados) ou anúncio apagado no painel não são mexidos.
+    const artes = (marca.exists && marca.data().artesDePromocoes) || {};
+    const trocadas = lista.filter((p) => feitos.includes(p.id) && artes[p.id] !== p.imagem);
+    for (const p of trocadas) {
+        const ref = db.collection(COLECAO).doc('promo-' + p.id);
+        const atual = await ref.get();
+        const d = atual.exists ? atual.data() : null;
+        if (d && !d.imagemDados && /^\/images\/divulgacao\//.test(d.imagem || '') && d.imagem !== p.imagem) {
+            await ref.set({ imagem: p.imagem, botaoTexto: p.banner.botaoTexto || d.botaoTexto || '', atualizadoEm: Date.now() }, { merge: true });
+        }
+        artes[p.id] = p.imagem;
+    }
+    if (trocadas.length) await marcaRef.set({ artesDePromocoes: artes }, { merge: true });
+
     const novos = lista.filter((p) => !feitos.includes(p.id));
     if (!novos.length) return;
     const agora = Date.now();
