@@ -9,9 +9,14 @@
      · Afundado → campos de digitação, tabelas e o botão que está ativo
                   ficam "cavados" na superfície (como uma tecla pressionada).
 
-   A cor continua só onde ela informa: o teal da marca nos botões de ação
-   principal e na aba ativa, e verde/amarelo/vermelho nos estados. O resto é
-   o material neutro.
+   A cor continua só onde ela informa: o verde-petróleo da marca nos botões
+   de ação principal e na aba ativa, e verde/amarelo/vermelho nos estados. O
+   resto é o material neutro.
+
+   Cores: as mesmas do padrão do site público (neumorfismo.css, --nm-*). O
+   painel não carrega aquele arquivo porque ele traz peças do site (cartões
+   que afundam ao toque, animação de estreia) que atrapalhariam formulários
+   aqui. Se a paleta do site mudar, mude também o bloco 01 abaixo.
 
    Escopo: o <body> do admin.html recebe id="admin-neu". O id dá peso para
    vencer o <style> embutido e o modo escuro antigo (cheios de !important) sem
@@ -30,7 +35,7 @@
      09 · Botões de ação colorida
      10 · Tabelas
      11 · Modais, diálogos e notificações
-     12 · Botão flutuante do modo escuro
+     12 · Chave claro/escuro
      13 · Celular
      14 · prefers-reduced-motion
    ═══════════════════════════════════════════════════════════════════════════ */
@@ -39,11 +44,11 @@
 /* ── 01 · Material ──────────────────────────────────────────────────────── */
 
 :root {
-    /* Cinza frio com um toque do teal da marca. */
-    --neu-bg: #e3eaea;
-    --neu-bg-fundo: #dce4e4;          /* poços e zebra das tabelas */
+    /* Cinza-azulado do site (--nm-bg, --nm-luz, --nm-sombra). */
+    --neu-bg: #e4e9f1;
+    --neu-bg-fundo: #dde3ec;          /* poços e zebra das tabelas */
     --neu-luz: #ffffff;
-    --neu-sombra: #b5c3c3;
+    --neu-sombra: #c3cad6;
     --neu-aro: rgba(255, 255, 255, 0.55); /* fio de luz na borda dos elevados */
 
     --neu-elevado:    9px 9px 18px var(--neu-sombra), -9px -9px 18px var(--neu-luz);
@@ -56,9 +61,11 @@
        senão o teal fica "lavado" pela luz branca. */
     --neu-cor-pressionado: inset 3px 3px 7px rgba(0, 0, 0, 0.28), inset -2px -2px 6px rgba(255, 255, 255, 0.18);
 
-    --neu-acento: #1d6a63;            /* texto da aba/filtro ativo (5,2:1 no fundo) */
-    --neu-primario: linear-gradient(145deg, #3a9b91, #22756d);
-    --neu-foco: 0 0 0 3px rgba(45, 122, 122, 0.45);
+    --neu-acento: #0a6c61;            /* --nm-destaque-texto: aba/filtro ativo */
+    --neu-primario: #0e8577;          /* --nm-destaque: fundo do botão principal */
+    --neu-primario-hover: #0b7569;
+    --neu-sobre-primario: #ffffff;    /* texto em cima do botão principal */
+    --neu-foco: 0 0 0 3px rgba(14, 133, 119, 0.45);
 
     --neu-raio: 20px;
     --neu-raio-md: 16px;
@@ -69,14 +76,15 @@
     --adm-superficie: var(--neu-bg);
     --adm-superficie-2: var(--neu-bg-fundo);
     --adm-borda: var(--neu-aro);
-    --adm-borda-forte: rgba(120, 145, 145, 0.35);
+    --adm-borda-forte: rgba(38, 48, 59, 0.13);
     --adm-sombra: var(--neu-elevado-sm);
     --adm-raio: var(--neu-raio-md);
 
-    /* Textos e estados um pouco mais escuros: o fundo agora é cinza, não
-       branco, e o contraste mínimo (4,5:1) precisa continuar valendo. */
-    --adm-texto: #13283b;
-    --adm-texto-suave: #4f5d6c;
+    /* Textos do site (--nm-texto, --nm-suave) e estados um pouco mais
+       escuros: o fundo agora é cinza, não branco, e o contraste mínimo
+       (4,5:1) precisa continuar valendo. */
+    --adm-texto: #26303b;
+    --adm-texto-suave: #5b6676;
     --adm-ok: #1a6e52;
     --adm-alerta: #8f6208;
     --adm-critico: #a82a24;
@@ -84,26 +92,29 @@
 }
 
 html[data-theme='dark'] {
-    --neu-bg: #1c2532;
-    --neu-bg-fundo: #18202b;
-    --neu-luz: #263244;
-    --neu-sombra: #10161f;
+    --neu-bg: #1f2529;
+    --neu-bg-fundo: #1b2024;
+    --neu-luz: #2a3238;
+    --neu-sombra: #13171a;
     --neu-aro: rgba(255, 255, 255, 0.04);
 
     --neu-cor-pressionado: inset 3px 3px 7px rgba(0, 0, 0, 0.45), inset -2px -2px 6px rgba(255, 255, 255, 0.08);
 
-    --neu-acento: #5fd3c7;
-    --neu-primario: linear-gradient(145deg, #2fa89c, #1a7a71);
-    --neu-foco: 0 0 0 3px rgba(95, 211, 199, 0.45);
+    --neu-acento: #4fd1bf;
+    --neu-primario: #2bb3a1;
+    --neu-primario-hover: #36c2af;
+    /* No escuro o botão é claro: texto escuro, como no site. */
+    --neu-sobre-primario: #04211d;
+    --neu-foco: 0 0 0 3px rgba(79, 209, 191, 0.45);
 
     --adm-superficie: var(--neu-bg);
     --adm-superficie-2: var(--neu-bg-fundo);
     --adm-borda: var(--neu-aro);
-    --adm-borda-forte: rgba(143, 173, 200, 0.22);
+    --adm-borda-forte: rgba(255, 255, 255, 0.09);
     --adm-sombra: var(--neu-elevado-sm);
 
-    --adm-texto: #dfe9f4;
-    --adm-texto-suave: #93afc8;
+    --adm-texto: #e2e8ee;
+    --adm-texto-suave: #9da8b4;
     --adm-ok: #63cba3;
     --adm-alerta: #e0b05a;
     --adm-critico: #ec8a83;
@@ -647,26 +658,27 @@ html[data-theme='dark'] #admin-neu .admin-tabs .tab-button.active {
 
 /* ── 09 · Botões de ação colorida ───────────────────────────────────────── */
 
-/* Ação principal: mantém o teal da marca — é a cor que diz "faça isto" —
-   com volume neumórfico em vez de sombra chapada. */
+/* Ação principal: o verde-petróleo da marca — é a cor que diz "faça isto" —
+   com volume neumórfico em vez de sombra chapada. Igual ao botão de
+   destaque do site. */
 #admin-neu .btn-save,
 #admin-neu .btn-update,
 #admin-neu .btn-login,
 #admin-neu .av-botao:not(.av-botao-secundario) {
     background: var(--neu-primario) !important;
-    color: #fff !important;
+    color: var(--neu-sobre-primario) !important;
     border: 0 !important;
     border-radius: var(--neu-raio-sm) !important;
     box-shadow: var(--neu-elevado-sm) !important;
-    transition: box-shadow 0.2s ease, filter 0.2s ease;
+    transition: box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
 #admin-neu .btn-save:hover,
 #admin-neu .btn-update:hover,
 #admin-neu .btn-login:hover,
 #admin-neu .av-botao:not(.av-botao-secundario):hover {
-    background: var(--neu-primario) !important;
-    filter: brightness(1.06);
+    background: var(--neu-primario-hover) !important;
+    filter: none;
     transform: none;
     box-shadow: var(--neu-elevado) !important;
 }
@@ -676,7 +688,6 @@ html[data-theme='dark'] #admin-neu .admin-tabs .tab-button.active {
 #admin-neu .btn-login:active,
 #admin-neu .av-botao:not(.av-botao-secundario):active {
     box-shadow: var(--neu-cor-pressionado) !important;
-    filter: brightness(0.97);
 }
 
 /* Botões de linha (editar, WhatsApp, pagar parcela...) mantêm a própria cor
@@ -877,25 +888,62 @@ html[data-theme='dark'] #admin-neu .notif-panel-footer {
 }
 
 
-/* ── 12 · Botão flutuante do modo escuro ────────────────────────────────── */
+/* ── 12 · Chave claro/escuro ────────────────────────────────────────────── */
 
+/* A mesma chave do site: trilho afundado e bolinha em relevo, que passa
+   para a direita no modo escuro levando o ícone junto. */
 #admin-neu #themeToggleBtn,
 html[data-theme='dark'] #admin-neu #themeToggleBtn {
+    display: block;
+    width: 64px;
+    height: 34px;
+    padding: 0;
+    border: 0 !important;
+    border-radius: 999px !important;
     background: var(--neu-bg) !important;
+    color: var(--adm-texto-suave) !important;
+    box-shadow: var(--neu-afundado-sm), 3px 3px 8px var(--neu-sombra), -3px -3px 8px var(--neu-luz) !important;
+    transform: none !important;
+}
+
+html[data-theme='dark'] #admin-neu #themeToggleBtn {
     color: var(--neu-acento) !important;
-    border: 1px solid var(--neu-aro) !important;
-    box-shadow: var(--neu-elevado-sm) !important;
 }
 
-#admin-neu #themeToggleBtn:hover,
-html[data-theme='dark'] #admin-neu #themeToggleBtn:hover {
-    background: var(--neu-bg) !important;
-    box-shadow: var(--neu-elevado) !important;
-    transform: none;
+#admin-neu #themeToggleBtn::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--neu-bg);
+    box-shadow: var(--neu-elevado-xs);
+    transition: left 0.25s cubic-bezier(.2, .7, .2, 1);
 }
 
-#admin-neu #themeToggleBtn:active {
-    box-shadow: var(--neu-afundado-sm) !important;
+#admin-neu #themeToggleBtn svg {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 14px;
+    height: 14px;
+    transition: left 0.25s cubic-bezier(.2, .7, .2, 1);
+}
+
+html[data-theme='dark'] #admin-neu #themeToggleBtn::before {
+    left: 34px;
+    background: var(--neu-luz);
+}
+
+html[data-theme='dark'] #admin-neu #themeToggleBtn svg {
+    left: 40px;
+}
+
+#admin-neu #themeToggleBtn:focus-visible {
+    outline: 2px solid var(--neu-acento) !important;
+    outline-offset: 3px;
 }
 
 
