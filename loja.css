@@ -1374,3 +1374,7 @@ html[data-theme='dark'] .bt-botao-whats { box-shadow: var(--nm-relevo-destaque);
 .bt-pix-recebedor { background: var(--nm-bg); box-shadow: var(--nm-afundado-sm); }
 
 .bt-esqueleto { background: linear-gradient(100deg, var(--nm-bg) 30%, var(--nm-luz) 50%, var(--nm-bg) 70%); background-size: 300% 100%; }
+
+/* Aviso "no carrinho": cartão em relevo, como o toast das referências. */
+.bt-aviso { display: flex; align-items: center; text-align: left; background: var(--nm-bg); color: var(--nm-texto); border-radius: var(--nm-raio); box-shadow: var(--nm-relevo-lg); }
+.bt-aviso::before { content: '\2713'; display: inline-grid; place-items: center; width: 1.5rem; height: 1.5rem; flex: none; margin-right: 0.55rem; border-radius: 50%; background: var(--bt-azul); color: #fff; font-size: 0.8rem; }

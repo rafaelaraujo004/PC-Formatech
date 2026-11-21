@@ -5,7 +5,8 @@
    de computador, escreve o problema e vê o serviço e o preço.
 
    Visual "Diagnóstico" (escolhido em 10/10/2026); desde 21/11/2026 tudo abaixo
-   do topo segue o padrão neumórfico de neumorfismo.css: topo verde-petróleo com um
+   do topo segue o padrão neumórfico de neumorfismo.css, com uma cor de
+   destaque só, sem a faixa inclinada e sem cartões que inclinam: topo verde-petróleo com um
    notebook em 3D rodando um diagnóstico, faixa inclinada com os serviços e
    cartões coloridos por serviço. O celular segue o computador o mais perto
    possível: busca numa linha, menu à vista, serviços em duas colunas.
@@ -168,7 +169,7 @@ body.pt {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: clamp(2rem, 4vw, 4rem);
     align-items: center;
-    padding: calc(7rem + env(safe-area-inset-top, 0px)) max(var(--pt-gutter), calc((100% - var(--pt-largura)) / 2)) clamp(5.5rem, 8vw, 7.5rem);
+    padding: calc(7rem + env(safe-area-inset-top, 0px)) max(var(--pt-gutter), calc((100% - var(--pt-largura)) / 2)) clamp(3.5rem, 6vw, 5.5rem);
     color: var(--pt-hero-text);
     background: radial-gradient(120% 90% at 85% 10%, var(--pt-noite-2) 0%, var(--pt-noite) 55%, var(--pt-noite-3) 100%);
 }
@@ -212,7 +213,7 @@ body.pt {
 
 .pt-hero h1 {
     font-size: clamp(2.2rem, 5.4vw, 4.4rem);
-    font-weight: 800;
+    font-weight: 700;
     line-height: 1.03;
     letter-spacing: -0.04em;
     text-wrap: balance;
@@ -387,34 +388,6 @@ body.pt {
 .pt-sombra { width: 80%; height: 30px; margin-top: 10px; border-radius: 50%; background: radial-gradient(closest-side, rgba(0, 0, 0, 0.5), transparent); }
 
 
-/* ── Faixa inclinada com os serviços ─────────────────────────────────────── */
-
-.pt-faixa {
-    position: relative;
-    z-index: 2;
-    margin: -3.3rem -4vw 0;
-    padding: 0.9rem 0;
-    overflow: hidden;
-    transform: rotate(-2.2deg);
-    background: var(--nm-destaque);
-    color: var(--nm-sobre-destaque);
-    box-shadow: 0 20px 40px -20px rgba(5, 40, 38, 0.6);
-}
-.pt-faixa-trilho { display: flex; width: max-content; animation: pt-anda 34s linear infinite; }
-.pt-faixa span {
-    display: inline-flex;
-    align-items: center;
-    gap: 1.4rem;
-    padding-right: 1.4rem;
-    font: 800 clamp(1.05rem, 2.2vw, 1.6rem) var(--pt-font-head);
-    letter-spacing: -0.01em;
-    text-transform: uppercase;
-    white-space: nowrap;
-}
-.pt-faixa span::after { content: "✦"; font-size: 0.8em; }
-@keyframes pt-anda { to { transform: translateX(-50%); } }
-
-
 /* ── Serviços ────────────────────────────────────────────────────────────── */
 
 main { flex: 1; }
@@ -427,8 +400,8 @@ main { flex: 1; }
 }
 
 .pt-options-head { display: flex; align-items: baseline; gap: 0.5rem 1.25rem; flex-wrap: wrap; }
-.pt-options h2 { font-size: clamp(1.6rem, 3.4vw, 2.5rem); font-weight: 800; letter-spacing: -0.03em; }
-.pt-options-nota { margin-left: auto; color: var(--pt-muted); font: 600 0.85rem var(--pt-font-mono); }
+.pt-options h2 { font-size: clamp(1.6rem, 3.4vw, 2.5rem); font-weight: 700; letter-spacing: -0.03em; }
+.pt-options-nota { margin-left: auto; color: var(--pt-muted); font-size: 0.9rem; font-weight: 500; }
 
 .pt-clear {
     border: 0;
@@ -442,24 +415,13 @@ main { flex: 1; }
     cursor: pointer;
 }
 
-.pt-status { min-height: 1.3em; margin: 0.35rem 0 1.1rem; color: var(--pt-muted); font: 600 0.85rem var(--pt-font-mono); }
+.pt-status { min-height: 1.3em; margin: 0.35rem 0 1.4rem; color: var(--pt-muted); font-size: 0.88rem; font-weight: 500; }
 
 .pt-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 1.1rem;
-    perspective: 1000px;
+    gap: 1.5rem;
 }
-
-/* Cada serviço tem a sua cor. */
-.pt-card { --cor-a: #14b8a6; --cor-b: #0f766e; }
-.pt-card[data-id="manutencao"] { --cor-a: #fbbf24; --cor-b: #ea580c; }
-.pt-card[data-id="seguranca"] { --cor-a: #fb7185; --cor-b: #be123c; }
-.pt-card[data-id="programas"] { --cor-a: #818cf8; --cor-b: #4338ca; }
-.pt-card[data-id="drivers"] { --cor-a: #38bdf8; --cor-b: #0369a1; }
-.pt-card[data-id="backup"] { --cor-a: #c084fc; --cor-b: #7e22ce; }
-.pt-card[data-id="remoto"] { --cor-a: #34d399; --cor-b: #047857; }
-.pt-card[data-id="ajuda"] { --cor-a: #94a3b8; --cor-b: #334155; }
 
 /* Nomes das transições da busca (portal.js): cada cartão desliza para o lugar novo. */
 .pt-card[data-id="formatacao"] { view-transition-name: pt-formatacao; }
@@ -481,8 +443,7 @@ main { flex: 1; }
     border-radius: var(--pt-radius);
     background: var(--nm-bg);
     box-shadow: var(--nm-relevo);
-    transform: rotateX(calc(var(--ry, 0) * 1deg)) rotateY(calc(var(--rx, 0) * 1deg));
-    transition: transform 0.25s ease-out, box-shadow 0.3s;
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
 }
 .pt-card:hover { box-shadow: var(--nm-relevo-lg); }
 .pt-card[hidden] { display: none; }
@@ -499,7 +460,7 @@ main { flex: 1; }
     background: radial-gradient(300px circle at var(--mx, 50%) var(--my, 0%), rgba(255, 255, 255, 0.35), transparent 55%);
     mix-blend-mode: soft-light;
 }
-.pt-card:hover::after { opacity: 1; }
+.pt-card::after { display: none; }
 
 .pt-capa {
     position: relative;
@@ -508,11 +469,10 @@ main { flex: 1; }
     height: 118px;
     overflow: hidden;
     border-radius: 16px;
-    color: var(--cor-b);
+    color: var(--nm-destaque-texto);
     background: var(--nm-bg);
     box-shadow: var(--nm-afundado);
 }
-html[data-theme='dark'] .pt-capa { color: var(--cor-a); }
 .pt-capa::before {
     display: none;
     content: "";
@@ -534,10 +494,10 @@ html[data-theme='dark'] .pt-capa { color: var(--cor-a); }
     stroke-linejoin: round;
     transition: transform 0.4s cubic-bezier(.2, .7, .2, 1);
 }
-.pt-card:hover .pt-capa svg { transform: scale(1.12) rotate(-6deg); }
+.pt-card:hover .pt-capa svg { transform: scale(1.06); }
 
 .pt-card-corpo { display: flex; flex-direction: column; gap: 0.5rem; flex: 1; min-width: 0; }
-.pt-card h3 { margin-top: 0.15rem; font-size: 1.1rem; font-weight: 800; line-height: 1.25; letter-spacing: -0.015em; }
+.pt-card h3 { margin-top: 0.15rem; font-size: 1.1rem; font-weight: 700; line-height: 1.25; letter-spacing: -0.015em; }
 .pt-card-text { margin: 0; flex: 1; color: var(--pt-muted); font-size: 0.93rem; }
 
 .pt-price {
@@ -552,11 +512,12 @@ html[data-theme='dark'] .pt-capa { color: var(--cor-a); }
     background: var(--nm-bg);
     box-shadow: var(--nm-afundado-sm);
     color: var(--pt-muted);
-    font: 600 0.72rem var(--pt-font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
 }
 .pt-price strong {
     color: var(--pt-text);
-    font: 800 1.2rem var(--pt-font-head);
+    font: 700 1.2rem var(--pt-font-head);
     font-variant-numeric: tabular-nums;
 }
 
@@ -570,7 +531,7 @@ html[data-theme='dark'] .pt-capa { color: var(--cor-a); }
     min-height: 46px;
     padding: 0.6rem 0.9rem;
     border-radius: 12px;
-    font-weight: 800;
+    font-weight: 700;
     font-size: 0.94rem;
     text-decoration: none;
     white-space: nowrap;
@@ -642,7 +603,7 @@ html[data-theme='dark'] .pt-capa { color: var(--cor-a); }
 .pt-trust ul {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 1rem;
+    gap: 1.5rem;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -651,13 +612,13 @@ html[data-theme='dark'] .pt-capa { color: var(--cor-a); }
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 1rem;
+    padding: 1.1rem;
     border: 0;
     border-radius: var(--nm-raio-lg);
     background: var(--nm-bg);
     box-shadow: var(--nm-relevo);
     font-size: 0.92rem;
-    font-weight: 700;
+    font-weight: 600;
 }
 .pt-trust-ico {
     display: grid;
@@ -672,6 +633,39 @@ html[data-theme='dark'] .pt-capa { color: var(--cor-a); }
 }
 
 
+/* ── Números (cartões como os de um painel) ──────────────────────────────── */
+
+.pt-numeros {
+    width: 100%;
+    max-width: calc(var(--pt-largura) + 2 * var(--pt-gutter));
+    margin: 0 auto;
+    padding: 2rem var(--pt-gutter) 1rem;
+}
+.pt-numeros ul {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.pt-numeros li {
+    display: grid;
+    gap: 0.2rem;
+    padding: 1.2rem 1.3rem 1.3rem;
+    border-radius: var(--nm-raio-lg);
+    background: var(--nm-bg);
+    box-shadow: var(--nm-relevo);
+}
+.pt-numeros strong {
+    font: 700 clamp(1.9rem, 3.4vw, 2.5rem)/1.1 var(--pt-font-head);
+    letter-spacing: -0.03em;
+    color: var(--nm-destaque-texto);
+    font-variant-numeric: tabular-nums;
+}
+.pt-numeros li > span:last-child { color: var(--nm-suave); font-size: 0.88rem; }
+
+
 /* ── Loja e apps ─────────────────────────────────────────────────────────── */
 
 .pt-mais {
@@ -681,7 +675,7 @@ html[data-theme='dark'] .pt-capa { color: var(--cor-a); }
     padding: 1rem var(--pt-gutter) 4.5rem;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.1rem;
+    gap: 1.5rem;
 }
 
 .pt-bento {
@@ -702,8 +696,8 @@ html[data-theme='dark'] .pt-capa { color: var(--cor-a); }
 .pt-bento:active { transform: none; box-shadow: var(--nm-afundado); }
 
 .pt-bento-texto { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 0.35rem; max-width: 58%; }
-.pt-bento-texto small { font: 700 0.75rem var(--pt-font-mono); text-transform: uppercase; letter-spacing: 0.06em; color: var(--nm-destaque-texto); }
-.pt-bento-texto strong { font: 800 clamp(1.4rem, 2.6vw, 2.1rem)/1.1 var(--pt-font-head); letter-spacing: -0.03em; }
+.pt-bento-texto small { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--nm-destaque-texto); }
+.pt-bento-texto strong { font: 700 clamp(1.4rem, 2.6vw, 2.1rem)/1.1 var(--pt-font-head); letter-spacing: -0.03em; }
 .pt-bento-texto > span:not(.pt-bento-cta) { color: var(--nm-suave); font-size: 0.95rem; }
 .pt-bento-cta {
     display: inline-flex;
@@ -823,6 +817,7 @@ html[data-theme='dark'] .pt-price.em-promocao > span { color: #fb7185; }
 @media (max-width: 1024px) {
     .pt-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .pt-trust ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .pt-numeros ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 900px) {
@@ -832,7 +827,7 @@ html[data-theme='dark'] .pt-price.em-promocao > span { color: #fb7185; }
     .pt-menu { order: 3; width: 100%; margin: 0; gap: 0.35rem; }
     .pt-menu a { flex: 1; padding: 0.4rem 0.5rem; text-align: center; border: 1px solid rgba(127, 245, 224, 0.2); background: rgba(127, 245, 224, 0.06); font-size: 0.86rem; }
 
-    .pt-hero { grid-template-columns: minmax(0, 1fr); padding-top: calc(8.4rem + env(safe-area-inset-top, 0px)); padding-bottom: 5rem; gap: 1.4rem; }
+    .pt-hero { grid-template-columns: minmax(0, 1fr); padding-top: calc(8.4rem + env(safe-area-inset-top, 0px)); padding-bottom: 3rem; gap: 1.4rem; }
     .pt-cena { max-width: 460px; width: 100%; margin: 0 auto; }
 }
 
@@ -862,15 +857,14 @@ html[data-theme='dark'] .pt-price.em-promocao > span { color: #fb7185; }
     .pt-chips::-webkit-scrollbar { display: none; }
     .pt-chips-label, .pt-chip { flex: none; }
 
-    .pt-faixa { margin-top: -3rem; padding: 0.7rem 0; }
 
     .pt-options { padding-top: 3.5rem; }
     .pt-options h2 { font-size: 1.55rem; }
     .pt-options-nota { margin-left: 0; width: 100%; font-size: 0.78rem; }
 
     /* Serviços em duas colunas, compactos. */
-    .pt-grid { gap: 0.7rem; }
-    .pt-card { padding: 0.65rem 0.65rem 0.8rem; border-radius: 18px; gap: 0.4rem; box-shadow: var(--nm-relevo-sm); }
+    .pt-grid { gap: 1rem; }
+    .pt-card { padding: 0.75rem 0.75rem 0.9rem; border-radius: 18px; gap: 0.45rem; box-shadow: var(--nm-relevo-sm); }
     .pt-card:hover { box-shadow: var(--nm-relevo); }
     .pt-trust li, .pt-bento { box-shadow: var(--nm-relevo-sm); }
     .pt-card-corpo { gap: 0.4rem; }
@@ -896,11 +890,14 @@ html[data-theme='dark'] .pt-price.em-promocao > span { color: #fb7185; }
     .pt-empty { flex-direction: column; gap: 0.6rem; padding: 1rem; }
 
     .pt-trust { padding-top: 1rem; }
-    .pt-trust ul { gap: 0.7rem; }
+    .pt-numeros { padding-top: 1.5rem; }
+    .pt-numeros ul { gap: 1rem; }
+    .pt-numeros li { padding: 0.9rem 1rem 1rem; box-shadow: var(--nm-relevo-sm); }
+    .pt-trust ul { gap: 1rem; }
     .pt-trust li { flex-direction: column; align-items: flex-start; gap: 0.55rem; padding: 0.8rem; font-size: 0.84rem; line-height: 1.35; }
     .pt-trust-ico { width: 34px; height: 34px; border-radius: 10px; }
 
-    .pt-mais { gap: 0.7rem; padding-bottom: 3.5rem; }
+    .pt-mais { gap: 1rem; padding-bottom: 3.5rem; }
     /* Loja e apps continuam lado a lado: texto em cima, imagem embaixo. */
     .pt-bento { flex-direction: column; min-height: 0; padding: 0.95rem 0.95rem 0; border-radius: 20px; }
     .pt-bento-texto { max-width: 100%; gap: 0.25rem; }
