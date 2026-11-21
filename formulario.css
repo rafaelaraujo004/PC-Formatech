@@ -1,0 +1,120 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Formulário de formatação (formulario-formatacao.html) no padrão neumórfico
+   do site (neumorfismo.css), desde 21/11/2026.
+
+   A página ainda carrega styles.css, styles2.css e theme-system.css, que o
+   painel também usa. Para não mexer no painel, o padrão entra por aqui, por
+   último, só nesta página. Os seletores começam com "html:root body" para ganhar
+   das regras do tema escuro de theme-system.css sem precisar de !important.
+   theme-system.css força algumas cores com !important (fundo da página e
+   dos campos); só nesses pontos este arquivo também usa !important.
+   O topo do cartão (verde-escuro) continua escuro, como nas outras páginas.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+html:root, html:root body { background: var(--nm-bg) !important; }
+html:root body { color: var(--nm-texto) !important; }
+
+html:root body .form-page-header,
+html:root body .client-form-section { background: transparent; }
+
+html:root body .form-page-marca { color: var(--nm-texto); }
+html:root body .form-page-marca img { box-shadow: var(--nm-relevo-sm); }
+
+html:root body .back-to-home {
+    background: var(--nm-bg);
+    color: var(--nm-texto);
+    border: 0;
+    border-radius: var(--nm-raio-sm);
+    box-shadow: var(--nm-relevo-sm);
+}
+html:root body .back-to-home:hover { background: var(--nm-bg); color: var(--nm-destaque-texto); transform: none; box-shadow: var(--nm-relevo); }
+html:root body .back-to-home:active { box-shadow: var(--nm-afundado); }
+
+html:root body #themeToggleBtn { border: 0; background: var(--nm-bg); color: var(--nm-texto); box-shadow: var(--nm-relevo-sm); }
+
+/* Cartão do formulário */
+html:root body .client-form-container {
+    background: var(--nm-bg);
+    border: 0;
+    border-radius: var(--nm-raio-lg);
+    box-shadow: var(--nm-relevo-lg);
+}
+html:root body .client-form-container .form-header { background: linear-gradient(160deg, #0b2b2c, #061719); }
+
+html:root body .client-form-container .form-section { border-bottom: 1px solid var(--nm-linha); }
+html:root body .client-form-container .form-section h3,
+html:root body .client-form-container .form-section h3 i,
+html:root body .client-form .form-group label i { color: var(--nm-destaque-texto); }
+html:root body .client-form .form-group label { color: var(--nm-texto); }
+
+/* Campos afundados */
+html:root body .client-form .form-group :is(input, select, textarea) {
+    border: 0;
+    border-radius: var(--nm-raio);
+    background: var(--nm-bg) !important;
+    color: var(--nm-texto) !important;
+    box-shadow: var(--nm-afundado);
+}
+html:root body .client-form .form-group :is(input, select, textarea)::placeholder { color: var(--nm-suave); }
+html:root body .client-form .form-group :is(input, select, textarea):focus {
+    box-shadow: var(--nm-afundado), 0 0 0 2px var(--nm-foco);
+}
+
+/* Opções: em relevo; marcada, afunda e ganha a borda de destaque. */
+html:root body .client-form :is(.checkbox-label, .radio-label) {
+    border: 1.5px solid transparent;
+    border-radius: var(--nm-raio);
+    background-color: var(--nm-bg);
+    box-shadow: var(--nm-relevo-sm);
+    color: var(--nm-texto);
+}
+html:root body .client-form :is(.checkbox-label, .radio-label):hover { background-color: var(--nm-bg); border-color: transparent; box-shadow: var(--nm-relevo); }
+html:root body .client-form :is(.checkbox-label, .radio-label):has(input:checked) {
+    border-color: var(--nm-destaque);
+    background-color: var(--nm-bg);
+    box-shadow: var(--nm-afundado);
+}
+html:root body .client-form :is(.checkbox-label, .radio-label) input { accent-color: var(--nm-destaque); }
+html:root body .client-form :is(.checkbox-label, .radio-label):has(input:focus-visible) { outline: 2px solid var(--nm-foco); outline-offset: 3px; }
+
+/* Seções de atenção: mesmo material, com um filete de cor. */
+html:root body .client-form .critical-section {
+    border: 0;
+    border-radius: var(--nm-raio-lg);
+    background-color: var(--nm-bg);
+    box-shadow: inset 3px 0 0 #c2410c, var(--nm-afundado);
+}
+html:root body .client-form .critical-section h3 { color: #b23a0a; }
+html[data-theme='dark']:root body .client-form .critical-section h3 { color: #fb923c; }
+html:root body .client-form .authorization-checkbox { border-color: var(--nm-destaque); background-color: var(--nm-bg); }
+
+/* Botões */
+html:root body .form-actions { border-top: 1px solid var(--nm-linha); }
+html:root body .btn-reset {
+    border: 0;
+    background: var(--nm-bg);
+    color: var(--nm-texto);
+    box-shadow: var(--nm-relevo-sm);
+}
+html:root body .btn-reset:hover { background: var(--nm-bg); box-shadow: var(--nm-relevo); }
+html:root body .btn-reset:active { box-shadow: var(--nm-afundado); }
+html:root body .btn-submit {
+    background: var(--nm-destaque);
+    color: var(--nm-sobre-destaque);
+    box-shadow: var(--nm-relevo-destaque);
+}
+html:root body .btn-submit:hover { background: var(--nm-destaque-hover); box-shadow: var(--nm-relevo-destaque); }
+html:root body .btn-submit:active { box-shadow: var(--nm-afundado-destaque); transform: translateY(1px); }
+html:root body :is(.btn-reset, .btn-submit):focus-visible { outline: 2px solid var(--nm-foco); outline-offset: 3px; }
+
+html:root body .form-enviado { border: 0; background: var(--nm-bg); color: var(--nm-texto); box-shadow: var(--nm-afundado); }
+html:root body .form-enviado a { color: var(--nm-destaque-texto); }
+
+/* Aviso informativo: poço afundado com filete de destaque. */
+html:root body .client-form .alert-info {
+    border: 0;
+    border-radius: var(--nm-raio);
+    background: var(--nm-bg) !important;
+    color: var(--nm-texto);
+    box-shadow: inset 3px 0 0 var(--nm-destaque), var(--nm-afundado);
+}

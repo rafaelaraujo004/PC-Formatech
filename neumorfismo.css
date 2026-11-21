@@ -1,0 +1,126 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   PC FORMATECH — Padrão visual neumórfico (escolhido em 21/11/2026)
+
+   Superfícies em relevo suave sobre um fundo cinza-azulado: tudo é feito do
+   mesmo "material", e a profundidade vem de uma sombra clara (luz vindo de
+   cima à esquerda) e outra escura. A cor aparece só nos detalhes: números,
+   botão principal, item selecionado. Cor de destaque: verde-petróleo.
+
+   Regras do padrão
+   - Elevado (cartões, botões): var(--nm-relevo).
+   - Afundado (campos, poços de ícone, botão pressionado): var(--nm-afundado).
+   - Desativado: sem sombra e com menos contraste.
+   - O anel de foco fica sempre visível.
+   - Bordas de 1, 1,5 e 2 px; raios de 12, 16 e 20 px.
+
+   Cada página carrega este arquivo antes da própria folha de estilos e usa
+   as variáveis --nm-* (ou as classes .nm-* para peças prontas).
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+    --nm-bg: #e4e9f1;
+    --nm-luz: #ffffff;
+    --nm-sombra: #c3cad6;
+    --nm-texto: #26303b;
+    --nm-suave: #5b6676;
+    --nm-linha: rgba(38, 48, 59, 0.08);
+
+    --nm-destaque: #0e8577;          /* fundo de botão, marcadores */
+    --nm-destaque-hover: #0b7569;
+    --nm-destaque-texto: #0a6c61;     /* texto/ícone em destaque sobre o fundo */
+    --nm-sobre-destaque: #ffffff;     /* texto em cima do botão de destaque */
+    --nm-foco: #0e8577;
+
+    --nm-raio-sm: 12px;
+    --nm-raio: 16px;
+    --nm-raio-lg: 20px;
+
+    --nm-relevo-sm: 4px 4px 9px var(--nm-sombra), -4px -4px 9px var(--nm-luz);
+    --nm-relevo: 7px 7px 15px var(--nm-sombra), -7px -7px 15px var(--nm-luz);
+    --nm-relevo-lg: 12px 12px 26px var(--nm-sombra), -12px -12px 26px var(--nm-luz);
+    --nm-afundado-sm: inset 2px 2px 5px var(--nm-sombra), inset -2px -2px 5px var(--nm-luz);
+    --nm-afundado: inset 4px 4px 9px var(--nm-sombra), inset -4px -4px 9px var(--nm-luz);
+    /* Botão de destaque: a sombra escura ganha um toque da própria cor. */
+    --nm-relevo-destaque: 4px 4px 10px rgba(14, 133, 119, 0.35), -4px -4px 9px var(--nm-luz);
+    --nm-afundado-destaque: inset 3px 3px 7px rgba(0, 0, 0, 0.25), inset -2px -2px 5px rgba(255, 255, 255, 0.18);
+}
+
+html[data-theme='dark'] {
+    --nm-bg: #1f2529;
+    --nm-luz: #2a3238;
+    --nm-sombra: #13171a;
+    --nm-texto: #e2e8ee;
+    --nm-suave: #9da8b4;
+    --nm-linha: rgba(255, 255, 255, 0.07);
+
+    --nm-destaque: #2bb3a1;
+    --nm-destaque-hover: #36c2af;
+    --nm-destaque-texto: #4fd1bf;
+    --nm-sobre-destaque: #04211d;
+    --nm-foco: #4fd1bf;
+
+    --nm-relevo-destaque: 4px 4px 10px rgba(0, 0, 0, 0.45), -3px -3px 8px var(--nm-luz);
+}
+
+
+/* ── Peças prontas ──────────────────────────────────────────────────────── */
+
+.nm-relevo { background: var(--nm-bg); border-radius: var(--nm-raio-lg); box-shadow: var(--nm-relevo); }
+.nm-afundado { background: var(--nm-bg); border-radius: var(--nm-raio); box-shadow: var(--nm-afundado); }
+
+.nm-botao {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    min-height: 46px;
+    padding: 0.6rem 1.1rem;
+    border: 0;
+    border-radius: var(--nm-raio-sm);
+    background: var(--nm-bg);
+    color: var(--nm-texto);
+    font: inherit;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    box-shadow: var(--nm-relevo-sm);
+    transition: box-shadow 0.18s ease, transform 0.18s ease, background 0.18s ease;
+}
+.nm-botao:hover { box-shadow: var(--nm-relevo); }
+.nm-botao:active, .nm-botao[aria-pressed='true'] { box-shadow: var(--nm-afundado); transform: translateY(1px); }
+
+.nm-botao-destaque { background: var(--nm-destaque); color: var(--nm-sobre-destaque); box-shadow: var(--nm-relevo-destaque); }
+.nm-botao-destaque:hover { background: var(--nm-destaque-hover); box-shadow: var(--nm-relevo-destaque); }
+.nm-botao-destaque:active { box-shadow: var(--nm-afundado-destaque); }
+
+.nm-botao:disabled, .nm-botao[aria-disabled='true'] { box-shadow: none; opacity: 0.55; cursor: not-allowed; transform: none; }
+
+.nm-campo {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.7rem 1rem;
+    border: 0;
+    border-radius: var(--nm-raio);
+    background: var(--nm-bg);
+    color: var(--nm-texto);
+    font: inherit;
+    box-shadow: var(--nm-afundado);
+}
+.nm-campo::placeholder { color: var(--nm-suave); }
+
+.nm-rotulo {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--nm-suave);
+}
+
+/* O foco nunca some: o relevo sozinho não basta para quem navega pelo teclado. */
+.nm-botao:focus-visible,
+.nm-campo:focus-visible,
+.nm-relevo:focus-visible { outline: 2px solid var(--nm-foco); outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+    .nm-botao { transition: none; }
+}

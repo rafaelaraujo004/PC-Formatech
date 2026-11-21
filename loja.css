@@ -1274,3 +1274,103 @@ body.bt-com-carrinho { padding-bottom: 90px; }
     .bt-card .bt-card-carrinho .bt-botao > svg { display: none; }
     .bt-card .bt-card-carrinho .bt-botao { padding: 0 0.4rem; }
 }
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Padrão neumórfico do site (neumorfismo.css), desde 21/11/2026.
+   A Bird Tech segue com o azul do logo como cor de destaque; fundo, relevo,
+   campos e estados vêm do padrão comum. Esta seção vem por último de propósito:
+   ela sobrepõe as superfícies acima sem mexer no layout.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+    --bt-fundo: var(--nm-bg);
+    --bt-superficie: var(--nm-bg);
+    --bt-superficie-2: var(--nm-bg);
+    --bt-texto: var(--nm-texto);
+    --bt-suave: var(--nm-suave);
+    --bt-borda: var(--nm-linha);
+    --bt-sombra: var(--nm-relevo-sm);
+    --bt-relevo-azul: 4px 4px 10px rgba(26, 71, 184, 0.32), -4px -4px 9px var(--nm-luz);
+}
+html[data-theme='dark'] {
+    --bt-fundo: var(--nm-bg);
+    --bt-superficie: var(--nm-bg);
+    --bt-superficie-2: var(--nm-bg);
+    --bt-texto: var(--nm-texto);
+    --bt-suave: var(--nm-suave);
+    --bt-borda: var(--nm-linha);
+    --bt-sombra: var(--nm-relevo-sm);
+    --bt-relevo-azul: var(--nm-relevo-destaque);
+}
+
+body { background: var(--nm-bg); }
+
+.bt-topo { background: color-mix(in srgb, var(--nm-bg) 88%, transparent); border-bottom: 0; box-shadow: 0 6px 14px -10px var(--nm-sombra); }
+
+/* Elevados */
+.bt-voltar,
+.bt-sacola,
+#themeToggleBtn,
+.bt-fechar-carrinho { border: 0; background: var(--nm-bg); box-shadow: var(--nm-relevo-sm); }
+.bt-voltar:hover, .bt-sacola:hover { box-shadow: var(--nm-relevo); }
+.bt-voltar:active, .bt-sacola:active, .bt-fechar-carrinho:active { box-shadow: var(--nm-afundado); }
+
+.bt-card { border: 0; background: var(--nm-bg); box-shadow: var(--nm-relevo); overflow: visible; }
+.bt-card:hover { border-color: transparent; box-shadow: var(--nm-relevo-lg); }
+/* A foto fica num quadro com cantos próprios, já que o cartão não recorta mais. */
+.bt-card-foto { margin: 0.6rem 0.6rem 0; border-radius: calc(var(--bt-raio) - 6px); overflow: hidden; box-shadow: var(--nm-afundado-sm); }
+
+/* Afundados: campos, poços e o que está escolhido */
+.bt-busca input,
+#bt-nome, #bt-telefone, #bt-obs { border: 0; background: var(--nm-bg); box-shadow: var(--nm-afundado); }
+.bt-busca input:focus { box-shadow: var(--nm-afundado), 0 0 0 2px var(--bt-azul-2); }
+#bt-nome:focus-visible, #bt-telefone:focus-visible, #bt-obs:focus-visible { outline: 2px solid var(--bt-azul-2); outline-offset: 2px; }
+
+.bt-selo { background: var(--nm-bg); box-shadow: var(--nm-afundado-sm); }
+
+.bt-categorias { padding: 0.6rem 0.4rem 1.1rem; margin: 0 -0.4rem; }
+.bt-categorias button { border: 0; background: var(--nm-bg); box-shadow: var(--nm-relevo-sm); }
+.bt-categorias button:hover { box-shadow: var(--nm-relevo); }
+.bt-categorias button[aria-pressed='true'] { background: var(--nm-bg); color: var(--bt-azul); box-shadow: var(--nm-afundado); }
+
+.bt-vazio { border: 0; box-shadow: var(--nm-afundado); }
+
+/* Botões */
+.bt-botao { transition: box-shadow 0.18s ease, transform 0.18s ease, filter 0.2s ease; }
+.bt-botao-azul { background: var(--bt-azul); box-shadow: var(--bt-relevo-azul); }
+.bt-botao-whats { box-shadow: 4px 4px 10px rgba(21, 128, 61, 0.3), -4px -4px 9px var(--nm-luz); }
+html[data-theme='dark'] .bt-botao-whats { box-shadow: var(--nm-relevo-destaque); }
+.bt-botao-azul:active, .bt-botao-whats:active { box-shadow: var(--nm-afundado-destaque); }
+.bt-botao-contorno { border: 0; background: var(--nm-bg); box-shadow: var(--nm-relevo-sm); }
+.bt-botao-contorno:active { box-shadow: var(--nm-afundado); }
+.bt-botao-claro { box-shadow: var(--nm-relevo-sm); }
+
+.bt-qtd { border: 0; background: var(--nm-bg); box-shadow: var(--nm-afundado); }
+
+.bt-sacola-conta { background: var(--bt-azul); box-shadow: 0 0 0 2px var(--nm-bg); }
+
+/* Encomenda: deixa de ser faixa azul e vira um cartão em relevo. */
+.bt-encomenda { background: var(--nm-bg); color: var(--nm-texto); box-shadow: var(--nm-relevo); }
+.bt-encomenda p { color: var(--nm-suave); opacity: 1; }
+.bt-encomenda .bt-botao-claro { background: var(--bt-azul); color: #fff; box-shadow: var(--bt-relevo-azul); }
+
+.bt-rodape { border-top: 0; }
+
+/* Detalhe do produto e carrinho */
+.bt-detalhe,
+.bt-carrinho { border: 0; background: var(--nm-bg); }
+.bt-carrinho-topo, .bt-carrinho-rodape, .bt-item { border-color: var(--nm-linha); }
+.bt-carrinho-rodape { background: var(--nm-bg); box-shadow: 0 -6px 14px -10px var(--nm-sombra); }
+.bt-item img { box-shadow: var(--nm-relevo-sm); }
+
+.bt-entrega label { border: 1.5px solid transparent; background: var(--nm-bg); box-shadow: var(--nm-relevo-sm); }
+.bt-entrega label:has(input:checked) { border-color: var(--bt-azul-2); background: var(--nm-bg); box-shadow: var(--nm-afundado); }
+
+.bt-barra-botao { background: var(--bt-azul); box-shadow: var(--bt-relevo-azul), 0 16px 30px -18px rgba(16, 48, 111, 0.7); }
+
+.bt-pix-qr { box-shadow: var(--nm-relevo); }
+.bt-pix-passos li::before { background: var(--nm-bg); box-shadow: var(--nm-afundado-sm); }
+.bt-pix-recebedor { background: var(--nm-bg); box-shadow: var(--nm-afundado-sm); }
+
+.bt-esqueleto { background: linear-gradient(100deg, var(--nm-bg) 30%, var(--nm-luz) 50%, var(--nm-bg) 70%); background-size: 300% 100%; }
