@@ -1,0 +1,944 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   PC FORMATECH — Painel administrativo em neumorfismo
+   Carregada por ÚLTIMA no admin.html, depois do admin-refinements.css.
+
+   Neumorfismo: tudo é feito do mesmo material. O fundo e os cartões têm a
+   mesma cor; o que separa um do outro é luz e sombra — uma luz clara vinda do
+   canto superior esquerdo e uma sombra escura no canto oposto.
+     · Elevado  → cartões, painéis e botões "saltam" da superfície.
+     · Afundado → campos de digitação, tabelas e o botão que está ativo
+                  ficam "cavados" na superfície (como uma tecla pressionada).
+
+   A cor continua só onde ela informa: o teal da marca nos botões de ação
+   principal e na aba ativa, e verde/amarelo/vermelho nos estados. O resto é
+   o material neutro.
+
+   Escopo: o <body> do admin.html recebe id="admin-neu". O id dá peso para
+   vencer o <style> embutido e o modo escuro antigo (cheios de !important) sem
+   espalhar mais !important do que o necessário. Para desligar o visual,
+   basta remover o <link> deste arquivo.
+
+   Índice
+     01 · Material (tokens claro e escuro)
+     02 · Fundo da página
+     03 · Painéis elevados
+     04 · Cartões internos
+     05 · Poços afundados (editores, tabelas, áreas vazias)
+     06 · Campos de digitação
+     07 · Cabeçalho e barra de abas
+     08 · Botões neutros e estados ativos
+     09 · Botões de ação colorida
+     10 · Tabelas
+     11 · Modais, diálogos e notificações
+     12 · Botão flutuante do modo escuro
+     13 · Celular
+     14 · prefers-reduced-motion
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+
+/* ── 01 · Material ──────────────────────────────────────────────────────── */
+
+:root {
+    /* Cinza frio com um toque do teal da marca. */
+    --neu-bg: #e3eaea;
+    --neu-bg-fundo: #dce4e4;          /* poços e zebra das tabelas */
+    --neu-luz: #ffffff;
+    --neu-sombra: #b5c3c3;
+    --neu-aro: rgba(255, 255, 255, 0.55); /* fio de luz na borda dos elevados */
+
+    --neu-elevado:    9px 9px 18px var(--neu-sombra), -9px -9px 18px var(--neu-luz);
+    --neu-elevado-sm: 5px 5px 10px var(--neu-sombra), -5px -5px 10px var(--neu-luz);
+    --neu-elevado-xs: 3px 3px 6px var(--neu-sombra), -3px -3px 6px var(--neu-luz);
+    --neu-afundado:    inset 6px 6px 12px var(--neu-sombra), inset -6px -6px 12px var(--neu-luz);
+    --neu-afundado-sm: inset 3px 3px 7px var(--neu-sombra), inset -3px -3px 7px var(--neu-luz);
+
+    /* Botão colorido pressionado: a sombra interna é escura dos dois lados,
+       senão o teal fica "lavado" pela luz branca. */
+    --neu-cor-pressionado: inset 3px 3px 7px rgba(0, 0, 0, 0.28), inset -2px -2px 6px rgba(255, 255, 255, 0.18);
+
+    --neu-acento: #1d6a63;            /* texto da aba/filtro ativo (5,2:1 no fundo) */
+    --neu-primario: linear-gradient(145deg, #3a9b91, #22756d);
+    --neu-foco: 0 0 0 3px rgba(45, 122, 122, 0.45);
+
+    --neu-raio: 20px;
+    --neu-raio-md: 16px;
+    --neu-raio-sm: 12px;
+
+    /* Os tokens do admin-refinements.css passam a falar neumorfismo: tudo o
+       que era "cartão branco com borda" vira material elevado sem esforço. */
+    --adm-superficie: var(--neu-bg);
+    --adm-superficie-2: var(--neu-bg-fundo);
+    --adm-borda: var(--neu-aro);
+    --adm-borda-forte: rgba(120, 145, 145, 0.35);
+    --adm-sombra: var(--neu-elevado-sm);
+    --adm-raio: var(--neu-raio-md);
+
+    /* Textos e estados um pouco mais escuros: o fundo agora é cinza, não
+       branco, e o contraste mínimo (4,5:1) precisa continuar valendo. */
+    --adm-texto: #13283b;
+    --adm-texto-suave: #4f5d6c;
+    --adm-ok: #1a6e52;
+    --adm-alerta: #8f6208;
+    --adm-critico: #a82a24;
+    --adm-info: #2a6590;
+}
+
+html[data-theme='dark'] {
+    --neu-bg: #1c2532;
+    --neu-bg-fundo: #18202b;
+    --neu-luz: #263244;
+    --neu-sombra: #10161f;
+    --neu-aro: rgba(255, 255, 255, 0.04);
+
+    --neu-cor-pressionado: inset 3px 3px 7px rgba(0, 0, 0, 0.45), inset -2px -2px 6px rgba(255, 255, 255, 0.08);
+
+    --neu-acento: #5fd3c7;
+    --neu-primario: linear-gradient(145deg, #2fa89c, #1a7a71);
+    --neu-foco: 0 0 0 3px rgba(95, 211, 199, 0.45);
+
+    --adm-superficie: var(--neu-bg);
+    --adm-superficie-2: var(--neu-bg-fundo);
+    --adm-borda: var(--neu-aro);
+    --adm-borda-forte: rgba(143, 173, 200, 0.22);
+    --adm-sombra: var(--neu-elevado-sm);
+
+    --adm-texto: #dfe9f4;
+    --adm-texto-suave: #93afc8;
+    --adm-ok: #63cba3;
+    --adm-alerta: #e0b05a;
+    --adm-critico: #ec8a83;
+    --adm-info: #8ab4d4;
+}
+
+
+/* ── 02 · Fundo da página ───────────────────────────────────────────────── */
+
+html #admin-neu,
+html[data-theme='dark'] #admin-neu {
+    background: var(--neu-bg) !important;
+    color: var(--adm-texto);
+}
+
+/* O painel deixa de ser uma folha branca: cabeçalho, abas e conteúdo
+   flutuam direto sobre o material. */
+#admin-neu #adminPanel {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: 0 !important;
+}
+
+
+/* ── 03 · Painéis elevados ──────────────────────────────────────────────── */
+
+#admin-neu .login-container,
+#admin-neu .admin-header,
+#admin-neu .clients-container,
+#admin-neu .chart-container,
+#admin-neu .avaliar-card,
+#admin-neu .service-card {
+    background: var(--neu-bg) !important;
+    border: 1px solid var(--neu-aro) !important;
+    border-radius: var(--neu-raio) !important;
+    box-shadow: var(--neu-elevado) !important;
+    color: var(--adm-texto);
+}
+
+#admin-neu .login-container {
+    padding: 2.5rem 2.25rem;
+}
+
+/* Cartões de número do Início: elevados, mantendo a faixa colorida que diz
+   o que cada número significa. */
+#admin-neu .stat-card {
+    background: var(--neu-bg) !important;
+    border: 1px solid var(--neu-aro) !important;
+    border-radius: var(--neu-raio-md) !important;
+    box-shadow: var(--neu-elevado-sm) !important;
+}
+
+#admin-neu .stat-card::before {
+    inset: 18% auto 18% 0;
+    width: 4px;
+    border-radius: 0 4px 4px 0;
+}
+
+#admin-neu .stats-grid {
+    gap: 1.4rem;
+}
+
+/* Títulos e textos que tinham cor fixa para fundo branco. */
+#admin-neu .login-container h1,
+#admin-neu .admin-header h1,
+#admin-neu .clients-container > h2,
+#admin-neu .chart-container h2,
+#admin-neu .service-card h3 {
+    color: var(--adm-texto) !important;
+    text-shadow: 1px 1px 1px var(--neu-luz);
+}
+
+html[data-theme='dark'] #admin-neu .login-container h1,
+html[data-theme='dark'] #admin-neu .admin-header h1,
+html[data-theme='dark'] #admin-neu .clients-container > h2,
+html[data-theme='dark'] #admin-neu .chart-container h2,
+html[data-theme='dark'] #admin-neu .service-card h3 {
+    text-shadow: none;
+}
+
+#admin-neu .stat-card p,
+#admin-neu .login-container small,
+#admin-neu .rt-last-update,
+#admin-neu .rt-empty,
+#admin-neu .parc-summary-card .ps-label {
+    color: var(--adm-texto-suave) !important;
+}
+
+/* Textos com cinza fixo no HTML (#666, #888...) ficavam abaixo do contraste
+   mínimo no fundo cinza — e quase sumiam no modo escuro. Passam a usar o
+   texto suave do material. O mesmo para o verde-escuro fixo da marca. */
+#admin-neu :is([style*='color:#444'], [style*='color:#555'], [style*='color:#666'], [style*='color: #666'],
+               [style*='color:#777'], [style*='color:#888'], [style*='color:#999'], [style*='color: #999']) {
+    color: var(--adm-texto-suave) !important;
+}
+
+#admin-neu [style*='color:#0B3D3D'] {
+    color: var(--adm-texto) !important;
+}
+
+/* Números coloridos dos resumos de parcelamento: no escuro, a mesma cor um
+   tom mais clara para continuar legível. */
+html[data-theme='dark'] #admin-neu .parc-summary-card .ps-val {
+    color: color-mix(in srgb, var(--parc-color, #40998F) 62%, #ffffff) !important;
+}
+
+html[data-theme='dark'] #admin-neu .stat-card h3 {
+    color: var(--adm-texto) !important;
+}
+html[data-theme='dark'] #admin-neu .stats-grid .stat-card:nth-child(2) h3 { color: var(--adm-ok) !important; }
+html[data-theme='dark'] #admin-neu .stats-grid .stat-card:nth-child(3) h3 { color: var(--adm-alerta) !important; }
+html[data-theme='dark'] #admin-neu .stats-grid .stat-card:nth-child(4) h3 { color: var(--neu-acento) !important; }
+
+/* Ícone redondo dos cabeçalhos de seção (Divulgação, Orçamentos, Loja...):
+   uma "pastilha" elevada com o ícone na cor da marca. */
+#admin-neu .ad-cabecalho-icone,
+#admin-neu .avaliar-card-icone,
+#admin-neu .rt-kpi-icon,
+#admin-neu .av-kpi-icone,
+#admin-neu .av-kpi-icone-mini {
+    box-shadow: var(--neu-elevado-xs) !important;
+}
+
+
+/* ── 04 · Cartões internos ──────────────────────────────────────────────── */
+
+/* Dentro de um painel elevado, cartões menores com sombra mais curta: a
+   hierarquia vem da altura, não de bordas. As bordas laterais coloridas que
+   indicam estado (pedido pago, entregue...) continuam valendo. */
+#admin-neu .rt-card,
+#admin-neu .rt-kpi,
+#admin-neu .orc-kpi,
+#admin-neu .orc-card,
+#admin-neu .orc-secao,
+#admin-neu .av-cartao,
+#admin-neu .av-kpi-grande,
+#admin-neu .av-kpi-mini,
+#admin-neu .av-canal,
+#admin-neu .ad-kpi,
+#admin-neu .ad-item,
+#admin-neu .bl-item,
+#admin-neu .dv-card,
+#admin-neu .dv-agenda,
+#admin-neu .dv-canal,
+#admin-neu .pd-card,
+#admin-neu .lr-item,
+#admin-neu .lr-mini,
+#admin-neu .dv-trio-mini,
+#admin-neu .parc-summary-card,
+#admin-neu .service-item {
+    background: var(--neu-bg) !important;
+    border-color: var(--neu-aro);
+    border-radius: var(--neu-raio-md) !important;
+    box-shadow: var(--neu-elevado-sm) !important;
+}
+
+/* O modo escuro antigo pintava estes de azul com !important. */
+html[data-theme='dark'] #admin-neu .rt-card,
+html[data-theme='dark'] #admin-neu .rt-kpi,
+html[data-theme='dark'] #admin-neu .service-item {
+    background: var(--neu-bg) !important;
+    border-color: var(--neu-aro) !important;
+    color: var(--adm-texto) !important;
+}
+
+#admin-neu .av-kpi-destaque {
+    background: linear-gradient(145deg, var(--neu-bg) 0%, color-mix(in srgb, var(--kpi-cor, #40998F) 9%, var(--neu-bg)) 100%) !important;
+}
+
+/* Fio sob os títulos de seção do Tempo Real: era quase branco e virava um
+   risco aceso no modo escuro. Agora é um sulco do próprio material. */
+#admin-neu .rt-section-title {
+    border-bottom-color: var(--adm-borda-forte) !important;
+}
+
+#admin-neu .rt-grid,
+#admin-neu .orc-resumo,
+#admin-neu .ad-resumo,
+#admin-neu .parc-summary-bar {
+    gap: 1.1rem;
+}
+
+
+/* ── 05 · Poços afundados ───────────────────────────────────────────────── */
+
+#admin-neu .bl-editor,
+#admin-neu .discount-section,
+#admin-neu .table-wrapper,
+#admin-neu .rt-empty,
+#admin-neu .lr-url,
+#admin-neu .lr-resultado,
+#admin-neu .notif-panel-body {
+    background: var(--neu-bg) !important;
+    border: 0 !important;
+    border-radius: var(--neu-raio-md) !important;
+    box-shadow: var(--neu-afundado-sm) !important;
+}
+
+#admin-neu .bl-editor {
+    box-shadow: var(--neu-afundado) !important;
+    padding: 1.4rem;
+}
+
+html[data-theme='dark'] #admin-neu .discount-section,
+html[data-theme='dark'] #admin-neu .client-form {
+    background: transparent !important;
+}
+
+#admin-neu .discount-section {
+    background: var(--neu-bg) !important;
+}
+
+/* O formulário de cadastro era uma caixa clara dentro do painel. */
+#admin-neu .client-form {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+/* Caixas de aviso com cor fixa no HTML (aviso de cobranças em Parcelamentos,
+   resumo do parcelamento no modal): viram cartões do mesmo material. */
+#admin-neu div[style*='background:#f8fffc'],
+#admin-neu div[style*='background:#f0fff8'] {
+    background: var(--neu-bg) !important;
+    border: 1px solid var(--neu-aro) !important;
+    border-radius: var(--neu-raio-md) !important;
+    box-shadow: var(--neu-elevado-sm) !important;
+    color: var(--adm-texto) !important;
+}
+
+/* Gerenciador de Temas: as amostras coloridas de cada tema ficam como estão
+   (são a prévia do tema); só a moldura vira material. */
+#admin-neu .theme-toolbar,
+#admin-neu .theme-card,
+#admin-neu .theme-preview-panel,
+html[data-theme='dark'] #admin-neu .theme-catalog-grid .theme-card,
+html[data-theme='dark'] #admin-neu .theme-preview-panel {
+    background: var(--neu-bg) !important;
+    border: 1px solid var(--neu-aro) !important;
+    border-radius: var(--neu-raio-md) !important;
+    box-shadow: var(--neu-elevado-sm) !important;
+    color: var(--adm-texto) !important;
+}
+
+#admin-neu .theme-card.is-active {
+    box-shadow: var(--neu-afundado-sm), 0 0 0 2px var(--neu-acento) !important;
+}
+
+#admin-neu .theme-manager-shell :not(button) > p,
+#admin-neu .theme-manager-shell :not(button) > small {
+    color: var(--adm-texto-suave) !important;
+}
+
+#admin-neu .theme-manager-shell :not(button) > strong {
+    color: var(--adm-texto) !important;
+}
+
+#admin-neu .theme-toggle-option,
+#admin-neu .theme-current-status {
+    background: var(--neu-bg) !important;
+    border: 0 !important;
+    border-radius: var(--neu-raio-sm) !important;
+    box-shadow: var(--neu-afundado-sm) !important;
+    color: var(--adm-texto) !important;
+}
+
+
+/* ── 06 · Campos de digitação ───────────────────────────────────────────── */
+
+#admin-neu input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='color']):not([type='file']):not([type='submit']):not([type='button']),
+#admin-neu select,
+#admin-neu textarea {
+    background: var(--neu-bg) !important;
+    color: var(--adm-texto) !important;
+    border: 1px solid transparent !important;
+    border-radius: var(--neu-raio-sm) !important;
+    box-shadow: var(--neu-afundado-sm) !important;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+#admin-neu input::placeholder,
+#admin-neu textarea::placeholder {
+    color: var(--adm-texto-suave) !important;
+    opacity: 0.85;
+}
+
+#admin-neu input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='color']):not([type='file']):not([type='submit']):not([type='button']):hover,
+#admin-neu select:hover,
+#admin-neu textarea:hover {
+    box-shadow: var(--neu-afundado) !important;
+}
+
+#admin-neu input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='color']):not([type='file']):not([type='submit']):not([type='button']):focus,
+#admin-neu select:focus,
+#admin-neu textarea:focus {
+    outline: none !important;
+    border-color: transparent !important;
+    box-shadow: var(--neu-afundado), var(--neu-foco) !important;
+}
+
+/* Campo obrigatório preenchido errado continua vermelho. */
+#admin-neu input:required:not(:placeholder-shown):invalid {
+    box-shadow: var(--neu-afundado-sm), 0 0 0 2px var(--adm-critico) !important;
+}
+
+#admin-neu input[type='checkbox'],
+#admin-neu input[type='radio'],
+#admin-neu input[type='range'] {
+    accent-color: var(--neu-acento);
+}
+
+#admin-neu input[type='file'] {
+    padding: 0.55rem;
+    border: 0 !important;
+    border-radius: var(--neu-raio-sm) !important;
+    background: var(--neu-bg) !important;
+    color: var(--adm-texto-suave) !important;
+    box-shadow: var(--neu-afundado-sm) !important;
+}
+
+#admin-neu input[type='file']::file-selector-button {
+    margin-right: 0.75rem;
+    padding: 0.45rem 0.9rem;
+    border: 0;
+    border-radius: 10px;
+    background: var(--neu-bg);
+    color: var(--neu-acento);
+    font: inherit;
+    font-weight: 700;
+    box-shadow: var(--neu-elevado-xs);
+    cursor: pointer;
+}
+
+#admin-neu .search-box {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+#admin-neu .input-group label,
+#admin-neu .form-group label {
+    color: var(--adm-texto) !important;
+}
+
+
+/* ── 07 · Cabeçalho e barra de abas ─────────────────────────────────────── */
+
+#admin-neu .admin-header {
+    padding: 1.1rem 1.6rem;
+    margin-bottom: 1.6rem;
+}
+
+#admin-neu .admin-header h1 img {
+    border-radius: 12px !important;
+    box-shadow: var(--neu-elevado-xs);
+}
+
+/* A barra de abas é um painel elevado; cada aba é uma tecla. A aba aberta
+   fica pressionada (afundada) e acende no teal da marca. */
+#admin-neu .admin-tabs {
+    gap: 0.5rem !important;
+    padding: 0.7rem !important;
+    margin-bottom: 1.8rem !important;
+    background: var(--neu-bg) !important;
+    border: 1px solid var(--neu-aro) !important;
+    border-radius: var(--neu-raio) !important;
+    box-shadow: var(--neu-elevado) !important;
+}
+
+#admin-neu .admin-tabs .tab-button {
+    padding-left: 0.4rem !important;
+    padding-right: 0.4rem !important;
+    background: var(--neu-bg) !important;
+    color: var(--adm-texto-suave) !important;
+    border: 0 !important;
+    border-radius: var(--neu-raio-sm) !important;
+    box-shadow: var(--neu-elevado-xs) !important;
+    transition: box-shadow 0.2s ease, color 0.2s ease;
+}
+
+#admin-neu .admin-tabs .tab-button:hover {
+    background: var(--neu-bg) !important;
+    color: var(--adm-texto) !important;
+    box-shadow: var(--neu-elevado-sm) !important;
+}
+
+#admin-neu .admin-tabs .tab-button:active,
+#admin-neu .admin-tabs .tab-button.active,
+html[data-theme='dark'] #admin-neu .admin-tabs .tab-button.active {
+    background: var(--neu-bg) !important;
+    color: var(--neu-acento) !important;
+    box-shadow: var(--neu-afundado-sm) !important;
+}
+
+#admin-neu .admin-tabs .tab-button.active {
+    font-weight: 800;
+}
+
+
+/* ── 08 · Botões neutros e estados ativos ───────────────────────────────── */
+
+/* Botões sem cor de ação: o mesmo material, elevados. Ao clicar — ou quando
+   representam a opção escolhida — afundam. */
+#admin-neu .header-buttons .btn-notif,
+#admin-neu .header-buttons .btn-back-to-site,
+#admin-neu .header-buttons .btn-logout,
+#admin-neu .av-botao-secundario,
+#admin-neu .avaliar-btn-claro,
+#admin-neu .av-refresh,
+#admin-neu .av-periodo,
+#admin-neu .dv-filtros button,
+#admin-neu .dv-chips button,
+#admin-neu .dv-canal button,
+#admin-neu .dv-slot-chip,
+#admin-neu .dv-entrada-remover,
+#admin-neu .dv-trio-opcao,
+#admin-neu .dv-fechar,
+#admin-neu .ad-chip,
+#admin-neu .ad-tela button,
+#admin-neu .ad-estilo span,
+#admin-neu .lr-lugar,
+#admin-neu .theme-secondary,
+#admin-neu .btn-cancel,
+#admin-neu .btn-biometria,
+#admin-neu .notif-panel-close,
+#admin-neu .btn-fechar-bar,
+#admin-neu #btnToggleProjecao {
+    background: var(--neu-bg) !important;
+    border: 0 !important;
+    border-radius: var(--neu-raio-sm) !important;
+    box-shadow: var(--neu-elevado-xs) !important;
+    transition: box-shadow 0.2s ease, color 0.2s ease;
+}
+
+#admin-neu .av-botao-secundario,
+#admin-neu .avaliar-btn-claro,
+#admin-neu .av-refresh,
+#admin-neu .btn-biometria,
+#admin-neu #btnToggleProjecao {
+    color: var(--neu-acento) !important;
+}
+
+#admin-neu .header-buttons .btn-notif,
+#admin-neu .header-buttons .btn-back-to-site {
+    color: var(--adm-texto) !important;
+}
+
+#admin-neu .header-buttons .btn-logout {
+    color: var(--adm-critico) !important;
+}
+
+#admin-neu .header-buttons .btn-notif:hover,
+#admin-neu .header-buttons .btn-back-to-site:hover,
+#admin-neu .header-buttons .btn-logout:hover,
+#admin-neu .av-botao-secundario:hover,
+#admin-neu .avaliar-btn-claro:hover,
+#admin-neu .av-refresh:hover,
+#admin-neu .av-periodo:hover,
+#admin-neu .dv-filtros button:hover,
+#admin-neu .dv-chips button:hover,
+#admin-neu .dv-canal button:hover,
+#admin-neu .dv-slot-chip:hover,
+#admin-neu .dv-trio-opcao:hover,
+#admin-neu .dv-fechar:hover,
+#admin-neu .ad-chip:hover,
+#admin-neu .ad-tela button:hover,
+#admin-neu .lr-lugar:hover,
+#admin-neu .theme-secondary:hover,
+#admin-neu .btn-cancel:hover,
+#admin-neu .btn-biometria:hover,
+#admin-neu #btnToggleProjecao:hover {
+    background: var(--neu-bg) !important;
+    box-shadow: var(--neu-elevado-sm) !important;
+    filter: none;
+    transform: none;
+}
+
+/* Pressionado e "opção escolhida". */
+#admin-neu .header-buttons .btn-notif:active,
+#admin-neu .header-buttons .btn-back-to-site:active,
+#admin-neu .header-buttons .btn-logout:active,
+#admin-neu .av-botao-secundario:active,
+#admin-neu .avaliar-btn-claro:active,
+#admin-neu .av-refresh:active,
+#admin-neu .av-periodo:active,
+#admin-neu .av-periodo.is-ativo,
+#admin-neu .dv-filtros button:active,
+#admin-neu .dv-filtros button.is-ativo,
+#admin-neu .dv-chips button:active,
+#admin-neu .dv-chips button[aria-pressed='true'],
+#admin-neu .dv-canal button:active,
+#admin-neu .dv-canal button.is-ativo,
+#admin-neu .dv-trio-opcao:active,
+#admin-neu .ad-chip:active,
+#admin-neu .ad-tela button:active,
+#admin-neu .ad-tela button.is-ativo,
+#admin-neu .lr-lugar:active,
+#admin-neu .lr-lugar.is-ativo,
+#admin-neu .btn-cancel:active,
+#admin-neu .btn-biometria:active,
+#admin-neu #btnToggleProjecao:active {
+    background: var(--neu-bg) !important;
+    box-shadow: var(--neu-afundado-sm) !important;
+}
+
+/* A opção escolhida acende no teal; nos canais (WhatsApp, Instagram...),
+   cada um na própria cor, que já vem do --c / --dv-cor do refinamento. */
+#admin-neu .av-periodo.is-ativo,
+#admin-neu .dv-filtros button.is-ativo,
+#admin-neu .ad-tela button.is-ativo,
+#admin-neu .dv-chips button[aria-pressed='true'] {
+    color: var(--neu-acento) !important;
+    font-weight: 800;
+}
+
+#admin-neu .dv-filtros button,
+#admin-neu .av-periodo,
+#admin-neu .ad-tela button,
+#admin-neu .dv-chips button {
+    color: var(--adm-texto-suave) !important;
+}
+
+#admin-neu .dv-filtros {
+    gap: 0.6rem;
+}
+
+/* Ícone redondo do sino: o contador vermelho fica por cima da tecla. */
+#admin-neu .header-buttons .btn-notif,
+#admin-neu .header-buttons .btn-back-to-site {
+    border-radius: 50% !important;
+}
+
+#admin-neu .header-buttons {
+    gap: 0.75rem;
+}
+
+#admin-neu .btn-biometria {
+    border-radius: var(--neu-raio-sm) !important;
+}
+
+
+/* ── 09 · Botões de ação colorida ───────────────────────────────────────── */
+
+/* Ação principal: mantém o teal da marca — é a cor que diz "faça isto" —
+   com volume neumórfico em vez de sombra chapada. */
+#admin-neu .btn-save,
+#admin-neu .btn-update,
+#admin-neu .btn-login,
+#admin-neu .av-botao:not(.av-botao-secundario) {
+    background: var(--neu-primario) !important;
+    color: #fff !important;
+    border: 0 !important;
+    border-radius: var(--neu-raio-sm) !important;
+    box-shadow: var(--neu-elevado-sm) !important;
+    transition: box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+#admin-neu .btn-save:hover,
+#admin-neu .btn-update:hover,
+#admin-neu .btn-login:hover,
+#admin-neu .av-botao:not(.av-botao-secundario):hover {
+    background: var(--neu-primario) !important;
+    filter: brightness(1.06);
+    transform: none;
+    box-shadow: var(--neu-elevado) !important;
+}
+
+#admin-neu .btn-save:active,
+#admin-neu .btn-update:active,
+#admin-neu .btn-login:active,
+#admin-neu .av-botao:not(.av-botao-secundario):active {
+    box-shadow: var(--neu-cor-pressionado) !important;
+    filter: brightness(0.97);
+}
+
+/* Botões de linha (editar, WhatsApp, pagar parcela...) mantêm a própria cor
+   e ganham o volume. O excluir continua vazado em vermelho até o hover. */
+#admin-neu .btn-action:not(.avaliar-btn-claro),
+#admin-neu .btn-edit,
+#admin-neu .btn-view,
+#admin-neu .btn-convert,
+#admin-neu .btn-whatsapp,
+#admin-neu .btn-pagar-parcela,
+#admin-neu .btn-estornar-parcela,
+#admin-neu .btn-parcelar-servico,
+#admin-neu .btn-ativar-notif,
+#admin-neu .btn-testar-notif,
+#admin-neu .orc-botao-zap {
+    border-radius: var(--neu-raio-sm) !important;
+    box-shadow: var(--neu-elevado-xs) !important;
+    transition: box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+#admin-neu .btn-action:not(.avaliar-btn-claro):hover,
+#admin-neu .btn-edit:hover,
+#admin-neu .btn-view:hover,
+#admin-neu .btn-convert:hover,
+#admin-neu .btn-whatsapp:hover,
+#admin-neu .btn-pagar-parcela:hover,
+#admin-neu .btn-estornar-parcela:hover,
+#admin-neu .btn-parcelar-servico:hover,
+#admin-neu .btn-ativar-notif:hover,
+#admin-neu .btn-testar-notif:hover,
+#admin-neu .orc-botao-zap:hover {
+    transform: none;
+    box-shadow: var(--neu-elevado-sm) !important;
+}
+
+#admin-neu .btn-action:not(.avaliar-btn-claro):active,
+#admin-neu .btn-edit:active,
+#admin-neu .btn-view:active,
+#admin-neu .btn-convert:active,
+#admin-neu .btn-whatsapp:active,
+#admin-neu .btn-pagar-parcela:active,
+#admin-neu .btn-estornar-parcela:active,
+#admin-neu .btn-parcelar-servico:active,
+#admin-neu .btn-ativar-notif:active,
+#admin-neu .btn-testar-notif:active,
+#admin-neu .orc-botao-zap:active {
+    box-shadow: var(--neu-cor-pressionado) !important;
+}
+
+#admin-neu .btn-delete,
+#admin-neu .btn-remove {
+    background: var(--neu-bg) !important;
+    color: var(--adm-critico) !important;
+    border: 0 !important;
+    border-radius: var(--neu-raio-sm) !important;
+    box-shadow: var(--neu-elevado-xs) !important;
+}
+
+#admin-neu .btn-delete:hover,
+#admin-neu .btn-remove:hover {
+    background: var(--adm-critico) !important;
+    color: #fff !important;
+    box-shadow: var(--neu-elevado-sm) !important;
+}
+
+#admin-neu .btn-delete:active,
+#admin-neu .btn-remove:active {
+    box-shadow: var(--neu-cor-pressionado) !important;
+}
+
+/* Foco por teclado visível em qualquer botão. */
+#admin-neu button:focus-visible,
+#admin-neu a:focus-visible {
+    outline: 2px solid var(--neu-acento) !important;
+    outline-offset: 3px;
+}
+
+
+/* ── 10 · Tabelas ───────────────────────────────────────────────────────── */
+
+/* A tabela fica dentro de um poço afundado; as linhas são separadas por um
+   sulco (fio escuro + fio claro), como se fossem riscadas no material. */
+#admin-neu .table-wrapper {
+    padding: 0.4rem;
+}
+
+#admin-neu .admin-panel table,
+#admin-neu .clients-table {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+#admin-neu .admin-panel thead th,
+#admin-neu .clients-table th,
+html[data-theme='dark'] #admin-neu .clients-table th {
+    background: transparent !important;
+    color: var(--adm-texto-suave) !important;
+    border-bottom: 1px solid var(--adm-borda-forte) !important;
+    box-shadow: 0 1px 0 var(--neu-luz);
+}
+
+#admin-neu .admin-panel tbody td,
+#admin-neu .clients-table td,
+html[data-theme='dark'] #admin-neu .clients-table td {
+    color: var(--adm-texto) !important;
+    border-bottom: 1px solid var(--adm-borda-forte) !important;
+}
+
+#admin-neu .admin-panel tbody tr:last-child td {
+    border-bottom: 0 !important;
+}
+
+#admin-neu .admin-panel tbody tr:nth-child(even) {
+    background: transparent !important;
+}
+
+#admin-neu .admin-panel tbody tr:hover,
+html[data-theme='dark'] #admin-neu .clients-table tr:hover {
+    background: color-mix(in srgb, var(--neu-sombra) 22%, transparent) !important;
+}
+
+
+/* ── 11 · Modais, diálogos e notificações ───────────────────────────────── */
+
+#admin-neu .modal-content,
+#admin-neu .dv-dialogo,
+#admin-neu .notif-panel {
+    background: var(--neu-bg) !important;
+    color: var(--adm-texto) !important;
+    border: 1px solid var(--neu-aro) !important;
+    border-radius: var(--neu-raio) !important;
+    /* Sobre o fundo escurecido a luz branca do neumorfismo vira um halo;
+       a janela usa só a sombra de baixo. */
+    box-shadow: 0 26px 60px -18px rgba(0, 0, 0, 0.5), inset 1px 1px 0 var(--neu-aro) !important;
+}
+
+/* O painel de notificações abre sobre a página, não sobre um fundo escuro:
+   esse mantém o volume neumórfico. */
+#admin-neu .notif-panel {
+    box-shadow: var(--neu-elevado) !important;
+}
+
+html[data-theme='dark'] #admin-neu .modal-content,
+html[data-theme='dark'] #admin-neu .notif-panel {
+    background: var(--neu-bg) !important;
+    border-color: var(--neu-aro) !important;
+}
+
+#admin-neu .modal-header,
+#admin-neu .dv-dialogo-topo,
+#admin-neu .notif-panel-header,
+#admin-neu .notif-panel-footer,
+html[data-theme='dark'] #admin-neu .notif-panel-footer {
+    background: transparent !important;
+    border-color: var(--adm-borda-forte) !important;
+    color: var(--adm-texto) !important;
+}
+
+#admin-neu .modal-header h2,
+#admin-neu .modal-header h3 {
+    color: var(--adm-texto) !important;
+}
+
+#admin-neu .modal .close {
+    display: inline-grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--neu-bg);
+    color: var(--adm-texto-suave);
+    box-shadow: var(--neu-elevado-xs);
+    line-height: 1;
+}
+
+#admin-neu .modal .close:hover {
+    color: var(--adm-critico);
+    box-shadow: var(--neu-elevado-sm);
+}
+
+#admin-neu .modal .close:active {
+    box-shadow: var(--neu-afundado-sm);
+}
+
+#admin-neu .orc-modal-acoes {
+    background: var(--neu-bg) !important;
+}
+
+#admin-neu .success-message {
+    border-radius: var(--neu-raio-sm) !important;
+    box-shadow: var(--neu-elevado-sm) !important;
+}
+
+#admin-neu #notif-permission-bar {
+    border-radius: var(--neu-raio-md) !important;
+    box-shadow: var(--neu-elevado-sm) !important;
+}
+
+
+/* ── 12 · Botão flutuante do modo escuro ────────────────────────────────── */
+
+#admin-neu #themeToggleBtn,
+html[data-theme='dark'] #admin-neu #themeToggleBtn {
+    background: var(--neu-bg) !important;
+    color: var(--neu-acento) !important;
+    border: 1px solid var(--neu-aro) !important;
+    box-shadow: var(--neu-elevado-sm) !important;
+}
+
+#admin-neu #themeToggleBtn:hover,
+html[data-theme='dark'] #admin-neu #themeToggleBtn:hover {
+    background: var(--neu-bg) !important;
+    box-shadow: var(--neu-elevado) !important;
+    transform: none;
+}
+
+#admin-neu #themeToggleBtn:active {
+    box-shadow: var(--neu-afundado-sm) !important;
+}
+
+
+/* ── 13 · Celular ───────────────────────────────────────────────────────── */
+
+/* Em tela pequena a sombra longa "come" o espaço entre os cartões; tudo
+   fica um degrau mais baixo. */
+@media (max-width: 640px) {
+    :root,
+    html[data-theme='dark'] {
+        --neu-elevado:    6px 6px 12px var(--neu-sombra), -6px -6px 12px var(--neu-luz);
+        --neu-elevado-sm: 4px 4px 8px var(--neu-sombra), -4px -4px 8px var(--neu-luz);
+        --neu-elevado-xs: 2px 2px 5px var(--neu-sombra), -2px -2px 5px var(--neu-luz);
+        --neu-afundado:    inset 4px 4px 8px var(--neu-sombra), inset -4px -4px 8px var(--neu-luz);
+        --neu-raio: 16px;
+        --neu-raio-md: 14px;
+    }
+
+    #admin-neu .admin-tabs {
+        gap: 0.45rem !important;
+        padding: 0.55rem !important;
+    }
+
+    #admin-neu .admin-header {
+        padding: 0.9rem 1rem;
+    }
+
+    #admin-neu .stats-grid {
+        gap: 1rem;
+    }
+
+    #admin-neu .login-container {
+        padding: 2rem 1.4rem;
+    }
+}
+
+
+/* ── 14 · prefers-reduced-motion ────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+    #admin-neu *,
+    #admin-neu *::before,
+    #admin-neu *::after {
+        transition: none !important;
+    }
+}
