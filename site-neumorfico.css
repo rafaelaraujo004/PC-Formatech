@@ -1,0 +1,113 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   site.html no padrão neumórfico (neumorfismo.css), desde 21/11/2026.
+
+   Esta página tem <html data-tema-fixo>: o theme-system.js deixa de aplicar
+   os temas do painel (inclusive os de datas comemorativas) e não grava mais
+   as cores no style do <html>. As folhas antigas (empacotadas em
+   css/site-pacote.css) leem tudo de variáveis --theme-* e --pcft-*; aqui
+   essas variáveis passam a apontar para o padrão. Topo e rodapé continuam
+   escuros, como nas outras páginas.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+html:root[data-tema-fixo] {
+    --theme-bg: var(--nm-bg);
+    --theme-text: var(--nm-texto);
+    --theme-surface: var(--nm-bg);
+    --theme-surface-2: var(--nm-bg);
+    --theme-surface-3: var(--nm-bg);
+    --theme-border: var(--nm-linha);
+    --theme-border-2: var(--nm-linha);
+    --theme-shadow: var(--nm-relevo);
+    --theme-shadow-lg: var(--nm-relevo-lg);
+    --theme-muted: var(--nm-suave);
+    --theme-faint: var(--nm-suave);
+    --theme-accent: var(--nm-destaque-texto);
+    --theme-accent-2: var(--nm-destaque);
+    --theme-accent-glow: color-mix(in srgb, var(--nm-destaque) 15%, transparent);
+
+    --primary-color: var(--nm-destaque);
+    --secondary-color: var(--nm-destaque-texto);
+    --accent-color: var(--nm-destaque-texto);
+    --success-color: var(--nm-destaque-texto);
+    --warning-color: #b86e0b;
+    --text-color: var(--nm-texto);
+    --text-light: var(--nm-suave);
+    --light-bg: var(--nm-bg);
+    --gradient: linear-gradient(160deg, #0b2b2c, #061719);
+    --gradient-accent: var(--nm-destaque);
+    --gradient-subtle: var(--nm-bg);
+    --shadow-sm: var(--nm-relevo-sm);
+    --shadow-md: var(--nm-relevo);
+    --shadow-lg: var(--nm-relevo);
+    --shadow-xl: var(--nm-relevo-lg);
+
+    --pcft-page-background: var(--nm-bg);
+    --pcft-header-background: linear-gradient(160deg, rgba(11, 43, 44, 0.96), rgba(6, 23, 25, 0.96));
+    --pcft-footer-background: linear-gradient(160deg, #0b2b2c, #061719);
+    --pcft-section-background: var(--nm-bg);
+    --pcft-section-alt-background: var(--nm-bg);
+    --pcft-card-background: var(--nm-bg);
+    --pcft-card-border: transparent;
+    --pcft-hero-overlay: linear-gradient(135deg, rgba(6, 23, 25, 0.72) 0%, rgba(11, 43, 44, 0.5) 55%, rgba(14, 133, 119, 0.22) 100%);
+    --pcft-hero-frame: rgba(255, 255, 255, 0.12);
+    --pcft-button-background: var(--nm-destaque);
+    --pcft-button-text: var(--nm-sobre-destaque);
+    --pcft-button-shadow: var(--nm-relevo-destaque);
+    --pcft-decoration-top: none;
+    --pcft-decoration-bottom: none;
+    --pcft-badge-background: var(--nm-bg);
+    --pcft-badge-text: var(--nm-destaque-texto);
+    --pcft-indicator: rgba(255, 255, 255, 0.4);
+    --pcft-indicator-active: #4fd1bf;
+    --pcft-chip-background: var(--nm-bg);
+    --pcft-chip-text: var(--nm-destaque-texto);
+    --pcft-font-heading: 'Sora', 'Segoe UI', system-ui, sans-serif;
+    --pcft-font-body: 'Manrope', 'Segoe UI', system-ui, sans-serif;
+    --pcft-text-color: var(--nm-texto);
+    --pcft-muted-color: var(--nm-suave);
+    --pcft-heading-color: var(--nm-texto);
+    --pcft-header-text: rgba(255, 255, 255, 0.95);
+    --pcft-footer-text: rgba(255, 255, 255, 0.85);
+    --pcft-footer-icon: #4fd1bf;
+}
+
+html[data-theme='dark']:root[data-tema-fixo] {
+    --warning-color: #f0a94a;
+    --pcft-footer-background: #14181b;
+    --pcft-header-background: rgba(20, 24, 27, 0.94);
+}
+
+/* O selo de data comemorativa não aparece nesta página. */
+html[data-tema-fixo] #pcft-seasonal-badge { display: none !important; }
+
+/* Variáveis "premium" das folhas antigas: também passam a usar o padrão. */
+html:root[data-tema-fixo],
+html[data-theme='dark']:root[data-tema-fixo] {
+    --premium-card: var(--nm-bg);
+    --premium-chip-bg: var(--nm-bg);
+    --premium-shadow-soft: var(--nm-relevo);
+    --edge-line: transparent;
+}
+
+/* Sem a grade quadriculada atrás das seções: o relevo já dá a profundidade. */
+html[data-tema-fixo] :is(.proof-section, .services, .scheduling)::before { background-image: none; }
+
+/* Faixa "Agende pelo WhatsApp": poço afundado. */
+html[data-tema-fixo] .urgency-band { border: 0; background: var(--nm-bg); box-shadow: var(--nm-afundado); }
+
+/* Bird Tech e Apps: deixam de ser faixas coloridas e viram cartões em relevo.
+   A cor de cada marca fica no ícone e no botão. */
+html[data-tema-fixo] .bird-tech-faixa,
+html[data-tema-fixo] .bird-tech-faixa.apps-faixa { background: var(--nm-bg); color: var(--nm-texto); box-shadow: var(--nm-relevo); }
+html[data-tema-fixo] .bird-tech-faixa h2 { color: var(--nm-texto) !important; }
+html[data-tema-fixo] .bird-tech-faixa p { color: var(--nm-suave) !important; }
+html[data-tema-fixo] .bird-tech-selo { color: #1a47b8; opacity: 1; }
+html[data-tema-fixo] .apps-faixa .bird-tech-selo { color: #5b21b6; }
+html[data-theme='dark'][data-tema-fixo] .bird-tech-selo { color: #7fb0ff; }
+html[data-theme='dark'][data-tema-fixo] .apps-faixa .bird-tech-selo { color: #b79cff; }
+html[data-tema-fixo] .bird-tech-faixa img,
+html[data-tema-fixo] .apps-faixa-icone { box-shadow: var(--nm-relevo-sm); }
+html[data-tema-fixo] .bird-tech-botao { background: #1a47b8; color: #fff !important; box-shadow: 4px 4px 10px rgba(26, 71, 184, 0.32), -4px -4px 9px var(--nm-luz); }
+html[data-tema-fixo] .apps-faixa .bird-tech-botao { background: #5b21b6; color: #fff !important; box-shadow: 4px 4px 10px rgba(91, 33, 182, 0.32), -4px -4px 9px var(--nm-luz); }
+html[data-theme='dark'][data-tema-fixo] :is(.bird-tech-botao, .apps-faixa .bird-tech-botao) { box-shadow: var(--nm-relevo-destaque); }
+html[data-tema-fixo] .bird-tech-botao:active { box-shadow: var(--nm-afundado-destaque); }

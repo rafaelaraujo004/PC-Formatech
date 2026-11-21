@@ -4,7 +4,8 @@
    Uma tarefa só: quem chega entende em segundos que aqui se resolve problema
    de computador, escreve o problema e vê o serviço e o preço.
 
-   Visual "Diagnóstico" (escolhido em 10/10/2026): topo verde-petróleo com um
+   Visual "Diagnóstico" (escolhido em 10/10/2026); desde 21/11/2026 tudo abaixo
+   do topo segue o padrão neumórfico de neumorfismo.css: topo verde-petróleo com um
    notebook em 3D rodando um diagnóstico, faixa inclinada com os serviços e
    cartões coloridos por serviço. O celular segue o computador o mais perto
    possível: busca numa linha, menu à vista, serviços em duas colunas.
@@ -19,12 +20,13 @@
     --pt-menta: #7ff5e0;
     --pt-menta-forte: #3fbfa8;
     --pt-hero-text: #eafffb;
-    --pt-bg: #f2f6f5;
-    --pt-surface: #ffffff;
-    --pt-text: #0c1c1b;
-    --pt-muted: #556a66;
-    --pt-border: #d8e3e0;
-    --pt-destaque-borda: #0c1c1b;
+    /* Abaixo do topo escuro, tudo segue o padrão neumórfico (neumorfismo.css). */
+    --pt-bg: var(--nm-bg);
+    --pt-surface: var(--nm-bg);
+    --pt-text: var(--nm-texto);
+    --pt-muted: var(--nm-suave);
+    --pt-border: var(--nm-linha);
+    --pt-destaque-borda: var(--nm-destaque);
     --pt-wa: #16a34a;
     --pt-wa-sombra: #0f7a36;
     --pt-ouro: #f5b94a;
@@ -37,15 +39,7 @@
     color-scheme: light;
 }
 
-html[data-theme='dark'] {
-    --pt-bg: #061412;
-    --pt-surface: #0d1f1d;
-    --pt-text: #e3f2ef;
-    --pt-muted: #9bb3ae;
-    --pt-border: rgba(127, 245, 224, 0.14);
-    --pt-destaque-borda: #7ff5e0;
-    color-scheme: dark;
-}
+html[data-theme='dark'] { color-scheme: dark; }
 
 *, *::before, *::after { box-sizing: border-box; }
 
@@ -103,6 +97,7 @@ body.pt {
 .pt-skip:focus { top: 1rem; }
 
 .pt :focus-visible { outline: 3px solid var(--pt-ouro); outline-offset: 3px; }
+.pt main :focus-visible { outline-color: var(--nm-foco); }
 
 
 /* ── Topo (sobre o palco escuro) ─────────────────────────────────────────── */
@@ -401,8 +396,8 @@ body.pt {
     padding: 0.9rem 0;
     overflow: hidden;
     transform: rotate(-2.2deg);
-    background: var(--pt-menta);
-    color: var(--pt-noite);
+    background: var(--nm-destaque);
+    color: var(--nm-sobre-destaque);
     box-shadow: 0 20px 40px -20px rgba(5, 40, 38, 0.6);
 }
 .pt-faixa-trilho { display: flex; width: max-content; animation: pt-anda 34s linear infinite; }
@@ -482,13 +477,14 @@ main { flex: 1; }
     flex-direction: column;
     gap: 0.55rem;
     padding: 1.05rem 1.05rem 1.15rem;
-    border: 1px solid var(--pt-border);
+    border: 0;
     border-radius: var(--pt-radius);
-    background: var(--pt-surface);
+    background: var(--nm-bg);
+    box-shadow: var(--nm-relevo);
     transform: rotateX(calc(var(--ry, 0) * 1deg)) rotateY(calc(var(--rx, 0) * 1deg));
     transition: transform 0.25s ease-out, box-shadow 0.3s;
 }
-.pt-card:hover { box-shadow: 0 30px 60px -30px rgba(12, 28, 27, 0.45); }
+.pt-card:hover { box-shadow: var(--nm-relevo-lg); }
 .pt-card[hidden] { display: none; }
 
 /* Brilho que segue o mouse (portal-efeitos.js passa a posição). */
@@ -500,7 +496,7 @@ main { flex: 1; }
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.3s;
-    background: radial-gradient(300px circle at var(--mx, 50%) var(--my, 0%), rgba(255, 255, 255, 0.5), transparent 55%);
+    background: radial-gradient(300px circle at var(--mx, 50%) var(--my, 0%), rgba(255, 255, 255, 0.35), transparent 55%);
     mix-blend-mode: soft-light;
 }
 .pt-card:hover::after { opacity: 1; }
@@ -512,10 +508,13 @@ main { flex: 1; }
     height: 118px;
     overflow: hidden;
     border-radius: 16px;
-    color: #ffffff;
-    background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.35), transparent 45%), linear-gradient(135deg, var(--cor-a), var(--cor-b));
+    color: var(--cor-b);
+    background: var(--nm-bg);
+    box-shadow: var(--nm-afundado);
 }
+html[data-theme='dark'] .pt-capa { color: var(--cor-a); }
 .pt-capa::before {
+    display: none;
     content: "";
     position: absolute;
     right: -50px;
@@ -533,7 +532,6 @@ main { flex: 1; }
     stroke-width: 1.6;
     stroke-linecap: round;
     stroke-linejoin: round;
-    filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.25));
     transition: transform 0.4s cubic-bezier(.2, .7, .2, 1);
 }
 .pt-card:hover .pt-capa svg { transform: scale(1.12) rotate(-6deg); }
@@ -551,7 +549,8 @@ main { flex: 1; }
     margin: 0.2rem 0;
     padding: 0.25rem 0.7rem;
     border-radius: 10px;
-    background: color-mix(in srgb, var(--cor-a) 18%, transparent);
+    background: var(--nm-bg);
+    box-shadow: var(--nm-afundado-sm);
     color: var(--pt-muted);
     font: 600 0.72rem var(--pt-font-mono);
 }
@@ -578,11 +577,12 @@ main { flex: 1; }
     transition: transform 0.15s, box-shadow 0.15s, filter 0.2s;
 }
 .pt-btn-primary {
-    background: var(--pt-wa);
-    color: #ffffff !important;
-    box-shadow: 0 5px 0 var(--pt-wa-sombra);
+    background: var(--nm-destaque);
+    color: var(--nm-sobre-destaque) !important;
+    box-shadow: var(--nm-relevo-destaque);
 }
-.pt-btn-primary:hover { transform: translateY(2px); box-shadow: 0 3px 0 var(--pt-wa-sombra); }
+.pt-btn-primary:hover { background: var(--nm-destaque-hover); }
+.pt-btn-primary:active { box-shadow: var(--nm-afundado-destaque); transform: translateY(1px); }
 
 /* Selo da melhor correspondência: só aparece durante uma busca. */
 .pt-best {
@@ -593,15 +593,15 @@ main { flex: 1; }
     z-index: 2;
     padding: 0.22rem 0.65rem;
     border-radius: 8px;
-    background: #ffffff;
-    color: #0c1c1b;
+    background: var(--nm-destaque);
+    color: var(--nm-sobre-destaque);
     font-size: 0.72rem;
     font-weight: 800;
-    box-shadow: 0 6px 16px -6px rgba(0, 0, 0, 0.4);
+    box-shadow: var(--nm-relevo-sm);
 }
 .pt-best::before { content: "★ "; }
 .pt-card.is-best .pt-best { display: block; }
-.pt-card.is-best { border: 2px solid var(--pt-destaque-borda); box-shadow: 8px 8px 0 var(--pt-destaque-borda); }
+.pt-card.is-best { box-shadow: 0 0 0 2px var(--pt-destaque-borda), var(--nm-relevo-lg); }
 
 /* Durante a busca a melhor opção ocupa a linha inteira, deitada, para ser
    impossível não perceber qual é a resposta. */
@@ -620,12 +620,13 @@ main { flex: 1; }
     align-items: flex-start;
     margin-bottom: 1.25rem;
     padding: 1.25rem 1.35rem;
-    border: 2px dashed var(--pt-menta-forte);
+    border: 0;
     border-radius: var(--pt-radius);
-    background: var(--pt-surface);
+    background: var(--nm-bg);
+    box-shadow: var(--nm-afundado);
 }
 .pt-empty[hidden] { display: none; }
-.pt-empty-ico { width: 32px; height: 32px; flex: none; fill: none; stroke: var(--pt-menta-forte); stroke-width: 2; stroke-linecap: round; }
+.pt-empty-ico { width: 32px; height: 32px; flex: none; fill: none; stroke: var(--nm-destaque-texto); stroke-width: 2; stroke-linecap: round; }
 .pt-empty-title { margin: 0; font-weight: 800; font-size: 1.05rem; }
 .pt-empty-text { margin: 0.25rem 0 0.85rem; color: var(--pt-muted); }
 
@@ -651,9 +652,10 @@ main { flex: 1; }
     align-items: center;
     gap: 0.75rem;
     padding: 1rem;
-    border: 1px solid var(--pt-border);
-    border-radius: 16px;
-    background: var(--pt-surface);
+    border: 0;
+    border-radius: var(--nm-raio-lg);
+    background: var(--nm-bg);
+    box-shadow: var(--nm-relevo);
     font-size: 0.92rem;
     font-weight: 700;
 }
@@ -664,8 +666,9 @@ main { flex: 1; }
     height: 40px;
     flex: none;
     border-radius: 12px;
-    background: var(--pt-noite);
-    color: var(--pt-menta);
+    background: var(--nm-bg);
+    box-shadow: var(--nm-afundado-sm);
+    color: var(--nm-destaque-texto);
 }
 
 
@@ -689,18 +692,19 @@ main { flex: 1; }
     min-height: 260px;
     padding: 1.6rem;
     border-radius: 26px;
-    color: #ffffff !important;
+    background: var(--nm-bg);
+    box-shadow: var(--nm-relevo);
+    color: var(--nm-texto) !important;
     text-decoration: none;
     transition: transform 0.35s cubic-bezier(.2, .7, .2, 1), box-shadow 0.35s;
 }
-.pt-bento:hover { transform: translateY(-4px); box-shadow: 0 30px 60px -30px rgba(5, 40, 38, 0.6); }
-.pt-loja { background: radial-gradient(circle at 80% 20%, rgba(92, 200, 255, 0.55), transparent 50%), linear-gradient(135deg, #0a2a6e, #1a47b8 55%, #2f7fe0); }
-.pt-apps { background: radial-gradient(circle at 85% 15%, rgba(127, 245, 224, 0.35), transparent 50%), linear-gradient(135deg, var(--pt-noite-3), var(--pt-noite-2) 60%, #1f5e8a); }
+.pt-bento:hover { transform: translateY(-3px); box-shadow: var(--nm-relevo-lg); }
+.pt-bento:active { transform: none; box-shadow: var(--nm-afundado); }
 
 .pt-bento-texto { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 0.35rem; max-width: 58%; }
-.pt-bento-texto small { font: 700 0.75rem var(--pt-font-mono); text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.8; }
+.pt-bento-texto small { font: 700 0.75rem var(--pt-font-mono); text-transform: uppercase; letter-spacing: 0.06em; color: var(--nm-destaque-texto); }
 .pt-bento-texto strong { font: 800 clamp(1.4rem, 2.6vw, 2.1rem)/1.1 var(--pt-font-head); letter-spacing: -0.03em; }
-.pt-bento-texto > span:not(.pt-bento-cta) { opacity: 0.85; font-size: 0.95rem; }
+.pt-bento-texto > span:not(.pt-bento-cta) { color: var(--nm-suave); font-size: 0.95rem; }
 .pt-bento-cta {
     display: inline-flex;
     align-items: center;
@@ -708,9 +712,10 @@ main { flex: 1; }
     align-self: flex-start;
     margin-top: auto;
     padding: 0.5rem 0.85rem;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.16);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    background: var(--nm-destaque);
+    color: var(--nm-sobre-destaque);
+    box-shadow: var(--nm-relevo-destaque);
     font-weight: 800;
     font-size: 0.9rem;
 }
@@ -718,7 +723,7 @@ main { flex: 1; }
 .pt-bento-cta .pt-ico { transition: transform 0.2s; }
 
 .pt-bento-texto strong { display: flex; align-items: center; gap: 0.55rem; }
-.pt-bento-logo { width: 1.35em; height: 1.35em; flex: none; border-radius: 0.35em; background: #ffffff; padding: 2px; }
+.pt-bento-logo { width: 1.35em; height: 1.35em; flex: none; border-radius: 0.35em; background: #ffffff; padding: 2px; box-shadow: var(--nm-relevo-sm); }
 /* Foto do produto como um cartão inclinado. */
 .pt-bento-foto {
     position: absolute;
@@ -727,8 +732,8 @@ main { flex: 1; }
     width: 36%;
     height: auto;
     border-radius: 18px;
-    border: 4px solid rgba(255, 255, 255, 0.9);
-    box-shadow: 0 30px 50px -20px rgba(0, 0, 0, 0.6);
+    border: 4px solid var(--nm-bg);
+    box-shadow: var(--nm-relevo);
     transform: rotate(-8deg);
     transition: transform 0.5s cubic-bezier(.2, .7, .2, 1);
 }
@@ -741,7 +746,7 @@ main { flex: 1; }
     height: auto;
     border-radius: 18px;
     border: 5px solid #0b1213;
-    box-shadow: 0 30px 50px -20px rgba(0, 0, 0, 0.7);
+    box-shadow: var(--nm-relevo);
     transform: rotate(8deg);
     transition: transform 0.5s cubic-bezier(.2, .7, .2, 1);
 }
@@ -789,11 +794,11 @@ main { flex: 1; }
     height: 46px;
     display: grid;
     place-items: center;
-    border: 1px solid var(--pt-border);
+    border: 0;
     border-radius: 50%;
-    background: var(--pt-surface);
-    color: var(--pt-text);
-    box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.5);
+    background: var(--nm-bg);
+    color: var(--nm-texto);
+    box-shadow: var(--nm-relevo);
     cursor: pointer;
     transition: opacity 0.25s ease, visibility 0.25s ease;
 }
@@ -802,7 +807,8 @@ main { flex: 1; }
 #themeToggleBtn.pcft-toggle-oculto { opacity: 0; visibility: hidden; pointer-events: none; }
 
 /* Promoção em vigor (site-config.js). */
-.pt-price.em-promocao > span { color: #e11d48; font-weight: 800; }
+.pt-price.em-promocao > span { color: #c0153d; font-weight: 800; }
+html[data-theme='dark'] .pt-price.em-promocao > span { color: #fb7185; }
 .pt-price .preco-antigo { margin-right: 0.35em; font-size: 0.8em; font-weight: 600; color: var(--pt-muted); text-decoration: line-through; }
 
 /* Transições da busca (View Transitions): só os cartões se mexem; o resto da
@@ -864,7 +870,9 @@ main { flex: 1; }
 
     /* Serviços em duas colunas, compactos. */
     .pt-grid { gap: 0.7rem; }
-    .pt-card { padding: 0.65rem 0.65rem 0.8rem; border-radius: 18px; gap: 0.4rem; }
+    .pt-card { padding: 0.65rem 0.65rem 0.8rem; border-radius: 18px; gap: 0.4rem; box-shadow: var(--nm-relevo-sm); }
+    .pt-card:hover { box-shadow: var(--nm-relevo); }
+    .pt-trust li, .pt-bento { box-shadow: var(--nm-relevo-sm); }
     .pt-card-corpo { gap: 0.4rem; }
     .pt-capa { height: 82px; border-radius: 13px; }
     .pt-capa svg { width: 38px; height: 38px; }

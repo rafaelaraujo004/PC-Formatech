@@ -58,7 +58,9 @@
     text-transform: uppercase;
 }
 
-.ap-antes .ap-rotulo { color: #c2410c; }
+.ap-antes .ap-rotulo { color: #b23a0a; }
+:root[data-theme="dark"] .ap-antes .ap-rotulo,
+:root[data-theme="dark"] .ap-lista-antes .ap-ico-mini { color: #fb923c; }
 .ap-depois .ap-rotulo { color: var(--sv-acento); }
 
 .ap-seta {
@@ -68,8 +70,9 @@
     width: 44px;
     height: 44px;
     border-radius: 50%;
-    background: var(--sv-acento);
-    color: #fff;
+    background: var(--nm-destaque);
+    color: var(--nm-sobre-destaque);
+    box-shadow: var(--nm-relevo-sm);
 }
 
 .ap-seta svg {
@@ -91,7 +94,7 @@
     color: #1f2933;
     font-family: 'Segoe UI', Arial, sans-serif;
     font-size: 0.72rem;
-    box-shadow: var(--sv-sombra);
+    box-shadow: var(--nm-relevo);
     transform: rotate(-1.2deg);
 }
 
@@ -156,7 +159,7 @@
     padding: 9px;
     border-radius: 34px;
     background: #0d1b1d;
-    box-shadow: 0 30px 60px -28px rgba(0, 0, 0, 0.6), inset 0 0 0 2px rgba(255, 255, 255, 0.08);
+    box-shadow: var(--nm-relevo), inset 0 0 0 2px rgba(255, 255, 255, 0.08);
 }
 
 .ap-celular-tela {
@@ -248,7 +251,7 @@
 }
 
 .ap-lista li { display: flex; gap: 0.55rem; align-items: baseline; }
-.ap-lista-antes .ap-ico-mini { color: #c2410c; }
+.ap-lista-antes .ap-ico-mini { color: #b23a0a; }
 .ap-lista-depois .ap-ico-mini { color: var(--sv-acento); }
 
 /* ── Cartões dos sistemas ──────────────────────────────────────────────── */
@@ -264,13 +267,14 @@
     flex-direction: column;
     gap: 0.5rem;
     padding: 1.2rem;
-    border: 1px solid var(--sv-borda);
-    border-radius: 16px;
-    background: var(--sv-superficie);
-    transition: border-color 0.2s ease, transform 0.2s ease;
+    border: 0;
+    border-radius: var(--nm-raio-lg);
+    background: var(--nm-bg);
+    box-shadow: var(--nm-relevo-sm);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
-.ap-card:hover { border-color: var(--sv-acento); transform: translateY(-2px); }
+.ap-card:hover { box-shadow: var(--nm-relevo); transform: translateY(-2px); }
 
 .ap-card-ico {
     display: grid;
@@ -278,7 +282,8 @@
     width: 46px;
     height: 46px;
     border-radius: 13px;
-    background: color-mix(in srgb, var(--sv-acento) 14%, transparent);
+    background: var(--nm-bg);
+    box-shadow: var(--nm-afundado-sm);
     color: var(--sv-acento);
 }
 
@@ -330,7 +335,8 @@
     margin: 1rem 0 0;
     padding: 0.55rem 0.9rem;
     border-radius: 999px;
-    background: color-mix(in srgb, var(--sv-acento) 12%, transparent);
+    background: var(--nm-bg);
+    box-shadow: var(--nm-afundado-sm);
     font-weight: 600;
 }
 
@@ -363,8 +369,9 @@
 .ap-incluso {
     margin: 1.2rem 0 0;
     padding: 0.8rem 1rem;
-    border-radius: 12px;
-    background: color-mix(in srgb, var(--sv-acento) 10%, transparent);
+    border-radius: var(--nm-raio);
+    background: var(--nm-bg);
+    box-shadow: var(--nm-afundado);
     color: var(--sv-suave);
 }
 
@@ -396,6 +403,7 @@
     margin: 0 auto;
     border-radius: 28px;
     border: 8px solid #0d1b1d;
+    box-shadow: var(--nm-relevo);
     overflow: hidden;
 }
 
@@ -458,12 +466,15 @@
 .ap-projeto .ap-projeto-ver {
     min-height: 42px;
     padding: 0.5rem 1.1rem;
-    border: 1.5px solid var(--sv-acento);
+    border: 0;
+    background: var(--nm-bg);
+    box-shadow: var(--nm-relevo-sm);
     color: var(--sv-acento);
     font-size: 0.92rem;
 }
+.ap-projeto .ap-projeto-ver:active { box-shadow: var(--nm-afundado); }
 
-.ap-projeto-interno { display: inline-block; margin: 0; padding: 0.3rem 0.7rem; border-radius: 999px; background: var(--sv-fundo); color: var(--sv-suave); font-size: 0.82rem; font-weight: 700; }
+.ap-projeto-interno { display: inline-block; margin: 0; padding: 0.3rem 0.7rem; border-radius: 999px; background: var(--nm-bg); box-shadow: var(--nm-afundado-sm); color: var(--sv-suave); font-size: 0.82rem; font-weight: 700; }
 
 .ap-preco-mensal { display: block; margin-top: 0.15rem; color: var(--sv-suave); font-size: 0.85rem; font-weight: 700; }
 .ap-acoes-centro { justify-content: center; }

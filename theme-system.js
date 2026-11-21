@@ -573,8 +573,26 @@
         };
     }
 
+    /**
+     * Página com visual fixo (<html data-tema-fixo>): segue o padrão neumórfico
+     * do site e não recebe as cores, enfeites nem selos dos temas do painel.
+     * O botão claro/escuro continua funcionando normalmente. Hoje: site.html.
+     */
+    function temaFixo() {
+        return document.documentElement.hasAttribute('data-tema-fixo');
+    }
+
     function applyThemeVariables(theme) {
         const root = document.documentElement;
+        if (temaFixo()) {
+            // As cores vêm das variáveis definidas em CSS (site-neumorfico.css);
+            // gravá-las aqui, no style do <html>, passaria por cima delas.
+            root.setAttribute('data-theme', theme.mode);
+            root.setAttribute('data-theme-id', 'neumorfico');
+            root.setAttribute('data-theme-category', 'fixo');
+            updateMetaThemeColor(theme.mode === 'dark' ? '#1f2529' : '#0b2b2c');
+            return;
+        }
         const variables = buildThemeVariables(theme);
         Object.keys(variables).forEach((key) => {
             if (variables[key]) {
@@ -863,7 +881,11 @@
             if (previewId) {
                 return getThemeById(previewId);
             }
-            const siteTheme = resolveSiteTheme(settings);
+            // Visual fixo: ignora o tema do painel (inclusive os de datas) e usa
+            // só a base neutra, no modo que o visitante escolheu.
+            const siteTheme = temaFixo()
+                ? (getThemeById('classico-neutro') || getThemeById((manifest && manifest.defaultThemeId) || EMBEDDED_FALLBACK_THEME.id))
+                : resolveSiteTheme(settings);
             if (!visitorMode || siteTheme.mode === visitorMode) {
                 return siteTheme;
             }
@@ -939,11 +961,13 @@
 
         function applyResolvedTheme(reason) {
             currentTheme = resolveTheme(currentSettings, previewThemeId);
-            injectThemeFonts(currentTheme);
+            const fixo = temaFixo();
+            if (!fixo) injectThemeFonts(currentTheme);
             applyThemeVariables(currentTheme);
             if (!previewThemeId) rememberAppliedMode(currentTheme);
-            syncThemeEffects(currentTheme);
-            applyDecorations(currentTheme);
+            // Visual fixo: sem efeitos nem enfeites de tema.
+            syncThemeEffects(fixo ? { effects: [] } : currentTheme);
+            applyDecorations(fixo ? null : currentTheme);
             currentBannerSlides = buildBannerSlidesForTheme(currentTheme);
             emitChange(reason || 'apply');
             return currentTheme;

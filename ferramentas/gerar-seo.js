@@ -270,7 +270,8 @@ function cabeca({ titulo, descricao, url, extras, previa, tipo }) {
     <link rel="preload" href="/fonts/sora-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/fontes.css">
     <link rel="stylesheet" href="/icones.css">
-    <link rel="stylesheet" href="/servicos/servicos.css?v=4">
+    <link rel="stylesheet" href="/neumorfismo.css?v=1">
+    <link rel="stylesheet" href="/servicos/servicos.css?v=5">
 ${extras}
 </head>`;
 }
@@ -740,7 +741,7 @@ function paginaApps() {
     const mensalMin = menorMensalidade();
 
     // Prévia sem preço; nome novo para o WhatsApp não reaproveitar a antiga.
-    return `${cabeca({ titulo, descricao, url, previa: 'apps-sob-medida', extras: '    <link rel="stylesheet" href="/apps.css?v=4">\n    ' + jsonLd({ '@context': 'https://schema.org', '@graph': dados }) })}
+    return `${cabeca({ titulo, descricao, url, previa: 'apps-sob-medida', extras: '    <link rel="stylesheet" href="/apps.css?v=5">\n    ' + jsonLd({ '@context': 'https://schema.org', '@graph': dados }) })}
 <body>
     ${topo}
 

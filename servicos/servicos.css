@@ -3,30 +3,21 @@
    chega pela busca, então carregam rápido e vão direto ao ponto. */
 
 :root {
-    --sv-fundo: #f4f8f7;
-    --sv-superficie: #ffffff;
-    --sv-texto: #12263a;
-    --sv-suave: #536576;
-    --sv-borda: rgba(11, 61, 61, 0.12);
-    --sv-acento: #2d7a7a;
-    --sv-acento-forte: #1d6a63;
+    /* Conteúdo no padrão neumórfico (neumorfismo.css); o topo continua escuro. */
+    --sv-fundo: var(--nm-bg);
+    --sv-superficie: var(--nm-bg);
+    --sv-texto: var(--nm-texto);
+    --sv-suave: var(--nm-suave);
+    --sv-borda: var(--nm-linha);
+    --sv-acento: var(--nm-destaque-texto);
+    --sv-acento-forte: var(--nm-destaque);
     --sv-hero-1: #0b2b2c;
     --sv-hero-2: #061719;
     --sv-sombra: 0 1px 2px rgba(11, 61, 61, 0.05), 0 14px 34px -22px rgba(11, 61, 61, 0.45);
     color-scheme: light;
 }
 
-:root[data-theme="dark"] {
-    --sv-fundo: #071214;
-    --sv-superficie: #0e1d20;
-    --sv-texto: #e2eef0;
-    --sv-suave: #9db5ba;
-    --sv-borda: rgba(95, 201, 190, 0.16);
-    --sv-acento: #4fd1c0;
-    --sv-acento-forte: #2bb3a6;
-    --sv-sombra: 0 1px 2px rgba(0, 0, 0, 0.4), 0 14px 34px -22px rgba(0, 0, 0, 0.9);
-    color-scheme: dark;
-}
+:root[data-theme="dark"] { color-scheme: dark; }
 
 *,
 *::before,
@@ -185,10 +176,14 @@ h1, h2 {
 }
 
 .sv-cta {
-    background: linear-gradient(135deg, #4fd1c0, #2d9c90);
-    color: #032421;
-    box-shadow: 0 14px 30px -14px rgba(79, 209, 192, 0.8);
+    background: var(--nm-destaque);
+    color: var(--nm-sobre-destaque);
+    box-shadow: 0 12px 26px -14px rgba(0, 0, 0, 0.7);
 }
+.sv-cta:hover { background: var(--nm-destaque-hover); }
+.sv-cta:active { box-shadow: var(--nm-afundado-destaque); transform: translateY(1px); }
+/* Fora do topo escuro o botão ganha o relevo do padrão. */
+.sv-bloco:not(.sv-chamada) .sv-cta { box-shadow: var(--nm-relevo-destaque); }
 
 .sv-cta-sec {
     border: 1px solid rgba(255, 255, 255, 0.3);
@@ -225,7 +220,7 @@ h1, h2 {
 .sv-conteudo {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.2rem;
+    gap: 1.6rem;
     max-width: 1080px;
     margin: 0 auto;
     padding: clamp(1.5rem, 4vw, 3rem) 1rem;
@@ -234,10 +229,10 @@ h1, h2 {
 .sv-bloco {
     min-width: 0;
     padding: clamp(1.2rem, 3vw, 1.8rem);
-    border: 1px solid var(--sv-borda);
-    border-radius: 18px;
-    background: var(--sv-superficie);
-    box-shadow: var(--sv-sombra);
+    border: 0;
+    border-radius: var(--nm-raio-lg);
+    background: var(--nm-bg);
+    box-shadow: var(--nm-relevo);
 }
 
 .sv-bloco-largo { grid-column: 1 / -1; }
@@ -262,7 +257,8 @@ h1, h2 {
 }
 
 .sv-lista i { color: var(--sv-acento); flex: 0 0 auto; }
-.sv-lista-sinais i { color: #d9922b; }
+.sv-lista-sinais i { color: #b86e0b; }
+:root[data-theme="dark"] .sv-lista-sinais i { color: #f0a94a; }
 
 .sv-passos {
     display: grid;
@@ -277,8 +273,9 @@ h1, h2 {
 .sv-passos li {
     position: relative;
     padding: 1rem 1rem 1rem 3.4rem;
-    border-radius: 14px;
-    background: color-mix(in srgb, var(--sv-acento) 8%, transparent);
+    border-radius: var(--nm-raio);
+    background: var(--nm-bg);
+    box-shadow: var(--nm-afundado);
     counter-increment: passo;
 }
 
@@ -292,13 +289,12 @@ h1, h2 {
     width: 1.8rem;
     height: 1.8rem;
     border-radius: 50%;
-    background: var(--sv-acento);
-    color: #fff;
+    background: var(--nm-destaque);
+    color: var(--nm-sobre-destaque);
+    box-shadow: var(--nm-relevo-sm);
     font-weight: 800;
     font-size: 0.9rem;
 }
-
-:root[data-theme="dark"] .sv-passos li::before { color: #032421; }
 
 .sv-faq {
     border-top: 1px solid var(--sv-borda);
@@ -360,16 +356,16 @@ h1, h2 {
     gap: 0.8rem;
     align-items: flex-start;
     padding: 0.9rem 1rem;
-    border: 1px solid var(--sv-borda);
-    border-radius: 14px;
+    border: 0;
+    border-radius: var(--nm-raio);
+    background: var(--nm-bg);
+    box-shadow: var(--nm-relevo-sm);
     text-decoration: none;
-    transition: border-color 0.2s ease, transform 0.2s ease;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
-.sv-outros a:hover {
-    border-color: var(--sv-acento);
-    transform: translateY(-2px);
-}
+.sv-outros a:hover { box-shadow: var(--nm-relevo); transform: translateY(-2px); }
+.sv-outros a:active { box-shadow: var(--nm-afundado); transform: none; }
 
 .sv-outros i {
     display: grid;
@@ -378,7 +374,8 @@ h1, h2 {
     width: 38px;
     height: 38px;
     border-radius: 11px;
-    background: color-mix(in srgb, var(--sv-acento) 14%, transparent);
+    background: var(--nm-bg);
+    box-shadow: var(--nm-afundado-sm);
     color: var(--sv-acento);
 }
 
@@ -468,13 +465,12 @@ h1, h2 {
     width: 1.8rem;
     height: 1.8rem;
     border-radius: 50%;
-    background: var(--sv-acento);
-    color: #fff;
+    background: var(--nm-destaque);
+    color: var(--nm-sobre-destaque);
+    box-shadow: var(--nm-relevo-sm);
     font-size: 0.85rem;
     font-weight: 800;
 }
-
-:root[data-theme="dark"] .sv-artigo-passos li::before { color: #032421; }
 
 .sv-rodape-autor { grid-column: 1 / -1; font-size: 0.8rem; opacity: 0.7; }
 
@@ -482,12 +478,7 @@ h1, h2 {
 /* ── Perguntas rápidas antes do WhatsApp (pedido-rapido.js) ───────────── */
 /* apps.html e páginas de serviço: até 3 perguntas, uma por vez. */
 
-.pr-pedido {
-    border: 2px solid color-mix(in srgb, var(--sv-acento) 45%, transparent);
-    background:
-        radial-gradient(600px 260px at 50% 0%, color-mix(in srgb, var(--sv-acento) 10%, transparent), transparent 70%),
-        var(--sv-superficie);
-}
+.pr-pedido { box-shadow: 0 0 0 2px color-mix(in srgb, var(--nm-destaque) 45%, transparent), var(--nm-relevo); }
 
 .pr-topo { text-align: center; }
 .pr-topo h2 { margin: 0.5rem 0 0.3rem; }
@@ -500,7 +491,8 @@ h1, h2 {
     margin: 0;
     padding: 0.25rem 0.75rem;
     border-radius: 999px;
-    background: color-mix(in srgb, var(--sv-acento) 12%, transparent);
+    background: var(--nm-bg);
+    box-shadow: var(--nm-afundado-sm);
     color: var(--sv-acento);
     font-size: 0.8rem;
     font-weight: 800;
@@ -525,9 +517,10 @@ h1, h2 {
     place-items: center;
     width: 34px;
     height: 34px;
-    border: 2px solid var(--sv-borda);
+    border: 0;
     border-radius: 50%;
-    background: var(--sv-superficie);
+    background: var(--nm-bg);
+    box-shadow: var(--nm-afundado-sm);
     color: var(--sv-suave);
     font-weight: 800;
     font-size: 0.9rem;
@@ -539,11 +532,11 @@ h1, h2 {
     right: calc(100% + 2px);
     width: 2.4rem;
     height: 2px;
-    background: var(--sv-borda);
+    background: var(--nm-sombra);
 }
 
-.pr-progresso li.is-atual { border-color: var(--sv-acento); color: var(--sv-acento); box-shadow: 0 0 0 4px color-mix(in srgb, var(--sv-acento) 15%, transparent); }
-.pr-progresso li.is-feito { border-color: var(--sv-acento); background: var(--sv-acento); color: var(--sv-superficie); }
+.pr-progresso li.is-atual { color: var(--sv-acento); box-shadow: var(--nm-relevo-sm), 0 0 0 2px var(--nm-destaque); }
+.pr-progresso li.is-feito { background: var(--nm-destaque); color: var(--nm-sobre-destaque); box-shadow: var(--nm-relevo-sm); }
 .pr-progresso li.is-feito::before,
 .pr-progresso li.is-atual::before { background: var(--sv-acento); }
 
@@ -579,13 +572,14 @@ h1, h2 {
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    background: var(--sv-acento);
-    color: var(--sv-superficie);
+    background: var(--nm-destaque);
+    color: var(--nm-sobre-destaque);
+    box-shadow: var(--nm-relevo-sm);
     font-size: 0.9rem;
 }
 
 .pr-dica { margin: -0.5rem 0 0.8rem; color: var(--sv-suave); font-size: 0.9rem; }
-.pr-aviso { margin: 0.7rem 0 0; color: #c2410c; font-size: 0.9rem; font-weight: 700; }
+.pr-aviso { margin: 0.7rem 0 0; color: #b23a0a; font-size: 0.9rem; font-weight: 700; }
 
 .pr-opcoes {
     display: grid;
@@ -604,13 +598,14 @@ h1, h2 {
     gap: 0.6rem;
     min-height: 54px;
     padding: 0.7rem 2.4rem 0.7rem 0.9rem;
-    border: 1.5px solid var(--sv-borda);
-    border-radius: 14px;
-    background: var(--sv-superficie);
+    border: 1.5px solid transparent;
+    border-radius: var(--nm-raio);
+    background: var(--nm-bg);
+    box-shadow: var(--nm-relevo-sm);
     color: var(--sv-texto);
     font-weight: 700;
     line-height: 1.25;
-    transition: border-color 0.15s ease, background 0.15s ease;
+    transition: box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
 .pr-opcao span::after {
@@ -621,26 +616,28 @@ h1, h2 {
     width: 20px;
     height: 20px;
     margin-top: -10px;
-    border: 2px solid var(--sv-borda);
+    border: 0;
     border-radius: 6px;
-    background: var(--sv-superficie) no-repeat center / 14px;
+    background: var(--nm-bg) no-repeat center / 14px;
+    box-shadow: var(--nm-afundado-sm);
 }
 
 .pr-opcao input[type="radio"] + span::after { border-radius: 50%; }
-.pr-opcao:hover span { border-color: color-mix(in srgb, var(--sv-acento) 55%, transparent); }
+.pr-opcao:hover span { box-shadow: var(--nm-relevo); }
 
+/* Escolhida: a opção "afunda" e ganha a borda de destaque. */
 .pr-opcao input:checked + span {
-    border-color: var(--sv-acento);
-    background: color-mix(in srgb, var(--sv-acento) 11%, var(--sv-superficie));
+    border-color: var(--nm-destaque);
+    box-shadow: var(--nm-afundado);
 }
 
 .pr-opcao input:checked + span::after {
-    border-color: var(--sv-acento);
-    background-color: var(--sv-acento);
+    box-shadow: none;
+    background-color: var(--nm-destaque);
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
 }
 
-.pr-opcao input:focus-visible + span { outline: 3px solid color-mix(in srgb, var(--sv-acento) 55%, transparent); outline-offset: 2px; }
+.pr-opcao input:focus-visible + span { outline: 2px solid var(--nm-foco); outline-offset: 3px; }
 
 .pr-ico { flex: 0 0 auto; width: 22px; height: 22px; color: var(--sv-acento); }
 
@@ -680,7 +677,8 @@ h1, h2 {
     gap: 0.6rem;
     padding: 0.6rem 0.8rem;
     border-radius: 12px;
-    background: var(--sv-fundo);
+    background: var(--nm-bg);
+    box-shadow: var(--nm-afundado-sm);
 }
 
 .pr-resumo dt { color: var(--sv-suave); font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; }
