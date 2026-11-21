@@ -88,29 +88,6 @@
         });
     }
 
-    // ── Cartões inclinam e brilham sob o mouse ──────────────────────────────
-    const grade = document.getElementById('pt-grid');
-    if (grade) {
-        let atual = null;
-        const soltar = (card) => {
-            if (!card) return;
-            card.style.setProperty('--rx', 0);
-            card.style.setProperty('--ry', 0);
-        };
-        grade.addEventListener('pointermove', (evento) => {
-            const card = evento.target.closest('.pt-card');
-            if (card !== atual) { soltar(atual); atual = card; }
-            if (!card) return;
-            const r = card.getBoundingClientRect();
-            const x = (evento.clientX - r.left) / r.width;
-            const y = (evento.clientY - r.top) / r.height;
-            // O cartão deitado da busca é largo: inclina menos.
-            const forca = card.offsetWidth > 500 ? 4 : 10;
-            card.style.setProperty('--rx', ((x - 0.5) * forca).toFixed(2));
-            card.style.setProperty('--ry', ((0.5 - y) * forca).toFixed(2));
-            card.style.setProperty('--mx', (x * 100).toFixed(1) + '%');
-            card.style.setProperty('--my', (y * 100).toFixed(1) + '%');
-        });
-        grade.addEventListener('pointerleave', () => { soltar(atual); atual = null; });
-    }
+    // Os cartões não inclinam mais sob o mouse (desde 21/11/2026): no padrão
+    // neumórfico a profundidade vem do relevo, e o movimento competia com ele.
 })();

@@ -124,3 +124,183 @@ html[data-theme='dark'] {
 @media (prefers-reduced-motion: reduce) {
     .nm-botao { transition: none; }
 }
+
+
+/* ── Estreia do visual: os cartões "levantam" até o relevo ─────────────────
+   Só na primeira visita depois da mudança (visual-novo.js põe e tira a
+   classe nm-estreia). Sem o quadro final, a animação termina no relevo que
+   cada cartão já tem. */
+
+@keyframes nm-levanta {
+    from { box-shadow: none; transform: translateY(6px); opacity: 0.6; }
+}
+
+html.nm-estreia :is(
+    .pt-card, .pt-numeros li, .pt-trust li, .pt-bento,
+    .sv-bloco, .sv-outros a, .ap-card,
+    .bt-card, .bt-encomenda,
+    .client-form-container,
+    .service-card, .proof-card, .frente-card, .faq-item, .testimonial-card, .bird-tech-faixa
+) {
+    animation: nm-levanta 0.9s cubic-bezier(.2, .7, .2, 1) both;
+}
+html.nm-estreia :is(.pt-card, .pt-numeros li, .pt-trust li, .service-card, .proof-card):nth-child(2) { animation-delay: 0.06s; }
+html.nm-estreia :is(.pt-card, .pt-numeros li, .pt-trust li, .service-card, .proof-card):nth-child(3) { animation-delay: 0.12s; }
+html.nm-estreia :is(.pt-card, .pt-numeros li, .pt-trust li, .service-card, .proof-card):nth-child(4) { animation-delay: 0.18s; }
+html.nm-estreia :is(.pt-card, .service-card):nth-child(n+5) { animation-delay: 0.24s; }
+
+
+/* ── Aviso "O site está de cara nova" (toast) ──────────────────────────── */
+
+.nm-aviso {
+    position: fixed;
+    left: 50%;
+    top: calc(16px + env(safe-area-inset-top, 0px));
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    width: min(400px, calc(100% - 32px));
+    padding: 0.85rem 0.7rem 0.85rem 0.9rem;
+    border-radius: var(--nm-raio-lg);
+    background: var(--nm-bg);
+    color: var(--nm-texto);
+    box-shadow: var(--nm-relevo-lg);
+    font-family: 'Manrope', system-ui, sans-serif;
+    font-size: 0.88rem;
+    line-height: 1.35;
+    opacity: 0;
+    transform: translate(-50%, -12px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.nm-aviso.is-visivel { opacity: 1; transform: translate(-50%, 0); }
+.nm-aviso-texto { flex: 1; color: var(--nm-suave); }
+.nm-aviso-texto strong { display: block; color: var(--nm-texto); font-size: 0.95rem; }
+.nm-aviso-ico,
+.nm-aviso-fechar {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--nm-raio-sm);
+    background: var(--nm-bg);
+    color: var(--nm-destaque-texto);
+}
+.nm-aviso-ico { box-shadow: var(--nm-afundado-sm); }
+.nm-aviso-fechar { border: 0; color: var(--nm-suave); box-shadow: var(--nm-relevo-sm); cursor: pointer; }
+.nm-aviso-fechar:active { box-shadow: var(--nm-afundado-sm); }
+.nm-aviso-fechar:focus-visible { outline: 2px solid var(--nm-foco); outline-offset: 2px; }
+.nm-aviso svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.nm-aviso-ico svg { fill: currentColor; stroke: none; }
+
+
+/* ── Chave claro/escuro (o botão que o theme-system.js cria) ───────────────
+   Vira uma chave como a das referências: trilho afundado e bolinha em relevo,
+   que passa para a direita no modo escuro. O ícone anda junto com a bolinha. */
+
+html:root body #themeToggleBtn {
+    width: 64px;
+    height: 34px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: var(--nm-bg);
+    color: var(--nm-suave);
+    box-shadow: var(--nm-afundado), 3px 3px 8px var(--nm-sombra), -3px -3px 8px var(--nm-luz);
+    display: block;
+}
+html:root body #themeToggleBtn::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--nm-bg);
+    box-shadow: var(--nm-relevo-sm);
+    transition: left 0.25s cubic-bezier(.2, .7, .2, 1);
+}
+html:root body #themeToggleBtn svg {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 14px;
+    height: 14px;
+    transition: left 0.25s cubic-bezier(.2, .7, .2, 1);
+}
+html[data-theme='dark']:root body #themeToggleBtn { color: var(--nm-destaque-texto); }
+html[data-theme='dark']:root body #themeToggleBtn::before { left: 34px; background: var(--nm-luz); }
+html[data-theme='dark']:root body #themeToggleBtn svg { left: 40px; }
+html:root body #themeToggleBtn:focus-visible { outline: 2px solid var(--nm-foco); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) {
+    html:root body #themeToggleBtn::before,
+    html:root body #themeToggleBtn svg { transition: none; }
+}
+
+
+/* ── Barra fixa no celular ─────────────────────────────────────────────────
+   visual-novo.js cria a barra; ela só aparece em telas de até 760 px. O item
+   da página atual fica afundado, como o botão "pressionado". */
+
+.nm-barra { display: none; }
+
+@media (max-width: 760px) {
+    .nm-barra {
+        position: fixed;
+        left: 12px;
+        right: 12px;
+        bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+        z-index: 40;
+        display: flex;
+        gap: 6px;
+        padding: 6px;
+        border-radius: 22px;
+        background: var(--nm-bg);
+        box-shadow: 6px 6px 16px var(--nm-sombra), -6px -6px 16px var(--nm-luz), 0 10px 30px -12px rgba(0, 0, 0, 0.25);
+        font-family: 'Manrope', system-ui, sans-serif;
+    }
+    .nm-barra-item {
+        flex: 1;
+        display: grid;
+        justify-items: center;
+        gap: 2px;
+        min-height: 52px;
+        padding: 7px 2px 6px;
+        border-radius: 16px;
+        color: var(--nm-suave);
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-decoration: none;
+        -webkit-tap-highlight-color: transparent;
+        transition: box-shadow 0.15s ease, color 0.15s ease;
+    }
+    .nm-barra-item svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+    .nm-barra-item[aria-current='page'] { color: var(--nm-destaque-texto); box-shadow: var(--nm-afundado); }
+    .nm-barra-item:active { box-shadow: var(--nm-afundado); }
+    .nm-barra-zap { color: var(--nm-destaque-texto); }
+    .nm-barra-item:focus-visible { outline: 2px solid var(--nm-foco); outline-offset: -2px; }
+
+    /* Espaço para a barra no fim da página, e o que flutuava embaixo sobe. */
+    body.nm-com-barra { padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
+    body.nm-com-barra #themeToggleBtn { bottom: calc(88px + env(safe-area-inset-bottom, 0px)) !important; }
+    body.nm-com-barra .bt-barra { bottom: calc(86px + env(safe-area-inset-bottom, 0px)); }
+    body.nm-com-barra.bt-com-carrinho { padding-bottom: calc(160px + env(safe-area-inset-bottom, 0px)); }
+    /* No site completo, o WhatsApp flutuante sai: a barra já tem o atalho. */
+    body.nm-com-barra .whatsapp-widget { display: none; }
+}
+
+
+/* ── Toque que afunda ──────────────────────────────────────────────────────
+   Cartões que abrem algo afundam enquanto o dedo (ou o clique) está em cima,
+   como um botão de verdade. */
+
+:is(.pt-card, .pt-bento, .ap-card, .bt-card, .sv-outros a, .service-card, .frente-card):active {
+    box-shadow: var(--nm-afundado) !important;
+    transform: translateY(1px) scale(0.995) !important;
+    transition-duration: 0.08s;
+}
+@media (prefers-reduced-motion: reduce) {
+    :is(.pt-card, .pt-bento, .ap-card, .bt-card, .sv-outros a, .service-card, .frente-card):active { transform: none !important; }
+}

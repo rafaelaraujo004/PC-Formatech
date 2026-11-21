@@ -30,7 +30,7 @@ const EMPRESA = {
     name: 'PC Formatech',
     description: 'Assistência técnica de computadores e notebooks (só programas, sem conserto de peças): formatação, manutenção, limpeza e otimização, remoção de vírus, backup e suporte remoto.',
     url: SITE + '/site.html',
-    image: SITE + '/images/og/pc-formatech.jpg',
+    image: SITE + '/images/og/pc-formatech-v2.jpg',
     logo: SITE + '/icon-512.png',
     telephone: '+55 94 98430-5772',
     priceRange: 'R$ 40 a R$ 80',
@@ -237,7 +237,7 @@ const precoDe = (s) => (s.preco ? `A partir de ${reais(s.preco)}` : s.precoTexto
 
 /** Prévia para WhatsApp/redes: images/og/<nome>.jpg se existir, senão a geral. */
 function imagemPrevia(nome) {
-    return nome && fs.existsSync(path.join(RAIZ, 'images/og', nome + '.jpg')) ? `${SITE}/images/og/${nome}.jpg` : SITE + '/images/og/pc-formatech.jpg';
+    return nome && fs.existsSync(path.join(RAIZ, 'images/og', nome + '.jpg')) ? `${SITE}/images/og/${nome}.jpg` : SITE + '/images/og/pc-formatech-v2.jpg';
 }
 
 function cabeca({ titulo, descricao, url, extras, previa, tipo }) {
@@ -270,8 +270,8 @@ function cabeca({ titulo, descricao, url, extras, previa, tipo }) {
     <link rel="preload" href="/fonts/sora-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/fontes.css">
     <link rel="stylesheet" href="/icones.css">
-    <link rel="stylesheet" href="/neumorfismo.css?v=1">
-    <link rel="stylesheet" href="/servicos/servicos.css?v=5">
+    <link rel="stylesheet" href="/neumorfismo.css?v=2">
+    <link rel="stylesheet" href="/servicos/servicos.css?v=6">
 ${extras}
 </head>`;
 }
@@ -298,7 +298,8 @@ function rodape() {
         <p class="sv-rodape-endereco"><i class="fas fa-map-marker-alt" aria-hidden="true"></i> ${esc(RUA)}, ${CIDADE}, PA · <a href="${MAPA.replace(/&/g, '&amp;')}" target="_blank" rel="noopener">Como chegar</a> · ${HORARIO}</p>
         <p class="sv-rodape-contato"><a href="/dicas/">Dicas para o seu computador</a> · <a href="${zap('Olá! Vim pelo site.')}" target="_blank" rel="noopener">(94) 98430-5772</a> · <a href="https://instagram.com/pcformatech" target="_blank" rel="noopener">@pcformatech</a> · <a href="${AVALIAR}" target="_blank" rel="noopener">Avaliar no Google</a></p>
         <p class="sv-rodape-autor">Site feito por Rafael Araújo · <a href="/privacidade/">Política de privacidade</a></p>
-    </footer>`;
+    </footer>
+    <script src="/visual-novo.js?v=1"></script>`;
 }
 
 // ── Página de cada serviço ────────────────────────────────────────────────

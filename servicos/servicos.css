@@ -296,11 +296,17 @@ h1, h2 {
     font-size: 0.9rem;
 }
 
+/* Cada pergunta é um bloco em relevo; aberta, ela afunda. */
 .sv-faq {
-    border-top: 1px solid var(--sv-borda);
+    margin-top: 0.9rem;
+    padding: 0 1.1rem;
+    border-radius: var(--nm-raio);
+    background: var(--nm-bg);
+    box-shadow: var(--nm-relevo-sm);
+    transition: box-shadow 0.2s ease;
 }
 
-.sv-faq:last-child { border-bottom: 1px solid var(--sv-borda); }
+.sv-faq[open] { box-shadow: var(--nm-afundado); }
 
 .sv-faq summary {
     position: relative;
@@ -315,13 +321,23 @@ h1, h2 {
 .sv-faq summary::after {
     content: '+';
     position: absolute;
-    right: 0.3rem;
+    right: 0;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 1.4rem;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--nm-bg);
+    box-shadow: var(--nm-relevo-sm);
+    font-size: 1.2rem;
     font-weight: 500;
+    line-height: 1;
     color: var(--sv-acento);
 }
+
+.sv-faq[open] summary::after { box-shadow: var(--nm-afundado-sm); }
 
 .sv-faq[open] summary::after { content: '\2212'; }
 
